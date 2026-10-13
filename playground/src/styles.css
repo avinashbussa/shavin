@@ -1,0 +1,12 @@
+/* The design system's tokens, straight from source so token edits hot-reload. */
+@import "../../packages/ui/src/styles/global.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Playground chrome only (same as the docs site) — not design tokens. */
+.pg-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(var(--hairline)) transparent;
+}

@@ -1,0 +1,1143 @@
+/* =========================================================================
+   Shavin design system — two tiers.
+   1. FOUNDATION (primitive) tokens: raw palette scales, theme-INDEPENDENT.
+      Components must never reference these directly.
+   2. SEMANTIC tokens: role-based, remapped per theme. Components use only these
+      (via Tailwind utilities: bg-surface, text-fg, border-hairline, …).
+   All values are "R G B" triplets so Tailwind can apply <alpha-value>.
+
+   This file is the single source of truth for the design language. Consuming
+   apps import it once (`@import "@shavin/ui/styles.css";`) alongside
+   `@tailwind base/components/utilities` and the shared tailwind-preset.
+   ========================================================================= */
+
+/* Brand color tokens — user-customizable colors alongside DS semantic tokens.
+   Edit hex values in brand-tokens.css; run `npm run brand:gen` to regenerate. */
+@import "./brand-tokens.css";
+
+:root,
+.light {
+  /* --- foundation: pure neutral (zinc) scale, theme-independent --- */
+  --n-0: 255 255 255;
+  --n-50: 250 250 250;
+  --n-100: 244 244 245;
+  --n-200: 228 228 231;
+  --n-300: 212 212 216;
+  --n-400: 161 161 170;
+  --n-450: 137 137 146; /* dark-surface fg-subtle: >=4.5:1 on n-950..n-900 (WCAG AA) */
+  --n-500: 113 113 122;
+  --n-600: 82 82 91;
+  --n-700: 63 63 70;
+  --n-800: 39 39 42;
+  --n-850: 30 30 33;
+  --n-900: 24 24 27;
+  --n-950: 10 10 12;
+  --n-1000: 0 0 0;
+
+  /* --- semantic (light theme) — black ink on white --- */
+  --bg-canvas: var(--n-100);
+  --bg-surface: var(--n-0);
+  --bg-surface-hover: var(--n-100);
+  --bg-elevated: var(--n-0);
+  --hairline: var(--n-200);
+  --hairline-strong: var(--n-300);
+  --fg: var(--n-950);
+  --fg-muted: var(--n-600);
+  --fg-subtle: var(--n-500);
+  --success: 5 150 105; /* emerald-600 — positive / done */
+  --success-fg: 255 255 255;
+  --warning: 217 119 6; /* amber-600 — caution / attention */
+  --warning-fg: 255 255 255;
+  --danger: 192 57 43; /* crimson — destructive */
+  --danger-fg: 255 255 255;
+}
+
+/* --- brand/accent tokens — page-level only, NOT in surface scopes ---
+   These are set once on :root (and overridden at :root.dark for dark-mode
+   inversion). They must NOT appear in .dark/.light surface-scope blocks
+   because surface contrast scoping (surface="dark") would shadow the user's
+   custom accent (set via applyAccentColor() as an inline style on <html>),
+   causing (accent) overlays and accent-colored controls inside a dark
+   surface to fall back to neutral steps instead of the chosen brand color.
+   Surface scopes therefore never set raw steps: they point --accent at
+   --accent-on-dark / --accent-on-light, which applyAccentColor() derives from
+   the user's accent (so brand hues persist and only achromatic accents flip). */
+:root {
+  --accent: var(--n-900);
+  /* Accent variants for surface scopes (overridden by applyAccentColor). */
+  --accent-on-dark: var(--n-100);
+  --accent-on-dark-hover: var(--n-0);
+  --accent-on-dark-fg: var(--n-950);
+  --accent-on-dark-contrast: var(--n-100);
+  --accent-on-dark-text: var(--n-100);
+  --accent-on-light: var(--n-900);
+  --accent-on-light-hover: var(--n-1000);
+  --accent-on-light-fg: var(--n-0);
+  --accent-on-light-contrast: var(--n-900);
+  --accent-on-light-text: var(--n-900);
+  --accent-hover: var(--n-1000);
+  --accent-fg: var(--n-0);
+  --accent-contrast: var(--n-900);
+  --accent-text: var(--n-900);
+  --accent-subtle: rgb(var(--accent) / 0.12);
+  --accent-subtle-hover: rgb(var(--accent) / 0.18);
+  --focus: var(--n-900);
+  --link: 37 99 235; /* blue-600 — hyperlink affordance */
+  --bg-tooltip: var(--n-1000);
+  --fg-tooltip: var(--n-0);
+  --bg-overlay: var(--n-1000);
+  --overlay-opacity: 0.4;
+
+  /* --- internal code syntax tokens (calibrated to classic VSCode Light+ theme) --- */
+  --code-keyword: 175 0 219;      /* #AF00DB — purple: const, import, function, return */
+  --code-string: 163 21 21;       /* #A31515 — warm brick red: strings, template literals */
+  --code-number: 9 134 88;        /* #098658 — soft forest green: numbers, booleans */
+  --code-function: 121 94 38;     /* #795E26 — warm golden brown: function calls, methods */
+  --code-comment: 0 128 0;        /* #008000 — classic green: comments, metadata */
+  --code-punctuation: 51 51 51;   /* #333333 — soft charcoal: braces, commas, semicolons */
+  --code-property: 0 16 128;      /* #001080 — navy blue: object keys, css properties */
+  --code-operator: 51 51 51;      /* #333333 — charcoal: operators (=, +, &&) */
+  --code-type: 38 127 153;        /* #267F99 — classic teal blue: TypeScript types, interfaces */
+  --code-tag: 128 0 0;            /* #800000 — deep crimson: HTML/JSX tags */
+  --code-attr: 220 38 38;         /* #DC2626 — soft red: JSX/HTML attributes */
+
+  /* --- typography tokens (Space Grotesk display + Inter body defaults) --- */
+  --font-display: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+  --font-body: 'Inter', ui-sans-serif, system-ui, sans-serif;
+
+  /* --- radius scale: components reference these, never a literal rounded-* value.
+     Overridable at runtime (see playground Configurator) or per-app for a
+     site-wide corner-radius preset (none/small/medium/large/full).
+     --radius-lg/xl are for CONTROLS (buttons, badges, inputs, chips) — at the
+     "full" preset these legitimately go pill-shaped, that's the point.
+     --radius-panel is for large rectangular surfaces (Card, Dialog, Popover,
+     Menu, Select's dropdown, Inset's clip) — even at "full" this stays a
+     finite, generous corner radius rather than 9999px, because a whole modal
+     or menu panel rendered as a stadium shape is broken, not "rounded". --- */
+  --radius-sm: 0.25rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+  --radius-panel: 1rem;
+  /* Fallback: no subtraction. Container components override this with the
+     correct R_inner = max(floor, R_outer - P) based on their own padding.
+     When no container sets it, concentric resolves to plain panel radius. */
+  --radius-panel-inner: var(--radius-panel);
+
+  /* --- floating-panel background opacity (Dialog/Menu/Select/ProfileModal).
+     1 = solid (default); the playground's "translucent panels" toggle backs
+     this down and adds a blur so canvas content shows through. --- */
+  --panel-opacity: 1;
+
+  /* --- elevation: one place to tune every floating-surface shadow.
+     `--shadow-panel` is the common floating shadow (Popover, Menu, Select,
+     Tooltip, HoverCard, ContextMenu, DatePicker); `--shadow-modal` is the
+     heavier lift for Dialog/AlertDialog. Themed per appearance below — dark
+     surfaces need a deeper shadow to read at all against a near-black canvas.
+     Components reference these via `shadow-panel`/`shadow-modal` (see
+     tailwind-preset.ts), never an inline `shadow-[...rgba(...)]` literal. --- */
+  --shadow-panel: var(--shadow-4);
+  --shadow-modal: 0 20px 60px -15px rgb(0 0 0 / 0.35);
+
+  /* --- elevation scale (Radix-style, 6 steps). --shadow-1 is a subtle inset
+     rim; 2→6 climb from a resting card to a max-elevation dialog. Use
+     `shadow-1`…`shadow-6` when you want a specific level; `shadow-panel`/
+     `shadow-modal` remain the role-named shortcuts for floating surfaces. --- */
+  --shadow-1: inset 0 0 0 1px rgb(0 0 0 / 0.06);
+  --shadow-2: 0 1px 2px rgb(0 0 0 / 0.08), 0 1px 1px rgb(0 0 0 / 0.06);
+  --shadow-3: 0 2px 4px -1px rgb(0 0 0 / 0.1), 0 4px 8px -2px rgb(0 0 0 / 0.08);
+  --shadow-4: 0 8px 16px -4px rgb(0 0 0 / 0.12), 0 2px 4px -2px rgb(0 0 0 / 0.08);
+  --shadow-5: 0 12px 32px -8px rgb(0 0 0 / 0.18), 0 4px 8px -4px rgb(0 0 0 / 0.1);
+  --shadow-6: 0 24px 48px -12px rgb(0 0 0 / 0.24), 0 8px 16px -8px rgb(0 0 0 / 0.12);
+
+  /* --- semantic roles built ON the elevation scale (auto-adapt to dark since
+     they reference --shadow-N). Three roles cover the system: `card` = resting
+     surface (cards, stat tiles, list rows); `panel` = floating near a trigger
+     (menu, popover, select, tooltip, context-menu, hover-card); `modal` =
+     blocking overlay (dialog, alert). --- */
+  --shadow-card: var(--shadow-2);
+
+  /* --- motion: strong custom easing curves. The built-in CSS easings are too
+     weak to feel intentional. Enter/exit uses ease-out (responsive from the
+     first frame — the moment the user watches most); on-screen movement uses
+     ease-in-out. Never ease-in for UI: it delays the opening frames and reads
+     as sluggish at the same duration. --- */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  /* Sheet / drawer momentum — iOS tactile feel for edge-mounted surfaces
+     (Sidebar, Spotlight, bottom sheets). Higher initial velocity than
+     --ease-out, longer settle — conveys physical weight. */
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+
+  /* --- motion durations. Semantic utilities (.animate-*) and page-level
+     presets both reference these. Zeroing them under reduced-motion (see
+     below) collapses every animation to instant — a single safety net. --- */
+  --dur-instant: 100ms;   /* press feedback, instant toggles */
+  --dur-fast: 160ms;      /* hover, tooltip, quick re-open */
+  --dur-base: 240ms;      /* state changes: tabs, menus, accordions */
+  --dur-slow: 400ms;      /* large surface changes, sidebar collapse */
+  --dur-enter: 560ms;     /* entrances, reveals, page-load sequences */
+
+  /* --- motion distances. Entrance travel and parallax bounds. Zeroed under
+     reduced-motion so nothing shifts position. --- */
+  --dist-xs: 4px;
+  --dist-sm: 8px;
+  --dist-md: 16px;        /* default entrance travel */
+  --dist-lg: 24px;        /* maximum entrance travel */
+
+  /* --- stagger interval between sequentially revealed elements. --- */
+  --stagger: 60ms;
+}
+
+/* Reduced-motion safety net — zero all motion tokens in one place.
+   Animations collapse to instant (0ms), distances to 0px. Functional
+   infinite loops (Spinner, Skeleton, caret-blink) are keyframe animations
+   that still run — they're not transition-duration based. Individual
+   utilities that add/remove content (marquees, count-ups) handle their
+   own fallback in the page-level presets. */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-instant: 0ms; --dur-fast: 0ms; --dur-base: 0ms;
+    --dur-slow: 0ms; --dur-enter: 0ms; --stagger: 0ms;
+    --dist-xs: 0px; --dist-sm: 0px; --dist-md: 0px; --dist-lg: 0px;
+  }
+}
+
+/* Elevated floating surfaces (modals, menus, dropdowns) opt in via
+   `data-panel` instead of the `bg-elevated` utility, so this one rule
+   controls both their fill and — when translucent — their backdrop blur. */
+[data-panel] {
+  background-color: rgb(var(--bg-elevated) / var(--panel-opacity));
+}
+.translucent-panels {
+  --panel-opacity: 0.82;
+  --overlay-opacity: 0.15;
+}
+.translucent-panels [data-panel] {
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-color: rgb(var(--hairline-strong));
+}
+
+/* Concentric Radius — Boundary Reset (Rule 2)
+   ─────────────────────────────────────────────
+   An element with a visible boundary (bg/border) but NO radius has sharp
+   corners. That sharp edge IS the visual reference — concentric descendants
+   must align to 0px, NOT skip past to a grandparent's rounded corners.
+   Studio's tree intelligence sets this attribute when it detects bg-without-radius. */
+[data-concentric-reset] {
+  --radius-panel-inner: 0px;
+}
+
+
+/* --- dark-mode accent defaults — page-level only (NOT surface scopes) ---
+   Mirrors the .dark block's former accent values but scoped to :root.dark
+   so it only fires when <html> has class="dark", not when a subtree element
+   gets class="dark" via surface="dark". Overridden by applyAccentColor()
+   inline style on <html>. Prevents FOUC of wrong accent before JS hydrates. */
+:root.dark {
+  --accent: var(--n-200);
+  --accent-hover: var(--n-0);
+  --accent-fg: var(--n-950);
+  --accent-contrast: var(--n-200);
+  --accent-text: var(--n-200);
+  --accent-subtle: rgb(var(--accent) / 0.15);
+  --accent-subtle-hover: rgb(var(--accent) / 0.22);
+  --focus: var(--n-200);
+  --link: 96 165 250; /* blue-400 */
+}
+
+.dark {
+  /* white ink on black — calibrated for glare reduction & optical comfort */
+  --bg-canvas: var(--n-950);
+  --bg-surface: var(--n-900);
+  --bg-surface-hover: var(--n-850);
+  --bg-elevated: var(--n-850);
+  --hairline: var(--n-800);
+  --hairline-strong: var(--n-700);
+  --fg: var(--n-200);
+  --fg-muted: var(--n-400);
+  --fg-subtle: var(--n-450);
+  /* --accent* tokens are intentionally NOT here — see :root comment above.
+     applyAccentColor() handles dark-mode inversion at <html> inline style. */
+  --success: 52 211 153; /* emerald-400 — positive / done */
+  --success-fg: 10 10 12;
+  --warning: 251 191 36; /* amber-400 — caution / attention */
+  --warning-fg: 10 10 12;
+  --danger: 232 90 79; /* crimson (lighter for dark bg) */
+  --danger-fg: 255 255 255;
+  --bg-tooltip: var(--n-100);
+  --fg-tooltip: var(--n-950);
+  --bg-overlay: var(--n-1000);
+  --overlay-opacity: 0.55;
+
+  /* --- internal code syntax tokens (calibrated to classic VSCode Dark+ theme) --- */
+  --code-keyword: 197 134 192;    /* #C586C0 — soft orchid violet: const, import, function, return */
+  --code-string: 206 145 120;     /* #CE9178 — soft warm peach/terracotta: strings, template literals */
+  --code-number: 181 206 168;     /* #B5CEA8 — soft sage green: numbers, booleans, constants */
+  --code-function: 220 220 170;   /* #DCDCAA — soft warm yellow/beige: function calls, methods */
+  --code-comment: 106 153 85;     /* #6A9955 — soft olive green: comments, metadata */
+  --code-punctuation: 212 212 212;/* #D4D4D4 — soft light gray: braces, commas, semicolons */
+  --code-property: 156 220 254;   /* #9CDCFE — light powder sky blue: object keys, css properties */
+  --code-operator: 212 212 212;   /* #D4D4D4 — soft light gray: operators (=, +, &&) */
+  --code-type: 78 201 176;        /* #4EC9B0 — soft mint/teal: TypeScript types, components */
+  --code-tag: 86 156 214;         /* #569CD6 — classic VSCode blue: HTML/JSX tags */
+  --code-attr: 156 220 254;       /* #9CDCFE — light sky blue: JSX/HTML attributes */
+
+  /* deeper shadows for dark: a 0.35 alpha vanishes against a near-black canvas */
+  --shadow-panel: var(--shadow-4);
+  --shadow-modal: 0 20px 60px -15px rgb(0 0 0 / 0.6);
+
+  /* deeper on dark — a near-black canvas swallows low-alpha shadows */
+  --shadow-1: inset 0 0 0 1px rgb(255 255 255 / 0.06);
+  --shadow-2: 0 1px 2px rgb(0 0 0 / 0.4), 0 1px 1px rgb(0 0 0 / 0.3);
+  --shadow-3: 0 2px 4px -1px rgb(0 0 0 / 0.5), 0 4px 8px -2px rgb(0 0 0 / 0.4);
+  --shadow-4: 0 8px 16px -4px rgb(0 0 0 / 0.55), 0 2px 4px -2px rgb(0 0 0 / 0.4);
+  --shadow-5: 0 12px 32px -8px rgb(0 0 0 / 0.6), 0 4px 8px -4px rgb(0 0 0 / 0.45);
+  --shadow-6: 0 24px 48px -12px rgb(0 0 0 / 0.7), 0 8px 16px -8px rgb(0 0 0 / 0.5);
+}
+
+/* =========================================================================
+   SURFACE CONTRAST SCOPING — theme-aware auto-inversion
+   =========================================================================
+   The `surface` prop on layout primitives (Flex, Grid, Section, Box, Container,
+   Card) is a content-readability INTENT: "dark" = dark media bg → needs light
+   text; "light" = light media bg → needs dark text.
+
+   Primitives emit `data-surface="dark"` or `data-surface="light"` on the DOM
+   element.  These CSS rules resolve the intent against the current page theme
+   and apply the correct contrast token set — with automatic inversion:
+
+     Light page + surface="dark"  → dark scope   (light text on dark bg)
+     Dark page  + surface="dark"  → light scope   (INVERTED — contrast band)
+     Light page + surface="light" → light scope   (dark text on light bg)
+     Dark page  + surface="light" → dark scope    (INVERTED — contrast band)
+
+   The inversion ensures a surface section always stands out from the page,
+   regardless of which theme mode is active.  CSS handles reactivity
+   automatically — when <html> class toggles, these rules re-evaluate with zero
+   JS re-render.
+
+   These selectors override the same tokens as .dark/.light but are more
+   specific (attribute + :root pseudo-class), so they win the cascade for
+   surface-scoped elements without affecting page-level theming.
+
+   NOTE: accent tokens (--accent, --accent-hover, etc.) are intentionally NOT
+   redefined here.  They are set at :root / :root.dark level and via
+   applyAccentColor() inline style on <html>.  Surface scopes must NOT shadow
+   them — that was the bug where (accent) overlays inside surface="dark"
+   resolved to n-100 instead of the user's chosen brand color.
+   ========================================================================= */
+
+/* --- surface="dark" on a LIGHT page → apply dark contrast tokens --- */
+:root:not(.dark) [data-surface="dark"] {
+  /* Accent follows the surface: achromatic accents flip, brand hues persist. */
+  --accent: var(--accent-on-dark);
+  --accent-hover: var(--accent-on-dark-hover);
+  --accent-fg: var(--accent-on-dark-fg);
+  --accent-contrast: var(--accent-on-dark-contrast);
+  --accent-text: var(--accent-on-dark-text);
+  --accent-subtle: rgb(var(--accent-on-dark) / 0.15);
+  --accent-subtle-hover: rgb(var(--accent-on-dark) / 0.22);
+  --focus: var(--accent-on-dark);
+
+  --bg-canvas: var(--n-950);
+  --bg-surface: var(--n-900);
+  --bg-surface-hover: var(--n-850);
+  --bg-elevated: var(--n-850);
+  --hairline: var(--n-800);
+  --hairline-strong: var(--n-700);
+  --fg: var(--n-200);
+  --fg-muted: var(--n-400);
+  --fg-subtle: var(--n-450);
+  --success: 52 211 153;
+  --success-fg: 10 10 12;
+  --warning: 251 191 36;
+  --warning-fg: 10 10 12;
+  --danger: 232 90 79;
+  --danger-fg: 255 255 255;
+  --bg-tooltip: var(--n-100);
+  --fg-tooltip: var(--n-950);
+  --bg-overlay: var(--n-1000);
+  --overlay-opacity: 0.55;
+  --code-keyword: 197 134 192;
+  --code-string: 206 145 120;
+  --code-number: 181 206 168;
+  --code-function: 220 220 170;
+  --code-comment: 106 153 85;
+  --code-punctuation: 212 212 212;
+  --code-property: 156 220 254;
+  --code-operator: 212 212 212;
+  --code-type: 78 201 176;
+  --code-tag: 86 156 214;
+  --code-attr: 156 220 254;
+  --shadow-panel: var(--shadow-4);
+  --shadow-modal: 0 20px 60px -15px rgb(0 0 0 / 0.6);
+  --shadow-1: inset 0 0 0 1px rgb(255 255 255 / 0.06);
+  --shadow-2: 0 1px 2px rgb(0 0 0 / 0.4), 0 1px 1px rgb(0 0 0 / 0.3);
+  --shadow-3: 0 2px 4px -1px rgb(0 0 0 / 0.5), 0 4px 8px -2px rgb(0 0 0 / 0.4);
+  --shadow-4: 0 8px 16px -4px rgb(0 0 0 / 0.55), 0 2px 4px -2px rgb(0 0 0 / 0.4);
+  --shadow-5: 0 12px 32px -8px rgb(0 0 0 / 0.6), 0 4px 8px -4px rgb(0 0 0 / 0.45);
+  --shadow-6: 0 24px 48px -12px rgb(0 0 0 / 0.7), 0 8px 16px -8px rgb(0 0 0 / 0.5);
+}
+
+/* --- surface="dark" on a DARK page → INVERT to light contrast tokens --- */
+:root.dark [data-surface="dark"] {
+  --bg-canvas: var(--n-100);
+  --bg-surface: var(--n-0);
+  --bg-surface-hover: var(--n-100);
+  --bg-elevated: var(--n-0);
+  --hairline: var(--n-200);
+  --hairline-strong: var(--n-300);
+  --fg: var(--n-950);
+  --fg-muted: var(--n-600);
+  --fg-subtle: var(--n-450);
+  --success: 5 150 105;
+  --success-fg: 255 255 255;
+  --warning: 217 119 6;
+  --warning-fg: 255 255 255;
+  --danger: 192 57 43;
+  --danger-fg: 255 255 255;
+  --bg-tooltip: var(--n-1000);
+  --fg-tooltip: var(--n-0);
+  --bg-overlay: var(--n-1000);
+  --overlay-opacity: 0.4;
+  --code-keyword: 175 0 219;
+  --code-string: 163 21 21;
+  --code-number: 9 134 88;
+  --code-function: 121 94 38;
+  --code-comment: 0 128 0;
+  --code-punctuation: 51 51 51;
+  --code-property: 0 16 128;
+  --code-operator: 51 51 51;
+  --code-type: 38 127 153;
+  --code-tag: 128 0 0;
+  --code-attr: 220 38 38;
+  --shadow-panel: var(--shadow-4);
+  --shadow-modal: 0 20px 60px -15px rgb(0 0 0 / 0.35);
+  --shadow-1: inset 0 0 0 1px rgb(0 0 0 / 0.06);
+  --shadow-2: 0 1px 2px rgb(0 0 0 / 0.08), 0 1px 1px rgb(0 0 0 / 0.06);
+  --shadow-3: 0 2px 4px -1px rgb(0 0 0 / 0.1), 0 4px 8px -2px rgb(0 0 0 / 0.08);
+  --shadow-4: 0 8px 16px -4px rgb(0 0 0 / 0.12), 0 2px 4px -2px rgb(0 0 0 / 0.08);
+  --shadow-5: 0 12px 32px -8px rgb(0 0 0 / 0.18), 0 4px 8px -4px rgb(0 0 0 / 0.1);
+  --shadow-6: 0 24px 48px -12px rgb(0 0 0 / 0.24), 0 8px 16px -8px rgb(0 0 0 / 0.12);
+}
+
+/* --- surface="light" on a LIGHT page → light contrast tokens (same as page) --- */
+:root:not(.dark) [data-surface="light"] {
+  --bg-canvas: var(--n-100);
+  --bg-surface: var(--n-0);
+  --bg-surface-hover: var(--n-100);
+  --bg-elevated: var(--n-0);
+  --hairline: var(--n-200);
+  --hairline-strong: var(--n-300);
+  --fg: var(--n-950);
+  --fg-muted: var(--n-600);
+  --fg-subtle: var(--n-500);
+  --success: 5 150 105;
+  --success-fg: 255 255 255;
+  --warning: 217 119 6;
+  --warning-fg: 255 255 255;
+  --danger: 192 57 43;
+  --danger-fg: 255 255 255;
+  --bg-tooltip: var(--n-1000);
+  --fg-tooltip: var(--n-0);
+  --bg-overlay: var(--n-1000);
+  --overlay-opacity: 0.4;
+  --code-keyword: 175 0 219;
+  --code-string: 163 21 21;
+  --code-number: 9 134 88;
+  --code-function: 121 94 38;
+  --code-comment: 0 128 0;
+  --code-punctuation: 51 51 51;
+  --code-property: 0 16 128;
+  --code-operator: 51 51 51;
+  --code-type: 38 127 153;
+  --code-tag: 128 0 0;
+  --code-attr: 220 38 38;
+  --shadow-panel: var(--shadow-4);
+  --shadow-modal: 0 20px 60px -15px rgb(0 0 0 / 0.35);
+  --shadow-1: inset 0 0 0 1px rgb(0 0 0 / 0.06);
+  --shadow-2: 0 1px 2px rgb(0 0 0 / 0.08), 0 1px 1px rgb(0 0 0 / 0.06);
+  --shadow-3: 0 2px 4px -1px rgb(0 0 0 / 0.1), 0 4px 8px -2px rgb(0 0 0 / 0.08);
+  --shadow-4: 0 8px 16px -4px rgb(0 0 0 / 0.12), 0 2px 4px -2px rgb(0 0 0 / 0.08);
+  --shadow-5: 0 12px 32px -8px rgb(0 0 0 / 0.18), 0 4px 8px -4px rgb(0 0 0 / 0.1);
+  --shadow-6: 0 24px 48px -12px rgb(0 0 0 / 0.24), 0 8px 16px -8px rgb(0 0 0 / 0.12);
+}
+
+/* --- surface="light" on a DARK page → INVERT to dark contrast tokens --- */
+:root.dark [data-surface="light"] {
+  /* Accent follows the surface: achromatic accents flip, brand hues persist. */
+  --accent: var(--accent-on-light);
+  --accent-hover: var(--accent-on-light-hover);
+  --accent-fg: var(--accent-on-light-fg);
+  --accent-contrast: var(--accent-on-light-contrast);
+  --accent-text: var(--accent-on-light-text);
+  --accent-subtle: rgb(var(--accent-on-light) / 0.12);
+  --accent-subtle-hover: rgb(var(--accent-on-light) / 0.18);
+  --focus: var(--accent-on-light);
+
+  --bg-canvas: var(--n-950);
+  --bg-surface: var(--n-900);
+  --bg-surface-hover: var(--n-850);
+  --bg-elevated: var(--n-850);
+  --hairline: var(--n-800);
+  --hairline-strong: var(--n-700);
+  --fg: var(--n-200);
+  --fg-muted: var(--n-400);
+  --fg-subtle: var(--n-500);
+  --success: 52 211 153;
+  --success-fg: 10 10 12;
+  --warning: 251 191 36;
+  --warning-fg: 10 10 12;
+  --danger: 232 90 79;
+  --danger-fg: 255 255 255;
+  --bg-tooltip: var(--n-100);
+  --fg-tooltip: var(--n-950);
+  --bg-overlay: var(--n-1000);
+  --overlay-opacity: 0.55;
+  --code-keyword: 197 134 192;
+  --code-string: 206 145 120;
+  --code-number: 181 206 168;
+  --code-function: 220 220 170;
+  --code-comment: 106 153 85;
+  --code-punctuation: 212 212 212;
+  --code-property: 156 220 254;
+  --code-operator: 212 212 212;
+  --code-type: 78 201 176;
+  --code-tag: 86 156 214;
+  --code-attr: 156 220 254;
+  --shadow-panel: var(--shadow-4);
+  --shadow-modal: 0 20px 60px -15px rgb(0 0 0 / 0.6);
+  --shadow-1: inset 0 0 0 1px rgb(255 255 255 / 0.06);
+  --shadow-2: 0 1px 2px rgb(0 0 0 / 0.4), 0 1px 1px rgb(0 0 0 / 0.3);
+  --shadow-3: 0 2px 4px -1px rgb(0 0 0 / 0.5), 0 4px 8px -2px rgb(0 0 0 / 0.4);
+  --shadow-4: 0 8px 16px -4px rgb(0 0 0 / 0.55), 0 2px 4px -2px rgb(0 0 0 / 0.4);
+  --shadow-5: 0 12px 32px -8px rgb(0 0 0 / 0.6), 0 4px 8px -4px rgb(0 0 0 / 0.45);
+  --shadow-6: 0 24px 48px -12px rgb(0 0 0 / 0.7), 0 8px 16px -8px rgb(0 0 0 / 0.5);
+}
+
+/* --- surface="dark-always" → dark tokens on BOTH light and dark pages --- */
+/* Use for dark media backgrounds (video/image) where text must stay light
+   regardless of page theme.  No inversion — locked to dark contrast. */
+[data-surface="dark-always"] {
+  /* Accent follows the surface: achromatic accents flip, brand hues persist. */
+  --accent: var(--accent-on-dark);
+  --accent-hover: var(--accent-on-dark-hover);
+  --accent-fg: var(--accent-on-dark-fg);
+  --accent-contrast: var(--accent-on-dark-contrast);
+  --accent-text: var(--accent-on-dark-text);
+  --accent-subtle: rgb(var(--accent-on-dark) / 0.15);
+  --accent-subtle-hover: rgb(var(--accent-on-dark) / 0.22);
+  --focus: var(--accent-on-dark);
+
+  --bg-canvas: var(--n-950);
+  --bg-surface: var(--n-900);
+  --bg-surface-hover: var(--n-850);
+  --bg-elevated: var(--n-850);
+  --hairline: var(--n-800);
+  --hairline-strong: var(--n-700);
+  --fg: var(--n-200);
+  --fg-muted: var(--n-400);
+  --fg-subtle: var(--n-450);
+  --success: 52 211 153;
+  --success-fg: 10 10 12;
+  --warning: 251 191 36;
+  --warning-fg: 10 10 12;
+  --danger: 232 90 79;
+  --danger-fg: 255 255 255;
+  --bg-tooltip: var(--n-100);
+  --fg-tooltip: var(--n-950);
+  --bg-overlay: var(--n-1000);
+  --overlay-opacity: 0.55;
+  --code-keyword: 197 134 192;
+  --code-string: 206 145 120;
+  --code-number: 181 206 168;
+  --code-function: 220 220 170;
+  --code-comment: 106 153 85;
+  --code-punctuation: 212 212 212;
+  --code-property: 156 220 254;
+  --code-operator: 212 212 212;
+  --code-type: 78 201 176;
+  --code-tag: 86 156 214;
+  --code-attr: 156 220 254;
+  --shadow-panel: var(--shadow-4);
+  --shadow-modal: 0 20px 60px -15px rgb(0 0 0 / 0.6);
+  --shadow-1: inset 0 0 0 1px rgb(255 255 255 / 0.06);
+  --shadow-2: 0 1px 2px rgb(0 0 0 / 0.4), 0 1px 1px rgb(0 0 0 / 0.3);
+  --shadow-3: 0 2px 4px -1px rgb(0 0 0 / 0.5), 0 4px 8px -2px rgb(0 0 0 / 0.4);
+  --shadow-4: 0 8px 16px -4px rgb(0 0 0 / 0.55), 0 2px 4px -2px rgb(0 0 0 / 0.4);
+  --shadow-5: 0 12px 32px -8px rgb(0 0 0 / 0.6), 0 4px 8px -4px rgb(0 0 0 / 0.45);
+  --shadow-6: 0 24px 48px -12px rgb(0 0 0 / 0.7), 0 8px 16px -8px rgb(0 0 0 / 0.5);
+}
+
+/* --- surface="light-always" → light tokens on BOTH light and dark pages --- */
+/* Use for light media backgrounds (bright image/video) where text must stay
+   dark regardless of page theme.  No inversion — locked to light contrast. */
+[data-surface="light-always"] {
+  /* Accent follows the surface: achromatic accents flip, brand hues persist. */
+  --accent: var(--accent-on-light);
+  --accent-hover: var(--accent-on-light-hover);
+  --accent-fg: var(--accent-on-light-fg);
+  --accent-contrast: var(--accent-on-light-contrast);
+  --accent-text: var(--accent-on-light-text);
+  --accent-subtle: rgb(var(--accent-on-light) / 0.12);
+  --accent-subtle-hover: rgb(var(--accent-on-light) / 0.18);
+  --focus: var(--accent-on-light);
+
+  --bg-canvas: var(--n-100);
+  --bg-surface: var(--n-0);
+  --bg-surface-hover: var(--n-100);
+  --bg-elevated: var(--n-0);
+  --hairline: var(--n-200);
+  --hairline-strong: var(--n-300);
+  --fg: var(--n-950);
+  --fg-muted: var(--n-600);
+  --fg-subtle: var(--n-500);
+  --success: 5 150 105;
+  --success-fg: 255 255 255;
+  --warning: 217 119 6;
+  --warning-fg: 255 255 255;
+  --danger: 192 57 43;
+  --danger-fg: 255 255 255;
+  --bg-tooltip: var(--n-1000);
+  --fg-tooltip: var(--n-0);
+  --bg-overlay: var(--n-1000);
+  --overlay-opacity: 0.4;
+  --code-keyword: 175 0 219;
+  --code-string: 163 21 21;
+  --code-number: 9 134 88;
+  --code-function: 121 94 38;
+  --code-comment: 0 128 0;
+  --code-punctuation: 51 51 51;
+  --code-property: 0 16 128;
+  --code-operator: 51 51 51;
+  --code-type: 38 127 153;
+  --code-tag: 128 0 0;
+  --code-attr: 220 38 38;
+  --shadow-panel: var(--shadow-4);
+  --shadow-modal: 0 20px 60px -15px rgb(0 0 0 / 0.35);
+  --shadow-1: inset 0 0 0 1px rgb(0 0 0 / 0.06);
+  --shadow-2: 0 1px 2px rgb(0 0 0 / 0.08), 0 1px 1px rgb(0 0 0 / 0.06);
+  --shadow-3: 0 2px 4px -1px rgb(0 0 0 / 0.1), 0 4px 8px -2px rgb(0 0 0 / 0.08);
+  --shadow-4: 0 8px 16px -4px rgb(0 0 0 / 0.12), 0 2px 4px -2px rgb(0 0 0 / 0.08);
+  --shadow-5: 0 12px 32px -8px rgb(0 0 0 / 0.18), 0 4px 8px -4px rgb(0 0 0 / 0.1);
+  --shadow-6: 0 24px 48px -12px rgb(0 0 0 / 0.24), 0 8px 16px -8px rgb(0 0 0 / 0.12);
+}
+
+html,
+body {
+  height: 100%;
+}
+body {
+  background: rgb(var(--bg-canvas));
+  color: rgb(var(--fg));
+  font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-feature-settings: "ss01", "cv01";
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.font-display {
+  font-family: var(--font-display), Georgia, serif;
+  font-optical-sizing: auto;
+}
+.font-subheading {
+  /* Unset by default so it resolves to the nearest --font-body (scoped themes included). */
+  font-family: var(--font-subheading, var(--font-body)), ui-sans-serif, system-ui, sans-serif;
+}
+
+*:focus-visible {
+  outline: 2px solid rgb(var(--focus));
+  outline-offset: 2px;
+  /* No fixed border-radius — the outline follows the element's OWN radius, so a
+     pill stays pill-focused and a square stays square-focused (theme/override
+     aware). */
+}
+/* Menu-like rows show their state with the highlighted background, not an outline
+   (the outline is clipped by the panel and reads as stray bars). */
+[role^="menuitem"]:focus-visible,
+[role="option"]:focus-visible {
+  outline: none;
+}
+/* inputs: no focus ring/border highlight (per design preference) */
+:where(input, textarea):focus,
+:where(input, textarea):focus-visible {
+  outline: none;
+}
+/* ── AppFrame: container-driven app shell ────────────────────────────────────
+   The frame measures its own width, not the window's, so it behaves the same on a
+   phone, in a narrow window and inside a Studio device preview. Below the compact
+   width the sidebar slides over the content as a drawer (state and a11y live in
+   AppFrame.tsx; keep the 768 / 1024 limits in sync with COMPACT_LIMIT there). */
+.shavin-frame {
+  container: shavin-frame / inline-size;
+  position: relative;
+}
+.shavin-frame__inner {
+  display: flex;
+  height: 100%;
+}
+.shavin-frame__nav {
+  display: flex;
+  flex-shrink: 0;
+  min-height: 0;
+  height: 100%;
+}
+.shavin-frame__scrim,
+.shavin-frame__trigger {
+  display: none;
+}
+@container shavin-frame (max-width: 767.98px) {
+  .shavin-frame:not([data-compact-below="lg"]) .shavin-frame__nav {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    z-index: 50;
+    max-width: 85%;
+    touch-action: pan-y;
+    transform: translateX(-105%);
+    transition: transform 320ms var(--ease-drawer, cubic-bezier(0.32, 0.72, 0, 1)), box-shadow 320ms var(--ease-drawer, cubic-bezier(0.32, 0.72, 0, 1));
+  }
+  .shavin-frame:not([data-compact-below="lg"]) .shavin-frame__nav[data-open] {
+    transform: none;
+    box-shadow: var(--shadow-modal);
+  }
+  .shavin-frame:not([data-compact-below="lg"]) .shavin-frame__scrim {
+    display: block;
+    position: absolute;
+    inset: 0;
+    z-index: 40;
+    background-color: rgb(var(--bg-overlay) / var(--overlay-opacity));
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 240ms var(--ease-out, ease-out), visibility 0s linear 240ms;
+  }
+  .shavin-frame:not([data-compact-below="lg"]) .shavin-frame__scrim[data-open] {
+    opacity: 1;
+    visibility: visible;
+    transition-delay: 0s;
+  }
+  .shavin-frame:not([data-compact-below="lg"]) .shavin-frame__trigger {
+    display: inline-flex;
+  }
+}
+@container shavin-frame (max-width: 1023.98px) {
+  .shavin-frame[data-compact-below="lg"] .shavin-frame__nav {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    z-index: 50;
+    max-width: 85%;
+    touch-action: pan-y;
+    transform: translateX(-105%);
+    transition: transform 320ms var(--ease-drawer, cubic-bezier(0.32, 0.72, 0, 1)), box-shadow 320ms var(--ease-drawer, cubic-bezier(0.32, 0.72, 0, 1));
+  }
+  .shavin-frame[data-compact-below="lg"] .shavin-frame__nav[data-open] {
+    transform: none;
+    box-shadow: var(--shadow-modal);
+  }
+  .shavin-frame[data-compact-below="lg"] .shavin-frame__scrim {
+    display: block;
+    position: absolute;
+    inset: 0;
+    z-index: 40;
+    background-color: rgb(var(--bg-overlay) / var(--overlay-opacity));
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 240ms var(--ease-out, ease-out), visibility 0s linear 240ms;
+  }
+  .shavin-frame[data-compact-below="lg"] .shavin-frame__scrim[data-open] {
+    opacity: 1;
+    visibility: visible;
+    transition-delay: 0s;
+  }
+  .shavin-frame[data-compact-below="lg"] .shavin-frame__trigger {
+    display: inline-flex;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .shavin-frame__nav,
+  .shavin-frame__scrim {
+    transition-duration: 0.01ms !important;
+  }
+}
+/* Frame-aware visibility for things inside an AppFrame (a TopBar logo, a breadcrumb
+   segment). They follow the same frame width as the drawer, never the window, and
+   need no JS, so there is no flash on first paint. Outside an AppFrame both show. */
+@container shavin-frame (min-width: 768px) {
+  .shavin-frame:not([data-compact-below="lg"]) .shavin-frame-compact-only {
+    display: none;
+  }
+}
+@container shavin-frame (min-width: 1024px) {
+  .shavin-frame[data-compact-below="lg"] .shavin-frame-compact-only {
+    display: none;
+  }
+}
+@container shavin-frame (max-width: 767.98px) {
+  .shavin-frame:not([data-compact-below="lg"]) .shavin-frame-wide-only {
+    display: none;
+  }
+}
+@container shavin-frame (max-width: 1023.98px) {
+  .shavin-frame[data-compact-below="lg"] .shavin-frame-wide-only {
+    display: none;
+  }
+}
+
+::selection {
+  background: rgb(var(--accent) / 0.2);
+}
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(var(--hairline)) transparent;
+}
+
+/* Custom scrollbars for code pre containers to look dull and secondary */
+pre::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+}
+pre::-webkit-scrollbar-track {
+  background: transparent;
+}
+pre::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.3); /* Slate-400 at 30% opacity */
+  border-radius: 9999px;
+}
+pre::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.5);
+}
+pre {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.3) transparent;
+}
+
+/* Accordion expand & collapse keyframes (smooth ease-out, no layout jitter) */
+@keyframes accordion-down {
+  from {
+    height: 0;
+    opacity: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+    opacity: 1;
+  }
+}
+@keyframes accordion-up {
+  from {
+    height: var(--radix-accordion-content-height);
+    opacity: 1;
+  }
+  to {
+    height: 0;
+    opacity: 0;
+  }
+}
+/* Radix sets data-state on the panel; plain attribute selectors work in Tailwind 3 and 4 without any
+   utility config (data-[state=open]:animate-accordion-* never generated CSS, so panels snapped open). */
+.shavin-accordion-content[data-state="open"] {
+  animation: accordion-down var(--dur-base) var(--ease-out) both;
+}
+.shavin-accordion-content[data-state="closed"] {
+  animation: accordion-up calc(var(--dur-base) * 0.8) var(--ease-out) both;
+}
+.animate-accordion-down {
+  animation: accordion-down var(--dur-base) var(--ease-out) both;
+}
+.animate-accordion-up {
+  animation: accordion-up calc(var(--dur-base) * 0.8) var(--ease-out) both;
+}
+
+/* Floating-panel enter. Scales up from 0.97 + directional rise towards trigger.
+   Anchored panels set transform-origin to their trigger via
+   `origin-[var(--radix-*-content-transform-origin)]` so they grow FROM it;
+   modals deliberately omit that and scale from center. */
+@keyframes fade-rise-up {
+  from {
+    opacity: 0;
+    transform: scale(0.97) translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+@keyframes fade-rise-down {
+  from {
+    opacity: 0;
+    transform: scale(0.97) translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+@keyframes fade-rise-left {
+  from {
+    opacity: 0;
+    transform: scale(0.97) translateX(4px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateX(0);
+  }
+}
+@keyframes fade-rise-right {
+  from {
+    opacity: 0;
+    transform: scale(0.97) translateX(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateX(0);
+  }
+}
+
+.animate-rise,
+[data-side="top"].animate-rise {
+  animation: fade-rise-up var(--dur-fast) var(--ease-out) both;
+}
+[data-side="bottom"].animate-rise {
+  animation: fade-rise-down var(--dur-fast) var(--ease-out) both;
+}
+[data-side="left"].animate-rise {
+  animation: fade-rise-left var(--dur-fast) var(--ease-out) both;
+}
+[data-side="right"].animate-rise {
+  animation: fade-rise-right var(--dur-fast) var(--ease-out) both;
+}
+
+.animate-rise-fast,
+[data-side="top"].animate-rise-fast {
+  animation: fade-rise-up var(--dur-instant) var(--ease-out) both;
+}
+[data-side="bottom"].animate-rise-fast {
+  animation: fade-rise-down var(--dur-instant) var(--ease-out) both;
+}
+[data-side="left"].animate-rise-fast {
+  animation: fade-rise-left var(--dur-instant) var(--ease-out) both;
+}
+[data-side="right"].animate-rise-fast {
+  animation: fade-rise-right var(--dur-instant) var(--ease-out) both;
+}
+
+/* Indeterminate progress bar sliding animation (top bar / linear loader) */
+@keyframes progress-indeterminate {
+  0% {
+    transform: translateX(-100%);
+  }
+  50% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+.animate-progress-indeterminate {
+  animation: progress-indeterminate 1.4s ease-in-out infinite;
+}
+
+/* Bouncing/pulsing wave dots animation (AI chat, messaging, subtle inline loading) */
+@keyframes pulse-dot {
+  0%, 80%, 100% {
+    opacity: 0.35;
+    transform: scale(0.85);
+  }
+  40% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+}
+.animate-pulse-dot {
+  animation: pulse-dot 1.2s ease-in-out infinite both;
+}
+
+/* Mesh backdrop drift (bgOverlays "mesh-*-animated"). Transform-only, so it stays
+   on the compositor; overscaled so edges never show. Decorative, so it stops
+   entirely under reduced motion. */
+@keyframes mesh-drift {
+  0%, 100% { transform: scale(1.3) translate3d(-4%, -3%, 0) rotate(0deg); }
+  50% { transform: scale(1.38) translate3d(4%, 3%, 0) rotate(8deg); }
+}
+.animate-mesh-drift {
+  animation: mesh-drift 28s ease-in-out infinite;
+  will-change: transform;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-mesh-drift { animation: none; transform: scale(1.3); }
+}
+
+/* MODAL enter. Modals scale from CENTER (Emil) — no translateY "rise" (that's
+   popover DNA). Slightly slower (240ms) than the 200ms panels: a large surface
+   reads better with a touch more time. Paired with `.animate-overlay` so the
+   backdrop fades IN with the panel instead of slamming to full-dark in one
+   frame (that mismatch is the "blink"). */
+@keyframes fade-zoom {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.animate-modal-in {
+  animation: fade-zoom var(--dur-base) var(--ease-out) both;
+}
+/* Backdrop fade — opacity only (a full-viewport dark layer must never scale). */
+.animate-overlay {
+  background-color: rgb(var(--bg-overlay) / var(--overlay-opacity));
+  animation: fade-only var(--dur-base) ease both;
+}
+
+/* MODAL exit. The Dialog owns its open state and flips it to closed on
+   dismiss, so Radix sets `data-state="closed"` and its Presence keeps the
+   Content + Overlay mounted while these run; the Dialog calls `onClose` on the
+   wrapper's `animationend` to let the consumer unmount. Panel scales+fades
+   from center (mirror of `.animate-modal-in`); overlay fades — both faster
+   than the enter (Emil). */
+@keyframes modal-zoom-out {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+}
+[data-state="closed"].animate-modal-wrap {
+  animation: modal-zoom-out var(--dur-fast) var(--ease-out) both;
+}
+[data-state="closed"].animate-overlay {
+  animation: fade-only-out var(--dur-fast) ease both;
+}
+
+/* Floating-panel EXIT (Radix-managed open: Popover/Menu/Select/Tooltip/
+   HoverCard/ContextMenu). Driven by Radix's own `data-state="closed"`; its
+   Presence delays unmount while the animation runs — no `forceMount`. Plain
+   CSS attribute rules, NOT Tailwind `data-[state=closed]:` variants
+   (`animate-fall` isn't a Tailwind utility, so a variant over it silently
+   generates nothing). */
+@keyframes fade-fall {
+  from {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.97) translateY(4px);
+  }
+}
+[data-state="closed"].animate-rise {
+  animation: fade-fall var(--dur-instant) var(--ease-out) both;
+}
+[data-state="closed"].animate-rise-fast {
+  animation: fade-fall var(--dur-instant) var(--ease-out) both;
+}
+
+/* Reduced-motion = gentler, not off. Durations & distances already collapse
+   to 0 via the token safety net above. This block zeros CSS transitions only.
+   Functional infinite loops (Spinner's spin, Skeleton's pulse) are keyframe
+   animations, not transitions, so they keep running. */
+@keyframes fade-only {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes fade-only-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  /* Animations that still run at 0ms durations effectively snap — but
+     opacity-only fade-only provides a clean opacity collapse. */
+  .animate-rise,
+  .animate-rise-fast,
+  .animate-modal-in,
+  .animate-overlay {
+    animation: fade-only var(--dur-instant) ease both;
+  }
+  [data-state="closed"].animate-rise,
+  [data-state="closed"].animate-rise-fast,
+  [data-state="closed"].animate-modal-wrap,
+  [data-state="closed"].animate-overlay {
+    animation: fade-only-out var(--dur-instant) ease both;
+  }
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* DRAWER enter/exit. Edge-mounted panels slide in from their mounted side.
+   Uses --ease-drawer (iOS tactile curve) + --dur-slow (400ms) for the same
+   physical weight as Sidebar collapse. Exit mirrors the entry direction
+   (slides back toward the edge it came from). */
+@keyframes drawer-slide-in-right {
+  from { transform: translateX(100%); opacity: 0; }
+  to   { transform: translateX(0); opacity: 1; }
+}
+@keyframes drawer-slide-out-right {
+  from { transform: translateX(0); opacity: 1; }
+  to   { transform: translateX(100%); opacity: 0; }
+}
+@keyframes drawer-slide-in-left {
+  from { transform: translateX(-100%); opacity: 0; }
+  to   { transform: translateX(0); opacity: 1; }
+}
+@keyframes drawer-slide-out-left {
+  from { transform: translateX(0); opacity: 1; }
+  to   { transform: translateX(-100%); opacity: 0; }
+}
+
+.animate-drawer-right-in {
+  animation: drawer-slide-in-right var(--dur-slow) var(--ease-drawer) both;
+}
+.animate-drawer-left-in {
+  animation: drawer-slide-in-left var(--dur-slow) var(--ease-drawer) both;
+}
+[data-state="closed"].animate-drawer-exit[data-side="right"] {
+  animation: drawer-slide-out-right var(--dur-slow) var(--ease-drawer) both;
+}
+[data-state="closed"].animate-drawer-exit[data-side="left"] {
+  animation: drawer-slide-out-left var(--dur-slow) var(--ease-drawer) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-drawer-right-in,
+  .animate-drawer-left-in {
+    animation: fade-only var(--dur-instant) ease both;
+  }
+  [data-state="closed"].animate-drawer-exit {
+    animation: fade-only-out var(--dur-instant) ease both;
+  }
+}
+
+/* Prevent macOS trackpad overscroll rubber-banding on html/body */
+html,
+body {
+  overscroll-behavior: none;
+  overscroll-behavior-x: none;
+  overscroll-behavior-y: none;
+}
+
+/* Natural OS-style snapping input caret blink */
+@keyframes caret-blink {
+  0%, 49% {
+    opacity: 1;
+  }
+  50%, 100% {
+    opacity: 0;
+  }
+}
+.animate-caret-blink {
+  animation: caret-blink 1s steps(2, start) infinite;
+}
+
+

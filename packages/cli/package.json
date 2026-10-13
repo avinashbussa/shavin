@@ -1,0 +1,48 @@
+{
+  "name": "@shavin/cli",
+  "version": "0.1.0",
+  "description": "Sets up and checks projects that use @shavin/ui: init, add blocks, check, context, bridge, brand",
+  "license": "MIT",
+  "author": "Avinash Bussa <avinashbussa1@gmail.com>",
+  "homepage": "https://docs.shavin.cc/start/getting-started",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/avinashbussa/shavin.git",
+    "directory": "packages/cli"
+  },
+  "bugs": {
+    "url": "https://github.com/avinashbussa/shavin/issues"
+  },
+  "keywords": [
+    "cli",
+    "design-system",
+    "scaffolding",
+    "tailwind",
+    "react",
+    "nextjs",
+    "ai-agents",
+    "shavin"
+  ],
+  "type": "module",
+  "main": "./src/index.mjs",
+  "bin": {
+    "shavin": "./bin/shavin.mjs",
+    "shavin-cli": "./bin/shavin.mjs",
+    "cli": "./bin/shavin.mjs"
+  },
+  "scripts": {
+    "start": "node ./bin/shavin.mjs",
+    "bridge": "node ./bin/shavin.mjs bridge"
+  },
+  "dependencies": {
+    "@shavin/block-schema": "^0.1.0"
+  },
+  "files": [
+    "bin",
+    "src",
+    "README.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}

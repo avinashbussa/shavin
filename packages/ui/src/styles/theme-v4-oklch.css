@@ -1,0 +1,123 @@
+/* =========================================================================
+   Shavin Design System — Tailwind v4 Theme Bridge (OKLCH)
+   =========================================================================
+   This file maps Shavin's semantic CSS custom properties (defined in
+   global-oklch.css) to Tailwind v4's @theme namespaces so v4 generates the
+   same utility classes as the v3 JS preset (bg-canvas, text-fg, border-hairline,
+   shadow-panel, rounded-panel, font-display, ease-out, etc.).
+
+   Usage (Tailwind v4 projects with OKLCH color space):
+     @import "tailwindcss";
+     @import "@shavin/ui/global-oklch.css";
+     @import "@shavin/ui/theme-v4-oklch.css";
+
+   The `inline` option inlines var() references directly into generated
+   utilities, so theme switching (light/dark) works automatically at runtime
+   without regenerating CSS.
+
+   OKLCH difference from RGB bridge:
+   - Color tokens use var(--token) directly (no rgb() wrapper) because OKLCH
+     values are already valid CSS colors.
+   - Opacity is handled by color-mix() in global-oklch.css, not by the bridge.
+   ========================================================================= */
+
+@theme inline {
+  /* ── Colors → bg-*, text-*, border-* utilities ─────────────────────────── */
+  --color-canvas:              var(--bg-canvas);
+  --color-surface:             var(--bg-surface);
+  --color-surface-hover:       var(--bg-surface-hover);
+  --color-elevated:            var(--bg-elevated);
+  --color-hairline:            var(--hairline);
+  --color-hairline-strong:     var(--hairline-strong);
+  --color-fg:                  var(--fg);
+  --color-fg-muted:            var(--fg-muted);
+  --color-fg-subtle:           var(--fg-subtle);
+  --color-accent:              var(--accent);
+  --color-accent-hover:        var(--accent-hover);
+  --color-accent-fg:           var(--accent-fg);
+  --color-accent-contrast:     var(--accent-contrast);
+  --color-accent-text:         var(--accent-text);
+  --color-accent-subtle:       color-mix(in oklch, var(--accent) 12%, transparent);
+  --color-accent-subtle-hover: color-mix(in oklch, var(--accent) 18%, transparent);
+  --color-success:             var(--success);
+  --color-success-fg:          var(--success-fg);
+  --color-warning:             var(--warning);
+  --color-warning-fg:          var(--warning-fg);
+  --color-danger:              var(--danger);
+  --color-danger-fg:           var(--danger-fg);
+  --color-link:                var(--link);
+  --color-tooltip:             var(--bg-tooltip);
+  --color-tooltip-fg:          var(--fg-tooltip);
+
+  /* ── Code syntax tokens ─────────────────────────────────────────────────── */
+  --color-code-keyword:        var(--code-keyword);
+  --color-code-string:         var(--code-string);
+  --color-code-num:            var(--code-number);
+  --color-code-fn:             var(--code-function);
+  --color-code-comment:        var(--code-comment);
+  --color-code-punct:          var(--code-punctuation);
+  --color-code-prop:           var(--code-property);
+  --color-code-op:             var(--code-operator);
+  --color-code-type:           var(--code-type);
+  --color-code-tag:            var(--code-tag);
+  --color-code-attr:           var(--code-attr);
+
+  /* ── Fonts → font-display, font-sans ─────────────────────────────────────── */
+  --font-display:              var(--font-display), "Space Grotesk", sans-serif;
+  --font-subheading:           var(--font-subheading, var(--font-body)), ui-sans-serif, system-ui, sans-serif;
+  --font-sans:                 var(--font-body), ui-sans-serif, system-ui, sans-serif;
+
+  /* ── Radius → rounded-panel, rounded-panel-p5, etc. ─────────────────────── */
+  /* R_inner = max(floor, R_outer − P), floor = min(radius-lg, radius-panel / 2) — same as the v3 preset. */
+  --radius-panel-p1:           max(min(var(--radius-lg), calc(var(--radius-panel) / 2)), calc(var(--radius-panel) - 0.25rem));
+  --radius-panel-p2:           max(min(var(--radius-lg), calc(var(--radius-panel) / 2)), calc(var(--radius-panel) - 0.5rem));
+  --radius-panel-p3:           max(min(var(--radius-lg), calc(var(--radius-panel) / 2)), calc(var(--radius-panel) - 0.75rem));
+  --radius-panel-p4:           max(min(var(--radius-lg), calc(var(--radius-panel) / 2)), calc(var(--radius-panel) - 1rem));
+  --radius-panel-p5:           max(min(var(--radius-lg), calc(var(--radius-panel) / 2)), calc(var(--radius-panel) - 1.25rem));
+  --radius-panel-p6:           max(min(var(--radius-lg), calc(var(--radius-panel) / 2)), calc(var(--radius-panel) - 1.5rem));
+  --radius-panel-p8:           max(min(var(--radius-lg), calc(var(--radius-panel) / 2)), calc(var(--radius-panel) - 2rem));
+
+  /* ── Shadows → shadow-card, shadow-panel, shadow-modal, shadow-1..6 ── */
+
+  /* ── Easings → ease-out, ease-in-out, ease-drawer ─────────────────────── */
+
+
+  /* ── Max width → max-w-8xl (88rem) ────────────────────────────────────── */
+  --container-8xl:             88rem;
+}
+
+/* ── Dark mode: class-based, like the v3 preset's `darkMode: "class"` ───
+   ThemeProvider toggles `.dark` on <html>; without this, v4's `dark:`
+   variant would follow the OS preference instead of the active theme. */
+/* Shadows and easings are @utility (not @theme): an @theme entry named
+   after its own source variable (`--shadow-panel: var(--shadow-panel)`) is
+   emitted on :root as a cyclic var and wipes the real value, so every
+   shadow-* / ease-* utility silently resolved to nothing. */
+@utility shadow-card { --tw-shadow: var(--shadow-card); box-shadow: var(--tw-inset-shadow, 0 0 #0000), var(--tw-inset-ring-shadow, 0 0 #0000), var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow); }
+@utility shadow-panel { --tw-shadow: var(--shadow-panel); box-shadow: var(--tw-inset-shadow, 0 0 #0000), var(--tw-inset-ring-shadow, 0 0 #0000), var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow); }
+@utility shadow-modal { --tw-shadow: var(--shadow-modal); box-shadow: var(--tw-inset-shadow, 0 0 #0000), var(--tw-inset-ring-shadow, 0 0 #0000), var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow); }
+@utility shadow-1 { --tw-shadow: var(--shadow-1); box-shadow: var(--tw-inset-shadow, 0 0 #0000), var(--tw-inset-ring-shadow, 0 0 #0000), var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow); }
+@utility shadow-2 { --tw-shadow: var(--shadow-2); box-shadow: var(--tw-inset-shadow, 0 0 #0000), var(--tw-inset-ring-shadow, 0 0 #0000), var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow); }
+@utility shadow-3 { --tw-shadow: var(--shadow-3); box-shadow: var(--tw-inset-shadow, 0 0 #0000), var(--tw-inset-ring-shadow, 0 0 #0000), var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow); }
+@utility shadow-4 { --tw-shadow: var(--shadow-4); box-shadow: var(--tw-inset-shadow, 0 0 #0000), var(--tw-inset-ring-shadow, 0 0 #0000), var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow); }
+@utility shadow-5 { --tw-shadow: var(--shadow-5); box-shadow: var(--tw-inset-shadow, 0 0 #0000), var(--tw-inset-ring-shadow, 0 0 #0000), var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow); }
+@utility shadow-6 { --tw-shadow: var(--shadow-6); box-shadow: var(--tw-inset-shadow, 0 0 #0000), var(--tw-inset-ring-shadow, 0 0 #0000), var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow); }
+/* rounded-panel / rounded-panel-inner are @utility too, for the same reason
+   (`--radius-panel: var(--radius-panel)` in @theme is a self-reference). The
+   -p1…-p8 steps stay in @theme: they have different names from their source. */
+@utility rounded-panel { border-radius: var(--radius-panel); }
+@utility rounded-panel-inner { border-radius: var(--radius-panel-inner); }
+@utility ease-out { transition-timing-function: var(--ease-out); }
+@utility ease-in-out { transition-timing-function: var(--ease-in-out); }
+@utility ease-drawer { transition-timing-function: var(--ease-drawer); }
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ── Durations → duration-instant … duration-enter ──────────────────────
+   v4 has no `--duration-*` theme namespace, so these are explicit
+   utilities. All collapse to 0ms under prefers-reduced-motion (global CSS). */
+@utility duration-instant { transition-duration: var(--dur-instant); }
+@utility duration-fast    { transition-duration: var(--dur-fast); }
+@utility duration-base    { transition-duration: var(--dur-base); }
+@utility duration-slow    { transition-duration: var(--dur-slow); }
+@utility duration-enter   { transition-duration: var(--dur-enter); }

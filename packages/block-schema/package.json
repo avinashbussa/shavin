@@ -1,0 +1,61 @@
+{
+  "name": "@shavin/block-schema",
+  "version": "0.1.0",
+  "description": "Block types, schemas and the open block catalogue for @shavin/ui",
+  "license": "MIT",
+  "author": "Avinash Bussa <avinashbussa1@gmail.com>",
+  "homepage": "https://docs.shavin.cc/blocks",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/avinashbussa/shavin.git",
+    "directory": "packages/block-schema"
+  },
+  "bugs": {
+    "url": "https://github.com/avinashbussa/shavin/issues"
+  },
+  "keywords": [
+    "design-system",
+    "ui-blocks",
+    "schema",
+    "zod",
+    "react",
+    "shavin"
+  ],
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "node build.mjs",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./hex-policy": {
+      "types": "./hex-policy.d.mts",
+      "import": "./hex-policy.mjs",
+      "default": "./hex-policy.mjs"
+    }
+  },
+  "dependencies": {
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "tsx": "^4.23.13",
+    "tsup": "^8.5.1",
+    "typescript": "^5.7.0"
+  },
+  "files": [
+    "dist",
+    "hex-policy.mjs",
+    "hex-policy.d.mts",
+    "README.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}

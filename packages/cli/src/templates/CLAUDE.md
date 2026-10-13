@@ -1,0 +1,61 @@
+# Claude instructions: build UI through the Shavin MCP
+
+This project uses `@shavin/ui`. Full rules live in `AGENTS.md` and `SHAVIN.md`; this file says how to work. The Shavin MCP server (`.mcp.json`) is the source of truth for components, tokens, layouts and checks. Use it for every UI task: awwwards-level marketing sites, landing pages, editorial pages, docs, SaaS apps, dashboards, forms, and single components. If the MCP is not connected, say so, then read `.agents/skills/` directly (see "No MCP" below).
+
+## Always, before any UI code
+
+1. `inspect_environment` once per session. It must report 100%; fix the setup before building.
+2. `get_project_context` (or read `SHAVIN.md`). Take the site type, visual mode, accent, density and radius from it. Do not invent a style.
+3. `get_skill({ name: "core-rules" })` is injected on every `get_skill` call. Read it once and obey it.
+4. `get_components({ name })` for every primitive you use. Never write props or markup from memory. `get_tokens()` for colours, spacing, radius and type.
+
+## Pick the workflow by task
+
+| Task | Workflow |
+|---|---|
+| Marketing site, landing page, pricing, portfolio, editorial page, awwwards-level site | `plan_page({ brief })`, then build per section, then `check_page` |
+| SaaS app, dashboard, admin, console, settings, data tables | `get_skill({ name: "shavin-app" })`, `get_components` for `AppFrame`, `Sidebar`, tables and forms, high-density mode |
+| Single component, block or screen | `get_block_template({ key })` first; `get_components` for the primitives |
+| Cinematic, scroll-driven, pinned or scrubbed motion | Finish the static page first, then `get_skill({ name: "layout-choreography" })` |
+| Review or fix existing UI | `audit_source`, `autofix_code`, then `get_skill({ name: "visual-compositor" })` (load its anti-patterns file) |
+
+## Pages (marketing, editorial, awwwards-level)
+
+1. **Frame the brief.** Subject, audience, the page's one job, real content on hand (copy, numbers, quotes, visuals). Mark anything missing as a placeholder. Never invent proof, logos, testimonials or metrics.
+2. **Plan before code.** `plan_page({ brief })`. Fill the plan: composition ID, treatment, motion tier and a reason per section; at least two variation knobs changed from the recipe; one named bold moment. Save to `.shavin/plans/<page>.json` and run `check_page({ plan })` until it passes. Generic 3-column card grids are the failure mode; pick compositions from `layout-compositions`.
+3. **Build per section.** `get_skill({ name: "layout-compositions", section: "<family>" })` for each family used. Every section is `<Section data-composition="<ID>">` (`"none"` for utility screens such as auth and 404). Honour each composition's Contract, Grid and Watch lines.
+4. **Craft.** Load `shavin-webpage` (architecture, editorial craft, style recipes) and the `visual-compositor` always-loaded files for typography, spacing and polish. Write real copy; no "Revolutionize your workflow".
+5. **Motion.** Tier 0 (static) for utility and docs pages; Tier 1 from `layout-motion` where it helps. For premium, award-level or brand-led briefs, plan one signature Tier 2 scene (`layout-choreography`, on a `choreography-ok` composition such as F6) plus at most two supporting scenes, with reduced-motion fallbacks and a performance budget. A page like that with no signature moment reads as generic.
+6. **Verify.** See the checklist below.
+
+## Apps (SaaS, dashboards, tools)
+
+1. Read `shavin-app` and set density (high-density for data-heavy screens). Build the shell first (`AppFrame`, `Sidebar`, header), then screens.
+2. Design all states, not just the happy path: loading, empty, error, permission-denied, long text, many rows. Use real component states, not decorative badges.
+3. Forms and tables: use the primitives from `get_components`; inputs are at least 16px on mobile; keyboard and focus behaviour comes from Radix, do not rebuild it.
+4. Verify as below.
+
+## Hard rules (the MCP enforces these; do not work around them)
+
+- Semantic tokens only: `bg-surface`, `text-fg`, `text-fg-subtle`, `border-hairline`. No hex, no `rgb()`, no `--n-*`, no raw Tailwind palette colours.
+- Controls use `--radius-lg`, containers use `--radius-panel`, nested radius follows the concentric formula. `data-panel` on floating surfaces.
+- Import from the `@shavin/ui` root. Build variants with `cva()` and `cn()`. Icons are `<Icon>`, never emoji or ad-hoc SVG sets.
+- Card children go in `<Flex direction="column" gap="3">`. Title is `text-fg`, description is `text-fg-subtle`.
+- No AI slop (AP-01 to AP-13): no glow balls, no badge soup, no paragraph walls, no metric clutter, no vacuous copy.
+- Responsive by container first: `AppFrame` + `SidebarTrigger` for app shells, `Grid columns="auto"` for card grids, fluid `Heading` sizes, `shavin-frame-compact-only` / `-wide-only` inside a frame. Use `@tablet` / `@mobile` overrides only for what still needs a breakpoint. Check 375px, 768px and desktop.
+
+## Before you say it is done
+
+1. `validate_code` on every changed file. Fix every error; justify any warning.
+2. `audit_source` on the changed paths, then `autofix_code` for what it can fix.
+3. `check_page({ targetDir: "." })` for pages.
+4. `npm run typecheck` and `npm run build`.
+5. **Visual review (required).** Run the dev server, open the page in a real browser, screenshot at 375, 768 and 1280 wide while scrolling for real, and score it with `layout-compositions/references/visual-review.md`: focal point, hierarchy, depth, the bold moment, dead space, rhythm, motion, copy, mobile. Measure text contrast (4.5:1 minimum) instead of judging by eye. Fix, re-check, up to three rounds. Passing the gates above is not a visual review; if no browser is available, say the page was not visually reviewed.
+6. If the Shavin bridge is running, `get_live_audit` and `wait_for_live_clean`. Report what you checked and what you could not.
+
+## No MCP
+
+Read `.agents/skills/core-rules.md`, then the skill files the task needs (see the activation matrix in `AGENTS.md`), look up primitives in `node_modules/@shavin/ui` and `components.json`, and run `npx shavin-lint-tokens` plus `npm run lint` after. Tell the user the MCP was unavailable.
+
+## Server Components
+`@shavin/ui` is a "use client" bundle: components work anywhere, but helpers like `cn`, `get*Url` and `surfaceClass` throw when called from a Server Component. In files without `"use client"`, import them from `@shavin/ui/server`.

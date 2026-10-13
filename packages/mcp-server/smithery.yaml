@@ -1,0 +1,9 @@
+# Smithery Configuration for @shavin/mcp
+# https://smithery.ai/docs/config
+
+name: "@shavin/mcp"
+description: "Model Context Protocol server for @shavin/ui design system, token verification, and component specs."
+command: "npx"
+args:
+  - "-y"
+  - "@shavin/mcp"

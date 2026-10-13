@@ -1,0 +1,76 @@
+{
+  "name": "shavin",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Shavin — an AI-agent-native React design system: UI primitives, CLI, MCP server and agent skills.",
+  "license": "MIT",
+  "author": "Avinash Bussa <avinashbussa1@gmail.com>",
+  "homepage": "https://shavin.cc",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/avinashbussa/shavin.git"
+  },
+  "bugs": {
+    "url": "https://github.com/avinashbussa/shavin/issues"
+  },
+  "type": "module",
+  "workspaces": [
+    "packages/*",
+    "playground"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "bin": {
+    "shavin": "packages/cli/bin/shavin.mjs",
+    "shavin-mcp": "packages/mcp-server/bin/shavin-mcp.mjs"
+  },
+  "scripts": {
+    "build": "npm run build -w @shavin/ui -w @shavin/block-schema && npm run build -w @shavin/mcp",
+    "build:ui": "npm run build -w @shavin/ui",
+    "build:block-schema": "npm run build -w @shavin/block-schema",
+    "build:mcp": "npm run build -w @shavin/mcp",
+    "build:skills": "npm run build -w @shavin/skills",
+    "typecheck": "npm run typecheck -w @shavin/ui -w @shavin/block-schema -w @shavin/playground",
+    "lint": "node scripts/lint-tokens.mjs && node scripts/lint-classes.mjs",
+    "skills:check": "npm run build -w @shavin/skills && npm run check -w @shavin/skills",
+    "regen": "node scripts/regen.mjs",
+    "skills:build": "npm run build -w @shavin/skills",
+    "agents:gen": "node scripts/gen-agents.mjs",
+    "agents:check": "node scripts/gen-agents.mjs --check",
+    "private-refs:check": "node scripts/check-private-refs.mjs",
+    "docs:check": "node scripts/check-docs-scripts.mjs",
+    "manifest:gen": "node scripts/gen-manifest.mjs",
+    "manifest:check": "node scripts/gen-manifest.mjs --check",
+    "tokens:gen": "node scripts/gen-tokens.mjs && node scripts/gen-oklch.mjs",
+    "tokens:check": "node scripts/gen-tokens.mjs --check && node scripts/gen-oklch.mjs --check",
+    "ledger": "node scripts/score-ledger.mjs",
+    "ledger:check": "node scripts/score-ledger.mjs --check",
+    "verify": "npm run build && npm run typecheck && npm run lint && npm run tokens:check && npm run skills:check && npm run agents:check && npm run private-refs:check && npm run docs:check && npm run manifest:check && npm run ledger:check",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "eval": "node evals/src/runner.mjs --autofix && node evals/benchmarks/synthesis.mjs",
+    "smoke": "node scripts/smoke-packages.mjs",
+    "pack": "node scripts/pack-public.mjs",
+    "test:e2e": "node scripts/verdaccio-e2e.mjs",
+    "mcp": "node packages/mcp-server/bin/shavin-mcp.mjs",
+    "playground": "npm run dev -w @shavin/playground"
+  },
+  "devDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "@modelcontextprotocol/sdk": "^1.31.0",
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/jest-axe": "^3.5.9",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^4.7.0",
+    "jest-axe": "^10.0.0",
+    "jsdom": "^26.1.0",
+    "typescript": "^5.7.0",
+    "vitest": "^3.2.7"
+  }
+}

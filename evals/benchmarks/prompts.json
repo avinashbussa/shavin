@@ -1,0 +1,146 @@
+{
+  "version": "1.0.0",
+  "system": "@shavin/ui",
+  "prompts": [
+    {
+      "id": "prompt-1",
+      "category": "feature-with-constraint",
+      "complexity": "simple",
+      "prompt": "Build a shipping method selector card with three options: Standard (free, 5-7 days), Express ($9.99, 2-3 days), and Overnight ($19.99, next day) using radio selection.",
+      "expectedComponents": ["RadioGroup", "Card", "Badge", "Text"]
+    },
+    {
+      "id": "prompt-2",
+      "category": "feature-with-constraint",
+      "complexity": "moderate",
+      "prompt": "Create a user profile editing modal dialog with avatar upload preview, display name input, email address input, and Save/Cancel buttons.",
+      "expectedComponents": ["Dialog", "Avatar", "TextField", "Button"]
+    },
+    {
+      "id": "prompt-3",
+      "category": "workflow-description",
+      "complexity": "moderate",
+      "prompt": "Build a 3-step checkout wizard with a top progress stepper (Cart -> Shipping -> Payment), step action buttons, and order summary card.",
+      "expectedComponents": ["Stepper", "Card", "Button", "Progress"]
+    },
+    {
+      "id": "prompt-4",
+      "category": "state-display",
+      "complexity": "simple",
+      "prompt": "Render a server status banner callout with an amber warning tone, displaying 'Maintenance scheduled for 02:00 UTC', an action link, and a dismiss icon button.",
+      "expectedComponents": ["Callout", "IconButton", "Text"]
+    },
+    {
+      "id": "prompt-5",
+      "category": "data-display",
+      "complexity": "moderate",
+      "prompt": "Create an analytics KPI grid displaying three stat cards: Monthly Revenue ($48,200, +12%), Active Users (3,420, +5%), and Conversion Rate (4.2%, -0.8%).",
+      "expectedComponents": ["Grid", "Card", "Badge", "Text"]
+    },
+    {
+      "id": "prompt-6",
+      "category": "clone-with-modification",
+      "complexity": "complex",
+      "prompt": "Build a SaaS settings panel layout with a left sidebar navigation rail, a top bar header with search spotlight trigger, and a main content area containing a security configuration card.",
+      "expectedComponents": ["AppFrame", "Sidebar", "Spotlight", "Card", "Button"]
+    },
+    {
+      "id": "prompt-7",
+      "category": "feature-with-constraint",
+      "complexity": "simple",
+      "prompt": "Create a search filter bar with a text input field, a category dropdown select, an in-stock toggle switch, and a Reset filters button.",
+      "expectedComponents": ["TextField", "Select", "Switch", "Button", "Row"]
+    },
+    {
+      "id": "prompt-8",
+      "category": "state-display",
+      "complexity": "simple",
+      "prompt": "Create a skeleton loading card grid showing 3 animated placeholder cards with avatar circles and text line skeletons.",
+      "expectedComponents": ["Grid", "Card", "Skeleton", "Avatar"]
+    },
+    {
+      "id": "prompt-9",
+      "category": "data-display",
+      "complexity": "complex",
+      "prompt": "Build a customer data table with sortable columns (Name, Role, Status, Last Active), row selection checkboxes, pagination controls, and status badges.",
+      "expectedComponents": ["Table", "Checkbox", "Badge", "Pagination"]
+    },
+    {
+      "id": "prompt-10",
+      "category": "responsive-challenge",
+      "complexity": "moderate",
+      "prompt": "Build a responsive product pricing table with 3 plans (Starter $0, Pro $29/mo, Enterprise Custom), highlighting the Pro plan with an accent badge and CTA button.",
+      "expectedComponents": ["Grid", "Card", "Badge", "Button"]
+    },
+    {
+      "id": "prompt-11",
+      "category": "feature-with-constraint",
+      "complexity": "simple",
+      "prompt": "Create a context menu popup triggered on right-click over a data row offering Edit, Duplicate, Share, and Delete options.",
+      "expectedComponents": ["ContextMenu", "Row"]
+    },
+    {
+      "id": "prompt-12",
+      "category": "workflow-description",
+      "complexity": "complex",
+      "prompt": "Build an AI chat window with a sidebar conversation list, message bubbles (user vs assistant), typing indicator spinner, and an auto-expanding text area input with send button.",
+      "expectedComponents": ["Sidebar", "ChatBubble", "Spinner", "TextArea", "IconButton"]
+    },
+    {
+      "id": "prompt-13",
+      "category": "state-display",
+      "complexity": "moderate",
+      "prompt": "Create a file upload drag-and-drop zone card displaying upload progress bar (72%), file name, file size, and cancel upload icon button.",
+      "expectedComponents": ["Card", "Progress", "IconButton", "Text"]
+    },
+    {
+      "id": "prompt-14",
+      "category": "feature-with-constraint",
+      "complexity": "moderate",
+      "prompt": "Create an interactive notification popover menu with unread count badge, list of 3 recent alert items with timestamps, and a 'Mark all as read' button.",
+      "expectedComponents": ["Popover", "Badge", "List", "Button"]
+    },
+    {
+      "id": "prompt-15",
+      "category": "clone-with-modification",
+      "complexity": "simple",
+      "prompt": "Build a confirmation alert dialog for deleting an API key, featuring a danger tone title, warning message text, and 'Cancel' / 'Delete Key' buttons.",
+      "expectedComponents": ["AlertDialog", "Button"]
+    },
+    {
+      "id": "prompt-16",
+      "category": "theme-customization",
+      "complexity": "moderate",
+      "prompt": "Mount a ThemeProvider with dark mode enabled, grass accent color, and large panel radius, rendering a sample dashboard preview card.",
+      "expectedComponents": ["ThemeProvider", "Card", "Button", "Badge"]
+    },
+    {
+      "id": "prompt-17",
+      "category": "data-display",
+      "complexity": "simple",
+      "prompt": "Build a key-value data list showing user account metadata: Account ID, Created Date, Billing Cycle, and Subscription Tier.",
+      "expectedComponents": ["DataList", "Text"]
+    },
+    {
+      "id": "prompt-18",
+      "category": "responsive-challenge",
+      "complexity": "moderate",
+      "prompt": "Build a tabbed interface containing three tab panels (General, Notifications, Security) with active indicator highlighting and smooth content switching.",
+      "expectedComponents": ["Tabs", "Card", "Switch", "TextField"]
+    },
+    {
+      "id": "prompt-19",
+      "category": "feature-with-constraint",
+      "complexity": "simple",
+      "prompt": "Create a color picker popover control displaying a preset color swatch grid, hex text input field, and reset button.",
+      "expectedComponents": ["ColorPicker", "Popover", "TextField", "Button"]
+    },
+    {
+      "id": "prompt-20",
+      "category": "workflow-description",
+      "complexity": "complex",
+      "prompt": "Build a team member invite modal form with email input list, role selector dropdown (Admin, Member, Viewer), custom permission toggles, and Send Invites CTA button.",
+      "expectedComponents": ["Dialog", "TextField", "Select", "Switch", "Button"]
+    }
+  ]
+}

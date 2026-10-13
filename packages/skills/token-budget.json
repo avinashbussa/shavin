@@ -1,0 +1,85 @@
+{
+  "description": "Token budget configuration for Shavin skills. build.mjs measures actuals against these limits and now enforces them (see build.mjs warn() calls) instead of only printing them.",
+  "alwaysLoadedBudget": 22000,
+  "perSkillBudget": 12000,
+  "perFileBudget": 6000,
+  "perSkillBudgetOverrides": {
+    "visual-compositor": {
+      "budget": 45000,
+      "reason": "Bundles multiple mutually-exclusive mode variants (STRUCTURAL/MARKETING/EDITORIAL/DOCS spacing, font-pairings, audit-checklist, anti-patterns). No single task loads the whole folder — see 'Activation Modes' in visual-compositor/SKILL.md for the subset actually loaded per mode. Includes docs-mode.md and anti-patterns.md (consolidated AI-slop catalogue, AP-01–AP-11) added in this rebuild."
+    },
+    "shavin-webpage": {
+      "budget": 12000,
+      "reason": "Bundles modular on-demand files (page-architecture.md, editorial-craft.md, style-recipes.md). Layout compositions moved to standalone layout-compositions skill. Loaded modularly on-demand per section."
+    },
+    "layout-compositions": {
+      "budget": 40000,
+      "reason": "52 compositions across 9 family files, plus selection-guide, treatments, foundations, page-recipes, metadata-schema, and shavin-ui adapter. No single task loads all family files — the workflow explicitly says to load only the family files for the IDs you use. SKILL.md itself is lightweight; the weight is in the reference files loaded on-demand."
+    },
+    "layout-motion": {
+      "budget": 6000,
+      "reason": "3 reference files (tokens, presets, composition-motion-map) plus SKILL.md. Small, focused skill — loaded when motion is needed on top of a composition."
+    },
+    "layout-choreography": {
+      "budget": 8000,
+      "reason": "3 reference files (scenes, tech-and-performance, fallbacks-and-accessibility) plus SKILL.md. Loaded only for cinematic/awwwards-tier motion requests."
+    }
+  },
+  "alwaysLoadedFiles": {
+    "core-rules.md": { "always": true, "note": "auto-injected by MCP get_skill on every call; also the No-MCP static fallback baseline — see core-rules.md §13 'No-MCP Fallback'" },
+    "visual-compositor/cognitive-layer.md": { "always": true },
+    "visual-compositor/concentric-laws.md": { "always": true },
+    "visual-compositor/spacing-core.md": { "always": true },
+    "visual-compositor/layout-restraint.md": { "always": true, "note": "was documented as ALWAYS in visual-compositor/SKILL.md body but missing from this config — fixed; see rebuild notes" },
+    "visual-compositor/typography-rules.md": { "always": true, "note": "same fix as above" },
+    "visual-compositor/interface-polish.md": { "always": true, "note": "same fix as above" },
+    "visual-compositor/motion-and-physics.md": { "always": true, "note": "same fix as above" }
+  },
+  "onDemandFiles": {
+    "visual-compositor/spacing-marketing.md": { "modes": ["MARKETING", "EDITORIAL"] },
+    "visual-compositor/spacing-dense.md": { "modes": ["STRUCTURAL", "DOCS"] },
+    "visual-compositor/font-pairings.md": { "trigger": "font decisions" },
+    "visual-compositor/editorial-mode.md": { "modes": ["EDITORIAL", "HYBRID"] },
+    "visual-compositor/docs-mode.md": { "modes": ["DOCS"] },
+    "visual-compositor/audit-checklist.md": { "trigger": "end of layout tasks" },
+    "visual-compositor/anti-patterns.md": { "trigger": "composing or reviewing blocks/screens; when output looks AI-generated" },
+    "visual-compositor/graphics-and-assets.md": { "modes": ["MARKETING", "EDITORIAL", "HYBRID"] },
+    "visual-compositor/page-motion-presets.md": { "modes": ["MARKETING", "EDITORIAL", "HYBRID"], "note": "entrance preset recipes using motion tokens; loaded alongside composition-motion-map" },
+    "visual-compositor/composition-motion-map.md": { "modes": ["MARKETING", "EDITORIAL", "HYBRID"], "note": "which preset per composition + new compositions (ST, H5, F6, C4, E, D, X)" },
+    "visual-compositor/references/EDITORIAL_EXPRESSIVE.md": { "modes": ["EDITORIAL"] },
+    "shavin-webpage/page-architecture.md": { "modes": ["MARKETING", "EDITORIAL"] },
+    "shavin-webpage/editorial-craft.md": { "modes": ["MARKETING", "EDITORIAL"] },
+    "shavin-webpage/style-recipes.md": { "modes": ["MARKETING", "EDITORIAL", "HYBRID"] },
+    "layout-compositions/references/selection-guide.md": { "trigger": "choosing compositions" },
+    "layout-compositions/references/page-recipes.md": { "trigger": "page section sequencing" },
+    "layout-compositions/references/treatments.md": { "trigger": "treatment selection" },
+    "layout-compositions/references/distinctiveness.md": { "trigger": "avoiding generic results" },
+    "layout-compositions/references/foundations.md": { "trigger": "layout foundations" },
+    "layout-compositions/references/visual-review.md": { "trigger": "end of any page task: visual review of the rendered page" },
+    "layout-compositions/references/metadata-schema.md": { "trigger": "adding compositions" },
+    "layout-compositions/references/compositions/structural.md": { "trigger": "structural compositions (ST*)" },
+    "layout-compositions/references/compositions/hero.md": { "trigger": "hero compositions (H*)" },
+    "layout-compositions/references/compositions/features.md": { "trigger": "feature compositions (F*)" },
+    "layout-compositions/references/compositions/proof.md": { "trigger": "proof compositions (P*, S*, T*)" },
+    "layout-compositions/references/compositions/conversion.md": { "trigger": "conversion compositions (C*, Q*)" },
+    "layout-compositions/references/compositions/gallery.md": { "trigger": "gallery compositions (G*)" },
+    "layout-compositions/references/compositions/editorial.md": { "trigger": "editorial compositions (E*)" },
+    "layout-compositions/references/compositions/documentation.md": { "trigger": "documentation compositions (D*)" },
+    "layout-compositions/references/compositions/expressive.md": { "trigger": "expressive compositions (X*)" },
+    "layout-compositions/references/adapters/shavin-ui.md": { "trigger": "@shavin/ui code patterns" },
+    "layout-motion/references/tokens.md": { "trigger": "motion tokens" },
+    "layout-motion/references/presets.md": { "trigger": "tier-1 motion presets" },
+    "layout-motion/references/composition-motion-map.md": { "trigger": "which preset per composition" },
+    "layout-choreography/references/scenes.md": { "trigger": "cinematic scene recipes" },
+    "layout-choreography/references/tech-and-performance.md": { "trigger": "choreography tech and budgets" },
+    "layout-choreography/references/fallbacks-and-accessibility.md": { "trigger": "choreography accessibility" }
+  },
+  "notes": [
+    "alwaysLoadedBudget covers core-rules.md + the 8 files visual-compositor/SKILL.md's own body table marks ALWAYS (measured: ~19K tokens as of this rebuild; 20000 leaves ~1K headroom). Motion-and-physics.md grew with duration/distance/stagger token documentation.",
+    "perSkillBudget is the default max tokens a single skill folder should contribute when fully loaded. Skills that legitimately bundle mutually-exclusive mode variants should add an entry to perSkillBudgetOverrides with a documented reason, rather than being silently over budget or inflating the global default for everyone else.",
+    "perFileBudget flags any single file that's too heavy to load frequently.",
+    "As of this rebuild these are enforced by build.mjs's warn() calls (visible in npm run check), not just printed. Run with --strict to treat them as hard failures.",
+    "DOCS mode was added for documentation-portal projects (e.g. docs.shavin.cc) that don't fit STRUCTURAL, MARKETING, or EDITORIAL well — see visual-compositor/SKILL.md Activation Modes and skills/shavin-core/SKILL.md dispatch section.",
+    "layout-compositions, layout-motion, and layout-choreography are standalone skills extracted from the old shavin-webpage/layout-compositions.md flat file. The 2-tier motion architecture (Tier 1 restrained = layout-motion, Tier 2 cinematic = layout-choreography) is deliberately separate from standard composition guidelines. layout-compositions has a high budget override because it contains 9 family files loaded on-demand — no single task loads all of them."
+  ]
+}

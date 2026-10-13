@@ -1,0 +1,49 @@
+/* =========================================================================
+   Shavin Brand Color Tokens
+
+   This file lets you declare custom brand colors alongside the design
+   system's semantic tokens. Enter ONLY hex values in the INPUT section
+   below — the `shavin-brand-tokens` predev script auto-computes every
+   derived token (fg, hover, contrast, text, subtle backgrounds) using
+   the same WCAG luminance engine that powers --accent, then writes the
+   results to the GENERATED section.
+
+   After the first `npm run dev`, this file stays static in source —
+   zero runtime JavaScript needed. Re-run `npm run brand:gen` whenever
+   you add or change a hex value.
+
+   ── Workflow ────────────────────────────────────────────────────────────
+   1. Add a line like  --brand-coral: #FF6B6B;  in the INPUT section.
+   2. Run `npm run dev` (predev fires `brand:gen` automatically) or
+      `npm run brand:gen` manually.
+   3. Use the tokens via Tailwind utilities: bg-brand-coral,
+      text-brand-coral, border-brand-coral/50, bg-brand-coral-subtle,
+      text-brand-coral-contrast, etc.
+   ========================================================================= */
+
+:root,
+.light {
+
+  /* ─── INPUT ───────────────────────────────────────────────────────────
+     Enter hex values only. Do not delete --brand-primary.
+     --brand-primary always aliases --accent by default so the system
+     works with zero customization. Override with a #hex to set a
+     custom primary that still gets all derived tokens.
+     ──────────────────────────────────────────────────────────────────── */
+  --brand-primary: var(--accent);
+
+  /* ─── GENERATED ───────────────────────────────────────────────────────
+     Do NOT edit — auto-computed by shavin-brand-tokens.
+     ──────────────────────────────────────────────────────────────────── */
+  --brand-primary: var(--accent);
+
+}
+
+.dark {
+
+  /* ─── GENERATED (dark overrides) ──────────────────────────────────────
+     Do NOT edit — auto-computed by shavin-brand-tokens.
+     ──────────────────────────────────────────────────────────────────── */
+  /* (no brand colors defined — add hex values in the INPUT section above) */
+
+}

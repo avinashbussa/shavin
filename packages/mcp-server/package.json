@@ -1,0 +1,61 @@
+{
+  "name": "@shavin/mcp",
+  "version": "0.1.0",
+  "description": "MCP server that grounds coding agents in @shavin/ui components, tokens, layouts and checks",
+  "license": "MIT",
+  "author": "Avinash Bussa <avinashbussa1@gmail.com>",
+  "homepage": "https://docs.shavin.cc/start/mcp",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/avinashbussa/shavin.git",
+    "directory": "packages/mcp-server"
+  },
+  "bugs": {
+    "url": "https://github.com/avinashbussa/shavin/issues"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "ai-agents",
+    "design-system",
+    "claude",
+    "cursor",
+    "linting",
+    "design-tokens",
+    "shavin"
+  ],
+  "type": "module",
+  "main": "./src/index.mjs",
+  "exports": {
+    ".": "./src/index.mjs",
+    "./bridge": "./src/bridge/server.mjs"
+  },
+  "bin": {
+    "shavin-mcp": "./bin/shavin-mcp.mjs"
+  },
+  "scripts": {
+    "build": "node build.mjs",
+    "prepack": "node build.mjs",
+    "start": "node ./bin/shavin-mcp.mjs",
+    "bridge": "node ./bin/shavin-mcp.mjs --bridge",
+    "remote": "node ./bin/shavin-mcp.mjs --remote",
+    "hybrid": "node ./bin/shavin-mcp.mjs --hybrid",
+    "prepublishOnly": "node build.mjs"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.31.0",
+    "@shavin/block-schema": "^0.1.0",
+    "@supabase/supabase-js": "^2.45.0"
+  },
+  "files": [
+    "bin",
+    "src",
+    "assets",
+    "build.mjs",
+    "smithery.yaml",
+    "README.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}

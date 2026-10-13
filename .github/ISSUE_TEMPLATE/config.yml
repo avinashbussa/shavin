@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Documentation
+    url: https://docs.shavin.cc
+    about: Component docs, tokens, and agent guides.
+  - name: Security report
+    url: https://github.com/avinashbussa/shavin/security/advisories/new
+    about: Report a vulnerability privately (do not open a public issue).

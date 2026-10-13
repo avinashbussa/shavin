@@ -1,0 +1,46 @@
+name: Bug report
+description: Something in a Shavin package behaves incorrectly
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for the report. Please search existing issues first.
+  - type: dropdown
+    id: package
+    attributes:
+      label: Package
+      options:
+        - "@shavin/ui"
+        - "@shavin/cli"
+        - "@shavin/mcp"
+        - "@shavin/skills"
+        - "@shavin/block-schema"
+        - not sure
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Package version
+      placeholder: 0.1.0
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What you expected vs what actually happened.
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      description: A minimal repro, a code snippet, or a link to a sandbox.
+    validations:
+      required: true
+  - type: textarea
+    id: env
+    attributes:
+      label: Environment
+      description: Node version, framework (Next.js/Vite), Tailwind v3 or v4, OS.

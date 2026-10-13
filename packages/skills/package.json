@@ -1,0 +1,54 @@
+{
+  "name": "@shavin/skills",
+  "version": "0.1.0",
+  "description": "Agent skills and slash commands for @shavin/ui, installed into a project's .agents/ folder",
+  "license": "MIT",
+  "author": "Avinash Bussa <avinashbussa1@gmail.com>",
+  "homepage": "https://docs.shavin.cc/start/working-with-ai",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/avinashbussa/shavin.git",
+    "directory": "packages/skills"
+  },
+  "bugs": {
+    "url": "https://github.com/avinashbussa/shavin/issues"
+  },
+  "keywords": [
+    "ai-agents",
+    "agent-skills",
+    "design-system",
+    "claude-code",
+    "cursor",
+    "prompting",
+    "ui-design",
+    "shavin"
+  ],
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "bin": {
+    "skills": "./bin/install.mjs",
+    "shavin-skills": "./bin/install.mjs",
+    "shavin-lint-tokens": "./bin/lint-tokens.mjs"
+  },
+  "files": [
+    "AGENTS.md",
+    "bin",
+    "skills",
+    "commands",
+    "build.mjs",
+    "token-budget.json",
+    "README.md"
+  ],
+  "scripts": {
+    "install-skills": "node bin/install.mjs",
+    "build": "node build.mjs",
+    "check": "node build.mjs --dry-run --strict",
+    "tokens": "node build.mjs --tokens",
+    "lint": "node bin/lint-tokens.mjs"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

@@ -1,0 +1,711 @@
+{
+  "Shavin Button": {
+    "prefix": "s-button",
+    "body": [
+      "<Button variant=\"${1|solid,soft,outline,ghost|}\" tone=\"${2|accent,danger|}\" size=\"${3|md,sm,lg|}\">${4:Button Label}</Button>"
+    ],
+    "description": "Render a @shavin/ui Button primitive"
+  },
+  "Shavin IconButton": {
+    "prefix": "s-iconbutton",
+    "body": [
+      "<IconButton variant=\"${1|ghost,soft,solid,outline|}\" size=\"${2|md,sm,lg|}\" aria-label=\"${3:Action label}\">",
+      "  <Icon name=\"${4:sparkles}\" size=\"sm\" />",
+      "</IconButton>"
+    ],
+    "description": "Render a @shavin/ui IconButton primitive"
+  },
+  "Shavin ActionBar": {
+    "prefix": "s-actionbar",
+    "body": [
+      "<ActionBar",
+      "  groups={[{ key: \"actions\", label: \"Actions\", items: [{ value: \"edit\", label: \"Edit\" }, { value: \"delete\", label: \"Delete\" }] }]}",
+      "  onSelect={(${1:val}) => ${2:console.log(val)}}",
+      "/>"
+    ],
+    "description": "Render a floating @shavin/ui ActionBar"
+  },
+  "Shavin Card": {
+    "prefix": "s-card",
+    "body": [
+      "<Card className=\"p-${1:6}\">",
+      "  <Heading as=\"h3\" size=\"md\">${2:Card Title}</Heading>",
+      "  <Text color=\"subtle\" size=\"sm\" className=\"mt-1\">${3:Description with subtle contrast}</Text>",
+      "  ${0}",
+      "</Card>"
+    ],
+    "description": "Render a @shavin/ui Card with panel radius"
+  },
+  "Shavin StatCard": {
+    "prefix": "s-statcard",
+    "body": [
+      "<StatCard",
+      "  title=\"${1:Monthly Active Users}\"",
+      "  value=\"${2:24,580}\"",
+      "  trend=\"${3:+12.4%}\"",
+      "  trendTone=\"${4|success,warning,danger|}\"",
+      "/>"
+    ],
+    "description": "Render a @shavin/ui KPI StatCard"
+  },
+  "Shavin TextField": {
+    "prefix": "s-textfield",
+    "body": [
+      "<TextField label=\"${1:Email Address}\" placeholder=\"${2:user@domain.com}\" size=\"${3|md,sm,lg|}\" value={${4:value}} onChange={${5:setValue}} />"
+    ],
+    "description": "Render a @shavin/ui TextField input primitive"
+  },
+  "Shavin TextArea": {
+    "prefix": "s-textarea",
+    "body": [
+      "<TextArea label=\"${1:Description}\" placeholder=\"${2:Enter detailed notes…}\" rows={${3:4}} value={${4:value}} onChange={${5:setValue}} />"
+    ],
+    "description": "Render a @shavin/ui TextArea primitive"
+  },
+  "Shavin Checkbox": {
+    "prefix": "s-checkbox",
+    "body": [
+      "<div className=\"flex items-center gap-2\">",
+      "  <Checkbox id=\"${1:terms}\" checked={${2:checked}} onCheckedChange={${3:setChecked}} />",
+      "  <label htmlFor=\"${1:terms}\" className=\"text-sm text-fg\">${4:Accept terms and conditions}</label>",
+      "</div>"
+    ],
+    "description": "Render a @shavin/ui Checkbox primitive"
+  },
+  "Shavin CheckboxGroup": {
+    "prefix": "s-checkboxgroup",
+    "body": [
+      "<CheckboxGroup label=\"${1:Select notifications}\">",
+      "  <CheckboxGroupItem value=\"email\" label=\"Email Notifications\" />",
+      "  <CheckboxGroupItem value=\"push\" label=\"Push Notifications\" />",
+      "</CheckboxGroup>"
+    ],
+    "description": "Render a @shavin/ui CheckboxGroup"
+  },
+  "Shavin CheckboxCards": {
+    "prefix": "s-checkboxcards",
+    "body": [
+      "<CheckboxCards>",
+      "  <CheckboxCardsItem value=\"pro\" title=\"Pro Plan\" description=\"Full access to enterprise tools\" />",
+      "  <CheckboxCardsItem value=\"enterprise\" title=\"Enterprise\" description=\"Dedicated support & SLA\" />",
+      "</CheckboxCards>"
+    ],
+    "description": "Render a @shavin/ui CheckboxCards selectable grid"
+  },
+  "Shavin RadioGroup": {
+    "prefix": "s-radiogroup",
+    "body": [
+      "<RadioGroup value={${1:value}} onValueChange={${2:setValue}}>",
+      "  <div className=\"flex items-center gap-2\">",
+      "    <Radio value=\"${3:option1}\" id=\"${3:option1}\" />",
+      "    <label htmlFor=\"${3:option1}\" className=\"text-sm text-fg\">${4:Option 1}</label>",
+      "  </div>",
+      "  <div className=\"flex items-center gap-2\">",
+      "    <Radio value=\"${5:option2}\" id=\"${5:option2}\" />",
+      "    <label htmlFor=\"${5:option2}\" className=\"text-sm text-fg\">${6:Option 2}</label>",
+      "  </div>",
+      "</RadioGroup>"
+    ],
+    "description": "Render a @shavin/ui RadioGroup"
+  },
+  "Shavin Switch": {
+    "prefix": "s-switch",
+    "body": [
+      "<div className=\"flex items-center justify-between\">",
+      "  <label htmlFor=\"${1:toggle}\" className=\"text-sm font-medium text-fg\">${2:Enable Feature}</label>",
+      "  <Switch id=\"${1:toggle}\" checked={${3:enabled}} onCheckedChange={${4:setEnabled}} />",
+      "</div>"
+    ],
+    "description": "Render a @shavin/ui Switch toggle"
+  },
+  "Shavin Select": {
+    "prefix": "s-select",
+    "body": [
+      "<Select",
+      "  value={${1:value}}",
+      "  onValueChange={${2:setValue}}",
+      "  placeholder=\"${3:Select an option…}\"",
+      "  options={[",
+      "    { value: \"${4:option1}\", label: \"${5:Option 1}\" },",
+      "    { value: \"${6:option2}\", label: \"${7:Option 2}\" }",
+      "  ]}",
+      "/>"
+    ],
+    "description": "Render a @shavin/ui Select dropdown (Radix-backed)"
+  },
+  "Shavin Dropdown": {
+    "prefix": "s-dropdown",
+    "body": [
+      "<Dropdown",
+      "  value={${1:value}}",
+      "  onChange={(${2:e}) => ${3:setValue(e.target.value)}}",
+      "  options={[",
+      "    { value: \"${4:all}\", label: \"${5:All Items}\" },",
+      "    { value: \"${6:active}\", label: \"${7:Active}\" }",
+      "  ]}",
+      "/>"
+    ],
+    "description": "Render a native @shavin/ui Dropdown"
+  },
+  "Shavin Combobox": {
+    "prefix": "s-combobox",
+    "body": [
+      "<Combobox",
+      "  placeholder=\"${1:Search items…}\"",
+      "  items={[",
+      "    { value: \"${2:react}\", label: \"${3:React}\" },",
+      "    { value: \"${4:nextjs}\", label: \"${5:Next.js}\" }",
+      "  ]}",
+      "  value={${6:selected}}",
+      "  onValueChange={${7:setSelected}}",
+      "/>"
+    ],
+    "description": "Render an autocomplete @shavin/ui Combobox"
+  },
+  "Shavin Slider": {
+    "prefix": "s-slider",
+    "body": [
+      "<Slider",
+      "  value={${1:sliderVal}}",
+      "  onValueChange={${2:setSliderVal}}",
+      "  min={${3:0}}",
+      "  max={${4:100}}",
+      "  step={${5:1}}",
+      "/>"
+    ],
+    "description": "Render a @shavin/ui numeric Slider"
+  },
+  "Shavin SegmentedControl": {
+    "prefix": "s-segmentedcontrol",
+    "body": [
+      "<SegmentedControl value={${1:view}} onValueChange={${2:setView}} size=\"${3|md,sm,lg|}\">",
+      "  <SegmentedControlItem value=\"${4:monthly}\">${5:Monthly}</SegmentedControlItem>",
+      "  <SegmentedControlItem value=\"${6:annual}\">${7:Annual}</SegmentedControlItem>",
+      "</SegmentedControl>"
+    ],
+    "description": "Render a @shavin/ui SegmentedControl pill toggle"
+  },
+  "Shavin Stepper": {
+    "prefix": "s-stepper",
+    "body": [
+      "<Stepper",
+      "  activeStep={${1:currentStep}}",
+      "  steps={[",
+      "    { title: \"${2:Step 1}\", description: \"${3:Account Setup}\" },",
+      "    { title: \"${4:Step 2}\", description: \"${5:Payment Info}\" },",
+      "    { title: \"${6:Step 3}\", description: \"${7:Confirmation}\" }",
+      "  ]}",
+      "/>"
+    ],
+    "description": "Render a @shavin/ui multi-step wizard Stepper"
+  },
+  "Shavin ColorPicker": {
+    "prefix": "s-colorpicker",
+    "body": [
+      "<ColorPicker value={${1:color}} onChange={${2:setColor}} />"
+    ],
+    "description": "Render a @shavin/ui ColorPicker swatch grid"
+  },
+  "Shavin DatePicker": {
+    "prefix": "s-datepicker",
+    "body": [
+      "<DatePicker date={${1:date}} onSelect={${2:setDate}} placeholder=\"${3:Pick a date}\" />"
+    ],
+    "description": "Render a @shavin/ui DatePicker calendar popover"
+  },
+  "Shavin TimePicker": {
+    "prefix": "s-timepicker",
+    "body": [
+      "<TimePicker value={${1:time}} onChange={${2:setTime}} format=\"${3|12h,24h|}\" />"
+    ],
+    "description": "Render a @shavin/ui TimePicker dial or input"
+  },
+  "Shavin IconPicker": {
+    "prefix": "s-iconpicker",
+    "body": [
+      "<IconPicker value={${1:iconName}} onSelect={${2:setIconName}} />"
+    ],
+    "description": "Render a @shavin/ui Lucide IconPicker catalog"
+  },
+  "Shavin Icon": {
+    "prefix": "s-icon",
+    "body": [
+      "<Icon name=\"${1:sparkles}\" size=\"${2|md,sm,xs,lg,xl|}\" color=\"${3|fg,subtle,muted,accent|}\" />"
+    ],
+    "description": "Render a @shavin/ui Icon primitive"
+  },
+  "Shavin Badge": {
+    "prefix": "s-badge",
+    "body": [
+      "<Badge variant=\"${1|soft,solid,outline,surface|}\" tone=\"${2|accent,success,warning,danger,neutral|}\">${3:Active}</Badge>"
+    ],
+    "description": "Render a @shavin/ui status Badge chip"
+  },
+  "Shavin Avatar": {
+    "prefix": "s-avatar",
+    "body": [
+      "<Avatar src=\"${1:https://avatar.vercel.sh/user}\" fallback=\"${2:JD}\" size=\"${3|md,sm,xs,lg,xl|}\" radius=\"${4|full,large,medium,small,none|}\" />"
+    ],
+    "description": "Render a @shavin/ui Avatar primitive"
+  },
+  "Shavin Image": {
+    "prefix": "s-image",
+    "body": [
+      "<Image src=\"${1:/assets/hero.jpg}\" alt=\"${2:Hero banner}\" ratio=\"${3|16/9,4/3,1/1|}\" radius=\"${4|panel,lg,full,none|}\" />"
+    ],
+    "description": "Render a @shavin/ui Image with shimmer fallback"
+  },
+  "Shavin LineChart": {
+    "prefix": "s-linechart",
+    "body": [
+      "<LineChart",
+      "  type=\"${1|line,area|}\"",
+      "  data={[",
+      "    { label: \"Mon\", value: 12 },",
+      "    { label: \"Tue\", value: 24 },",
+      "    { label: \"Wed\", value: 18 }",
+      "  ]}",
+      "/>"
+    ],
+    "description": "Render a @shavin/ui LineChart (line or area)"
+  },
+  "Shavin BarChart": {
+    "prefix": "s-barchart",
+    "body": [
+      "<BarChart",
+      "  data={[",
+      "    { label: \"Mon\", value: 12 },",
+      "    { label: \"Tue\", value: 24 },",
+      "    { label: \"Wed\", value: 18 }",
+      "  ]}",
+      "/>"
+    ],
+    "description": "Render a @shavin/ui BarChart"
+  },
+  "Shavin Sparkline": {
+    "prefix": "s-sparkline",
+    "body": [
+      "<Sparkline type=\"${1|line,area,bar|}\" data={${2:[3, 5, 4, 8, 6]}} aria-hidden=\"true\" className=\"h-12\" />"
+    ],
+    "description": "Render a compact @shavin/ui Sparkline"
+  },
+  "Shavin CodeBlock": {
+    "prefix": "s-codeblock",
+    "body": [
+      "<CodeBlock code={${1:codeString}} language=\"${2|typescript,tsx,bash,json|}\" copyable filename=\"${3:example.tsx}\" />"
+    ],
+    "description": "Render a syntax-highlighted @shavin/ui CodeBlock"
+  },
+  "Shavin CodeEditor": {
+    "prefix": "s-codeeditor",
+    "body": [
+      "<CodeEditor value={${1:code}} onChange={${2:setCode}} language=\"${3|typescript,json,html|}\" minLines={${4:8}} />"
+    ],
+    "description": "Render an interactive @shavin/ui CodeEditor"
+  },
+  "Shavin ChatBubble": {
+    "prefix": "s-chatbubble",
+    "body": [
+      "<ChatBubble",
+      "  message=\"${1:Hello! How can I assist you today?}\"",
+      "  side=\"${2|left,right|}\"",
+      "  timestamp=\"${3:Just now}\"",
+      "/>"
+    ],
+    "description": "Render a conversational @shavin/ui ChatBubble"
+  },
+  "Shavin Progress": {
+    "prefix": "s-progress",
+    "body": [
+      "<Progress value={${1:65}} max={100} size=\"${2|md,sm,lg|}\" />"
+    ],
+    "description": "Render an accessible @shavin/ui Progress bar"
+  },
+  "Shavin Spinner": {
+    "prefix": "s-spinner",
+    "body": [
+      "<Spinner size=\"${1|md,sm,lg|}\" tone=\"${2|accent,fg,subtle|}\" />"
+    ],
+    "description": "Render an animated @shavin/ui Spinner"
+  },
+  "Shavin Skeleton": {
+    "prefix": "s-skeleton",
+    "body": [
+      "<Skeleton className=\"${1:h-4 w-48 rounded-[var(--radius-lg)]}\" />"
+    ],
+    "description": "Render a shimmer loading @shavin/ui Skeleton"
+  },
+  "Shavin Callout": {
+    "prefix": "s-callout",
+    "body": [
+      "<Callout color=\"${1|info,warning,danger,success|}\" title=\"${2:Attention}\">",
+      "  ${3:Important information or guidance note.}",
+      "</Callout>"
+    ],
+    "description": "Render a highlighted @shavin/ui Callout box"
+  },
+  "Shavin Calendar": {
+    "prefix": "s-calendar",
+    "body": [
+      "<Calendar view=\"${1|month,week,day|}\" events={${2:eventsList}} />"
+    ],
+    "description": "Render an interactive @shavin/ui Calendar grid"
+  },
+  "Shavin Dialog": {
+    "prefix": "s-dialog",
+    "body": [
+      "<Dialog open={${1:isOpen}} onOpenChange={${2:setIsOpen}} title=\"${3:Dialog Title}\" description=\"${4:Description explaining action.}\">",
+      "  <div className=\"py-4\">",
+      "    ${0}",
+      "  </div>",
+      "  <div className=\"flex justify-end gap-2\">",
+      "    <Button variant=\"ghost\" onClick={() => ${2:setIsOpen}(false)}>Cancel</Button>",
+      "    <Button variant=\"solid\" tone=\"accent\" onClick={() => ${2:setIsOpen}(false)}>Confirm</Button>",
+      "  </div>",
+      "</Dialog>"
+    ],
+    "description": "Render an accessible @shavin/ui Dialog modal"
+  },
+  "Shavin AlertDialog": {
+    "prefix": "s-alertdialog",
+    "body": [
+      "<AlertDialog",
+      "  open={${1:isOpen}}",
+      "  onOpenChange={${2:setIsOpen}}",
+      "  title=\"${3:Are you absolutely sure?}\"",
+      "  description=\"${4:This action cannot be undone. This will permanently delete your data.}\"",
+      "  confirmText=\"${5:Delete}\"",
+      "  cancelText=\"Cancel\"",
+      "  onConfirm={${6:handleDelete}}",
+      "/>"
+    ],
+    "description": "Render a destructive @shavin/ui AlertDialog"
+  },
+  "Shavin Spotlight": {
+    "prefix": "s-spotlight",
+    "body": [
+      "<Spotlight",
+      "  open={${1:open}}",
+      "  onOpenChange={${2:setOpen}}",
+      "  placeholder=\"${3:Search commands, pages, and actions…}\"",
+      "  items={${4:commandItems}}",
+      "/>"
+    ],
+    "description": "Render a global ⌘K @shavin/ui Spotlight command palette"
+  },
+  "Shavin Popover": {
+    "prefix": "s-popover",
+    "body": [
+      "<Popover>",
+      "  <PopoverTrigger asChild>",
+      "    <Button variant=\"outline\">${1:Open Popover}</Button>",
+      "  </PopoverTrigger>",
+      "  <PopoverContent className=\"w-80 p-4\">",
+      "    <Heading size=\"sm\">${2:Settings}</Heading>",
+      "    <Text color=\"subtle\" size=\"sm\" className=\"mt-1\">${3:Configure your custom preferences.}</Text>",
+      "  </PopoverContent>",
+      "</Popover>"
+    ],
+    "description": "Render a floating @shavin/ui Popover panel"
+  },
+  "Shavin HoverCard": {
+    "prefix": "s-hovercard",
+    "body": [
+      "<HoverCard>",
+      "  <HoverCardTrigger asChild>",
+      "    <Link href=\"#\">${1:@username}</Link>",
+      "  </HoverCardTrigger>",
+      "  <HoverCardContent className=\"w-64 p-4\">",
+      "    <div className=\"flex gap-3\">",
+      "      <Avatar fallback=\"JD\" />",
+      "      <div>",
+      "        <Heading size=\"xs\">John Doe</Heading>",
+      "        <Text color=\"subtle\" size=\"xs\">Design System Architect</Text>",
+      "      </div>",
+      "    </div>",
+      "  </HoverCardContent>",
+      "</HoverCard>"
+    ],
+    "description": "Render a preview @shavin/ui HoverCard"
+  },
+  "Shavin Tooltip": {
+    "prefix": "s-tooltip",
+    "body": [
+      "<Tooltip content=\"${1:Shortcut: ⌘K}\">",
+      "  ${2:<IconButton aria-label=\"Search\"><Icon name=\"search\" /></IconButton>}",
+      "</Tooltip>"
+    ],
+    "description": "Render a micro-copy @shavin/ui Tooltip"
+  },
+  "Shavin Menu": {
+    "prefix": "s-menu",
+    "body": [
+      "<Menu>",
+      "  <MenuTrigger asChild>",
+      "    <Button variant=\"outline\">${1:Options}</Button>",
+      "  </MenuTrigger>",
+      "  <MenuItem onSelect={() => {}} shortcut=\"⌘N\">${2:New Document}</MenuItem>",
+      "  <MenuItem onSelect={() => {}} shortcut=\"⌘S\">${3:Save Changes}</MenuItem>",
+      "  <MenuItem onSelect={() => {}} tone=\"danger\">${4:Delete}</MenuItem>",
+      "</Menu>"
+    ],
+    "description": "Render a dropdown @shavin/ui Menu"
+  },
+  "Shavin ContextMenu": {
+    "prefix": "s-contextmenu",
+    "body": [
+      "<ContextMenu>",
+      "  <div className=\"border border-dashed border-hairline p-8 rounded-panel text-center text-fg-subtle\">",
+      "    Right click here",
+      "  </div>",
+      "  <ContextMenuItem onSelect={() => {}}>${1:Inspect}</ContextMenuItem>",
+      "  <ContextMenuItem onSelect={() => {}}>${2:Copy Link}</ContextMenuItem>",
+      "</ContextMenu>"
+    ],
+    "description": "Render a right-click @shavin/ui ContextMenu"
+  },
+  "Shavin Accordion": {
+    "prefix": "s-accordion",
+    "body": [
+      "<Accordion type=\"single\" collapsible className=\"w-full\">",
+      "  <AccordionItem value=\"item-1\">",
+      "    <AccordionTrigger>${1:What is @shavin/ui?}</AccordionTrigger>",
+      "    <AccordionContent>",
+      "      ${2:Enterprise-grade React design system engine with 2-tier token purity.}",
+      "    </AccordionContent>",
+      "  </AccordionItem>",
+      "  <AccordionItem value=\"item-2\">",
+      "    <AccordionTrigger>${3:How do tokens work?}</AccordionTrigger>",
+      "    <AccordionContent>",
+      "      ${4:Tokens map foundation neutrals to semantic roles for automated dark mode.}",
+      "    </AccordionContent>",
+      "  </AccordionItem>",
+      "</Accordion>"
+    ],
+    "description": "Render an accessible @shavin/ui Accordion"
+  },
+  "Shavin Breadcrumbs": {
+    "prefix": "s-breadcrumbs",
+    "body": [
+      "<Breadcrumbs",
+      "  items={[",
+      "    { label: \"Home\", href: \"/\" },",
+      "    { label: \"Dashboard\", href: \"/dashboard\" },",
+      "    { label: \"${1:Analytics}\" }",
+      "  ]}",
+      "/>"
+    ],
+    "description": "Render hierarchical @shavin/ui Breadcrumbs"
+  },
+  "Shavin Tabs": {
+    "prefix": "s-tabs",
+    "body": [
+      "<Tabs defaultValue=\"${1:account}\" className=\"w-full\">",
+      "  <TabsList>",
+      "    <TabsTrigger value=\"${1:account}\">${2:Account}</TabsTrigger>",
+      "    <TabsTrigger value=\"${3:billing}\">${4:Billing}</TabsTrigger>",
+      "  </TabsList>",
+      "  <TabsContent value=\"${1:account}\">",
+      "    <div className=\"py-4\">${5:Account configuration panels}</div>",
+      "  </TabsContent>",
+      "  <TabsContent value=\"${3:billing}\">",
+      "    <div className=\"py-4\">${6:Billing and subscription details}</div>",
+      "  </TabsContent>",
+      "</Tabs>"
+    ],
+    "description": "Render in-page stateful @shavin/ui Tabs"
+  },
+  "Shavin Pagination": {
+    "prefix": "s-pagination",
+    "body": [
+      "<Pagination currentPage={${1:1}} totalPages={${2:10}} onPageChange={${3:setPage}} />"
+    ],
+    "description": "Render a @shavin/ui Pagination bar"
+  },
+  "Shavin ScrollArea": {
+    "prefix": "s-scrollarea",
+    "body": [
+      "<ScrollArea className=\"${1:h-72 w-full}\">",
+      "  <div className=\"p-4 space-y-2\">",
+      "    ${0}",
+      "  </div>",
+      "</ScrollArea>"
+    ],
+    "description": "Render a themed @shavin/ui ScrollArea"
+  },
+  "Shavin Separator": {
+    "prefix": "s-separator",
+    "body": [
+      "<Separator orientation=\"${1|horizontal,vertical|}\" className=\"my-${2:4}\" />"
+    ],
+    "description": "Render a hairline @shavin/ui Separator"
+  },
+  "Shavin Box": {
+    "prefix": "s-box",
+    "body": [
+      "<Box className=\"${1:p-4 bg-surface rounded-panel border border-hairline}\">",
+      "  ${0}",
+      "</Box>"
+    ],
+    "description": "Render a low-level @shavin/ui Box wrapper"
+  },
+  "Shavin Flex": {
+    "prefix": "s-flex",
+    "body": [
+      "<Flex align=\"${1|center,start,end,baseline|}\" justify=\"${2|between,start,center,end|}\" gap=\"${3|4,2,6,8|}\">",
+      "  ${0}",
+      "</Flex>"
+    ],
+    "description": "Render a flexbox @shavin/ui Flex container"
+  },
+  "Shavin Grid": {
+    "prefix": "s-grid",
+    "body": [
+      "<Grid columns=\"${1|3,2,4,1|}\" gap=\"${2|6,4,8|}\">",
+      "  ${0}",
+      "</Grid>"
+    ],
+    "description": "Render a CSS Grid @shavin/ui Grid container"
+  },
+  "Shavin Container": {
+    "prefix": "s-container",
+    "body": [
+      "<Container size=\"${1|lg,xl,md,sm,2xl|}\">",
+      "  ${0}",
+      "</Container>"
+    ],
+    "description": "Render a centered @shavin/ui Container wrapper"
+  },
+  "Shavin Section": {
+    "prefix": "s-section",
+    "body": [
+      "<Section size=\"${1|md,lg,sm|}\">",
+      "  <Container>",
+      "    <Heading size=\"xl\" className=\"text-balance\">${2:Section Title}</Heading>",
+      "    <Text color=\"subtle\" className=\"text-pretty mt-2\">${3:Supporting description}</Text>",
+      "    ${0}",
+      "  </Container>",
+      "</Section>"
+    ],
+    "description": "Render a vertical rhythm @shavin/ui Section"
+  },
+  "Shavin AppFrame": {
+    "prefix": "s-appframe",
+    "body": [
+      "<AppFrame",
+      "  routeKey={pathname}",
+      "  sidebar={",
+      "    <Sidebar>",
+      "      <SidebarHeader>",
+      "        <Heading as=\"p\" size=\"sm\">Workspace</Heading>",
+      "      </SidebarHeader>",
+      "      <SidebarBody>",
+      "        <SidebarNavItem label=\"Dashboard\" icon={<Icon name=\"layout-dashboard\" size=\"sm\" />} active />",
+      "        <SidebarNavItem label=\"Settings\" icon={<Icon name=\"settings\" size=\"sm\" />} />",
+      "      </SidebarBody>",
+      "    </Sidebar>",
+      "  }",
+      ">",
+      "  <TopBar className=\"gap-2\"><SidebarTrigger /></TopBar>",
+      "  <Flex direction=\"column\" gap=\"6\" className=\"min-h-0 flex-1 overflow-y-auto p-6\">",
+      "    ${0}",
+      "  </Flex>",
+      "</AppFrame>"
+    ],
+    "description": "Render a complete SaaS application @shavin/ui AppFrame"
+  },
+  "Shavin Heading": {
+    "prefix": "s-heading",
+    "body": [
+      "<Heading as=\"${1|h1,h2,h3,h4|}\" size=\"${2|2xl,xl,lg,md,3xl,sm|}\" className=\"text-balance ${3:tracking-tight}\">",
+      "  ${4:Heading Text}",
+      "</Heading>"
+    ],
+    "description": "Render a @shavin/ui Heading primitive"
+  },
+  "Shavin Text": {
+    "prefix": "s-text",
+    "body": [
+      "<Text size=\"${1|base,sm,xs,lg|}\" color=\"${2|default,subtle,muted,accent|}\" className=\"text-pretty\">",
+      "  ${3:Body text content}",
+      "</Text>"
+    ],
+    "description": "Render a @shavin/ui Text primitive"
+  },
+  "Shavin Code": {
+    "prefix": "s-code",
+    "body": [
+      "<Code>${1:npm install @shavin/ui}</Code>"
+    ],
+    "description": "Render inline @shavin/ui Code badge"
+  },
+  "Shavin Kbd": {
+    "prefix": "s-kbd",
+    "body": [
+      "<Kbd>${1:⌘K}</Kbd>"
+    ],
+    "description": "Render a keyboard shortcut @shavin/ui Kbd badge"
+  },
+  "Shavin Link": {
+    "prefix": "s-link",
+    "body": [
+      "<Link href=\"${1:#}\">${2:Click here to learn more}</Link>"
+    ],
+    "description": "Render an accessible @shavin/ui Link"
+  },
+  "Shavin Table": {
+    "prefix": "s-table",
+    "body": [
+      "<Table>",
+      "  <TableHeader>",
+      "    <TableRow>",
+      "      <TableColumnHeaderCell>${1:Name}</TableColumnHeaderCell>",
+      "      <TableColumnHeaderCell>${2:Status}</TableColumnHeaderCell>",
+      "      <TableColumnHeaderCell>${3:Date}</TableColumnHeaderCell>",
+      "    </TableRow>",
+      "  </TableHeader>",
+      "  <TableBody>",
+      "    <TableRow>",
+      "      <TableCell>${4:Project Alpha}</TableCell>",
+      "      <TableCell><Badge tone=\"success\">Active</Badge></TableCell>",
+      "      <TableCell className=\"tabular-nums font-mono text-fg-subtle\">${5:2026-09-18}</TableCell>",
+      "    </TableRow>",
+      "  </TableBody>",
+      "</Table>"
+    ],
+    "description": "Render an accessible @shavin/ui data Table"
+  },
+  "Shavin DataList": {
+    "prefix": "s-datalist",
+    "body": [
+      "<DataList orientation=\"${1|horizontal,vertical|}\">",
+      "  <DataListItem label=\"${2:User ID}\">${3:usr_9918}</DataListItem>",
+      "  <DataListItem label=\"${4:Email}\">${5:user@shavin.cc}</DataListItem>",
+      "  <DataListItem label=\"${6:Plan}\"><Badge tone=\"accent\">${7:Enterprise}</Badge></DataListItem>",
+      "</DataList>"
+    ],
+    "description": "Render a key-value @shavin/ui DataList"
+  },
+  "Shavin ThemeProvider": {
+    "prefix": "s-themeprovider",
+    "body": [
+      "<ThemeProvider",
+      "  accentColor=\"${1|grass,monochrome,indigo,blue,violet,red,amber|}\"",
+      "  grayColor=\"${2|gray,zinc,slate,neutral,stone|}\"",
+      "  radius=\"${3|large,medium,small,full,none|}\"",
+      "  scaling=\"${4|100%,95%,90%,105%,110%|}\"",
+      "  panelBackground=\"${5|solid,translucent|}\"",
+      ">",
+      "  ${0}",
+      "</ThemeProvider>"
+    ],
+    "description": "Mount the root @shavin/ui ThemeProvider"
+  },
+  "Shavin ThemeSwitcher": {
+    "prefix": "s-themeswitcher",
+    "body": [
+      "<ThemeSwitcher variant=\"${1|icon-button,segmented,menu,switch|}\" />"
+    ],
+    "description": "Render a light/dark mode @shavin/ui ThemeSwitcher"
+  }
+}
