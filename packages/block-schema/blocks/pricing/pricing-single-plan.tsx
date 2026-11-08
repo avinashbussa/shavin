@@ -46,8 +46,8 @@ export function PricingSinglePlan({ features = defaultFeatures }) {
                 <Text size="sm" color="muted" className="tabular-nums">Works out to $11.17 a month</Text>
               </Flex>
               <Flex direction="column" gap="2">
-                <Button size="lg" className="w-full">Get Household</Button>
-                <Button size="lg" variant="ghost" className="w-full">Start a 14-day trial first</Button>
+                <Button size="lg" className="w-full" asChild><a href="/signup">Get Household</a></Button>
+                <Button size="lg" variant="ghost" className="w-full" asChild><a href="/signup?trial=1">Start a 14-day trial first</a></Button>
               </Flex>
               <Separator />
               <Flex direction="row" align="start" gap="3">

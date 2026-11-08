@@ -9,9 +9,11 @@ export type BackdropVariant = (typeof BACKDROP_FREE_VARIANTS)[number] | (string 
 export interface BackdropProps extends HTMLAttributes<HTMLDivElement> {
   /** Which backdrop to draw. Unknown names fall back to `mesh`. */
   variant?: BackdropVariant;
+  /** Per-variant params forwarded to a registered renderer (e.g. an fx effect's speed/strength). */
+  params?: Record<string, string>;
 }
 
-export type BackdropRenderer = ComponentType<{ className?: string }>;
+export type BackdropRenderer = ComponentType<{ className?: string; params?: Record<string, string> }>;
 
 const registry = new Map<string, BackdropRenderer>();
 
@@ -54,12 +56,12 @@ function Aurora() {
 }
 
 /** A decorative, token-driven background that fills its positioned parent. Put content above it with `relative`. */
-export function Backdrop({ variant = "mesh", className, ...props }: BackdropProps) {
+export function Backdrop({ variant = "mesh", className, params, ...props }: BackdropProps) {
   const Custom = registry.get(variant);
   return (
     <div aria-hidden="true" className={cn("pointer-events-none absolute inset-0 overflow-hidden text-fg", className)} {...props}>
       {Custom ? (
-        <Custom className="absolute inset-0" />
+        <Custom className="absolute inset-0" params={params} />
       ) : variant === "aurora" ? (
         <Aurora />
       ) : variant === "grid" ? (

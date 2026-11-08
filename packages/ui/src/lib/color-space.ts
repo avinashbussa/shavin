@@ -142,8 +142,31 @@ export function oklchLuminance(o: Oklch): number {
   return o.L;
 }
 
+// WCAG 2.x contrast is defined on sRGB luminance, so OKLCH accents are measured
+// after conversion and get the same guarantees as the RGB path (theme-presets.ts).
+const OK_WHITE: Oklch = { L: 1, C: 0, H: 0 };
+const OK_INK: Oklch = { L: 0.18, C: 0, H: 0 };
+const OK_LIGHT_SURFACES = ["255 255 255", "244 244 245"];
+const OK_DARK_SURFACES = ["24 24 27", "10 10 12", "30 30 33"];
+
+function tripletLuminance(triplet: string): number {
+  const [r, g, b] = triplet.split(" ").map((c) => Number(c) / 255);
+  const lin = (c: number) => (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
+  return 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
+}
+
+function tripletContrast(a: string, b: string): number {
+  const x = tripletLuminance(a);
+  const y = tripletLuminance(b);
+  return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05);
+}
+
+/** Text on a solid accent fill: white while it clears 4.5:1, otherwise the higher-contrast ink. */
 export function oklchForegroundFor(o: Oklch): Oklch {
-  return o.L > 0.45 ? { L: 0.18, C: 0, H: 0 } : { L: 1, C: 0, H: 0 };
+  const fill = oklchToRgbTriplet(o);
+  const white = tripletContrast("255 255 255", fill);
+  if (white >= 4.5) return OK_WHITE;
+  return tripletContrast(oklchToRgbTriplet(OK_INK), fill) > white ? OK_INK : OK_WHITE;
 }
 
 export function oklchHoverFor(o: Oklch, isDark: boolean, amount: number = 0.08): Oklch {
@@ -155,27 +178,15 @@ export function oklchHoverFor(o: Oklch, isDark: boolean, amount: number = 0.08):
   };
 }
 
+/** Accent for text, links and focus rings: L is moved toward black (light) or white (dark) until it clears 4.5:1 on every page surface. */
 export function oklchTextFor(o: Oklch, isDark: boolean): Oklch {
-  if (isDark) {
-    if (o.L < 0.40) {
-      const amount = Math.min(0.50, Math.max(0.30, 0.55 - o.L * 0.6));
-      return {
-        L: o.L + (1 - o.L) * amount,
-        C: o.C,
-        H: o.H,
-      };
-    }
-    return o;
+  const surfaces = isDark ? OK_DARK_SURFACES : OK_LIGHT_SURFACES;
+  for (let step = 0; step <= 50; step++) {
+    const candidate: Oklch = { L: o.L + ((isDark ? 1 : 0) - o.L) * (step / 50), C: o.C, H: o.H };
+    const rgb = oklchToRgbTriplet(candidate);
+    if (Math.min(...surfaces.map((s) => tripletContrast(rgb, s))) >= 4.6) return candidate;
   }
-  if (o.L > 0.70) {
-    const amount = Math.min(0.55, Math.max(0.30, 0.15 + o.L * 0.35));
-    return {
-      L: o.L + (0 - o.L) * amount,
-      C: o.C,
-      H: o.H,
-      };
-  }
-  return o;
+  return isDark ? OK_WHITE : { L: 0, C: 0, H: 0 };
 }
 
 export function oklchAchromaticInversion(o: Oklch, isDark: boolean): Oklch {

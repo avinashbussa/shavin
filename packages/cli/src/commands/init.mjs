@@ -126,6 +126,82 @@ function patchLayoutWithThemeProvider(src, oklch = false) {
   return { patched: false, reason: "no-jsx-return-detected" };
 }
 
+/** Insert an import after the last top-level import, else at the very top. */
+function insertImport(src, importLine) {
+  const lines = src.split("\n");
+  let last = -1;
+  for (let i = 0; i < lines.length; i++) {
+    if (/^\s*import\s.+from\s.+;?\s*$/.test(lines[i])) last = i;
+  }
+  if (last >= 0) {
+    lines.splice(last + 1, 0, importLine);
+    return lines.join("\n");
+  }
+  return `${importLine}\n${src}`;
+}
+
+/**
+ * Wire the Agent-Browser bridge to auto-start with the dev server by editing the
+ * framework config. Idempotent, conservative (falls back to a printed snippet
+ * rather than risk breaking a config it does not recognise), and never throws.
+ * @returns {{ status: "created"|"wired"|"already"|"manual", file?: string, snippet?: string }}
+ */
+function wireBridgeAutoStart(cwd, framework) {
+  try {
+    if (framework === "nextjs") return wireNextBridge(cwd);
+    if (framework === "vite") return wireViteBridge(cwd);
+  } catch {
+    /* fall through to manual */
+  }
+  return { status: "manual" };
+}
+
+function wireNextBridge(cwd) {
+  const esm = ["next.config.mjs", "next.config.ts"];
+  const cjs = ["next.config.js", "next.config.cjs"];
+  const existing = [...esm, ...cjs].map((f) => join(cwd, f)).find((p) => existsSync(p));
+  const importLine = `import { withShavinBridge } from "@shavin/mcp/next";`;
+
+  if (!existing) {
+    const dest = join(cwd, "next.config.mjs");
+    writeFileSync(dest, `${importLine}\n\n/** @type {import('next').NextConfig} */\nconst nextConfig = {};\n\nexport default withShavinBridge(nextConfig);\n`, "utf8");
+    return { status: "created", file: "next.config.mjs" };
+  }
+
+  const file = basename(existing);
+  let src = readFileSync(existing, "utf8");
+  if (src.includes("withShavinBridge")) return { status: "already", file };
+
+  const isEsm = file.endsWith(".mjs") || file.endsWith(".ts") || /export\s+default/.test(src);
+  // Only auto-wrap the common `export default <identifier>;` shape; anything else
+  // (inline object, defineConfig(...), module.exports, function config) → manual.
+  const m = isEsm ? src.match(/export default (\w+);/) : null;
+  if (isEsm && m) {
+    src = insertImport(src, importLine).replace(`export default ${m[1]};`, `export default withShavinBridge(${m[1]});`);
+    writeFileSync(existing, src, "utf8");
+    return { status: "wired", file };
+  }
+  return { status: "manual", file, snippet: `import { withShavinBridge } from "@shavin/mcp/next";\n// then wrap your exported config:\nexport default withShavinBridge(yourNextConfig);` };
+}
+
+function wireViteBridge(cwd) {
+  const existing = ["vite.config.ts", "vite.config.mjs", "vite.config.js", "vite.config.cjs"].map((f) => join(cwd, f)).find((p) => existsSync(p));
+  const importLine = `import { shavinBridge } from "@shavin/mcp/vite";`;
+  if (!existing) return { status: "manual", snippet: `import { shavinBridge } from "@shavin/mcp/vite";\n// add to your Vite config:\nplugins: [shavinBridge(), /* ... */]` };
+
+  const file = basename(existing);
+  let src = readFileSync(existing, "utf8");
+  if (src.includes("shavinBridge")) return { status: "already", file };
+
+  const isEsm = file.endsWith(".mjs") || file.endsWith(".ts") || /export\s+default/.test(src);
+  if (isEsm && /plugins:\s*\[/.test(src)) {
+    src = insertImport(src, importLine).replace(/plugins:\s*\[/, "plugins: [shavinBridge(), ");
+    writeFileSync(existing, src, "utf8");
+    return { status: "wired", file };
+  }
+  return { status: "manual", file, snippet: `import { shavinBridge } from "@shavin/mcp/vite";\n// add to your Vite config:\nplugins: [shavinBridge(), /* ... */]` };
+}
+
 export async function initCommand(args = {}) {
   const { oklch = false } = args;
   const cwd = process.cwd();
@@ -802,6 +878,25 @@ export async function initCommand(args = {}) {
     modifiedCount++;
   }
 
+  // 8. Auto-start the dev bridge with the dev server (needs @shavin/mcp)
+  let bridgeWiring = { status: "skipped" };
+  if (mcpInstalled) {
+    bridgeWiring = wireBridgeAutoStart(cwd, fwInfo.framework);
+    if (bridgeWiring.status === "created") {
+      console.log(fmt.success(`Created ${bridgeWiring.file} — bridge auto-starts with your dev server`));
+      modifiedCount++;
+    } else if (bridgeWiring.status === "wired") {
+      console.log(fmt.success(`Wired ${bridgeWiring.file} — bridge auto-starts with your dev server`));
+      modifiedCount++;
+    } else if (bridgeWiring.status === "already") {
+      console.log(fmt.success(`Bridge auto-start already wired in ${bridgeWiring.file}`));
+    } else if (bridgeWiring.status === "manual") {
+      console.log(fmt.warn(`Add bridge auto-start to your ${fwInfo.framework === "vite" ? "Vite" : fwInfo.framework === "nextjs" ? "Next" : "dev-server"} config:`));
+      if (bridgeWiring.snippet) console.log(`${c.fgMuted}    ${bridgeWiring.snippet.split("\n").join("\n    ")}${c.reset}`);
+      else console.log(`${c.fgMuted}    Run the bridge with: npx @shavin/cli bridge${c.reset}`);
+    }
+  }
+
   // ─── Completion Summary ───
   const summaryItems = [
     { label: "Tailwind:", value: `${fmt.pass(`v${twInfo.version}`)} ${c.fgMuted}(${isTailwindV4 ? "CSS-first @theme inline" : "JS preset (tailwind-preset)"}${oklch ? " · OKLCH" : ""})${c.reset}` },
@@ -819,6 +914,11 @@ export async function initCommand(args = {}) {
 
   summaryItems.push({ label: "Project Brain:", value: fmt.pass("SHAVIN.md, AGENTS.md, CLAUDE.md active") });
   summaryItems.push({ label: "IDE MCP:", value: fmt.pass(".mcp.json, .cursor/ & .vscode/") });
+  if (bridgeWiring.status === "created" || bridgeWiring.status === "wired" || bridgeWiring.status === "already") {
+    summaryItems.push({ label: "Dev Bridge:", value: `${fmt.pass("Auto-starts with dev server")}${bridgeWiring.file ? ` ${c.fgMuted}(${bridgeWiring.file})${c.reset}` : ""}` });
+  } else if (bridgeWiring.status === "manual") {
+    summaryItems.push({ label: "Dev Bridge:", value: fmt.warn("Wire withShavinBridge / shavinBridge() in your config") });
+  }
   summaryItems.push({ label: "IDE Helpers:", value: fmt.pass("component tags, props and snippets") });
   summaryItems.push({ label: "Brand Tokens:", value: `${fmt.pass("Ready")} ${c.fgMuted}(edit brand-tokens.css, run npm run brand:gen)${c.reset}` });
 

@@ -27,6 +27,7 @@ const preset = {
         elevated: tok("bg-elevated"),
         hairline: tok("hairline"),
         "hairline-strong": tok("hairline-strong"),
+        "border-control": tok("border-control"),
         fg: tok("fg"),
         "fg-muted": tok("fg-muted"),
         "fg-subtle": tok("fg-subtle"),

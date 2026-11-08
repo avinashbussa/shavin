@@ -64,7 +64,7 @@ export function PricingThreeTier({ tiers = defaultTiers }) {
                       </Flex>
                     ))}
                   </Flex>
-                  <Button size="lg" variant={tier.featured ? "solid" : "outline"} className="mt-auto w-full">{tier.cta}</Button>
+                  <Button size="lg" variant={tier.featured ? "solid" : "outline"} className="mt-auto w-full" asChild><a href="/signup">{tier.cta}</a></Button>
                 </Flex>
               </Card>
             ))}

@@ -5,7 +5,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "../../lib/cn";
 
 export const trackVariants = cva(
-  "relative inline-flex shrink-0 items-center rounded-full transition data-[state=checked]:bg-accent data-[state=unchecked]:bg-hairline-strong disabled:opacity-50",
+  "relative inline-flex shrink-0 items-center rounded-full transition data-[state=checked]:bg-accent data-[state=unchecked]:bg-border-control disabled:opacity-50",
   {
     variants: {
       size: {
@@ -32,15 +32,31 @@ export const thumbVariants = cva(
 
 export interface SwitchProps
   extends ComponentPropsWithoutRef<typeof RadixSwitch.Root>,
-    VariantProps<typeof trackVariants> {}
+    VariantProps<typeof trackVariants> {
+  /** Visible label; wraps the switch in a <label> so it names it and is clickable. */
+  label?: string;
+}
 
 export const Switch = forwardRef<
   ElementRef<typeof RadixSwitch.Root>,
   SwitchProps
->(function Switch({ className, size, ...props }, ref) {
-  return (
-    <RadixSwitch.Root ref={ref} className={cn(trackVariants({ size }), className)} {...props}>
+>(function Switch({ className, size, label, ...props }, ref) {
+  const control = (
+    <RadixSwitch.Root ref={ref} className={cn(trackVariants({ size }), !label && className)} {...props}>
       <RadixSwitch.Thumb className={thumbVariants({ size })} />
     </RadixSwitch.Root>
+  );
+  if (!label) return control;
+  return (
+    <label
+      className={cn(
+        "inline-flex items-center gap-2 select-none",
+        props.disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer",
+        className,
+      )}
+    >
+      {control}
+      <span className={cn(size === "sm" ? "text-xs" : "text-sm", "text-fg")}>{label}</span>
+    </label>
   );
 });

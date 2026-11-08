@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+#
+# Auto-append a DCO Signed-off-by line when one is missing, so `git commit`
+# satisfies the DCO check ("Check commit sign-offs") without having to remember
+# `-s`. If a Signed-off-by trailer is already present — you used `git commit -s`,
+# or the commit came from `rebase`/`cherry-pick --signoff` — this does nothing,
+# so there is never a duplicate. Merge commits are left alone (the DCO check
+# ignores them).
+#
+# Enable once per clone:  npm run setup:hooks   (points core.hooksPath here)
+#
+set -euo pipefail
+
+msg_file="$1"
+src="${2:-}"
+
+# Merge commits: skip (DCO ignores them).
+[ "$src" = "merge" ] && exit 0
+
+# Already signed off (covers `-s` and --signoff): leave it untouched.
+if grep -qiE '^[[:space:]]*Signed-off-by:[[:space:]]' "$msg_file"; then
+  exit 0
+fi
+
+name="$(git config user.name || true)"
+email="$(git config user.email || true)"
+
+# No identity configured — don't block the commit; the DCO check will flag it
+# with a clear message, which is better than failing the commit outright here.
+[ -z "$name" ] || [ -z "$email" ] && exit 0
+
+# interpret-trailers places the trailer correctly: after the body, before any
+# comment / scissors block, so it survives message cleanup and `-v` diffs.
+git interpret-trailers \
+  --trailer "Signed-off-by: ${name} <${email}>" \
+  --in-place "$msg_file"

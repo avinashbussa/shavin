@@ -40,7 +40,7 @@ export function CardPlanInset({ features = defaultFeatures }) {
                   </Flex>
                 ))}
               </Flex>
-              <Button size="lg" className="mt-2 w-full">Start 14-day trial</Button>
+              <Button size="lg" className="mt-2 w-full" asChild><a href="/signup">Start 14-day trial</a></Button>
             </Flex>
           </Flex>
         </Card>

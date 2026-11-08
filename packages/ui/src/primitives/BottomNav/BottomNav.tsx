@@ -41,6 +41,7 @@ export function BottomNav({
           <a
             key={item.href}
             href={item.href}
+            aria-current={isActive ? "page" : undefined}
             onClick={(e) => {
               if (onSelect) {
                 e.preventDefault();
@@ -48,7 +49,7 @@ export function BottomNav({
               }
             }}
             className={cn(
-              "relative flex flex-1 flex-col items-center justify-center gap-1 py-1.5 text-[11px] font-medium transition cursor-pointer outline-none select-none",
+              "relative flex flex-1 flex-col items-center justify-center gap-1 py-1.5 text-[11px] font-medium transition cursor-pointer select-none",
               isActive
                 ? "text-accent font-semibold"
                 : "text-fg-muted hover:text-fg"
@@ -56,7 +57,7 @@ export function BottomNav({
           >
             {item.icon && (
               <span className={cn("relative flex h-5 w-5 items-center justify-center shrink-0", isActive ? "text-accent" : "text-fg-subtle")}>
-                {item.icon}
+                <span aria-hidden="true" className="contents">{item.icon}</span>
                 {item.badge !== undefined && (
                   <span className="absolute -top-1 -right-2.5 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-accent px-1 text-[9px] font-bold text-accent-fg">
                     {item.badge}
@@ -66,7 +67,7 @@ export function BottomNav({
             )}
             <span className="truncate max-w-[72px] text-center">{item.label}</span>
             {isActive && (
-              <span className="absolute bottom-0 h-0.5 w-6 rounded-full bg-accent" />
+              <span aria-hidden="true" className="absolute bottom-0 h-0.5 w-6 rounded-full bg-accent" />
             )}
           </a>
         );

@@ -1,8 +1,8 @@
 {
   "generated": "by scripts/gen-manifest.mjs -- do not edit by hand (run: npm run manifest:gen)",
   "docs": "AGENTS.md -- 'When to reach for Radix' + shape-override notes carry the when-to-use rationale",
-  "count": 163,
-  "primitiveCount": 89,
+  "count": 170,
+  "primitiveCount": 91,
   "internalCount": 2,
   "components": [
     {
@@ -233,6 +233,12 @@
           "type": "boolean",
           "required": false,
           "doc": ""
+        },
+        {
+          "name": "headingLevel",
+          "type": "2 | 3 | 4 | 5 | 6",
+          "required": false,
+          "doc": "Heading level of the trigger's header, to fit the page outline. Default 3."
         }
       ],
       "builderMeta": {
@@ -800,6 +806,12 @@
           "type": "BackdropVariant",
           "required": false,
           "doc": "Which backdrop to draw. Unknown names fall back to `mesh`."
+        },
+        {
+          "name": "params",
+          "type": "Record<string, string>",
+          "required": false,
+          "doc": "Per-variant params forwarded to a registered renderer (e.g. an fx effect's speed/strength)."
         }
       ],
       "builderMeta": {
@@ -1005,6 +1017,12 @@
           "doc": "One record per category: `label` plus a number under each series `key`. Without `series`, the number is `value`, and a datum may carry its own `tone` or `color`."
         },
         {
+          "name": "description",
+          "type": "string",
+          "required": false,
+          "doc": "One-sentence takeaway, e.g. \"Revenue doubled after the March launch.\""
+        },
+        {
           "name": "height",
           "type": "number",
           "required": false,
@@ -1033,6 +1051,12 @@
           "type": "ChartPadding",
           "required": false,
           "doc": "Plot padding in px, merged over the defaults."
+        },
+        {
+          "name": "patterns",
+          "type": "boolean",
+          "required": false,
+          "doc": "Tell series apart by more than colour: fill patterns on bars and slices, dashes and marker shapes on lines, repeated in the legend and tooltip (WCAG 1.4.1). Default true. Turn off only when every series is labelled directly on the chart."
         },
         {
           "name": "series",
@@ -1069,6 +1093,12 @@
           "type": "number",
           "required": false,
           "doc": "Number of y-axis intervals (default 4, so 5 ticks)."
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "required": false,
+          "doc": "Accessible name, e.g. \"Monthly revenue, 2026\". Read by screen readers and used as the data table caption."
         },
         {
           "name": "xLabelEvery",
@@ -1447,7 +1477,7 @@
           "name": "bgOverlays",
           "type": "string",
           "required": false,
-          "doc": "Comma-separated shorthand for overlay layers. Supports presets (\"dark-50\"), solid colors (#hex or (token)), and gradients (linear/radial). JSON array of OverlayLayer[] as fallback for advanced cases. Layers composite top-to-bottom."
+          "doc": "Comma-separated shorthand for overlay layers. Supports presets (\"dark-50\"), solid colors (#hex or (token)), gradients (linear/radial), and fx backdrops (\"fx:dither-waves\", \"fx:fluid-silk(speed=1.2)\"; needs @shavin/fx registered, else falls back to mesh). JSON array of OverlayLayer[] as fallback for advanced cases. Layers composite top-to-bottom."
         },
         {
           "name": "bgVideoPaused",
@@ -1455,6 +1485,87 @@
           "required": false,
           "doc": "When true, pauses the background video (renders a static poster frame instead of autoplay).",
           "default": "false"
+        },
+        {
+          "name": "resizable",
+          "type": "ResizableEdges",
+          "required": false,
+          "doc": "Make the element user-resizable from these edges: \"right\", \"bottom\", \"x\", \"y\", \"both\", true, or a list such as [\"left\", \"bottom-left\"]. Off by default."
+        },
+        {
+          "name": "minWidth",
+          "type": "number",
+          "required": false,
+          "doc": "Minimum width in px while resizable (also applied as CSS min-width)."
+        },
+        {
+          "name": "maxWidth",
+          "type": "number",
+          "required": false,
+          "doc": "Maximum width in px while resizable (also applied as CSS max-width)."
+        },
+        {
+          "name": "minHeight",
+          "type": "number",
+          "required": false,
+          "doc": "Minimum height in px while resizable (also applied as CSS min-height)."
+        },
+        {
+          "name": "maxHeight",
+          "type": "number",
+          "required": false,
+          "doc": "Maximum height in px while resizable (also applied as CSS max-height)."
+        },
+        {
+          "name": "resizeStep",
+          "type": "number",
+          "required": false,
+          "doc": "Arrow-key resize step in px; Shift multiplies by 4. Default 16.",
+          "default": "16"
+        },
+        {
+          "name": "snap",
+          "type": "number",
+          "required": false,
+          "doc": "Round dragged sizes to this grid in px."
+        },
+        {
+          "name": "lockAspectRatio",
+          "type": "boolean",
+          "required": false,
+          "doc": "Keep the width/height ratio while resizing."
+        },
+        {
+          "name": "persistKey",
+          "type": "string",
+          "required": false,
+          "doc": "Remember the size in localStorage under this key."
+        },
+        {
+          "name": "onResize",
+          "type": "(size: ResizeSize) => void",
+          "required": false,
+          "doc": "Fires once per frame while resizing."
+        },
+        {
+          "name": "onResizeEnd",
+          "type": "(size: ResizeSize) => void",
+          "required": false,
+          "doc": "Fires when a resize finishes."
+        },
+        {
+          "name": "resizeHandle",
+          "type": "ResizeHandleVariant",
+          "required": false,
+          "doc": "Handle look: \"line\" (accent line on hover), \"grip\" (always-visible pill) or \"invisible\". Default \"line\".",
+          "default": "line"
+        },
+        {
+          "name": "resizeColor",
+          "type": "ResizeHandleColor",
+          "required": false,
+          "doc": "Handle colour on hover, focus and drag: \"accent\", \"accent-subtle\" (softer accent) or \"neutral\" (monochrome). Default \"accent-subtle\".",
+          "default": "accent-subtle"
         },
         {
           "name": "as",
@@ -1474,6 +1585,12 @@
           "type": "Surface",
           "required": false,
           "doc": "Surface contrast scope intent. \"dark\"/\"light\" auto-invert against the page theme (contrast band). \"dark-always\"/\"light-always\" lock to one theme regardless of page (for media backgrounds). Undefined inherits page theme."
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLElement>",
+          "required": false,
+          "doc": "Ref to the rendered element."
         }
       ],
       "builderMeta": {
@@ -1813,6 +1930,12 @@
           "doc": "Callback fired when an event chip is clicked."
         },
         {
+          "name": "locale",
+          "type": "string",
+          "required": false,
+          "doc": "Locale for day names read by screen readers. Defaults to the browser's locale."
+        },
+        {
           "name": "fitContainer",
           "type": "boolean",
           "required": false,
@@ -1982,6 +2105,12 @@
           "doc": "Stretch to fit parent container height & flex layout (defaults to true)."
         },
         {
+          "name": "locale",
+          "type": "string",
+          "required": false,
+          "doc": "Locale for day names read by screen readers. Defaults to the browser's locale."
+        },
+        {
           "name": "onDateChange",
           "type": "((date: Date) => void)",
           "required": false,
@@ -2066,6 +2195,13 @@
           "type": "string",
           "required": false,
           "doc": "Title text header for callout."
+        },
+        {
+          "name": "titleAs",
+          "type": "\"p\" | \"h2\" | \"h3\" | \"h4\" | \"h5\" | \"h6\"",
+          "required": false,
+          "doc": "Element for the title. Default `p`: a callout title labels a note, it does not open a section. Use a heading level that fits the page outline when it should be navigable.",
+          "default": "`p`:"
         },
         {
           "name": "icon",
@@ -2301,7 +2437,7 @@
         ]
       },
       "defaultVariants": {
-        "padding": "none",
+        "padding": "sm",
         "interactive": "false"
       },
       "props": [
@@ -2328,7 +2464,7 @@
           "name": "bgOverlays",
           "type": "string",
           "required": false,
-          "doc": "Comma-separated shorthand for overlay layers. Supports presets (\"dark-50\"), solid colors (#hex or (token)), and gradients (linear/radial). JSON array of OverlayLayer[] as fallback for advanced cases. Layers composite top-to-bottom."
+          "doc": "Comma-separated shorthand for overlay layers. Supports presets (\"dark-50\"), solid colors (#hex or (token)), gradients (linear/radial), and fx backdrops (\"fx:dither-waves\", \"fx:fluid-silk(speed=1.2)\"; needs @shavin/fx registered, else falls back to mesh). JSON array of OverlayLayer[] as fallback for advanced cases. Layers composite top-to-bottom."
         },
         {
           "name": "bgVideoPaused",
@@ -2336,6 +2472,87 @@
           "required": false,
           "doc": "When true, pauses the background video (renders a static poster frame instead of autoplay).",
           "default": "false"
+        },
+        {
+          "name": "resizable",
+          "type": "ResizableEdges",
+          "required": false,
+          "doc": "Make the element user-resizable from these edges: \"right\", \"bottom\", \"x\", \"y\", \"both\", true, or a list such as [\"left\", \"bottom-left\"]. Off by default."
+        },
+        {
+          "name": "minWidth",
+          "type": "number",
+          "required": false,
+          "doc": "Minimum width in px while resizable (also applied as CSS min-width)."
+        },
+        {
+          "name": "maxWidth",
+          "type": "number",
+          "required": false,
+          "doc": "Maximum width in px while resizable (also applied as CSS max-width)."
+        },
+        {
+          "name": "minHeight",
+          "type": "number",
+          "required": false,
+          "doc": "Minimum height in px while resizable (also applied as CSS min-height)."
+        },
+        {
+          "name": "maxHeight",
+          "type": "number",
+          "required": false,
+          "doc": "Maximum height in px while resizable (also applied as CSS max-height)."
+        },
+        {
+          "name": "resizeStep",
+          "type": "number",
+          "required": false,
+          "doc": "Arrow-key resize step in px; Shift multiplies by 4. Default 16.",
+          "default": "16"
+        },
+        {
+          "name": "snap",
+          "type": "number",
+          "required": false,
+          "doc": "Round dragged sizes to this grid in px."
+        },
+        {
+          "name": "lockAspectRatio",
+          "type": "boolean",
+          "required": false,
+          "doc": "Keep the width/height ratio while resizing."
+        },
+        {
+          "name": "persistKey",
+          "type": "string",
+          "required": false,
+          "doc": "Remember the size in localStorage under this key."
+        },
+        {
+          "name": "onResize",
+          "type": "(size: ResizeSize) => void",
+          "required": false,
+          "doc": "Fires once per frame while resizing."
+        },
+        {
+          "name": "onResizeEnd",
+          "type": "(size: ResizeSize) => void",
+          "required": false,
+          "doc": "Fires when a resize finishes."
+        },
+        {
+          "name": "resizeHandle",
+          "type": "ResizeHandleVariant",
+          "required": false,
+          "doc": "Handle look: \"line\" (accent line on hover), \"grip\" (always-visible pill) or \"invisible\". Default \"line\".",
+          "default": "line"
+        },
+        {
+          "name": "resizeColor",
+          "type": "ResizeHandleColor",
+          "required": false,
+          "doc": "Handle colour on hover, focus and drag: \"accent\", \"accent-subtle\" (softer accent) or \"neutral\" (monochrome). Default \"accent-subtle\".",
+          "default": "accent-subtle"
         }
       ],
       "builderMeta": {
@@ -3109,6 +3326,12 @@
       "defaultVariants": {},
       "props": [
         {
+          "name": "label",
+          "type": "ReactNode",
+          "required": false,
+          "doc": "Visible group label; names the group for screen readers (WCAG 1.3.1). Or pass `aria-label`."
+        },
+        {
           "name": "children",
           "type": "ReactNode",
           "required": true,
@@ -3233,6 +3456,12 @@
       "variants": {},
       "defaultVariants": {},
       "props": [
+        {
+          "name": "label",
+          "type": "ReactNode",
+          "required": false,
+          "doc": "Visible group label; names the group for screen readers (WCAG 1.3.1). Or pass `aria-label`."
+        },
         {
           "name": "children",
           "type": "ReactNode",
@@ -4021,6 +4250,13 @@
           "required": false,
           "doc": "Size variant: \"sm\" (28px height, matching Select sm) or \"md\" (32px height). Default \"md\".",
           "default": "md"
+        },
+        {
+          "name": "hoverPreview",
+          "type": "boolean",
+          "required": false,
+          "doc": "Preview the hovered option in the field as you move over the list. Default true; set false for a plain select that only applies on click.",
+          "default": "true;"
         }
       ],
       "builderMeta": {
@@ -4111,7 +4347,7 @@
           "name": "bgOverlays",
           "type": "string",
           "required": false,
-          "doc": "Comma-separated shorthand for overlay layers. Supports presets (\"dark-50\"), solid colors (#hex or (token)), and gradients (linear/radial). JSON array of OverlayLayer[] as fallback for advanced cases. Layers composite top-to-bottom."
+          "doc": "Comma-separated shorthand for overlay layers. Supports presets (\"dark-50\"), solid colors (#hex or (token)), gradients (linear/radial), and fx backdrops (\"fx:dither-waves\", \"fx:fluid-silk(speed=1.2)\"; needs @shavin/fx registered, else falls back to mesh). JSON array of OverlayLayer[] as fallback for advanced cases. Layers composite top-to-bottom."
         },
         {
           "name": "bgVideoPaused",
@@ -4469,8 +4705,8 @@
       "group": "components",
       "docsPath": "/components/date-picker",
       "file": "packages/ui/src/primitives/DatePicker/DatePicker.tsx",
-      "kind": "plain",
-      "radix": null,
+      "kind": "radix",
+      "radix": "@radix-ui/react-popover",
       "radiusOverride": false,
       "variants": {},
       "defaultVariants": {},
@@ -4505,6 +4741,18 @@
           "type": "string",
           "required": false,
           "doc": "Optional custom CSS class name."
+        },
+        {
+          "name": "id",
+          "type": "string",
+          "required": false,
+          "doc": "id of the text field, so a `<label htmlFor>` can name it."
+        },
+        {
+          "name": "locale",
+          "type": "string",
+          "required": false,
+          "doc": "Locale for the field text and day names. Defaults to the browser's locale."
         }
       ],
       "builderMeta": {
@@ -4817,14 +5065,14 @@
           "type": "number",
           "required": false,
           "doc": "Diameter in px (default 160).",
-          "default": "160)"
+          "default": "160"
         },
         {
           "name": "thickness",
           "type": "number",
           "required": false,
           "doc": "Ring thickness in px (default 18).",
-          "default": "18)"
+          "default": "18"
         },
         {
           "name": "centerLabel",
@@ -5060,8 +5308,8 @@
       "group": "components",
       "docsPath": "/components/dropdown",
       "file": "packages/ui/src/primitives/Dropdown/Dropdown.tsx",
-      "kind": "plain",
-      "radix": null,
+      "kind": "radix",
+      "radix": "@radix-ui/react-select",
       "radiusOverride": false,
       "variants": {
         "size": [
@@ -5146,6 +5394,24 @@
           "type": "string",
           "required": false,
           "doc": "Optional custom CSS class name."
+        },
+        {
+          "name": "id",
+          "type": "string",
+          "required": false,
+          "doc": "id of the control, so a `<label htmlFor>` can name it."
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "required": false,
+          "doc": "Form field name."
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "required": false,
+          "doc": "Marks the field required."
         }
       ],
       "builderMeta": {
@@ -5470,7 +5736,7 @@
           "name": "bgOverlays",
           "type": "string",
           "required": false,
-          "doc": "Comma-separated shorthand for overlay layers. Supports presets (\"dark-50\"), solid colors (#hex or (token)), and gradients (linear/radial). JSON array of OverlayLayer[] as fallback for advanced cases. Layers composite top-to-bottom."
+          "doc": "Comma-separated shorthand for overlay layers. Supports presets (\"dark-50\"), solid colors (#hex or (token)), gradients (linear/radial), and fx backdrops (\"fx:dither-waves\", \"fx:fluid-silk(speed=1.2)\"; needs @shavin/fx registered, else falls back to mesh). JSON array of OverlayLayer[] as fallback for advanced cases. Layers composite top-to-bottom."
         },
         {
           "name": "bgVideoPaused",
@@ -5478,6 +5744,87 @@
           "required": false,
           "doc": "When true, pauses the background video (renders a static poster frame instead of autoplay).",
           "default": "false"
+        },
+        {
+          "name": "resizable",
+          "type": "ResizableEdges",
+          "required": false,
+          "doc": "Make the element user-resizable from these edges: \"right\", \"bottom\", \"x\", \"y\", \"both\", true, or a list such as [\"left\", \"bottom-left\"]. Off by default."
+        },
+        {
+          "name": "minWidth",
+          "type": "number",
+          "required": false,
+          "doc": "Minimum width in px while resizable (also applied as CSS min-width)."
+        },
+        {
+          "name": "maxWidth",
+          "type": "number",
+          "required": false,
+          "doc": "Maximum width in px while resizable (also applied as CSS max-width)."
+        },
+        {
+          "name": "minHeight",
+          "type": "number",
+          "required": false,
+          "doc": "Minimum height in px while resizable (also applied as CSS min-height)."
+        },
+        {
+          "name": "maxHeight",
+          "type": "number",
+          "required": false,
+          "doc": "Maximum height in px while resizable (also applied as CSS max-height)."
+        },
+        {
+          "name": "resizeStep",
+          "type": "number",
+          "required": false,
+          "doc": "Arrow-key resize step in px; Shift multiplies by 4. Default 16.",
+          "default": "16"
+        },
+        {
+          "name": "snap",
+          "type": "number",
+          "required": false,
+          "doc": "Round dragged sizes to this grid in px."
+        },
+        {
+          "name": "lockAspectRatio",
+          "type": "boolean",
+          "required": false,
+          "doc": "Keep the width/height ratio while resizing."
+        },
+        {
+          "name": "persistKey",
+          "type": "string",
+          "required": false,
+          "doc": "Remember the size in localStorage under this key."
+        },
+        {
+          "name": "onResize",
+          "type": "(size: ResizeSize) => void",
+          "required": false,
+          "doc": "Fires once per frame while resizing."
+        },
+        {
+          "name": "onResizeEnd",
+          "type": "(size: ResizeSize) => void",
+          "required": false,
+          "doc": "Fires when a resize finishes."
+        },
+        {
+          "name": "resizeHandle",
+          "type": "ResizeHandleVariant",
+          "required": false,
+          "doc": "Handle look: \"line\" (accent line on hover), \"grip\" (always-visible pill) or \"invisible\". Default \"line\".",
+          "default": "line"
+        },
+        {
+          "name": "resizeColor",
+          "type": "ResizeHandleColor",
+          "required": false,
+          "doc": "Handle colour on hover, focus and drag: \"accent\", \"accent-subtle\" (softer accent) or \"neutral\" (monochrome). Default \"accent-subtle\".",
+          "default": "accent-subtle"
         },
         {
           "name": "as",
@@ -5497,6 +5844,12 @@
           "type": "Surface",
           "required": false,
           "doc": "Surface contrast scope intent. \"dark\"/\"light\" auto-invert against the page theme (contrast band). \"dark-always\"/\"light-always\" lock to one theme regardless of page (for media backgrounds). Undefined inherits page theme."
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLElement>",
+          "required": false,
+          "doc": "Ref to the rendered element."
         }
       ],
       "builderMeta": {
@@ -5748,7 +6101,7 @@
           "name": "bgOverlays",
           "type": "string",
           "required": false,
-          "doc": "Comma-separated shorthand for overlay layers. Supports presets (\"dark-50\"), solid colors (#hex or (token)), and gradients (linear/radial). JSON array of OverlayLayer[] as fallback for advanced cases. Layers composite top-to-bottom."
+          "doc": "Comma-separated shorthand for overlay layers. Supports presets (\"dark-50\"), solid colors (#hex or (token)), gradients (linear/radial), and fx backdrops (\"fx:dither-waves\", \"fx:fluid-silk(speed=1.2)\"; needs @shavin/fx registered, else falls back to mesh). JSON array of OverlayLayer[] as fallback for advanced cases. Layers composite top-to-bottom."
         },
         {
           "name": "bgVideoPaused",
@@ -6092,6 +6445,12 @@
           "type": "string",
           "required": false,
           "doc": ""
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "required": false,
+          "doc": "Accessible name, used for the screen-reader table caption and the scroll region."
         }
       ],
       "builderMeta": {
@@ -6464,7 +6823,7 @@
           "type": "number",
           "required": false,
           "doc": "Stroke width for vector lines (from 0.5 to 3.0 in 0.25 steps, default 2).",
-          "default": "2)"
+          "default": "2"
         },
         {
           "name": "absoluteStrokeWidth",
@@ -6834,6 +7193,12 @@
           "type": "React.ReactNode",
           "required": false,
           "doc": "Custom placeholder node shown when src is missing or fails to load."
+        },
+        {
+          "name": "bgOverlays",
+          "type": "string",
+          "required": false,
+          "doc": "Overlay layers composited on top of the image (scrim / gradient / solid / fx), same shorthand + JSON format as a layout's bgOverlays — one unified layer system."
         }
       ],
       "builderMeta": {
@@ -6846,7 +7211,7 @@
       "exports": [
         "Image"
       ],
-      "description": "Image primitive with automatic broken-link placeholder fallback, aspect-ratio preservation, and object-fit scaling.",
+      "description": "Image primitive with automatic broken-link placeholder fallback, aspect-ratio preservation, object-fit scaling, and overlay layers (scrim / gradient / solid / fx) composited on top.",
       "bestPractices": [
         {
           "guidance": true,
@@ -6861,10 +7226,14 @@
         {
           "title": "Hero Feature Image",
           "code": "<Image src=\"https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800\" alt=\"Abstract shapes\" ratio=\"16/9\" fit=\"cover\" />"
+        },
+        {
+          "title": "Image with a scrim overlay",
+          "code": "<Image src=\"https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800\" alt=\"Abstract shapes\" ratio=\"16/9\" fit=\"cover\" bgOverlays=\"scrim\" />"
         }
       ],
       "docsDense": {
-        "description": "Image primitive with automatic broken-link placeholder fallback, aspect-ratio preservation, and object-fit scaling.",
+        "description": "Image primitive with automatic broken-link placeholder fallback, aspect-ratio preservation, object-fit scaling, and overlay layers (scrim / gradient / solid / fx) composited on top.",
         "bestPractices": [
           {
             "guidance": true,
@@ -7043,6 +7412,12 @@
           "doc": "One record per x position: `label` plus a number under each series `key` (`value` when `series` is omitted)."
         },
         {
+          "name": "description",
+          "type": "string",
+          "required": false,
+          "doc": "One-sentence takeaway, e.g. \"Revenue doubled after the March launch.\""
+        },
+        {
           "name": "height",
           "type": "number",
           "required": false,
@@ -7053,6 +7428,12 @@
           "type": "ChartPadding",
           "required": false,
           "doc": "Plot padding in px, merged over the defaults."
+        },
+        {
+          "name": "patterns",
+          "type": "boolean",
+          "required": false,
+          "doc": "Tell series apart by more than colour: fill patterns on bars and slices, dashes and marker shapes on lines, repeated in the legend and tooltip (WCAG 1.4.1). Default true. Turn off only when every series is labelled directly on the chart."
         },
         {
           "name": "series",
@@ -7102,6 +7483,12 @@
           "type": "number",
           "required": false,
           "doc": "Number of y-axis intervals (default 4, so 5 ticks)."
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "required": false,
+          "doc": "Accessible name, e.g. \"Monthly revenue, 2026\". Read by screen readers and used as the data table caption."
         },
         {
           "name": "type",
@@ -7918,6 +8305,57 @@
       "partOf": "BlockPreview"
     },
     {
+      "name": "MotionPauseButton",
+      "group": "components",
+      "docsPath": "/components/video",
+      "file": "packages/ui/src/primitives/Video/PauseToggle.tsx",
+      "kind": "plain",
+      "radix": null,
+      "radiusOverride": false,
+      "variants": {},
+      "defaultVariants": {},
+      "props": [
+        {
+          "name": "className",
+          "type": "string",
+          "required": false,
+          "doc": ""
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "required": false,
+          "doc": "What moves, read after \"Pause\"/\"Play\": \"background video\", \"background animation\"."
+        },
+        {
+          "name": "onToggle",
+          "type": "() => void",
+          "required": true,
+          "doc": ""
+        },
+        {
+          "name": "playing",
+          "type": "boolean",
+          "required": true,
+          "doc": ""
+        }
+      ],
+      "builderMeta": {
+        "label": "Motion Pause Button",
+        "isLayout": false,
+        "hasChildren": true,
+        "accepts": [
+          "*"
+        ],
+        "iconSlots": []
+      },
+      "exports": [
+        "MotionPauseButton",
+        "VideoPauseToggle"
+      ],
+      "partOf": "Video"
+    },
+    {
       "name": "Murmur",
       "group": "components",
       "docsPath": "/components/murmur",
@@ -7966,8 +8404,8 @@
           "name": "dotSize",
           "type": "number",
           "required": false,
-          "doc": "Dot size multiplier. Default 1.",
-          "default": "1"
+          "doc": "Dot size multiplier. Default 0.4.",
+          "default": "0.4"
         },
         {
           "name": "label",
@@ -7989,7 +8427,7 @@
       "exports": [
         "Murmur"
       ],
-      "description": "A living dot-sphere that shows what an AI is doing: thinking, working, listening, idle. Free states ship here; Pro states and extra motion come from @shavin/fx.",
+      "description": "A living dot-sphere that shows what an AI is doing: idle, thinking, working, listening, searching, composing, weaving, connecting, plus the orbiting and looping loaders. Every state is free.",
       "bestPractices": [
         {
           "guidance": true,
@@ -8007,15 +8445,23 @@
         },
         {
           "title": "Fine dots",
-          "code": "<Murmur state=\"thinking\" size={64} dots={160} dotSize={0.6} />"
+          "code": "<Murmur state=\"thinking\" size={64} dots={160} dotSize={0.25} />"
         },
         {
           "title": "Listening with level",
           "code": "<Murmur state=\"listening\" size={48} level={0.6} />"
+        },
+        {
+          "title": "Searching",
+          "code": "<Murmur state=\"searching\" size={32} />"
+        },
+        {
+          "title": "Beaded ring loader",
+          "code": "<Murmur state=\"orbiting\" size={20} dots={18} label=\"Loading\" />"
         }
       ],
       "docsDense": {
-        "description": "living dot-sphere that shows what AI is doing: thinking, working, listening, idle. Free states ship here; Pro states and extra motion come from @shavin/fx.",
+        "description": "living dot-sphere that shows what AI is doing: idle, thinking, working, listening, searching, composing, weaving, connecting, plus orbiting and looping loaders. Every state is free.",
         "bestPractices": [
           {
             "guidance": true,
@@ -8255,6 +8701,241 @@
           }
         ]
       }
+    },
+    {
+      "name": "Panel",
+      "group": "layout",
+      "docsPath": "/components/panel-group",
+      "importPath": "@shavin/ui/panels",
+      "file": "packages/ui/src/primitives/PanelGroup/PanelGroup.tsx",
+      "kind": "plain",
+      "radix": null,
+      "radiusOverride": false,
+      "variants": {},
+      "defaultVariants": {},
+      "props": [
+        {
+          "name": "id",
+          "type": "string",
+          "required": false,
+          "doc": "Stable id; required for `persistKey` and imperative APIs."
+        }
+      ],
+      "builderMeta": {
+        "label": "Panel",
+        "isLayout": false,
+        "hasChildren": true,
+        "accepts": [
+          "*"
+        ],
+        "iconSlots": []
+      },
+      "exports": [
+        "Panel",
+        "PanelGroup",
+        "PanelHandle"
+      ],
+      "partOf": "PanelGroup"
+    },
+    {
+      "name": "PanelGroup",
+      "group": "layout",
+      "docsPath": "/components/panel-group",
+      "importPath": "@shavin/ui/panels",
+      "file": "packages/ui/src/primitives/PanelGroup/PanelGroup.tsx",
+      "kind": "plain",
+      "radix": null,
+      "radiusOverride": false,
+      "variants": {
+        "variant": [
+          "line",
+          "grip",
+          "invisible"
+        ],
+        "color": [
+          "accent",
+          "accent-subtle",
+          "neutral"
+        ]
+      },
+      "defaultVariants": {
+        "variant": "line",
+        "color": "accent-subtle"
+      },
+      "props": [
+        {
+          "name": "orientation",
+          "type": "\"horizontal\" | \"vertical\"",
+          "required": false,
+          "doc": "Split direction: \"horizontal\" puts panels side by side, \"vertical\" stacks them. Default \"horizontal\".",
+          "default": "horizontal"
+        },
+        {
+          "name": "persistKey",
+          "type": "string",
+          "required": false,
+          "doc": "Remember the layout under this key (saved after the user resizes). Panels need stable `id`s."
+        },
+        {
+          "name": "storage",
+          "type": "LayoutStorage",
+          "required": false,
+          "doc": "Where `persistKey` saves the layout. Default localStorage. For SSR without a layout jump, read the layout from a cookie on the server and pass it as `defaultLayout`.",
+          "default": "localStorage"
+        }
+      ],
+      "builderMeta": {
+        "label": "Panel Group",
+        "isLayout": false,
+        "hasChildren": true,
+        "accepts": [
+          "*"
+        ],
+        "iconSlots": []
+      },
+      "exports": [
+        "Panel",
+        "PanelGroup",
+        "PanelHandle"
+      ],
+      "description": "Resizable split panes that trade space with each other (code / preview / terminal). Import from \"@shavin/ui/panels\", not the root. Built on react-resizable-panels. For one element that resizes itself, use the resizable prop on Box, Flex or Card.",
+      "bestPractices": [
+        {
+          "guidance": true,
+          "description": "Import from \"@shavin/ui/panels\" so apps that never split panes do not bundle the panel engine."
+        },
+        {
+          "guidance": true,
+          "description": "Give every Panel a stable id when using persistKey or the imperative refs."
+        },
+        {
+          "guidance": true,
+          "description": "Give the PanelGroup's parent a fixed height (h-full inside an app shell, or an explicit height)."
+        },
+        {
+          "guidance": false,
+          "description": "Do not use PanelGroup for a single sidebar next to flexible content; use Sidebar resizable or Box resizable."
+        },
+        {
+          "guidance": false,
+          "description": "Do not wrap PanelHandle in another element; it must be a direct child of PanelGroup."
+        }
+      ],
+      "examples": [
+        {
+          "title": "Editor split",
+          "code": "<PanelGroup orientation=\"horizontal\" persistKey=\"editor\" className=\"h-96\"><Panel id=\"files\" defaultSize=\"20%\" minSize={160} collapsible><Box className=\"h-full p-4\">Files</Box></Panel><PanelHandle /><Panel id=\"code\" minSize=\"30%\"><Box className=\"h-full p-4\">Code</Box></Panel><PanelHandle variant=\"grip\" /><Panel id=\"preview\" defaultSize=\"35%\"><Box className=\"h-full p-4\">Preview</Box></Panel></PanelGroup>"
+        },
+        {
+          "title": "Nested vertical split",
+          "code": "<PanelGroup className=\"h-96\"><Panel id=\"main\"><PanelGroup orientation=\"vertical\"><Panel id=\"editor\"><Box className=\"h-full p-4\">Editor</Box></Panel><PanelHandle /><Panel id=\"terminal\" defaultSize=\"30%\" minSize={80}><Box className=\"h-full p-4\">Terminal</Box></Panel></PanelGroup></Panel><PanelHandle /><Panel id=\"chat\" defaultSize=\"30%\"><Box className=\"h-full p-4\">Chat</Box></Panel></PanelGroup>"
+        }
+      ],
+      "docsDense": {
+        "description": "Resizable split panes that trade space with each other (code / preview / terminal). Import from \"@shavin/ui/panels\", not root. Built on react-resizable-panels. For one element that resizes itself, use resizable prop on Box, Flex or Card.",
+        "bestPractices": [
+          {
+            "guidance": true,
+            "description": "Import from \"@shavin/ui/panels\" so apps that never split panes do not bundle panel engine."
+          },
+          {
+            "guidance": true,
+            "description": "Give every Panel stable id when using persistKey or imperative refs."
+          },
+          {
+            "guidance": true,
+            "description": "Give PanelGroup's parent fixed height (h-full inside app shell, or explicit height)."
+          },
+          {
+            "guidance": false,
+            "description": "Do not use PanelGroup for single sidebar next to flexible content; use Sidebar resizable or Box resizable."
+          },
+          {
+            "guidance": false,
+            "description": "Do not wrap PanelHandle in another element; it must be direct child of PanelGroup."
+          }
+        ]
+      }
+    },
+    {
+      "name": "PanelHandle",
+      "group": "layout",
+      "docsPath": "/components/panel-group",
+      "importPath": "@shavin/ui/panels",
+      "file": "packages/ui/src/primitives/PanelGroup/PanelGroup.tsx",
+      "kind": "plain",
+      "radix": null,
+      "radiusOverride": false,
+      "variants": {
+        "variant": [
+          "line",
+          "grip",
+          "invisible"
+        ],
+        "color": [
+          "accent",
+          "accent-subtle",
+          "neutral"
+        ]
+      },
+      "defaultVariants": {
+        "variant": "line",
+        "color": "accent-subtle"
+      },
+      "props": [
+        {
+          "name": "color",
+          "type": "\"accent\" | \"accent-subtle\" | \"neutral\" | null",
+          "required": false,
+          "doc": ""
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "required": false,
+          "doc": "When disabled, the separator cannot be used to resize its neighboring panels. ℹ️ The panels may still be resized indirectly (while other panels are being resized). To prevent a panel from being resized at all, it needs to also be disabled."
+        },
+        {
+          "name": "disableDoubleClick",
+          "type": "boolean",
+          "required": false,
+          "doc": "When true, double-clicking this `Separator` will not reset its `Panel` to its default size."
+        },
+        {
+          "name": "elementRef",
+          "type": "Ref<HTMLDivElement>",
+          "required": false,
+          "doc": "Ref attached to the root `HTMLDivElement`."
+        },
+        {
+          "name": "preview",
+          "type": "ReactNode",
+          "required": false,
+          "doc": "Overrides the `Group` default preview for this `Separator` when `resizePreviewMode` is \"separator\"."
+        },
+        {
+          "name": "variant",
+          "type": "\"line\" | \"grip\" | \"invisible\" | null",
+          "required": false,
+          "doc": ""
+        }
+      ],
+      "builderMeta": {
+        "label": "Panel Handle",
+        "isLayout": false,
+        "hasChildren": true,
+        "accepts": [
+          "*"
+        ],
+        "iconSlots": []
+      },
+      "exports": [
+        "Panel",
+        "PanelGroup",
+        "PanelHandle"
+      ],
+      "partOf": "PanelGroup",
+      "inheritsDomProps": true
     },
     {
       "name": "Popover",
@@ -9199,6 +9880,193 @@
       }
     },
     {
+      "name": "ResizeHandle",
+      "group": "layout",
+      "docsPath": "/components/resizable",
+      "file": "packages/ui/src/primitives/Resizable/ResizeHandle.tsx",
+      "kind": "plain",
+      "radix": null,
+      "radiusOverride": false,
+      "variants": {
+        "edge": [
+          "right",
+          "left",
+          "bottom",
+          "top",
+          "top-left",
+          "top-right",
+          "bottom-left",
+          "bottom-right"
+        ],
+        "variant": [
+          "line",
+          "grip",
+          "invisible"
+        ],
+        "color": [
+          "accent",
+          "accent-subtle",
+          "neutral"
+        ]
+      },
+      "defaultVariants": {
+        "variant": "line",
+        "color": "accent-subtle"
+      },
+      "props": [
+        {
+          "name": "edge",
+          "type": "ResizeEdge",
+          "required": true,
+          "doc": "Edge or corner this handle sits on."
+        },
+        {
+          "name": "onPointerDown",
+          "type": "HTMLAttributes<HTMLDivElement>[\"onPointerDown\"]",
+          "required": false,
+          "doc": "Spread from `useResizable().getHandleProps(edge)`."
+        },
+        {
+          "name": "onKeyDown",
+          "type": "HTMLAttributes<HTMLDivElement>[\"onKeyDown\"]",
+          "required": false,
+          "doc": ""
+        },
+        {
+          "name": "onDoubleClick",
+          "type": "() => void",
+          "required": false,
+          "doc": ""
+        }
+      ],
+      "builderMeta": {
+        "label": "Resize Handle",
+        "isLayout": false,
+        "hasChildren": true,
+        "accepts": [
+          "*"
+        ],
+        "iconSlots": []
+      },
+      "exports": [
+        "ResizeHandle",
+        "ResizeHandles"
+      ],
+      "description": "Resize handle and the headless useResizable engine behind the resizable prop on Box, Flex, Card and Sidebar. The element owns its own size; for panes that trade space with neighbours use PanelGroup from @shavin/ui/panels.",
+      "bestPractices": [
+        {
+          "guidance": true,
+          "description": "Use the resizable prop when one element resizes against flexible space (a sidebar next to a flex-1 main area, an inspector, a chat input)."
+        },
+        {
+          "guidance": true,
+          "description": "Always set minWidth/maxWidth (or minHeight/maxHeight) so the element cannot be dragged to nothing or past its layout."
+        },
+        {
+          "guidance": true,
+          "description": "Use PanelGroup from @shavin/ui/panels when two or more panes must share a fixed space."
+        },
+        {
+          "guidance": false,
+          "description": "Do not put resizable on a flex-1 item: flex-grow overrides the dragged width."
+        },
+        {
+          "guidance": false,
+          "description": "Do not resize from left or top on an absolutely positioned element without moving it in onResize; it grows backwards."
+        }
+      ],
+      "examples": [
+        {
+          "title": "Resizable inspector",
+          "code": "<Flex className=\"h-80\"><Box className=\"flex-1\">Canvas</Box><Box resizable=\"left\" minWidth={240} maxWidth={480} persistKey=\"inspector\" className=\"w-72 border-l border-hairline bg-surface p-4\">Inspector</Box></Flex>"
+        },
+        {
+          "title": "Resizable card",
+          "code": "<Card resizable=\"both\" resizeHandle=\"grip\" minWidth={200} minHeight={120} padding=\"md\" className=\"w-72 h-40\"><Flex direction=\"column\" gap=\"3\"><Text weight=\"medium\">Notes</Text><Text color=\"subtle\">Drag the corner.</Text></Flex></Card>"
+        },
+        {
+          "title": "Headless hook",
+          "code": "const r = useResizable({ edges: \"x\", minWidth: 200 });\n<div ref={r.ref} style={r.style} className=\"relative\"><ResizeHandles state={r} /></div>"
+        }
+      ],
+      "docsDense": {
+        "description": "Resize handle and headless useResizable engine behind resizable prop on Box, Flex, Card and Sidebar. element owns its own size; for panes that trade space with neighbours use PanelGroup from @shavin/ui/panels.",
+        "bestPractices": [
+          {
+            "guidance": true,
+            "description": "Use resizable prop when one element resizes against flexible space ( sidebar next to flex-1 main area, inspector, chat input)."
+          },
+          {
+            "guidance": true,
+            "description": "Always set minWidth/maxWidth (or minHeight/maxHeight) so element cannot be dragged to nothing or past its layout."
+          },
+          {
+            "guidance": true,
+            "description": "Use PanelGroup from @shavin/ui/panels when two or more panes must share fixed space."
+          },
+          {
+            "guidance": false,
+            "description": "Do not put resizable on flex-1 item: flex-grow overrides dragged width."
+          },
+          {
+            "guidance": false,
+            "description": "Do not resize from left or top on absolutely positioned element without moving it in onResize; it grows backwards."
+          }
+        ]
+      }
+    },
+    {
+      "name": "ResizeHandles",
+      "group": "layout",
+      "docsPath": "/components/resizable",
+      "file": "packages/ui/src/primitives/Resizable/ResizeHandle.tsx",
+      "kind": "plain",
+      "radix": null,
+      "radiusOverride": false,
+      "variants": {},
+      "defaultVariants": {},
+      "props": [
+        {
+          "name": "color",
+          "type": "\"accent\" | \"accent-subtle\" | \"neutral\"",
+          "required": false,
+          "doc": ""
+        },
+        {
+          "name": "sizeHint",
+          "type": "boolean",
+          "required": false,
+          "doc": "Show \"320 × 200\" while dragging. Default true."
+        },
+        {
+          "name": "state",
+          "type": "UseResizableResult",
+          "required": true,
+          "doc": ""
+        },
+        {
+          "name": "variant",
+          "type": "\"line\" | \"grip\" | \"invisible\"",
+          "required": false,
+          "doc": ""
+        }
+      ],
+      "builderMeta": {
+        "label": "Resize Handles",
+        "isLayout": false,
+        "hasChildren": true,
+        "accepts": [
+          "*"
+        ],
+        "iconSlots": []
+      },
+      "exports": [
+        "ResizeHandle",
+        "ResizeHandles"
+      ],
+      "partOf": "ResizeHandle"
+    },
+    {
       "name": "Row",
       "group": "components",
       "docsPath": "/components/row",
@@ -9480,7 +10348,7 @@
           "name": "className",
           "type": "string",
           "required": false,
-          "doc": "Custom outer container class name (e.g. h-64 or max-h-96)."
+          "doc": "Names the scrollable region for screen readers. */ \"aria-label\"?: string; /** Custom outer container class name (e.g. h-64 or max-h-96)."
         },
         {
           "name": "style",
@@ -9542,6 +10410,7 @@
       "radiusOverride": false,
       "variants": {
         "size": [
+          "none",
           "1",
           "2",
           "3",
@@ -9553,7 +10422,7 @@
         ]
       },
       "defaultVariants": {
-        "size": "2"
+        "size": "none"
       },
       "props": [
         {
@@ -9579,7 +10448,7 @@
           "name": "bgOverlays",
           "type": "string",
           "required": false,
-          "doc": "Comma-separated shorthand for overlay layers. Supports presets (\"dark-50\"), solid colors (#hex or (token)), and gradients (linear/radial). JSON array of OverlayLayer[] as fallback for advanced cases. Layers composite top-to-bottom."
+          "doc": "Comma-separated shorthand for overlay layers. Supports presets (\"dark-50\"), solid colors (#hex or (token)), gradients (linear/radial), and fx backdrops (\"fx:dither-waves\", \"fx:fluid-silk(speed=1.2)\"; needs @shavin/fx registered, else falls back to mesh). JSON array of OverlayLayer[] as fallback for advanced cases. Layers composite top-to-bottom."
         },
         {
           "name": "bgVideoPaused",
@@ -9620,8 +10489,12 @@
       "exports": [
         "Section"
       ],
-      "description": "Vertical-rhythm section primitive with padding presets (1-4), responsive role sizes (compact/strip/body/hero) and background media props. Ideal for full-bleed hero bands with bgVideo or bgImage.",
+      "description": "Semantic full-bleed band primitive. No padding by default (size=\"none\") — opt into vertical rhythm with a size preset or a py-* className. Padding presets (1-4), responsive role sizes (compact/strip/body/hero) and background media props. Ideal for full-bleed hero bands with bgVideo or bgImage.",
       "bestPractices": [
+        {
+          "guidance": true,
+          "description": "Section has no padding by default — always pick a size (or py-* className) for content sections; a bare <Section> is flat on purpose (utility screens, custom spacing)."
+        },
         {
           "guidance": true,
           "description": "Use Section for page-level vertical rhythm bands — combine with Container inside for content width constraint."
@@ -9641,8 +10514,12 @@
       ],
       "examples": [
         {
-          "title": "Padded Section with Container",
-          "code": "<Section size=\"2\"><Container size=\"md\"><Heading size=\"xl\">Section Title</Heading><Text>Content goes here.</Text></Container></Section>"
+          "title": "Content Section with Container",
+          "code": "<Section size=\"body\"><Container size=\"md\"><Heading size=\"xl\">Section Title</Heading><Text>Content goes here.</Text></Container></Section>"
+        },
+        {
+          "title": "Flat band (no padding)",
+          "code": "<Section><Container size=\"md\"><Text>Edge-to-edge band with no vertical padding.</Text></Container></Section>"
         },
         {
           "title": "Full-Screen Hero with Background Video",
@@ -9662,8 +10539,12 @@
         }
       ],
       "docsDense": {
-        "description": "Vertical-rhythm section primitive with padding presets (1-4), responsive role sizes (compact/strip/body/hero) and background media props. Ideal for full-bleed hero bands with bgVideo or bgImage.",
+        "description": "Semantic full-bleed band primitive. No padding by default (size=\"none\") — opt into vertical rhythm with size preset or py-* className. Padding presets (1-4), responsive role sizes (compact/strip/body/hero) and background media props. Ideal for full-bleed hero bands with bgVideo or bgImage.",
         "bestPractices": [
+          {
+            "guidance": true,
+            "description": "Section has no padding by default — always pick size (or py-* className) for content sections; bare <Section> is flat on purpose (utility screens, custom spacing)."
+          },
           {
             "guidance": true,
             "description": "Use Section for page-level vertical rhythm bands — combine with Container inside for content width constraint."
@@ -9694,6 +10575,7 @@
       "variants": {
         "variant": [
           "default",
+          "subtle",
           "pill",
           "expand",
           "icon"
@@ -9718,7 +10600,7 @@
           "name": "variant",
           "type": "Variant",
           "required": false,
-          "doc": "default | pill | expand | icon.",
+          "doc": "default | pill | subtle | expand | icon.",
           "default": "|"
         },
         {
@@ -9741,7 +10623,7 @@
         "SegmentedControl",
         "SegmentedControlItem"
       ],
-      "description": "Exclusive single-select toggle group built on Radix ToggleGroup primitive supporting default, pill, expand, and icon variants.",
+      "description": "Exclusive single-select toggle group built on Radix ToggleGroup primitive supporting default, pill, subtle, expand, and icon variants, with an animated active indicator that slides between items.",
       "bestPractices": [
         {
           "guidance": true,
@@ -9754,12 +10636,20 @@
       ],
       "examples": [
         {
-          "title": "View Mode Switcher",
-          "code": "<SegmentedControl value=\"list\" onValueChange={() => {}}><SegmentedControlItem value=\"list\">List</SegmentedControlItem><SegmentedControlItem value=\"grid\">Grid</SegmentedControlItem></SegmentedControl>"
+          "title": "Default",
+          "code": "function ViewSwitch() {\n  const [v, setV] = useState(\"list\");\n  return (\n    <SegmentedControl value={v} onValueChange={(x) => x && setV(x)}>\n      <SegmentedControlItem value=\"list\">List</SegmentedControlItem>\n      <SegmentedControlItem value=\"grid\">Grid</SegmentedControlItem>\n      <SegmentedControlItem value=\"board\">Board</SegmentedControlItem>\n    </SegmentedControl>\n  );\n}"
+        },
+        {
+          "title": "Subtle",
+          "code": "function FilterSwitch() {\n  const [v, setV] = useState(\"recent\");\n  return (\n    <SegmentedControl variant=\"subtle\" value={v} onValueChange={(x) => x && setV(x)}>\n      <SegmentedControlItem value=\"recent\">Recent</SegmentedControlItem>\n      <SegmentedControlItem value=\"starred\">Starred</SegmentedControlItem>\n      <SegmentedControlItem value=\"trash\">Trash</SegmentedControlItem>\n    </SegmentedControl>\n  );\n}"
+        },
+        {
+          "title": "Pill",
+          "code": "function RangeSwitch() {\n  const [v, setV] = useState(\"week\");\n  return (\n    <SegmentedControl variant=\"pill\" value={v} onValueChange={(x) => x && setV(x)}>\n      <SegmentedControlItem value=\"day\">Day</SegmentedControlItem>\n      <SegmentedControlItem value=\"week\">Week</SegmentedControlItem>\n      <SegmentedControlItem value=\"month\">Month</SegmentedControlItem>\n    </SegmentedControl>\n  );\n}"
         }
       ],
       "docsDense": {
-        "description": "Exclusive single-select toggle group built on Radix ToggleGroup primitive supporting default, pill, expand, and icon variants.",
+        "description": "Exclusive single-select toggle group built on Radix ToggleGroup primitive supporting default, pill, subtle, expand, and icon variants, with animated active indicator that slides between items.",
         "bestPractices": [
           {
             "guidance": true,
@@ -9915,10 +10805,34 @@
           "doc": "Select trigger size. Heights match Button, TextField and Combobox: sm 32px, md 40px, lg 48px."
         },
         {
+          "name": "variant",
+          "type": "\"outline\" | \"soft\"",
+          "required": false,
+          "doc": "outline (default): a 3:1 control border (WCAG 1.4.11). soft: filled and borderless, for dense tool panels; the value and the chevron identify it. Both show the 2px focus ring."
+        },
+        {
           "name": "disabled",
           "type": "boolean",
           "required": false,
           "doc": "Whether the control is disabled."
+        },
+        {
+          "name": "id",
+          "type": "string",
+          "required": false,
+          "doc": "id of the trigger, so a `<label htmlFor>` can name it."
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "required": false,
+          "doc": "Form field name; submits the value through Radix's hidden native select."
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "required": false,
+          "doc": "Marks the field required for forms and assistive tech."
         }
       ],
       "builderMeta": {
@@ -10161,6 +11075,12 @@
       "defaultVariants": {},
       "props": [
         {
+          "name": "bridgePort",
+          "type": "number",
+          "required": false,
+          "doc": "Port the local Agent-Browser bridge listens on. Defaults to `NEXT_PUBLIC_SHAVIN_BRIDGE_PORT` / `VITE_SHAVIN_BRIDGE_PORT`, then the built-in default. Set this when you run `npx"
+        },
+        {
           "name": "className",
           "type": "string",
           "required": false,
@@ -10225,6 +11145,12 @@
           "type": "boolean",
           "required": false,
           "doc": "If true, forces ShavinDevTools to render even in production. By default, it is omitted in production (NODE_ENV === 'production')."
+        },
+        {
+          "name": "bridgePort",
+          "type": "number",
+          "required": false,
+          "doc": "Port the local Agent-Browser bridge listens on. Defaults to `NEXT_PUBLIC_SHAVIN_BRIDGE_PORT` / `VITE_SHAVIN_BRIDGE_PORT`, then the built-in default. Set this when you run `npx @shavin/cli bridge --port <n>`."
         }
       ],
       "builderMeta": {
@@ -10349,6 +11275,19 @@
           "required": false,
           "doc": "Maximum width in pixels when resizable. Default 420.",
           "default": "420"
+        },
+        {
+          "name": "persistKey",
+          "type": "string",
+          "required": false,
+          "doc": "Remember the resized width in localStorage under this key."
+        },
+        {
+          "name": "resizeColor",
+          "type": "ResizeHandleColor",
+          "required": false,
+          "doc": "Resize handle colour on hover, focus and drag. Default \"accent-subtle\".",
+          "default": "accent-subtle"
         },
         {
           "name": "children",
@@ -10946,6 +11885,12 @@
           "default": "vertical"
         },
         {
+          "name": "getLabel",
+          "type": "(item: T, index: number) => string",
+          "required": false,
+          "doc": "Name of each item for screen-reader announcements. Defaults to its key."
+        },
+        {
           "name": "className",
           "type": "string",
           "required": false,
@@ -11079,7 +12024,13 @@
           "type": "number",
           "required": false,
           "doc": "Gap between bars in px (default 4).",
-          "default": "4)"
+          "default": "4"
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "required": false,
+          "doc": "What the trend says, e.g. \"Signups, up 12% this week\". Makes the sparkline an image with that name; without it the sparkline is decorative (pair it with text nearby)."
         }
       ],
       "builderMeta": {
@@ -11168,6 +12119,13 @@
           "required": false,
           "doc": "Animation cycle interval in ms for variant=\"glyph\" or variant=\"ellipsis\". Default 200",
           "default": "200"
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "required": false,
+          "doc": "What is loading, for screen readers. Default \"Loading\".",
+          "default": "Loading"
         }
       ],
       "builderMeta": {
@@ -11257,6 +12215,25 @@
           "type": "string",
           "required": false,
           "doc": "Input placeholder text."
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "required": false,
+          "doc": "Accessible name of the dialog and its search field. Default \"Search\".",
+          "default": "Search"
+        },
+        {
+          "name": "activeOptionId",
+          "type": "string",
+          "required": false,
+          "doc": "id of the highlighted result. When set, the field becomes an ARIA combobox and the results area a listbox: give each result `role=\"option\"`, an `id` and `aria-selected`."
+        },
+        {
+          "name": "resultCount",
+          "type": "number",
+          "required": false,
+          "doc": "Number of results, announced to screen readers as it changes."
         },
         {
           "name": "children",
@@ -11578,40 +12555,10 @@
       },
       "props": [
         {
-          "name": "asChild",
-          "type": "boolean",
+          "name": "label",
+          "type": "string",
           "required": false,
-          "doc": ""
-        },
-        {
-          "name": "checked",
-          "type": "boolean",
-          "required": false,
-          "doc": ""
-        },
-        {
-          "name": "defaultChecked",
-          "type": "boolean",
-          "required": false,
-          "doc": ""
-        },
-        {
-          "name": "onCheckedChange",
-          "type": "((checked: boolean) => void)",
-          "required": false,
-          "doc": ""
-        },
-        {
-          "name": "required",
-          "type": "boolean",
-          "required": false,
-          "doc": ""
-        },
-        {
-          "name": "size",
-          "type": "\"sm\" | \"md\" | null",
-          "required": false,
-          "doc": ""
+          "doc": "Visible label; wraps the switch in a <label> so it names it and is clickable."
         }
       ],
       "builderMeta": {
@@ -11653,8 +12600,7 @@
             "description": "Do not use Switch for form items requiring manual Submit button — reach for Checkbox instead."
           }
         ]
-      },
-      "inheritsDomProps": true
+      }
     },
     {
       "name": "Table",
@@ -11987,8 +12933,20 @@
       ],
       "examples": [
         {
-          "title": "Data-Driven Stateful Tabs",
-          "code": "<Tabs variant=\"line\" items={[{ label: \"Overview\", content: \"Overview Content\" }, { label: \"Settings\", content: \"Settings Content\" }]} />"
+          "title": "Line (default)",
+          "code": "<Tabs variant=\"line\" items={[{ label: \"Overview\", content: \"Overview content\" }, { label: \"Activity\", content: \"Activity content\" }, { label: \"Settings\", content: \"Settings content\" }]} />"
+        },
+        {
+          "title": "Segmented",
+          "code": "<Tabs variant=\"segmented\" items={[{ label: \"Day\", content: \"Day view\" }, { label: \"Week\", content: \"Week view\" }, { label: \"Month\", content: \"Month view\" }]} />"
+        },
+        {
+          "title": "Pills",
+          "code": "<Tabs variant=\"pills\" items={[{ label: \"All\", content: \"All items\" }, { label: \"Active\", content: \"Active items\" }, { label: \"Archived\", content: \"Archived items\" }]} />"
+        },
+        {
+          "title": "Button",
+          "code": "<Tabs variant=\"button\" items={[{ label: \"Edit\", content: \"Editing\" }, { label: \"Preview\", content: \"Previewing\" }]} />"
         }
       ],
       "docsDense": {
@@ -12017,6 +12975,12 @@
       "defaultVariants": {},
       "props": [
         {
+          "name": "asChild",
+          "type": "boolean",
+          "required": false,
+          "doc": ""
+        },
+        {
           "name": "children",
           "type": "ReactNode",
           "required": true,
@@ -12027,6 +12991,12 @@
           "type": "string",
           "required": false,
           "doc": ""
+        },
+        {
+          "name": "forceMount",
+          "type": "true",
+          "required": false,
+          "doc": "Used to force mounting when more control is needed. Useful when controlling animation with React animation libraries."
         },
         {
           "name": "value",
@@ -12050,7 +13020,8 @@
         "TabsList",
         "TabsTrigger"
       ],
-      "partOf": "Tabs"
+      "partOf": "Tabs",
+      "inheritsDomProps": true
     },
     {
       "name": "TabsList",
@@ -12103,7 +13074,8 @@
         "TabsList",
         "TabsTrigger"
       ],
-      "partOf": "Tabs"
+      "partOf": "Tabs",
+      "inheritsDomProps": true
     },
     {
       "name": "TabsTrigger",
@@ -12116,6 +13088,12 @@
       "variants": {},
       "defaultVariants": {},
       "props": [
+        {
+          "name": "asChild",
+          "type": "boolean",
+          "required": false,
+          "doc": ""
+        },
         {
           "name": "children",
           "type": "ReactNode",
@@ -12168,7 +13146,8 @@
         "TabsList",
         "TabsTrigger"
       ],
-      "partOf": "Tabs"
+      "partOf": "Tabs",
+      "inheritsDomProps": true
     },
     {
       "name": "Text",
@@ -12304,12 +13283,17 @@
       "radix": null,
       "radiusOverride": false,
       "variants": {
+        "variant": [
+          "outline",
+          "soft"
+        ],
         "invalid": [
           "true",
           "false"
         ]
       },
       "defaultVariants": {
+        "variant": "outline",
         "invalid": "false"
       },
       "props": [
@@ -12318,6 +13302,12 @@
           "type": "boolean | null",
           "required": false,
           "doc": ""
+        },
+        {
+          "name": "variant",
+          "type": "\"outline\" | \"soft\" | null",
+          "required": false,
+          "doc": "outline (default): a 3:1 control border (WCAG 1.4.11), for forms on any background. soft: filled, no border, for dense tool panels where a visible label and the value or placeholder identify the field. Both show the 2px focus ring."
         }
       ],
       "builderMeta": {
@@ -12373,6 +13363,10 @@
       "radix": null,
       "radiusOverride": false,
       "variants": {
+        "variant": [
+          "outline",
+          "soft"
+        ],
         "size": [
           "sm",
           "md",
@@ -12384,6 +13378,7 @@
         ]
       },
       "defaultVariants": {
+        "variant": "outline",
         "size": "md",
         "invalid": "false"
       },
@@ -12598,6 +13593,12 @@
           "type": "boolean",
           "required": false,
           "doc": "Whether to render the Shavin Dev Inspector in development. Defaults to true in dev."
+        },
+        {
+          "name": "bridgePort",
+          "type": "number",
+          "required": false,
+          "doc": "Port the local Agent-Browser bridge listens on. Defaults to the env override, then the built-in default. Pass this when running `npx @shavin/cli bridge --port <n>`."
         },
         {
           "name": "children",
@@ -13436,6 +14437,31 @@
           "type": "React.ReactNode",
           "required": false,
           "doc": "Custom placeholder node shown when src is missing."
+        },
+        {
+          "name": "captions",
+          "type": "string",
+          "required": false,
+          "doc": "WebVTT captions file for speech or meaningful sound (WCAG 1.2.2)."
+        },
+        {
+          "name": "captionsLang",
+          "type": "string",
+          "required": false,
+          "doc": "Language of the captions track. Default \"en\".",
+          "default": "en"
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "required": false,
+          "doc": "What the video shows, for screen readers. Omit with `decorative`."
+        },
+        {
+          "name": "decorative",
+          "type": "boolean",
+          "required": false,
+          "doc": "Pure ambience (a background loop): hidden from screen readers. The pause button stays."
         }
       ],
       "builderMeta": {
@@ -13492,6 +14518,57 @@
           }
         ]
       }
+    },
+    {
+      "name": "VideoPauseToggle",
+      "group": "components",
+      "docsPath": "/components/video",
+      "file": "packages/ui/src/primitives/Video/PauseToggle.tsx",
+      "kind": "plain",
+      "radix": null,
+      "radiusOverride": false,
+      "variants": {},
+      "defaultVariants": {},
+      "props": [
+        {
+          "name": "className",
+          "type": "string",
+          "required": false,
+          "doc": ""
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "required": false,
+          "doc": ""
+        },
+        {
+          "name": "playing",
+          "type": "boolean",
+          "required": true,
+          "doc": ""
+        },
+        {
+          "name": "videoRef",
+          "type": "RefObject<HTMLVideoElement>",
+          "required": true,
+          "doc": ""
+        }
+      ],
+      "builderMeta": {
+        "label": "Video Pause Toggle",
+        "isLayout": false,
+        "hasChildren": true,
+        "accepts": [
+          "*"
+        ],
+        "iconSlots": []
+      },
+      "exports": [
+        "MotionPauseButton",
+        "VideoPauseToggle"
+      ],
+      "partOf": "Video"
     },
     {
       "name": "VoiceInput",

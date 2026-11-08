@@ -256,6 +256,17 @@ export const ThemeSwitcher = forwardRef<HTMLDivElement, ThemeSwitcherProps>(
           ref={ref}
           role="radiogroup"
           aria-label="Theme mode"
+          // Radio-group keyboard model: one tab stop, arrows move and select.
+          onKeyDown={(e) => {
+            const step = ({ ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 } as Record<string, number>)[e.key];
+            if (!step) return;
+            e.preventDefault();
+            const modes = ["light", "dark", "system"] as const;
+            const current = modes.indexOf((mounted ? theme : defaultTheme) as (typeof modes)[number]);
+            const next = modes[(Math.max(current, 0) + step + modes.length) % modes.length];
+            setTheme(next);
+            e.currentTarget.querySelector<HTMLElement>(`[data-mode="${next}"]`)?.focus();
+          }}
           className={cn(
             "inline-flex items-center p-0.5 rounded-[var(--radius-lg)] border border-hairline bg-surface shadow-1",
             className
@@ -274,6 +285,9 @@ export const ThemeSwitcher = forwardRef<HTMLDivElement, ThemeSwitcherProps>(
                 type="button"
                 role="radio"
                 aria-checked={isActive}
+                aria-label={showLabels ? undefined : labelText}
+                tabIndex={isActive ? 0 : -1}
+                data-mode={mode}
                 onClick={() => setTheme(mode)}
                 className={cn(
                   "flex items-center justify-center rounded-[calc(var(--radius-lg)-2px)] font-medium transition cursor-pointer select-none",
@@ -308,7 +322,7 @@ export const ThemeSwitcher = forwardRef<HTMLDivElement, ThemeSwitcherProps>(
                   "flex items-center justify-center rounded-[var(--radius-lg)] border border-hairline bg-surface text-fg hover:bg-surface-hover hover:text-fg transition shadow-1 cursor-pointer",
                   btnSizeCls
                 )}
-                aria-label="Select appearance theme"
+                aria-label={`Theme: ${mounted ? labels[theme] || theme : labels[defaultTheme] || defaultTheme}`}
               >
                 <ActiveIcon size={iconSize} className="shrink-0" aria-hidden />
                 {showLabels && (
@@ -325,30 +339,31 @@ export const ThemeSwitcher = forwardRef<HTMLDivElement, ThemeSwitcherProps>(
                 sideOffset={4}
                 avoidCollisions
                 collisionPadding={8}
-                className="animate-rise origin-[var(--radix-dropdown-menu-content-transform-origin)] z-50 w-36 overflow-hidden rounded-[var(--radius-panel)] border border-hairline bg-surface shadow-panel focus:outline-none p-1"
+                className="animate-rise origin-[var(--radix-dropdown-menu-content-transform-origin)] z-[var(--z-floating)] w-36 overflow-hidden rounded-[var(--radius-panel)] border border-hairline bg-surface shadow-panel focus:outline-none p-1"
               >
-                {(["light", "dark", "system"] as const).map((mode) => {
-                  const isActive = mounted ? theme === mode : mode === defaultTheme;
-                  const IconComp =
-                    mode === "light" ? Sun : mode === "dark" ? Moon : Desktop;
-                  const labelText = labels[mode] || mode;
+                <RadixMenu.RadioGroup value={mounted ? theme : defaultTheme} onValueChange={(mode) => setTheme(mode as typeof theme)}>
+                  {(["light", "dark", "system"] as const).map((mode) => {
+                    const IconComp =
+                      mode === "light" ? Sun : mode === "dark" ? Moon : Desktop;
+                    const labelText = labels[mode] || mode;
 
-                  return (
-                    <RadixMenu.Item
-                      key={mode}
-                      onClick={() => setTheme(mode)}
-                      className="flex w-full items-center justify-between px-2.5 py-1.5 text-xs text-fg rounded-[var(--radius-lg)] cursor-pointer outline-none hover:bg-surface-hover data-[highlighted]:bg-surface-hover transition"
-                    >
-                      <div className="flex items-center gap-2">
-                        <IconComp size={14} className="text-fg-muted shrink-0" />
-                        <span>{labelText}</span>
-                      </div>
-                      {isActive && (
-                        <Check size={12} className="text-fg shrink-0" />
-                      )}
-                    </RadixMenu.Item>
-                  );
-                })}
+                    return (
+                      <RadixMenu.RadioItem
+                        key={mode}
+                        value={mode}
+                        className="flex w-full items-center justify-between px-2.5 py-1.5 text-xs text-fg rounded-[var(--radius-lg)] cursor-pointer outline-none hover:bg-surface-hover data-[highlighted]:bg-surface-hover transition"
+                      >
+                        <div className="flex items-center gap-2">
+                          <IconComp size={14} className="text-fg-muted shrink-0" aria-hidden />
+                          <span>{labelText}</span>
+                        </div>
+                        <RadixMenu.ItemIndicator>
+                          <Check size={12} className="text-fg shrink-0" aria-hidden />
+                        </RadixMenu.ItemIndicator>
+                      </RadixMenu.RadioItem>
+                    );
+                  })}
+                </RadixMenu.RadioGroup>
               </RadixMenu.Content>
             </RadixMenu.Portal>
           </RadixMenu.Root>

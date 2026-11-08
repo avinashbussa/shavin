@@ -18,8 +18,8 @@ export function HeroCenteredMedia() {
             </Text>
           </Flex>
           <Flex direction="row" justify="center" wrap="wrap" gap="3">
-            <Button size="lg">Start free</Button>
-            <Button size="lg" variant="outline">See how it works</Button>
+            <Button size="lg" asChild><a href="/signup">Start free</a></Button>
+            <Button size="lg" variant="outline" asChild><a href="#how-it-works">See how it works</a></Button>
           </Flex>
           <Text size="sm" color="muted" className="tabular-nums">Rated 4.8/5 from 3,906 reviews · 38,412 households</Text>
         </Flex>

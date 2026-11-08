@@ -32,6 +32,8 @@ export interface ProgressProps
   label?: string;
   /** Position of numeric indicator & label ("top" header row or "right" side-by-side). @default "right" */
   labelPosition?: "top" | "right";
+  /** Accessible name when the bar has no visible `label` (e.g. a heading above names it). */
+  "aria-label"?: string;
   className?: string;
 }
 
@@ -42,6 +44,7 @@ export function Progress({
   valueFormat,
   label,
   labelPosition = "right",
+  "aria-label": ariaLabel,
   variant = "bar",
   size = "md",
   className,
@@ -62,7 +65,7 @@ export function Progress({
   const track = isIndeterminate ? (
     <div
       role="progressbar"
-      aria-label={label ?? "Loading progress"}
+      aria-label={ariaLabel ?? label ?? "Loading progress"}
       className={cn(progressVariants({ variant, size }), isTopBar ? "h-0.5" : "", !hasRightValue && className)}
     >
       <div className="h-full w-full rounded-[var(--radius-lg)] bg-accent/20 overflow-hidden relative">
@@ -72,7 +75,7 @@ export function Progress({
   ) : (
     <RadixProgress.Root
       value={value}
-      aria-label={label ?? "Progress"}
+      aria-label={ariaLabel ?? label ?? "Progress"}
       className={cn(progressVariants({ variant, size }), isTopBar ? "h-0.5" : "", !hasRightValue && className)}
     >
       <RadixProgress.Indicator

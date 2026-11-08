@@ -1,6 +1,6 @@
 # Shavin UI (`@shavin/ui`)
 
-A React design system that AI coding agents can follow as reliably as people do: 89 accessible primitives on Radix, a strict two-tier token system, concentric-radius geometry, and machine-readable manifests (`tokens.json`, `components.json`) for the Shavin MCP server.
+A React design system that AI coding agents can follow as reliably as people do: 91 accessible primitives on Radix, a strict two-tier token system, concentric-radius geometry, and machine-readable manifests (`tokens.json`, `components.json`) for the Shavin MCP server.
 
 - **Docs:** https://docs.shavin.cc
 - **Requires:** React 19, Tailwind CSS 3.4 or 4

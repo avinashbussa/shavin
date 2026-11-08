@@ -2,12 +2,13 @@ import type { ComponentDoc } from "../../authoring/types";
 
 export const docs: ComponentDoc = {
   name: "Image",
-  description: "Image primitive with automatic broken-link placeholder fallback, aspect-ratio preservation, and object-fit scaling.",
+  description: "Image primitive with automatic broken-link placeholder fallback, aspect-ratio preservation, object-fit scaling, and overlay layers (scrim / gradient / solid / fx) composited on top.",
   features: [
     "Supports radius escape hatch (radius='none|small|medium|large|full|inherit')",
     "Defaults to panel radius --radius-panel per AGENTS.md rules",
     "Zero Layout Shift (CLS) via ratio prop (e.g. ratio='16/9')",
-    "Graceful fallback box when src is missing or fails to load"
+    "Graceful fallback box when src is missing or fails to load",
+    "Overlay layers via bgOverlays — the same layer system layouts use for backgrounds (presets, solid, gradients, fx), composited on top of the image; fx needs @shavin/fx registered, e.g. bgOverlays=\"fx:light-streaks/50, scrim\""
   ],
   accessibility: [
     "Enforces alt text prop for screen reader image descriptions",
@@ -29,6 +30,10 @@ export const docs: ComponentDoc = {
     {
       title: "Hero Feature Image",
       code: '<Image src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800" alt="Abstract shapes" ratio="16/9" fit="cover" />'
+    },
+    {
+      title: "Image with a scrim overlay",
+      code: '<Image src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800" alt="Abstract shapes" ratio="16/9" fit="cover" bgOverlays="scrim" />'
     }
   ]
 };

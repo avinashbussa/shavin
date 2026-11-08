@@ -124,7 +124,7 @@ export function CodeEditor({
     <div
       data-editor-theme={internalTheme}
       className={cn(
-        "group relative w-full overflow-hidden rounded-[var(--radius-panel)] transition-colors shadow-card",
+        "group focus-ring-within relative w-full overflow-hidden rounded-[var(--radius-panel)] transition-colors shadow-card",
         isDark ? "dark bg-surface border border-hairline text-fg" : "light bg-surface border border-hairline text-fg",
         className
       )}
@@ -152,7 +152,7 @@ export function CodeEditor({
 
                 {showLanguage && language && (
                   <span
-                    className="text-[10px] px-1.5 py-0.5 rounded-full font-semibold uppercase tracking-wider bg-accent-subtle text-accent border border-accent/20"
+                    className="text-[10px] px-1.5 py-0.5 rounded-full font-semibold uppercase tracking-wider bg-fg/10 text-fg border border-hairline"
                   >
                     {language}
                   </span>

@@ -7,7 +7,8 @@ export const docs: ComponentDoc = {
   features: [
     "Translucent panel via translucent prop (backdrop-blur + data-panel)",
     "Surface contrast scope via surface prop for media backgrounds",
-    "Background media: bgVideo, bgImage, bgOverlays (presets, hex, tokens, gradients via comma-separated shorthand), bgSize, bgVideoPaused"
+    "Background media: bgVideo, bgImage, bgOverlays (presets, hex, tokens, gradients via comma-separated shorthand), bgSize, bgVideoPaused",
+    "Fx backdrops (needs @shavin/fx registered): bgOverlays=\"fx:dither-waves, gradient-bottom\"; params only when changed: fx:fluid-silk(speed=1.2); quote text values: fx:type-tiles(text='Plan money')"
   ],
   accessibility: [
     "Supports semantic HTML tags via polymorphic as prop"

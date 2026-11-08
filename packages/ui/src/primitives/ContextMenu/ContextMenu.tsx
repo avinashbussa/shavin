@@ -27,7 +27,7 @@ export function ContextMenu({
           avoidCollisions
           collisionPadding={8}
           className={cn(
-            "animate-rise origin-[var(--radix-context-menu-content-transform-origin)] z-20 min-w-44 overflow-hidden rounded-[var(--radius-panel)] border border-hairline bg-surface p-1 space-y-0.5 shadow-panel focus:outline-none select-none",
+            "animate-rise origin-[var(--radix-context-menu-content-transform-origin)] z-[var(--z-floating)] min-w-44 overflow-hidden rounded-[var(--radius-panel)] border border-hairline bg-surface p-1 space-y-0.5 shadow-panel focus:outline-none select-none",
             className
           )}
         >

@@ -74,7 +74,7 @@ export function Rating({ value, defaultValue = 0, onValueChange, max = 5, precis
 
   function onKeyDown(e: KeyboardEvent<HTMLDivElement>) {
     if (!interactive) return;
-    const keys: Record<string, number> = { ArrowRight: current + step, ArrowUp: current + step, ArrowLeft: current - step, ArrowDown: current - step, Home: 0, End: max };
+    const keys: Record<string, number> = { ArrowRight: current + step, ArrowUp: current + step, ArrowLeft: current - step, ArrowDown: current - step, PageUp: current + 1, PageDown: current - 1, Home: 0, End: max };
     if (e.key in keys) {
       e.preventDefault();
       commit(keys[e.key]);
@@ -111,13 +111,20 @@ export function Rating({ value, defaultValue = 0, onValueChange, max = 5, precis
     </span>
   );
 
-  if (!interactive) {
+  const valueText = `${Number.isInteger(current) ? current : current.toFixed(1)} out of ${max} stars`;
+  // The slider's name and description props belong on the slider, not the wrapper.
+  const { "aria-labelledby": labelledBy, "aria-describedby": describedBy, ...rest } = props as typeof props & {
+    "aria-labelledby"?: string;
+    "aria-describedby"?: string;
+  };
+
+  // Disabled stays a (disabled) slider so it keeps its input semantics.
+  if (!interactive && !disabled) {
     return (
       <div
         role="img"
-        aria-label={`${Number.isInteger(current) ? current : current.toFixed(1)} out of ${max}`}
-        aria-disabled={disabled || undefined}
-        className={cn("inline-flex items-center gap-2", disabled && "opacity-50", className)}
+        aria-label={valueText}
+        className={cn("inline-flex items-center gap-2", className)}
         {...props}
       >
         {stars}
@@ -127,18 +134,22 @@ export function Rating({ value, defaultValue = 0, onValueChange, max = 5, precis
   }
 
   return (
-    <div className={cn("inline-flex items-center gap-2", className)} {...props}>
+    <div className={cn("inline-flex items-center gap-2", disabled && "opacity-50", className)} {...rest}>
       <div
         id={id}
         role="slider"
-        tabIndex={0}
-        aria-label={label}
+        tabIndex={disabled ? -1 : 0}
+        aria-label={labelledBy ? undefined : label}
+        aria-labelledby={labelledBy}
+        aria-describedby={describedBy}
+        aria-disabled={disabled || undefined}
         aria-valuemin={0}
         aria-valuemax={max}
         aria-valuenow={current}
-        aria-valuetext={`${current} out of ${max}`}
+        aria-valuetext={valueText}
         onKeyDown={onKeyDown}
-        className="rounded-[var(--radius-lg)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+        // min-h-6: a 24px target even with 16px stars (WCAG 2.5.8); focus uses the global ring.
+        className="inline-flex min-h-6 items-center rounded-[var(--radius-lg)]"
       >
         {stars}
       </div>

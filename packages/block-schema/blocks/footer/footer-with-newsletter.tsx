@@ -59,23 +59,23 @@ export function FooterWithNewsletter({ groups = defaultGroups, legal = defaultLe
                 <Heading as="h2" size="md">One money idea every Sunday</Heading>
                 <Text size="sm" color="muted" className="max-w-[52ch] text-pretty tabular-nums">Practical habits and one reader question, read by 21,786 people each week.</Text>
               </Flex>
-              <Flex direction="column" gap="2" className="sm:flex-row md:w-[400px]">
-                <TextField type="email" placeholder="you@example.com" aria-label="Email address" className="h-10 flex-1" />
-                <Button size="md" className="w-full shrink-0 sm:w-auto">Subscribe</Button>
-              </Flex>
+              <form className="flex flex-col gap-2 sm:flex-row md:w-[400px]">
+                <TextField type="email" placeholder="you@example.com" aria-label="Email address" autoComplete="email" className="h-10 flex-1" />
+                <Button type="submit" size="md" className="w-full shrink-0 sm:w-auto">Subscribe</Button>
+              </form>
             </Flex>
           </Card>
-          <Grid columns="4" gap="6" className="max-lg:grid-cols-3 max-md:grid-cols-2">
+          <Grid as="nav" aria-label="Footer" columns="4" gap="6" className="max-lg:grid-cols-3 max-md:grid-cols-2">
             <Flex direction="column" gap="3" className="max-lg:col-span-3 max-md:col-span-2">
               <Heading as="p" size="md" tracking="tight">WiseOwl</Heading>
               <Text size="sm" color="muted">Calm control of your money.</Text>
             </Flex>
             {groups.map((group) => (
               <Flex key={group.title} direction="column" gap="4">
-                <Text size="overline" color="muted">{group.title}</Text>
-                <Flex direction="column" gap="3">
+                <Text as="h2" size="overline" color="muted">{group.title}</Text>
+                <Flex as="ul" direction="column" gap="2">
                   {group.links.map((link) => (
-                    <Link key={link.label} href={link.href} size="sm">{link.label}</Link>
+                    <li key={link.label}><Link href={link.href} size="sm" className="inline-flex min-h-6 items-center">{link.label}</Link></li>
                   ))}
                 </Flex>
               </Flex>

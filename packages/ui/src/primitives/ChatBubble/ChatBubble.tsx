@@ -103,6 +103,13 @@ export function ChatBubble({
   const outgoing = surface === "outgoing";
   const flat = resolvedLayout === "flat";
   const live = status === "submitted" || status === "streaming";
+  // Keep the live region once a message has streamed: dropping aria-live in the same
+  // render that clears aria-busy means the finished text is never announced.
+  const [wasLive, setWasLive] = React.useState(live);
+  React.useEffect(() => {
+    if (live) setWasLive(true);
+  }, [live]);
+  const liveProps = { "aria-live": live || wasLive ? ("polite" as const) : undefined, "aria-busy": live || undefined };
   const avatar = !hideAvatar && <Avatar size="sm" src={avatarSrc} fallback={avatarFallback} alt={author ?? ""} />;
 
   const content = (
@@ -128,11 +135,11 @@ export function ChatBubble({
       <div className={cn("flex min-w-0 flex-col gap-1", flat ? "flex-1 gap-2" : outgoing ? "items-end" : "items-start")}>
         {author && <Text size="xs" color="muted" weight="medium" className="px-1">{author}</Text>}
         {flat ? (
-          <div className="flex min-w-0 flex-col gap-3 text-sm leading-relaxed text-fg" aria-live={live ? "polite" : undefined} aria-busy={live || undefined}>
+          <div className="flex min-w-0 flex-col gap-3 text-sm leading-relaxed text-fg" {...liveProps}>
             {content}
           </div>
         ) : (
-          <div className={bubbleVariants({ variant: surface })} aria-live={live ? "polite" : undefined} aria-busy={live || undefined}>
+          <div className={bubbleVariants({ variant: surface })} {...liveProps}>
             {content}
           </div>
         )}

@@ -1,6 +1,7 @@
 "use client";
 import * as React from "react";
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import { resolveBridgePort, bridgeUrl, bridgeDashboardUrl } from "../../lib/bridge";
 import {
   ACCENT_PRESETS,
   GRAY_PRESETS,
@@ -38,6 +39,12 @@ export interface ShavinDevToolsProps extends React.HTMLAttributes<HTMLDivElement
   position?: "bottom-left" | "bottom-right" | "top-left" | "top-right";
   /** If true, forces ShavinDevTools to render even in production. By default, it is omitted in production (NODE_ENV === 'production'). */
   forceShow?: boolean;
+  /**
+   * Port the local Agent-Browser bridge listens on. Defaults to
+   * `NEXT_PUBLIC_SHAVIN_BRIDGE_PORT` / `VITE_SHAVIN_BRIDGE_PORT`, then the built-in
+   * default. Set this when you run `npx @shavin/cli bridge --port <n>`.
+   */
+  bridgePort?: number;
 }
 
 type Corner = "bottom-left" | "bottom-right" | "top-left" | "top-right";
@@ -202,8 +209,10 @@ export function ShavinDevTools({ forceShow = false, ...props }: ShavinDevToolsPr
 function DevToolsPanel({
   className,
   position = "bottom-right",
+  bridgePort,
   ...props
 }: Omit<ShavinDevToolsProps, "forceShow">): React.JSX.Element | null {
+  const bPort = resolveBridgePort(bridgePort);
   const [mounted, setMounted] = useState(false);
   const [open, setOpen] = useState(false);
   const [tab, setTab] = useState<"theme" | "audit" | "bridge" | "mcp">("theme");
@@ -534,7 +543,7 @@ function DevToolsPanel({
       // ── 1. Token Purity — Inline Color / Background / Border / Fill ──
       // Checks element.style properties directly (catches DevTools style edits, hex, rgb, hsl, named colors: blue, red, etc.)
       const inlineColor = htmlEl.style?.color?.trim();
-      if (inlineColor && !inlineColor.includes("var(") && !["inherit", "currentcolor", "transparent", "initial", "unset", ""].includes(inlineColor.toLowerCase())) {
+      if (!isSwatch && inlineColor && !inlineColor.includes("var(") && !["inherit", "currentcolor", "transparent", "initial", "unset", ""].includes(inlineColor.toLowerCase())) {
         issues.push({
           id: `color-${idx}`,
           category: "Token Purity",
@@ -558,7 +567,7 @@ function DevToolsPanel({
       }
 
       const inlineBorder = htmlEl.style?.borderColor?.trim();
-      if (inlineBorder && !inlineBorder.includes("var(") && !["inherit", "currentcolor", "transparent", "initial", "unset", ""].includes(inlineBorder.toLowerCase())) {
+      if (!isSwatch && inlineBorder && !inlineBorder.includes("var(") && !["inherit", "currentcolor", "transparent", "initial", "unset", ""].includes(inlineBorder.toLowerCase())) {
         issues.push({
           id: `border-${idx}`,
           category: "Token Purity",
@@ -587,7 +596,9 @@ function DevToolsPanel({
       }
 
       // ── 3. Semantic Tokens — raw Tailwind palette classes ────────────
-      if (classStr) {
+      // Swatches / intentional fixed-colour chrome (selection handles, color previews)
+      // legitimately use palette classes — exempt them like the inline-colour checks.
+      if (!isSwatch && classStr) {
         twPaletteRe.lastIndex = 0;
         const paletteMatches: string[] = [];
         let m: RegExpExecArray | null;
@@ -907,7 +918,7 @@ function DevToolsPanel({
             },
           };
 
-          fetch("http://127.0.0.1:7428/api/audit", {
+          fetch(bridgeUrl("/api/audit", bPort), {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
@@ -945,7 +956,7 @@ function DevToolsPanel({
         direction: "out",
         summary: "Requested full DOM audit re-scan",
       });
-      const res = await fetch("http://127.0.0.1:7428/api/rescan", {
+      const res = await fetch(bridgeUrl("/api/rescan", bPort), {
         method: "POST",
         mode: "cors",
       });
@@ -966,7 +977,7 @@ function DevToolsPanel({
     try {
       // Derive the project root from the current origin's pathname
       // The bridge scans the directory it was launched from (process.cwd())
-      const res = await fetch("http://127.0.0.1:7428/api/source-audit", {
+      const res = await fetch(bridgeUrl("/api/source-audit", bPort), {
         method: "GET",
         mode: "cors",
       });
@@ -985,7 +996,7 @@ function DevToolsPanel({
         setSourceAuditError("Bridge returned an error");
       }
     } catch {
-      setSourceAuditError("Cannot reach AI Bridge (:7428). Start it with: npx @shavin/cli bridge");
+      setSourceAuditError(`Cannot reach AI Bridge (:${bPort}). Start it with: npx @shavin/cli bridge`);
     } finally {
       setSourceAuditLoading(false);
     }
@@ -1005,13 +1016,13 @@ function DevToolsPanel({
       })();
       const myBrowser = detectBrowserName();
 
-      es = new EventSource(`http://127.0.0.1:7428/api/events?tabId=${encodeURIComponent(myTabId)}&browser=${encodeURIComponent(myBrowser)}`);
+      es = new EventSource(`${bridgeUrl("/api/events", bPort)}?tabId=${encodeURIComponent(myTabId)}&browser=${encodeURIComponent(myBrowser)}`);
       es.onopen = () => {
         setBridgeConnected(true);
         addStreamEvent({
           type: "sse_connected",
           direction: "in",
-          summary: `Connected to local AI Bridge (:7428) as [${myBrowser}] tab ${myTabId}`,
+          summary: `Connected to local AI Bridge (:${bPort}) as [${myBrowser}] tab ${myTabId}`,
         });
       };
       es.onmessage = (event) => {
@@ -1053,7 +1064,7 @@ function DevToolsPanel({
       // Periodic heartbeat ping every 15s to keep connection alive and update tab state
       heartbeat = setInterval(() => {
         try {
-          fetch("http://127.0.0.1:7428/api/ping", {
+          fetch(bridgeUrl("/api/ping", bPort), {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -1085,7 +1096,7 @@ function DevToolsPanel({
         const tabId = sessionStorage.getItem("__shavin_tab_id");
         if (tabId && navigator.sendBeacon) {
           navigator.sendBeacon(
-            "http://127.0.0.1:7428/api/disconnect",
+            bridgeUrl("/api/disconnect", bPort),
             new Blob([JSON.stringify({ tabId })], { type: "application/json" })
           );
         }
@@ -1989,7 +2000,7 @@ function DevToolsPanel({
             className={cn(
               "relative flex h-10 w-10 items-center justify-center rounded-full bg-fg text-surface",
               "border border-hairline shadow-card ring-1 ring-black/10 dark:ring-white/10",
-              "transition-transform active:scale-95 cursor-pointer select-none focus:outline-none",
+              "transition-transform active:scale-95 cursor-pointer select-none",
               // Stays visible while the panel is open: it is the toggle and carries the audit dot.
               open && "ring-2 ring-accent"
             )}
@@ -2758,7 +2769,7 @@ function DevToolsPanel({
                         "h-2 w-2 rounded-full",
                         bridgeConnected ? "bg-success animate-[pulse_0.9s_ease-in-out_infinite]" : "bg-warning"
                       )} />
-                      {bridgeConnected ? "Connected (:7428)" : "Listening (:7428)"}
+                      {bridgeConnected ? `Connected (:${bPort})` : `Listening (:${bPort})`}
                     </span>
                   </div>
                 </div>
@@ -2904,16 +2915,16 @@ function DevToolsPanel({
                         <div className="font-semibold text-fg text-xs flex items-center gap-1.5">
                           <span>AI Agent Bridge</span>
                           <span className="font-mono text-xs text-fg-muted bg-surface-hover px-1.5 py-0.5 rounded border border-hairline">
-                            :7428
+                            :{bPort}
                           </span>
                         </div>
                         <div className="text-xs text-fg-muted">
-                          {bridgeConnected ? "Real-time AI Sync Active" : "Listening on localhost:7428"}
+                          {bridgeConnected ? "Real-time AI Sync Active" : `Listening on localhost:${bPort}`}
                         </div>
                       </div>
                     </div>
                     <a
-                      href="http://localhost:7428/"
+                      href={bridgeDashboardUrl(bPort)}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-fg-muted hover:text-fg hover:bg-surface-hover rounded-[calc(var(--radius-lg)-2px)] border border-hairline transition cursor-pointer"

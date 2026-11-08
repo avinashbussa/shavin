@@ -3,8 +3,19 @@ import React, { useEffect, useMemo, useRef } from "react";
 import { cn } from "../../lib/cn";
 import { getMurmurState, makeDots, type MurmurOut } from "./engine";
 
-/** Free states: idle, thinking, working, listening. Other names resolve to states registered with registerMurmurState (Pro, from @shavin/fx). */
-export type MurmurState = "idle" | "thinking" | "working" | "listening" | (string & {});
+/** Built-in states (all free). Other names resolve to states added with registerMurmurState. */
+export type MurmurState =
+  | "idle"
+  | "thinking"
+  | "working"
+  | "listening"
+  | "searching"
+  | "composing"
+  | "weaving"
+  | "connecting"
+  | "orbiting"
+  | "looping"
+  | (string & {});
 
 export interface MurmurProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "children"> {
   /** Which motion to play. Default "thinking". */
@@ -17,7 +28,7 @@ export interface MurmurProps extends Omit<React.HTMLAttributes<HTMLSpanElement>,
   speed?: number;
   /** Number of dots. Default scales with size. */
   dots?: number;
-  /** Dot size multiplier. Default 1. */
+  /** Dot size multiplier. Default 0.4. */
   dotSize?: number;
   /** Accessible name. Default is the state, e.g. "Thinking". Pass "" to hide it from assistive tech when a visible label sits beside it. */
   label?: string;
@@ -27,7 +38,7 @@ export interface MurmurProps extends Omit<React.HTMLAttributes<HTMLSpanElement>,
  * A living dot-sphere that shows what an AI is doing. Colour follows the text colour
  * (accent by default), motion pauses off screen and stops under prefers-reduced-motion.
  */
-export function Murmur({ state = "thinking", size = 24, level = 0, speed = 1, dots, dotSize = 1, label, className, style, ...props }: MurmurProps) {
+export function Murmur({ state = "thinking", size = 24, level = 0, speed = 1, dots, dotSize = 0.4, label, className, style, ...props }: MurmurProps) {
   const canvas = useRef<HTMLCanvasElement>(null);
   const live = useRef({ state, level, speed, dotSize });
   live.current = { state, level, speed, dotSize };
@@ -59,7 +70,9 @@ export function Murmur({ state = "thinking", size = 24, level = 0, speed = 1, do
       const frame = { t: reduced ? 0 : now - start, level: l, speed: sp };
       const c = size / 2;
       const R = c * 0.78;
-      const base = (0.3 + size * 0.022) * ds;
+      // Base dot radius in px; 0.8 keeps the default fine, so the sphere reads as a swarm
+      // rather than beads. dotSize scales it.
+      const base = (0.3 + size * 0.022) * 0.8 * ds;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.clearRect(0, 0, size, size);
       ctx.fillStyle = color;

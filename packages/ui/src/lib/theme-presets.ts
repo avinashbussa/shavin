@@ -50,8 +50,23 @@ function relativeLuminance(triplet: string): number {
   return 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
 }
 
+export function contrastRatio(a: string, b: string): number {
+  const x = relativeLuminance(a);
+  const y = relativeLuminance(b);
+  return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05);
+}
+
+// Canvas, surface and hover/elevated fills (Zinc). Accent text, links and focus
+// rings must clear 4.5:1 on all of them; the margin covers the other gray presets.
+const LIGHT_SURFACES = ["255 255 255", "244 244 245"];
+const DARK_SURFACES = ["24 24 27", "10 10 12", "30 30 33"];
+const TEXT_CONTRAST = 4.6;
+
+/** Text on a solid accent fill: white while it clears 4.5:1, otherwise the higher-contrast ink. */
 export function accentForegroundFor(triplet: string): string {
-  return relativeLuminance(triplet) > 0.45 ? "10 10 12" : "255 255 255";
+  const white = contrastRatio("255 255 255", triplet);
+  if (white >= 4.5) return "255 255 255";
+  return contrastRatio("10 10 12", triplet) > white ? "10 10 12" : "255 255 255";
 }
 
 export function accentHoverFor(triplet: string, isDark: boolean): string {
@@ -59,28 +74,17 @@ export function accentHoverFor(triplet: string, isDark: boolean): string {
 }
 
 /**
- * Dynamic WCAG-accessible text color for accents rendered on soft/light backgrounds.
- * - Light mode: High-luminance accents (lum > 0.35, e.g. Lime, Mint, Amber, Sky, Yellow)
- *   dynamically compute a darkened, high-contrast tone. Regular accents (lum <= 0.35,
- *   e.g. Indigo, Violet, Blue, Red, Crimson, Plum, Purple, Monochrome) take var(--accent) directly.
- * - Dark mode: Low-luminance / deep accents (lum < 0.22, e.g. Monochrome, deep Bronze)
- *   dynamically compute a lightened complementing shade. Vibrant accents (lum >= 0.22)
- *   take var(--accent) directly.
+ * WCAG-accessible accent for text, links and focus rings. Keeps the accent when it
+ * already clears 4.5:1 on every page surface; otherwise darkens it (light mode) or
+ * lightens it (dark mode) in small steps until it does, so the hue is kept.
  */
 export function accentTextFor(triplet: string, isDark: boolean): string {
-  const lum = relativeLuminance(triplet);
-  if (isDark) {
-    if (lum < 0.22) {
-      const amount = Math.min(0.80, Math.max(0.45, 0.70 - lum * 1.8));
-      return mix(triplet, 255, amount);
-    }
-    return triplet;
+  const surfaces = isDark ? DARK_SURFACES : LIGHT_SURFACES;
+  for (let step = 0; step <= 50; step++) {
+    const candidate = mix(triplet, isDark ? 255 : 0, step / 50);
+    if (Math.min(...surfaces.map((s) => contrastRatio(candidate, s))) >= TEXT_CONTRAST) return candidate;
   }
-  if (lum > 0.35) {
-    const amount = Math.min(0.68, Math.max(0.42, 0.28 + lum * 0.45));
-    return mix(triplet, 0, amount);
-  }
-  return triplet;
+  return isDark ? "255 255 255" : "0 0 0";
 }
 
 // ── OKLCH-mode equivalents ─────────────────────────────────────────────────
@@ -144,27 +148,27 @@ export const GRAY_PRESETS: { name: string; swatch: string; scale: Record<number,
   {
     name: "Zinc",
     swatch: "#71717a",
-    scale: { 50: "250 250 250", 100: "244 244 245", 200: "228 228 231", 300: "212 212 216", 400: "161 161 170", 500: "113 113 122", 600: "82 82 91", 700: "63 63 70", 800: "39 39 42", 900: "24 24 27", 950: "10 10 12" },
+    scale: { 50: "250 250 250", 100: "244 244 245", 200: "228 228 231", 300: "212 212 216", 400: "161 161 170", 500: "110 110 119", 600: "82 82 91", 700: "63 63 70", 800: "39 39 42", 900: "24 24 27", 950: "10 10 12" },
   },
   {
     name: "Slate",
     swatch: "#64748b",
-    scale: { 50: "248 250 252", 100: "241 245 249", 200: "226 232 240", 300: "203 213 225", 400: "148 163 184", 500: "100 116 139", 600: "71 85 105", 700: "51 65 85", 800: "30 41 59", 900: "15 23 42", 950: "2 6 23" },
+    scale: { 50: "248 250 252", 100: "241 245 249", 200: "226 232 240", 300: "203 213 225", 400: "148 163 184", 500: "96 111 133", 600: "71 85 105", 700: "51 65 85", 800: "30 41 59", 900: "15 23 42", 950: "2 6 23" },
   },
   {
     name: "Gray",
     swatch: "#6b7280",
-    scale: { 50: "249 250 251", 100: "243 244 246", 200: "229 231 235", 300: "209 213 219", 400: "156 163 175", 500: "107 114 128", 600: "75 85 99", 700: "55 65 81", 800: "31 41 55", 900: "17 24 39", 950: "3 7 18" },
+    scale: { 50: "249 250 251", 100: "243 244 246", 200: "229 231 235", 300: "209 213 219", 400: "156 163 175", 500: "104 111 124", 600: "75 85 99", 700: "55 65 81", 800: "31 41 55", 900: "17 24 39", 950: "3 7 18" },
   },
   {
     name: "Neutral",
     swatch: "#737373",
-    scale: { 50: "250 250 250", 100: "245 245 245", 200: "229 229 229", 300: "212 212 212", 400: "163 163 163", 500: "115 115 115", 600: "82 82 82", 700: "64 64 64", 800: "38 38 38", 900: "23 23 23", 950: "10 10 10" },
+    scale: { 50: "250 250 250", 100: "245 245 245", 200: "229 229 229", 300: "212 212 212", 400: "163 163 163", 500: "110 110 110", 600: "82 82 82", 700: "64 64 64", 800: "38 38 38", 900: "23 23 23", 950: "10 10 10" },
   },
   {
     name: "Stone",
     swatch: "#78716c",
-    scale: { 50: "250 250 249", 100: "245 245 244", 200: "231 229 228", 300: "214 211 209", 400: "168 162 158", 500: "120 113 108", 600: "87 83 78", 700: "68 64 60", 800: "41 37 36", 900: "28 25 23", 950: "12 10 9" },
+    scale: { 50: "250 250 249", 100: "245 245 244", 200: "231 229 228", 300: "214 211 209", 400: "168 162 158", 500: "116 110 105", 600: "87 83 78", 700: "68 64 60", 800: "41 37 36", 900: "28 25 23", 950: "12 10 9" },
   },
 ];
 
@@ -289,8 +293,8 @@ export function applyAccentColor(nameOrHex?: string) {
       root.style.setProperty("--accent-fg", accentForegroundForOklch(o));
       root.style.setProperty("--accent-contrast", accentTextForOklch(o, isDark));
       root.style.setProperty("--accent-text", accentTextForOklch(o, isDark));
-      root.style.setProperty("--link", oklchToCss(o));
-      root.style.setProperty("--focus", oklchToCss(o));
+      root.style.setProperty("--link", accentTextForOklch(o, isDark));
+      root.style.setProperty("--focus", accentTextForOklch(o, isDark));
     } else {
       const triplet = resolveAccentTriplet(target, isDark);
       root.style.setProperty("--accent", triplet);
@@ -298,8 +302,8 @@ export function applyAccentColor(nameOrHex?: string) {
       root.style.setProperty("--accent-fg", accentForegroundFor(triplet));
       root.style.setProperty("--accent-contrast", accentTextFor(triplet, isDark));
       root.style.setProperty("--accent-text", accentTextFor(triplet, isDark));
-      root.style.setProperty("--link", triplet);
-      root.style.setProperty("--focus", triplet);
+      root.style.setProperty("--link", accentTextFor(triplet, isDark));
+      root.style.setProperty("--focus", accentTextFor(triplet, isDark));
     }
     for (const [k, v] of Object.entries(surfaceAccentVars(target, cs))) root.style.setProperty(k, v);
   }
@@ -365,8 +369,8 @@ export function scopedThemeVars(
       vars["--accent-fg"] = accentForegroundForOklch(o);
       vars["--accent-contrast"] = accentTextForOklch(o, isDark);
       vars["--accent-text"] = accentTextForOklch(o, isDark);
-      vars["--link"] = ocss;
-      vars["--focus"] = ocss;
+      vars["--link"] = accentTextForOklch(o, isDark);
+      vars["--focus"] = accentTextForOklch(o, isDark);
     } else {
       const t = resolveAccentTriplet(accentNameOrHex, isDark);
       vars["--accent"] = t;
@@ -374,8 +378,8 @@ export function scopedThemeVars(
       vars["--accent-fg"] = accentForegroundFor(t);
       vars["--accent-contrast"] = accentTextFor(t, isDark);
       vars["--accent-text"] = accentTextFor(t, isDark);
-      vars["--link"] = t;
-      vars["--focus"] = t;
+      vars["--link"] = accentTextFor(t, isDark);
+      vars["--focus"] = accentTextFor(t, isDark);
     }
     Object.assign(vars, surfaceAccentVars(accentNameOrHex, colorSpace));
   } else {
@@ -387,8 +391,9 @@ export function scopedThemeVars(
     vars["--accent-fg"] = `var(--accent-on-${mode}-fg, var(--accent-fg))`;
     vars["--accent-contrast"] = `var(--accent-on-${mode}-contrast, var(--accent-contrast))`;
     vars["--accent-text"] = `var(--accent-on-${mode}-text, var(--accent-text))`;
-    vars["--link"] = `var(--accent-on-${mode}, var(--link))`;
-    vars["--focus"] = `var(--accent-on-${mode}, var(--focus))`;
+    // Links and focus rings use the contrast-safe accent text, not the raw accent.
+    vars["--link"] = `var(--accent-on-${mode}-text, var(--link))`;
+    vars["--focus"] = `var(--accent-on-${mode}-text, var(--focus))`;
   }
   if (grayName) {
     const g = GRAY_PRESETS.find((x) => x.name.toLowerCase() === grayName.toLowerCase());
@@ -398,6 +403,10 @@ export function scopedThemeVars(
           ? oklchToCss(rgbTripletToOklch(val as string))
           : (val as string);
       }
+      // n-450 (dark fg-subtle, light control border) follows the gray, as applyGray does at the root.
+      const mid = (a: string, b: string) => a.split(" ").map((v, i) => Math.round((Number(v) + Number(b.split(" ")[i])) / 2)).join(" ");
+      const n450 = mid(g.scale[400], g.scale[500]);
+      vars["--n-450"] = colorSpace === "oklch" ? oklchToCss(rgbTripletToOklch(n450)) : n450;
     }
   }
   // Semantic role mappings based on appearance mode (isDark)
@@ -408,9 +417,11 @@ export function scopedThemeVars(
     vars["--bg-elevated"] = "var(--n-850)";
     vars["--hairline"] = "var(--n-800)";
     vars["--hairline-strong"] = "var(--n-700)";
+    vars["--border-control"] = "var(--n-500)";
     vars["--fg"] = "var(--n-200)";
     vars["--fg-muted"] = "var(--n-400)";
-    vars["--fg-subtle"] = "var(--n-500)";
+    // n-450 on dark fills: n-500 is only ~3.5:1 there (WCAG 1.4.3).
+    vars["--fg-subtle"] = "var(--n-450)";
   } else {
     vars["--bg-canvas"] = "var(--n-100)";
     vars["--bg-surface"] = "var(--n-0)";
@@ -418,6 +429,7 @@ export function scopedThemeVars(
     vars["--bg-elevated"] = "var(--n-0)";
     vars["--hairline"] = "var(--n-200)";
     vars["--hairline-strong"] = "var(--n-300)";
+    vars["--border-control"] = "var(--n-450)";
     vars["--fg"] = "var(--n-950)";
     vars["--fg-muted"] = "var(--n-600)";
     vars["--fg-subtle"] = "var(--n-500)";

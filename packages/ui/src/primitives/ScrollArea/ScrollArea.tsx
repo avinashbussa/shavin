@@ -6,6 +6,8 @@ import { cn } from "../../lib/cn";
 export interface ScrollAreaProps {
   /** ScrollArea body content. */
   children: ReactNode;
+  /** Names the scrollable region for screen readers. */
+  "aria-label"?: string;
   /** Custom outer container class name (e.g. h-64 or max-h-96). */
   className?: string;
   style?: CSSProperties;
@@ -15,13 +17,20 @@ export function ScrollArea({
   children,
   className,
   style,
+  "aria-label": ariaLabel,
 }: ScrollAreaProps) {
   return (
     <ScrollAreaPrimitive.Root
       className={cn("overflow-hidden", className)}
       style={style}
     >
-      <ScrollAreaPrimitive.Viewport className="h-full w-full rounded-[inherit]">
+      {/* Focusable so the content scrolls by keyboard in every browser (WCAG 2.1.1). */}
+      <ScrollAreaPrimitive.Viewport
+        tabIndex={0}
+        role={ariaLabel ? "region" : undefined}
+        aria-label={ariaLabel}
+        className="h-full w-full rounded-[inherit]"
+      >
         {children}
       </ScrollAreaPrimitive.Viewport>
       <ScrollAreaPrimitive.Scrollbar

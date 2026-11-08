@@ -12,8 +12,10 @@ export function AuthVerify() {
                 <Heading as="h1" size="lg">Enter your verification code</Heading>
                 <Text size="sm" color="muted" className="text-pretty">We sent a 6-digit code to maya.okafor@example.com. It expires in 10 minutes.</Text>
               </Flex>
-              <TextField type="otp" length={6} label="Verification code" autoComplete="one-time-code" className="flex w-full [&>div]:w-full" slotClassName="w-auto min-w-0 flex-1" />
-              <Button size="lg" className="w-full">Verify email</Button>
+              <form className="flex flex-col gap-5">
+                <TextField type="otp" length={6} label="Verification code" autoComplete="one-time-code" className="flex w-full [&>div]:w-full" slotClassName="w-auto min-w-0 flex-1" />
+                <Button type="submit" size="lg" className="w-full">Verify email</Button>
+              </form>
               <Flex direction="column" align="center" gap="2">
                 <Text size="sm" color="muted" className="tabular-nums">No code yet? <Link href="/verify/resend" color="accent">Resend code</Link> in 0:42</Text>
                 <Text size="xs" color="muted">Wrong address? <Link href="/signup">Change email</Link></Text>

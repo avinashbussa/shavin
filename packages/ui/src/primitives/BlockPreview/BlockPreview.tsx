@@ -209,6 +209,10 @@ export function BlockPreview({
               <div
                 data-lenis-prevent
                 data-lenis-prevent-wheel
+                // Scrollable preview: focusable so it scrolls by keyboard (WCAG 2.1.1).
+                tabIndex={0}
+                role="region"
+                aria-label="Block preview"
                 className="absolute top-0 left-0 overflow-y-auto overflow-x-hidden bg-canvas overscroll-contain"
                 style={{
                   transform: `scale(${scale})`,
@@ -319,6 +323,9 @@ export function BlockPreview({
                   <div
                     data-lenis-prevent
                     data-lenis-prevent-wheel
+                    tabIndex={0}
+                    role="region"
+                    aria-label="Block preview"
                     className="flex-1 w-full overflow-y-auto overflow-x-hidden bg-canvas text-fg relative overscroll-contain"
                     style={{ touchAction: "pan-y" }}
                   >
@@ -393,7 +400,11 @@ export function MiniPreviewFrame({
   ...props
 }: MiniPreviewFrameProps): React.JSX.Element {
   return (
+    // A thumbnail, usually inside a link card: its sample controls are pictures, so
+    // keep them out of the tab order and the a11y tree (no nested interactive content).
     <div
+      aria-hidden="true"
+      inert
       className={cn(
         "h-36 w-full bg-surface-hover/25 border-b border-hairline relative overflow-hidden pointer-events-none select-none transition-colors group-hover:bg-surface-hover/45",
         className

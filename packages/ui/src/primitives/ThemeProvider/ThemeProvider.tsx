@@ -62,6 +62,8 @@ export interface ThemeProviderProps {
   preloadFonts?: boolean;
   /** Whether to render the Shavin Dev Inspector in development. Defaults to true in dev. */
   devTools?: boolean;
+  /** Port the local Agent-Browser bridge listens on. Defaults to the env override, then the built-in default. Pass this when running `npx @shavin/cli bridge --port <n>`. */
+  bridgePort?: number;
   children?: ReactNode;
 }
 
@@ -79,6 +81,7 @@ export function ThemeProvider({
   colorSpace = "rgb",
   preloadFonts,
   devTools,
+  bridgePort,
   children,
 }: ThemeProviderProps) {
   useEffect(() => {
@@ -142,7 +145,7 @@ export function ThemeProvider({
       {css ? <style id="shavin-theme-vars" dangerouslySetInnerHTML={{ __html: css }} /> : null}
       <ThemeScript defaultTheme={defaultTheme} translucentPanels={translucentPanels} />
       {children ?? null}
-      {showDevTools && <ShavinDevTools />}
+      {showDevTools && <ShavinDevTools bridgePort={bridgePort} />}
     </>
   );
 }

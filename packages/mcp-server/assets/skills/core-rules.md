@@ -225,7 +225,7 @@ Instead of text glyphs (`✓ Unlimited projects`), use:
 
 ## 10. Live Browser Bridge & Verification Protocol (MCP-First)
 
-AI agents working in Shavin projects must leverage the real-time Browser Bridge daemon (:7428) for zero-latency, zero-hallucination DOM verification.
+AI agents working in Shavin projects must leverage the real-time Browser Bridge daemon (:7036) for zero-latency, zero-hallucination DOM verification.
 
 ### Core Rules
 
@@ -358,7 +358,7 @@ Renders: `grid-cols-3 max-lg:grid-cols-2 max-md:grid-cols-1 gap-6 max-md:gap-4`
 
 4. **Grid gap vs card padding:** Grid `gap` spaces the cards themselves. Inside each card, use a `Flex` wrapper with its own `gap` for card-internal spacing. These are independent — one does not substitute for the other.
 
-5. **Section-level spacing:** Sections use `py-16` / `py-24` for vertical breathing. The header block (heading + subtext) uses `mb-10` or `mb-12` to separate from content below. Never less than `mb-8`.
+5. **Section-level spacing:** The `Section` primitive has **no padding by default** (`size="none"`) — a bare `<Section>` is a flat full-bleed band. Always give a content section its vertical breathing: set `size` (`compact` dashboards · `strip` logo/stat bars · `body` most content, py-16/24 · `hero` heroes/CTAs, py-24/32) or a `py-16`/`py-24` className. Leave it unset only for utility screens (auth, 404, app shells) or when you set custom `py-*`. The header block (heading + subtext) uses `mb-10` or `mb-12` to separate from content below. Never less than `mb-8`.
 
 6. **For BlockNode trees (MCP injection):** Set `gap` prop on `Flex`/`Grid` containers, and wrap `Card` children in a `Flex` block with `gap`:
    ```json

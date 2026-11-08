@@ -34,6 +34,11 @@ export interface CalloutProps
     VariantProps<typeof calloutVariants> {
   /** Title text header for callout. */
   title?: string;
+  /**
+   * Element for the title. Default `p`: a callout title labels a note, it does not open a
+   * section. Use a heading level that fits the page outline when it should be navigable.
+   */
+  titleAs?: "p" | "h2" | "h3" | "h4" | "h5" | "h6";
   /** Custom icon node override. */
   icon?: React.ReactNode;
 }
@@ -43,6 +48,7 @@ export function Callout({
   color = "neutral",
   title,
   icon,
+  titleAs: TitleTag = "p",
   children,
   ...props
 }: CalloutProps) {
@@ -53,7 +59,7 @@ export function Callout({
     <div className={cn(calloutVariants({ color: resolvedColor }), className)} {...props}>
       {iconNode}
       <div className="flex-1 min-w-0">
-        {title && <h5 className="font-semibold leading-none mb-1 text-fg">{title}</h5>}
+        {title && <TitleTag className="font-semibold leading-none mb-1 text-fg">{title}</TitleTag>}
         <div className="text-sm leading-relaxed text-fg-muted">{children}</div>
       </div>
     </div>

@@ -66,7 +66,7 @@ export function PricingToggle({ plans = defaultPlans, advisor = defaultAdvisor }
                       </Flex>
                     ))}
                   </Flex>
-                  <Button size="lg" variant={plan.featured ? "solid" : "outline"} className="mt-auto w-full">{plan.cta}</Button>
+                  <Button size="lg" variant={plan.featured ? "solid" : "outline"} className="mt-auto w-full" asChild><a href="/signup">{plan.cta}</a></Button>
                 </Flex>
               </Card>
             ))}

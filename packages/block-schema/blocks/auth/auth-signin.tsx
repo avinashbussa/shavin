@@ -27,6 +27,7 @@ export function AuthSignin({ providers = defaultProviders }) {
                 <Text size="xs" color="muted">or</Text>
                 <Separator className="flex-1" />
               </Flex>
+              <form className="flex flex-col gap-5">
               <Flex direction="column" gap="4">
                 <TextField label="Email" type="email" placeholder="you@example.com" autoComplete="email" />
                 <TextField label="Password" type="password" placeholder="Enter your password" autoComplete="current-password" />
@@ -35,7 +36,8 @@ export function AuthSignin({ providers = defaultProviders }) {
                   <Link href="/forgot" size="sm" color="accent">Forgot password?</Link>
                 </Flex>
               </Flex>
-              <Button size="lg" className="w-full">Sign in</Button>
+              <Button type="submit" size="lg" className="w-full">Sign in</Button>
+              </form>
               <Text size="xs" color="muted" className="text-center">New to WiseOwl? <Link href="/signup" color="accent">Create a free account</Link></Text>
             </Flex>
           </Card>

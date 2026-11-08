@@ -45,9 +45,15 @@ AccordionItem.displayName = "AccordionItem";
 
 export const AccordionTrigger = forwardRef<
   ElementRef<typeof RadixAccordion.Trigger>,
-  ComponentPropsWithoutRef<typeof RadixAccordion.Trigger>
->(({ className, children, ...props }, ref) => (
-  <RadixAccordion.Header className="flex">
+  ComponentPropsWithoutRef<typeof RadixAccordion.Trigger> & {
+    /** Heading level of the trigger's header, to fit the page outline. Default 3. */
+    headingLevel?: 2 | 3 | 4 | 5 | 6;
+  }
+>(({ className, children, headingLevel = 3, ...props }, ref) => {
+  const HeadingTag = `h${headingLevel}` as const;
+  return (
+  <RadixAccordion.Header asChild>
+   <HeadingTag className="flex">
     <RadixAccordion.Trigger
       ref={ref}
       className={cn(
@@ -65,12 +71,15 @@ export const AccordionTrigger = forwardRef<
         strokeWidth="1.8"
         strokeLinecap="round"
         strokeLinejoin="round"
+        aria-hidden="true"
       >
         <polyline points="6 9 12 15 18 9" />
       </svg>
     </RadixAccordion.Trigger>
+   </HeadingTag>
   </RadixAccordion.Header>
-));
+  );
+});
 AccordionTrigger.displayName = "AccordionTrigger";
 
 export const AccordionContent = forwardRef<

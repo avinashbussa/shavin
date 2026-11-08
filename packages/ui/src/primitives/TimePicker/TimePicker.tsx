@@ -1,6 +1,7 @@
 "use client";
-import { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { cn } from "../../lib/cn";
+import { useClientLocale } from "../../lib/useClientLocale";
 import { Button } from "../Button/Button";
 import { Popover, PopoverContent, PopoverTrigger } from "../Popover/Popover";
 import { Select } from "../Select/Select";
@@ -84,7 +85,7 @@ function to12Hour(h24: number): { h12: number; period: "AM" | "PM" } {
 }
 
 const segmentClass =
-  "w-9 rounded-[var(--radius-lg)] border border-hairline bg-surface-hover px-2 py-1.5 text-center text-sm tabular-nums text-fg outline-none placeholder:text-fg-subtle focus:border-hairline-strong";
+  "w-9 rounded-[var(--radius-lg)] border border-border-control bg-surface-hover px-2 py-1.5 text-center text-sm tabular-nums text-fg placeholder:text-fg-subtle";
 
 export function TimePickerInput({ value, onChange, ariaLabel = "Time" }: TimeVariantProps) {
   const { h12, period } = to12Hour(value.getHours());
@@ -107,31 +108,65 @@ export function TimePickerInput({ value, onChange, ariaLabel = "Time" }: TimeVar
     onChange(next);
   }
 
+  // APG spinbutton: arrows step the segment and commit at once; Enter commits typing.
+  const hourNum = Math.min(12, Math.max(1, parseInt(hourStr, 10) || 12));
+  const minNum = Math.min(59, Math.max(0, parseInt(minStr, 10) || 0));
+  function stepKeys(seg: "h" | "m") {
+    return (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === "Enter") {
+        commit(hourStr, minStr, period);
+        return;
+      }
+      const dir = e.key === "ArrowUp" ? 1 : e.key === "ArrowDown" ? -1 : 0;
+      if (!dir) return;
+      e.preventDefault();
+      if (seg === "h") {
+        const h = ((hourNum - 1 + dir + 12) % 12) + 1;
+        setHourStr(String(h).padStart(2, "0"));
+        commit(String(h), minStr, period);
+      } else {
+        const m = (minNum + dir + 60) % 60;
+        setMinStr(String(m).padStart(2, "0"));
+        commit(hourStr, String(m), period);
+      }
+    };
+  }
+
   return (
-    <div className="inline-flex items-center gap-1.5">
+    <div role="group" aria-label={ariaLabel} className="inline-flex items-center gap-1.5">
       <input
         value={hourStr}
         onChange={(e) => setHourStr(e.target.value.replace(/\D/g, "").slice(0, 2))}
         onBlur={() => commit(hourStr, minStr, period)}
+        onKeyDown={stepKeys("h")}
         placeholder="HH"
         inputMode="numeric"
-        aria-label={`${ariaLabel} — hours`}
+        role="spinbutton"
+        aria-valuemin={1}
+        aria-valuemax={12}
+        aria-valuenow={hourNum}
+        aria-label="Hours"
         className={segmentClass}
       />
-      <span className="text-fg-muted">:</span>
+      <span className="text-fg-muted" aria-hidden="true">:</span>
       <input
         value={minStr}
         onChange={(e) => setMinStr(e.target.value.replace(/\D/g, "").slice(0, 2))}
         onBlur={() => commit(hourStr, minStr, period)}
+        onKeyDown={stepKeys("m")}
         placeholder="MM"
         inputMode="numeric"
-        aria-label={`${ariaLabel} — minutes`}
+        role="spinbutton"
+        aria-valuemin={0}
+        aria-valuemax={59}
+        aria-valuenow={minNum}
+        aria-label="Minutes"
         className={segmentClass}
       />
       <button
         type="button"
         onClick={() => commit(hourStr, minStr, period === "AM" ? "PM" : "AM")}
-        aria-label={`${ariaLabel} — toggle AM/PM, currently ${period}`}
+        aria-label={`${period}, switch to ${period === "AM" ? "PM" : "AM"}`}
         className="rounded-[var(--radius-lg)] border border-hairline bg-surface-hover px-2.5 py-1.5 text-sm font-medium text-fg transition hover:bg-surface"
       >
         {period}
@@ -155,6 +190,16 @@ function markPosition(posIndex: number) {
 export function TimePickerClock({ value, onChange, ariaLabel = "Time" }: TimeVariantProps) {
   const [open, setOpen] = useState(false);
   const [mode, setMode] = useState<"hour" | "minute">("hour");
+  const dialRef = useRef<HTMLDivElement>(null);
+  // Switching hour -> minute swaps every dial button; move focus to the new
+  // selection instead of letting it drop to <body> (WCAG 2.4.3).
+  const focusDial = useRef(false);
+  useEffect(() => {
+    if (!focusDial.current) return;
+    focusDial.current = false;
+    dialRef.current?.querySelector<HTMLElement>('[tabindex="0"]')?.focus();
+  }, [mode]);
+  const timeLocale = useClientLocale();
   const { h12, period } = to12Hour(value.getHours());
   const minute = value.getMinutes();
 
@@ -163,7 +208,15 @@ export function TimePickerClock({ value, onChange, ariaLabel = "Time" }: TimeVar
     const next = new Date(value);
     next.setHours(h24, minute, 0, 0);
     onChange(next);
+    focusDial.current = dialRef.current?.contains(document.activeElement) ?? false;
     setMode("minute");
+  }
+  // Arrow keys move the hour without jumping to the minute dial.
+  function pickHourKeepMode(h: number) {
+    const h24 = period === "AM" ? h % 12 : (h % 12) + 12;
+    const next = new Date(value);
+    next.setHours(h24, minute, 0, 0);
+    onChange(next);
   }
   function pickMinute(m: number) {
     const next = new Date(value);
@@ -182,8 +235,8 @@ export function TimePickerClock({ value, onChange, ariaLabel = "Time" }: TimeVar
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button variant="outline" aria-label={ariaLabel} className="tabular-nums">
-          {value.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" })}
+        <Button variant="outline" aria-label={`${ariaLabel}, ${value.toLocaleTimeString(timeLocale, { hour: "numeric", minute: "2-digit" })}`} className="tabular-nums">
+          {value.toLocaleTimeString(timeLocale, { hour: "numeric", minute: "2-digit" })}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto">
@@ -191,6 +244,8 @@ export function TimePickerClock({ value, onChange, ariaLabel = "Time" }: TimeVar
           <button
             type="button"
             onClick={() => setMode("hour")}
+            aria-pressed={mode === "hour"}
+            aria-label={`Hour, ${String(h12).padStart(2, "0")}`}
             className={cn(
               "rounded-[var(--radius-lg)] px-2 py-1 text-3xl font-semibold tabular-nums transition",
               // ds-lint-disable-next-line no-rgb — accent fill background
@@ -199,10 +254,12 @@ export function TimePickerClock({ value, onChange, ariaLabel = "Time" }: TimeVar
           >
             {String(h12).padStart(2, "0")}
           </button>
-          <span className="text-3xl font-semibold text-fg-muted">:</span>
+          <span className="text-3xl font-semibold text-fg-muted" aria-hidden="true">:</span>
           <button
             type="button"
             onClick={() => setMode("minute")}
+            aria-pressed={mode === "minute"}
+            aria-label={`Minutes, ${String(minute).padStart(2, "0")}`}
             className={cn(
               "rounded-[var(--radius-lg)] px-2 py-1 text-3xl font-semibold tabular-nums transition",
               // ds-lint-disable-next-line no-rgb — accent fill background
@@ -214,22 +271,36 @@ export function TimePickerClock({ value, onChange, ariaLabel = "Time" }: TimeVar
           <button
             type="button"
             onClick={() => setPeriod(period === "AM" ? "PM" : "AM")}
-            aria-label={`Toggle AM/PM, currently ${period}`}
+            aria-label={`${period}, switch to ${period === "AM" ? "PM" : "AM"}`}
             className="ml-2 rounded-[var(--radius-lg)] border border-hairline px-2.5 py-1.5 text-sm font-medium text-fg transition hover:bg-surface-hover"
           >
             {period}
           </button>
         </div>
 
+        {/* The dial is a radio group: one tab stop, arrows go round the clock. */}
         <div
+          ref={dialRef}
+          role="radiogroup"
+          aria-label={mode === "hour" ? "Hour" : "Minutes"}
+          onKeyDown={(e) => {
+            const step = ({ ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 } as Record<string, number>)[e.key];
+            if (!step) return;
+            e.preventDefault();
+            if (mode === "hour") pickHourKeepMode(((h12 - 1 + step + 12) % 12) + 1);
+            else pickMinute(((Math.round(minute / 5) + step + 12) % 12) * 5);
+            requestAnimationFrame(() => dialRef.current?.querySelector<HTMLElement>('[tabindex="0"]')?.focus());
+          }}
           className="relative mx-auto rounded-full bg-surface-hover"
           style={{ width: CLOCK_SIZE, height: CLOCK_SIZE }}
         >
           <div
+            aria-hidden="true"
             className="absolute origin-left rounded-full bg-accent"
             style={{ left: CLOCK_CENTER, top: CLOCK_CENTER - 1, width: CLOCK_RADIUS - 16, height: 2, transform: `rotate(${handAngle}deg)` }}
           />
           <div
+            aria-hidden="true"
             className="absolute h-2 w-2 rounded-full bg-accent"
             style={{ left: CLOCK_CENTER - 4, top: CLOCK_CENTER - 4 }}
           />
@@ -241,6 +312,10 @@ export function TimePickerClock({ value, onChange, ariaLabel = "Time" }: TimeVar
                   <button
                     key={h}
                     type="button"
+                    role="radio"
+                    aria-checked={h12 === h}
+                    aria-label={`${h} o'clock`}
+                    tabIndex={h12 === h ? 0 : -1}
                     onClick={() => pickHour(h)}
                     className={cn(
                       "absolute flex h-8 w-8 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full text-sm transition",
@@ -258,6 +333,10 @@ export function TimePickerClock({ value, onChange, ariaLabel = "Time" }: TimeVar
                   <button
                     key={m}
                     type="button"
+                    role="radio"
+                    aria-checked={Math.round(minute / 5) * 5 % 60 === m}
+                    aria-label={`${String(m).padStart(2, "0")} minutes`}
+                    tabIndex={Math.round(minute / 5) * 5 % 60 === m ? 0 : -1}
                     onClick={() => pickMinute(m)}
                     className={cn(
                       "absolute flex h-8 w-8 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full text-sm tabular-nums transition",

@@ -1,10 +1,11 @@
-import type { HTMLAttributes, ElementType } from "react";
+import type { HTMLAttributes, ElementType, Ref } from "react";
 import { cn } from "../../lib/cn";
 import { concentricContainerStyle, withConcentricStyle } from "../../lib/concentric";
 import { surfaceClass, type Surface } from "../../lib/surface";
 import { bgMediaLayer, type BgMediaProps } from "../../lib/media-overlays";
+import { withResizable, type ResizableProps } from "../Resizable";
 
-export interface BoxProps extends HTMLAttributes<HTMLElement>, BgMediaProps {
+export interface BoxProps extends Omit<HTMLAttributes<HTMLElement>, "onResize">, BgMediaProps, ResizableProps {
   /** Polymorphic element tag: div, section, article, span, etc. Default "div". */
   as?: ElementType;
   /** Whether to apply translucent panel styling with data-panel attribute. */
@@ -13,9 +14,11 @@ export interface BoxProps extends HTMLAttributes<HTMLElement>, BgMediaProps {
       theme (contrast band). "dark-always"/"light-always" lock to one theme
       regardless of page (for media backgrounds). Undefined inherits page theme. */
   surface?: Surface;
+  /** Ref to the rendered element. */
+  ref?: Ref<HTMLElement>;
 }
 
-export function Box({
+function BoxBase({
   as: Tag = "div",
   translucent,
   surface,
@@ -52,3 +55,5 @@ export function Box({
     </Tag>
   );
 }
+
+export const Box = withResizable(BoxBase, "Box");

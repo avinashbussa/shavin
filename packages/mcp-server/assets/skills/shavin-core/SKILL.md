@@ -114,7 +114,7 @@ Write MCP-routing tips (and any rule that must survive dense mode) as bullet lis
 | `wait_for_live_clean(path?, tabId?, timeoutMs?)` | Block until a live tab reaches 0 violations, or timeout. |
 | `audit_source(targetDir?)` | Architectural compliance scan of `.tsx/.jsx` sources (raw HTML vs primitives, deep imports). Warnings only. |
 | `list_commands()` | Enumerate slash commands in `.agents/commands/`. |
-| `connect_studio(pairingCode)` | Pair with a live Studio session (6-char code from studio.shavin.cc → Connect AI). Required before the relay tools below. |
+| `connect_studio(pairingCode)` | Pair with a live Studio session (6-char code from studio.shavin.cc → the Connect AI panel, star tab in the inspector). Required before the relay tools below. |
 | `compose_to_canvas(prompt, frame?)` | Synthesize a layout and render it live on the Studio canvas. |
 | `inject_blocks(blocks, mode?, frame?)` | Inject a raw `BlockNode[]` tree onto the canvas. |
 | `get_studio_state(timeoutMs?)` | Read current canvas blocks + theme. |

@@ -18,12 +18,17 @@ export interface SparklineProps extends Omit<HTMLAttributes<HTMLDivElement>, "ch
   barRadius?: ChartBarRadius;
   /** Gap between bars in px (default 4). */
   barGap?: number;
+  /**
+   * What the trend says, e.g. "Signups, up 12% this week". Makes the sparkline an image
+   * with that name; without it the sparkline is decorative (pair it with text nearby).
+   */
+  label?: string;
 }
 
 const val = (p: SparklinePoint) => (typeof p === "number" ? p : p.value);
 
 /** A tiny, axis-free trend for a card or table cell. It fills its container: size it with className (default h-12 w-full). */
-export function Sparkline({ data, type = "line", tone = "accent", curve = "smooth", barRadius = "sm", barGap = 4, className, ...props }: SparklineProps) {
+export function Sparkline({ data, type = "line", tone = "accent", curve = "smooth", barRadius = "sm", barGap = 4, label, className, ...props }: SparklineProps) {
   const ref = useRef<HTMLDivElement>(null);
   const { width, height } = useSize(ref, 48);
   const values = data.map(val);
@@ -51,7 +56,7 @@ export function Sparkline({ data, type = "line", tone = "accent", curve = "smoot
   const barW = Math.max(slot - barGap, 1);
 
   return (
-    <div ref={ref} className={cn("h-12 w-full", className)} {...props}>
+    <div ref={ref} className={cn("h-12 w-full", className)} {...(label ? { role: "img", "aria-label": label } : {})} {...props}>
       <svg width={w} height={h} role="presentation" aria-hidden="true">
         {type === "area" && line && <path d={`${line} L ${pts[pts.length - 1].x} ${h} L ${pts[0].x} ${h} Z`} fill={color} opacity={0.15} />}
         {type !== "bar" && line && <path d={line} fill="none" stroke={color} strokeWidth={2} strokeLinejoin="round" strokeLinecap="round" />}

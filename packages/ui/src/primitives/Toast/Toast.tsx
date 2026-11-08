@@ -9,6 +9,7 @@ import React, {
   useLayoutEffect,
 } from "react";
 import { cn } from "../../lib/cn";
+import { announce } from "../../lib/announce";
 import { X, CheckCircle2, AlertCircle, AlertTriangle, Info, Loader2 } from "lucide-react";
 
 export type ToastType = "default" | "success" | "error" | "warning" | "info" | "loading";
@@ -183,9 +184,16 @@ function Toaster({
 
   return (
     <div
+      role="region"
+      aria-label="Notifications"
       className={cn("pointer-events-none fixed z-[100] w-[356px] max-w-[calc(100vw-2rem)]", CORNER[position])}
       onMouseEnter={() => setExpanded(true)}
       onMouseLeave={() => setExpanded(false)}
+      // Keyboard users pause the timers too (WCAG 2.2.1): focus inside expands the stack.
+      onFocus={() => setExpanded(true)}
+      onBlur={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setExpanded(false);
+      }}
     >
       <div className="relative h-0 w-full">
         {ordered.map((t, i) => {
@@ -218,11 +226,11 @@ function Toaster({
 
 const ICON: Record<ToastType, React.ReactNode> = {
   default: null,
-  success: <CheckCircle2 className="h-4 w-4 shrink-0 text-success" />,
-  error: <AlertCircle className="h-4 w-4 shrink-0 text-danger" />,
-  warning: <AlertTriangle className="h-4 w-4 shrink-0 text-warning" />,
-  info: <Info className="h-4 w-4 shrink-0 text-accent" />,
-  loading: <Loader2 className="h-4 w-4 shrink-0 animate-spin text-fg-muted" />,
+  success: <CheckCircle2 className="h-4 w-4 shrink-0 text-success" aria-hidden />,
+  error: <AlertCircle className="h-4 w-4 shrink-0 text-danger" aria-hidden />,
+  warning: <AlertTriangle className="h-4 w-4 shrink-0 text-warning" aria-hidden />,
+  info: <Info className="h-4 w-4 shrink-0 text-accent" aria-hidden />,
+  loading: <Loader2 className="h-4 w-4 shrink-0 animate-spin text-fg-muted" aria-hidden />,
 };
 
 function ToastCard({
@@ -265,12 +273,22 @@ function ToastCard({
     return () => clearTimeout(id);
   }, []);
 
+  // Announce through the persistent live regions: a role="status" mounted with its
+  // text is often not spoken. Errors interrupt; everything else waits.
+  const contentRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    const d = toast.duration ?? defaultDuration;
+    const text = contentRef.current?.textContent ?? "";
+    announce(text, toast.type === "error" ? "assertive" : "polite");
+  }, [toast.id, toast.title, toast.description, toast.type]);
+
+  useEffect(() => {
+    // A toast with an action stays until dismissed unless a duration is set, so there
+    // is time to reach the action (WCAG 2.2.1).
+    const d = toast.duration ?? (toast.action ? Infinity : defaultDuration);
     if (!autoClose || !Number.isFinite(d)) return;
     const timer = setTimeout(() => removeRef.current(toast.id), d);
     return () => clearTimeout(timer);
-  }, [toast.id, toast.duration, toast.type, autoClose, defaultDuration]);
+  }, [toast.id, toast.duration, toast.type, toast.action, autoClose, defaultDuration]);
 
   const dismissing = useRef(false);
   const dismiss = () => {
@@ -288,7 +306,9 @@ function ToastCard({
   return (
     <div
       ref={ref}
-      role="status"
+      // Stacked toasts hidden behind the top three leave the tab order and the a11y tree.
+      aria-hidden={hidden || undefined}
+      inert={hidden || undefined}
       style={{
         transform: `translateY(${y}px) translateX(${swipe}px) scale(${enter ? scale : 0.95})`,
         opacity: hidden ? 0 : enter ? 1 - Math.min(Math.abs(swipe) / 220, 0.8) : 0,
@@ -315,6 +335,7 @@ function ToastCard({
       }}
     >
       <div
+        ref={contentRef}
         data-panel
         className="flex w-full items-start gap-3 rounded-[var(--radius-panel)] border border-hairline p-3.5 shadow-panel"
       >
@@ -331,6 +352,7 @@ function ToastCard({
             </div>
             {toast.action && (
               <button
+                type="button"
                 onClick={() => {
                   toast.action?.onClick();
                   dismiss();
@@ -341,11 +363,12 @@ function ToastCard({
               </button>
             )}
             <button
+              type="button"
               onClick={dismiss}
               aria-label="Dismiss"
-              className="shrink-0 rounded-[var(--radius-lg)] p-0.5 text-fg-muted transition hover:bg-surface-hover hover:text-fg"
+              className="-m-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-[var(--radius-lg)] text-fg-muted transition hover:bg-surface-hover hover:text-fg"
             >
-              <X className="h-3.5 w-3.5" />
+              <X className="h-3.5 w-3.5" aria-hidden />
             </button>
           </>
         )}

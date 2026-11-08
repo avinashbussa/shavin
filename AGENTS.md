@@ -46,9 +46,9 @@ To learn legal tokens, call `get_tokens()` or read `tokens.json`. In this repo i
 packages/
   block-schema/            @shavin/block-schema: Block types, schemas and the open block catalogue for @shavin/ui
   cli/                     @shavin/cli: Sets up and checks projects that use @shavin/ui: init, add blocks, check, context, bridge, brand
-  mcp-server/              @shavin/mcp: MCP server that grounds coding agents in @shavin/ui components, tokens, layouts and checks (30 tools, bridge :7428)
+  mcp-server/              @shavin/mcp: MCP server that grounds coding agents in @shavin/ui components, tokens, layouts and checks (30 tools, bridge :7036)
   skills/                  @shavin/skills: Agent skills and slash commands for @shavin/ui, installed into a project's .agents/ folder
-  ui/                      @shavin/ui: Token-driven, agent-readable design system and React primitive library (89 primitives)
+  ui/                      @shavin/ui: Token-driven, agent-readable design system and React primitive library (91 primitives)
 playground/                Contributor preview: `npm run playground` renders every primitive, its examples, props and guidance from source.
 tests/                     Vitest unit tests: primitives, axe, contracts, MCP tools, CLI, validator.
 evals/                     AI-output evaluator, autofix, recorded fixtures and layout-synthesis benchmarks.
@@ -114,10 +114,10 @@ Mount once near app root to apply active theme presets:
 
 ---
 
-## 7. Real-Time Agent-Browser Bridge (:7428)
+## 7. Real-Time Agent-Browser Bridge (:7036)
 
 AI agents can verify live DOM compliance directly without screenshots or human intervention:
-- **`get_live_audit`**: Inspect active violations, contrast math, and connected tabs from `http://127.0.0.1:7428/api/audit`. Always pass `{ path: "/target/route" }` to isolate checks to the active work tab and avoid crosstalk when multiple tabs or browsers are open.
+- **`get_live_audit`**: Inspect active violations, contrast math, and connected tabs from `http://127.0.0.1:7036/api/audit`. Always pass `{ path: "/target/route" }` to isolate checks to the active work tab and avoid crosstalk when multiple tabs or browsers are open.
 - **`trigger_live_rescan`**: Broadcast an SSE rescan command (optionally targeted via `{ path: "..." }`) to force an immediate re-audit.
 - **`wait_for_live_clean`**: Block execution until zero violations remain after code changes (`{ path: "..." }` supported).
 - **Standalone Command**: Developers can launch the monitor dashboard independently via `npm run bridge` or `npx @shavin/cli bridge`.

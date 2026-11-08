@@ -1,9 +1,11 @@
 "use client";
-import type { ReactNode } from "react";
+import { useId, type HTMLAttributes, type ReactNode } from "react";
 import { Checkbox } from "../Checkbox/Checkbox";
 import { cn } from "../../lib/cn";
 
-export interface CheckboxGroupProps {
+export interface CheckboxGroupProps extends Omit<HTMLAttributes<HTMLDivElement>, "children"> {
+  /** Visible group label; names the group for screen readers (WCAG 1.3.1). Or pass `aria-label`. */
+  label?: ReactNode;
   /** Vertical list of CheckboxGroupItem children. */
   children: ReactNode;
   /** Custom wrapper class name. */
@@ -13,10 +15,22 @@ export interface CheckboxGroupProps {
 export function CheckboxGroup({
   children,
   className,
+  label,
+  ...props
 }: CheckboxGroupProps) {
-  return (
-    <div role="group" className={cn("space-y-2", className)}>
+  const labelId = useId();
+  const group = (
+    <div role="group" aria-labelledby={label ? labelId : undefined} className={cn("space-y-2", className)} {...props}>
       {children}
+    </div>
+  );
+  if (!label) return group;
+  return (
+    <div className="flex flex-col gap-2">
+      <span id={labelId} className="text-xs font-semibold text-fg-muted">
+        {label}
+      </span>
+      {group}
     </div>
   );
 }

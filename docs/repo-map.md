@@ -4,7 +4,7 @@
 packages/
   ui/              @shavin/ui: primitives, tokens, styles, Tailwind preset
   cli/             @shavin/cli: shavin init / add / list / check / context / bridge / brand / publish
-  mcp-server/      @shavin/mcp: MCP server for coding agents, plus the :7428 browser bridge
+  mcp-server/      @shavin/mcp: MCP server for coding agents, plus the :7036 browser bridge
   skills/          @shavin/skills: agent skills and slash commands (source of truth)
   block-schema/    @shavin/block-schema: block types, schemas and the open block catalogue
 playground/        npm run playground: preview every primitive from source on :3700

@@ -12,7 +12,7 @@ export function HeroMeshType() {
             </Text>
           </Flex>
           <Flex direction="column" align="center" gap="3">
-            <Button size="lg">Create your free account</Button>
+            <Button size="lg" asChild><a href="/signup">Create your free account</a></Button>
             <Text size="sm" color="muted">No card required. Read-only access. Cancel any time.</Text>
           </Flex>
         </Flex>

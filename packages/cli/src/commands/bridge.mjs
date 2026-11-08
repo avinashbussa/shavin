@@ -3,7 +3,9 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { existsSync } from "node:fs";
 
 export async function bridgeCommand(options = {}) {
-  const port = Number(options.port) || 7428;
+  // Resolve the canonical default from @shavin/mcp once it is loaded; 7036 is only a
+  // last-resort fallback that must match BRIDGE_PORT in @shavin/mcp.
+  const explicitPort = Number(options.port) || undefined;
   const targetDir = options.targetDir || process.cwd();
   console.log("\x1b[36m%s\x1b[0m", "\n🌉 Starting Shavin Agent-Browser Bridge...\n");
 
@@ -41,8 +43,10 @@ export async function bridgeCommand(options = {}) {
     }
 
     if (bridgeModule && (bridgeModule.globalBridge || bridgeModule.ShavinBridgeServer)) {
-      const bridge = bridgeModule.globalBridge || new bridgeModule.ShavinBridgeServer(port);
+      const defaultPort = explicitPort ?? bridgeModule.BRIDGE_PORT ?? 7036;
+      const bridge = bridgeModule.globalBridge || new bridgeModule.ShavinBridgeServer(defaultPort);
       await bridge.start();
+      const port = bridge.port ?? defaultPort;
       console.log("\x1b[32m%s\x1b[0m", `\u2713 Shavin Bridge Daemon listening on http://127.0.0.1:${port}`);
       console.log("\x1b[36m%s\x1b[0m", `  Monitor Dashboard: http://localhost:${port}/`);
       console.log("\x1b[36m%s\x1b[0m", `  SSE Event Stream:  http://localhost:${port}/api/events`);

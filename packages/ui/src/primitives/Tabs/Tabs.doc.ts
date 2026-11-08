@@ -29,8 +29,24 @@ export const docs: ComponentDoc = {
   },
   examples: [
     {
-      title: "Data-Driven Stateful Tabs",
-      code: '<Tabs variant="line" items={[{ label: "Overview", content: "Overview Content" }, { label: "Settings", content: "Settings Content" }]} />'
+      title: "Line (default)",
+      description: "Underline that slides to the active tab.",
+      code: '<Tabs variant="line" items={[{ label: "Overview", content: "Overview content" }, { label: "Activity", content: "Activity content" }, { label: "Settings", content: "Settings content" }]} />'
+    },
+    {
+      title: "Segmented",
+      description: "Enclosed control; the accent pill glides between tabs (variant=\"segmented\").",
+      code: '<Tabs variant="segmented" items={[{ label: "Day", content: "Day view" }, { label: "Week", content: "Week view" }, { label: "Month", content: "Month view" }]} />'
+    },
+    {
+      title: "Pills",
+      description: "Rounded capsule tabs (variant=\"pills\").",
+      code: '<Tabs variant="pills" items={[{ label: "All", content: "All items" }, { label: "Active", content: "Active items" }, { label: "Archived", content: "Archived items" }]} />'
+    },
+    {
+      title: "Button",
+      description: "Toolbar-style button tabs (variant=\"button\").",
+      code: '<Tabs variant="button" items={[{ label: "Edit", content: "Editing" }, { label: "Preview", content: "Previewing" }]} />'
     }
   ]
 };

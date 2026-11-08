@@ -35,7 +35,7 @@ A typical agent loop: `plan_page` → fill and `check_page` the plan → look up
 
 ## Live browser bridge
 
-The server starts a local bridge on `http://127.0.0.1:7428`. In development, `<ThemeProvider>` mounts a dev inspector that streams token-compliance and contrast results from your open tabs, which the `*_live_*` tools read. Open `http://localhost:7428/` for the dashboard.
+The server starts a local bridge on `http://127.0.0.1:7036`. In development, `<ThemeProvider>` mounts a dev inspector that streams token-compliance and contrast results from your open tabs, which the `*_live_*` tools read. Open `http://localhost:7036/` for the dashboard.
 
 ```sh
 npx @shavin/mcp --bridge          # bridge + dashboard only

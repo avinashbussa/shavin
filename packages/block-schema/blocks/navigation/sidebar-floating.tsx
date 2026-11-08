@@ -48,7 +48,7 @@ export function SidebarFloating({ items = defaultItems, stats = defaultStats }) 
               <SidebarTrigger />
               <Heading as="p" size="sm" tracking="tight">WiseOwl</Heading>
             </Flex>
-            <Flex direction="column" gap="6" className="relative min-h-0 min-w-0 flex-1 overflow-y-auto p-6">
+            <Flex direction="column" gap="6" role="region" aria-label="Content" tabIndex={0} className="relative min-h-0 min-w-0 flex-1 overflow-y-auto p-6">
               <Flex direction="column" gap="1">
                 <Heading as="h1" size="lg">Good morning, Maya</Heading>
                 <Text size="sm" color="muted">Everything synced 4 minutes ago. Two budgets need a look this week.</Text>

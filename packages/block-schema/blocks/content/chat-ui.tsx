@@ -23,7 +23,7 @@ export function ChatUi({ messages = defaultMessages, replies = defaultReplies })
         <Card padding="none" className="overflow-hidden">
           <Flex direction="column" className="h-[680px]">
             <Flex direction="row" align="center" gap="3" className="shrink-0 border-b border-hairline px-4 py-3">
-              <Avatar size="md" src="https://assets.lummi.ai/assets/Qma5G7Ysfs1veKyTEdAC8tPvCdM9KDGeGY3Jrsf7Bky7N7?auto=format&w=400" alt="Noor Patel" fallback="NP" />
+              <Avatar size="md" src="https://assets.lummi.ai/assets/Qma5G7Ysfs1veKyTEdAC8tPvCdM9KDGeGY3Jrsf7Bky7N7?auto=format&w=400" fallback="NP" />
               <Flex direction="column" className="min-w-0 flex-1">
                 <Heading as="h2" size="inherit" className="text-sm font-semibold">Noor Patel</Heading>
                 <Text size="xs" color="muted" className="truncate">WiseOwl support · replies in about 3 min</Text>
@@ -32,7 +32,7 @@ export function ChatUi({ messages = defaultMessages, replies = defaultReplies })
                 <Icon name="more-horizontal" size="md" color="inherit" />
               </IconButton>
             </Flex>
-            <Flex direction="column" gap="4" className="min-h-0 flex-1 overflow-y-auto px-4 py-5">
+            <Flex direction="column" gap="4" role="log" aria-label="Messages" tabIndex={0} className="min-h-0 flex-1 overflow-y-auto px-4 py-5">
               <ChatBubble variant="system">Today</ChatBubble>
               {messages.map((message) => (
                 <ChatBubble
@@ -61,8 +61,8 @@ export function ChatUi({ messages = defaultMessages, replies = defaultReplies })
                 </ChatBubble>
               ))}
               <Flex direction="row" align="end" gap="2">
-                <Avatar size="sm" src="https://assets.lummi.ai/assets/Qma5G7Ysfs1veKyTEdAC8tPvCdM9KDGeGY3Jrsf7Bky7N7?auto=format&w=400" alt="Noor Patel" fallback="NP" />
-                <Flex direction="row" align="center" gap="1" className="rounded-[var(--radius-panel)] rounded-tl-[var(--radius-sm)] bg-surface-hover px-3 py-3" aria-label="Noor is typing">
+                <Avatar size="sm" src="https://assets.lummi.ai/assets/Qma5G7Ysfs1veKyTEdAC8tPvCdM9KDGeGY3Jrsf7Bky7N7?auto=format&w=400" fallback="NP" />
+                <Flex direction="row" align="center" gap="1" className="rounded-[var(--radius-panel)] rounded-tl-[var(--radius-sm)] bg-surface-hover px-3 py-3" role="status" aria-label="Noor is typing">
                   <Box className="h-1.5 w-1.5 animate-pulse rounded-full bg-fg-subtle" />
                   <Box className="h-1.5 w-1.5 animate-pulse rounded-full bg-fg-subtle [animation-delay:150ms]" />
                   <Box className="h-1.5 w-1.5 animate-pulse rounded-full bg-fg-subtle [animation-delay:300ms]" />

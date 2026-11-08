@@ -187,6 +187,9 @@ export function CanvasColorPickerPopup({
 
   const [hue, setHue] = useState(hsv.h);
   const [sat, setSat] = useState(hsv.s);
+  // Feature-detect after mount so server and client render the same markup.
+  const [canEyeDrop, setCanEyeDrop] = useState(false);
+  useEffect(() => setCanEyeDrop(typeof window !== "undefined" && "EyeDropper" in window), []);
   const [val, setVal] = useState(hsv.v);
   const [formatMode, setFormatMode] = useState<"HEX" | "RGB">("HEX");
 
@@ -232,6 +235,32 @@ export function CanvasColorPickerPopup({
     } catch {}
   };
 
+  // Keyboard for the saturation/brightness area (WCAG 2.1.1): left/right change
+  // saturation, up/down brightness; Shift steps by 10, Home/End jump to the edges.
+  const handleSatValKeyDown = (e: React.KeyboardEvent) => {
+    const step = e.shiftKey ? 10 : 1;
+    let s = sat;
+    let v = val;
+    switch (e.key) {
+      case "ArrowLeft": s -= step; break;
+      case "ArrowRight": s += step; break;
+      case "ArrowUp": v += step; break;
+      case "ArrowDown": v -= step; break;
+      case "Home": s = 0; break;
+      case "End": s = 100; break;
+      case "PageUp": v = 100; break;
+      case "PageDown": v = 0; break;
+      default: return;
+    }
+    e.preventDefault();
+    s = Math.max(0, Math.min(100, s));
+    v = Math.max(0, Math.min(100, v));
+    setSat(s);
+    setVal(v);
+    const { r, g, b } = hsvToRgb(hue, s, v);
+    onChange(rgbToHex(r, g, b));
+  };
+
   const handleHueChange = (newHue: number) => {
     setHue(newHue);
     const { r, g, b } = hsvToRgb(newHue, sat, val);
@@ -262,6 +291,15 @@ export function CanvasColorPickerPopup({
       {/* 2D Saturation/Value Matrix */}
       <div
         ref={satValRef}
+        tabIndex={0}
+        role="slider"
+        aria-roledescription="2D slider"
+        aria-label="Saturation and brightness"
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-valuenow={sat}
+        aria-valuetext={`Saturation ${sat}%, brightness ${val}%`}
+        onKeyDown={handleSatValKeyDown}
         onPointerDown={handlePointerDownSatVal}
         onPointerMove={handlePointerMoveSatVal}
         onPointerUp={handlePointerUpSatVal}
@@ -284,14 +322,18 @@ export function CanvasColorPickerPopup({
 
       {/* Controls row: Eyedropper + Rainbow Hue Slider + Preview Swatch */}
       <div className="flex items-center gap-2">
-        <button
-          type="button"
-          onClick={handleEyeDropper}
-          title="Pick color from screen"
-          className="p-1.5 rounded-[var(--radius-lg)] border border-hairline bg-surface hover:bg-surface-hover text-fg-subtle hover:text-fg transition cursor-pointer shrink-0"
-        >
-          <Pipette className="w-3.5 h-3.5" />
-        </button>
+        {/* Only where the EyeDropper API exists; elsewhere the button would do nothing. */}
+        {canEyeDrop && (
+          <button
+            type="button"
+            onClick={handleEyeDropper}
+            aria-label="Pick color from screen"
+            title="Pick color from screen"
+            className="p-1.5 rounded-[var(--radius-lg)] border border-hairline bg-surface hover:bg-surface-hover text-fg-subtle hover:text-fg transition cursor-pointer shrink-0"
+          >
+            <Pipette className="w-3.5 h-3.5" aria-hidden />
+          </button>
+        )}
 
         <div className="flex-1 flex flex-col justify-center">
           {/* Hue Rainbow Bar */}
@@ -302,8 +344,9 @@ export function CanvasColorPickerPopup({
               max={360}
               value={hue}
               onChange={(e) => handleHueChange(Number(e.target.value))}
-              aria-label="Hue spectrum"
-              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20"
+              aria-label="Hue"
+              aria-valuetext={`${hue} degrees`}
+              className="peer absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20"
             />
             <div
               className="w-full h-full rounded-full overflow-hidden"
@@ -314,7 +357,8 @@ export function CanvasColorPickerPopup({
             />
             {/* Subtle Indicator Thumb */}
             <div
-              className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-2 h-4 rounded-full border-2 border-white shadow-[0_0_2px_rgba(0,0,0,0.8)] pointer-events-none z-10"
+              // The real range input is invisible; its focus shows on the thumb.
+              className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-2 h-4 rounded-full border-2 border-white shadow-[0_0_2px_rgba(0,0,0,0.8)] pointer-events-none z-10 peer-focus-visible:ring-2 peer-focus-visible:ring-fg peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-surface"
               style={{
                 left: `${(hue / 360) * 100}%`,
               }}
@@ -333,7 +377,7 @@ export function CanvasColorPickerPopup({
       {/* Bottom row: (Single HEX Input OR 3 Dedicated RGB Inputs) + Right-end Up-Down Arrow Button */}
       <div className="flex items-center gap-1.5">
         {formatMode === "HEX" ? (
-          <div className="flex-1 flex items-center h-7 rounded-[var(--radius-lg)] border border-hairline bg-surface-hover/40 px-2.5 focus-within:border-accent">
+          <div className="flex-1 flex items-center h-7 rounded-[var(--radius-lg)] border border-hairline bg-surface-hover/40 px-2.5 focus-within:border-accent focus-ring-within">
             <input
               type="text"
               value={cleanValue.toUpperCase()}
@@ -350,7 +394,7 @@ export function CanvasColorPickerPopup({
           </div>
         ) : (
           <div className="flex-1 flex items-center gap-1">
-            <div className="flex-1 flex items-center h-7 bg-surface-hover/40 rounded-[var(--radius-lg)] border border-hairline px-1.5 focus-within:border-accent">
+            <div className="flex-1 flex items-center h-7 bg-surface-hover/40 rounded-[var(--radius-lg)] border border-hairline px-1.5 focus-within:border-accent focus-ring-within">
               <span className="text-[9px] text-fg-muted mr-1 font-mono select-none">R</span>
               <input
                 type="number"
@@ -365,7 +409,7 @@ export function CanvasColorPickerPopup({
                 className="w-full bg-transparent font-mono text-[11px] text-right text-fg outline-none p-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               />
             </div>
-            <div className="flex-1 flex items-center h-7 bg-surface-hover/40 rounded-[var(--radius-lg)] border border-hairline px-1.5 focus-within:border-accent">
+            <div className="flex-1 flex items-center h-7 bg-surface-hover/40 rounded-[var(--radius-lg)] border border-hairline px-1.5 focus-within:border-accent focus-ring-within">
               <span className="text-[9px] text-fg-muted mr-1 font-mono select-none">G</span>
               <input
                 type="number"
@@ -380,7 +424,7 @@ export function CanvasColorPickerPopup({
                 className="w-full bg-transparent font-mono text-[11px] text-right text-fg outline-none p-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               />
             </div>
-            <div className="flex-1 flex items-center h-7 bg-surface-hover/40 rounded-[var(--radius-lg)] border border-hairline px-1.5 focus-within:border-accent">
+            <div className="flex-1 flex items-center h-7 bg-surface-hover/40 rounded-[var(--radius-lg)] border border-hairline px-1.5 focus-within:border-accent focus-ring-within">
               <span className="text-[9px] text-fg-muted mr-1 font-mono select-none">B</span>
               <input
                 type="number"
@@ -402,10 +446,11 @@ export function CanvasColorPickerPopup({
           type="button"
           onPointerDown={(e) => e.preventDefault()}
           onClick={() => setFormatMode(formatMode === "HEX" ? "RGB" : "HEX")}
+          aria-label={`Switch to ${formatMode === "HEX" ? "RGB" : "HEX"} mode`}
           title={`Switch to ${formatMode === "HEX" ? "RGB" : "HEX"} mode`}
           className="h-7 w-7 rounded-[var(--radius-lg)] border border-hairline bg-surface hover:bg-surface-hover text-fg-subtle hover:text-fg flex items-center justify-center transition active:scale-95 cursor-pointer shrink-0"
         >
-          <ChevronsUpDown className="w-3.5 h-3.5" />
+          <ChevronsUpDown className="w-3.5 h-3.5" aria-hidden />
         </button>
       </div>
     </div>
@@ -436,10 +481,11 @@ export function ColorPickerPopover({
         ) : (
           <button
             type="button"
+            aria-label={`Pick color, current ${value}`}
             title="Pick color"
-            className="relative flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-[var(--radius-lg)] border border-hairline bg-surface hover:bg-surface-hover text-fg transition focus:outline-none shadow-1"
+            className="relative flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-[var(--radius-lg)] border border-hairline bg-surface hover:bg-surface-hover text-fg transition shadow-1"
           >
-            <Pipette className="h-3.5 w-3.5 text-fg-subtle" />
+            <Pipette className="h-3.5 w-3.5 text-fg-subtle" aria-hidden />
           </button>
         )}
       </PopoverPrimitive.Trigger>
@@ -448,7 +494,7 @@ export function ColorPickerPopover({
           data-panel
           sideOffset={sideOffset}
           align={align}
-          className="z-[100] outline-none shadow-panel rounded-[var(--radius-panel)]"
+          className="z-[var(--z-floating)] outline-none shadow-panel rounded-[var(--radius-panel)]"
         >
           <CanvasColorPickerPopup value={value} onChange={onChange} className="shadow-none border-none p-3" />
         </PopoverPrimitive.Content>
@@ -508,7 +554,7 @@ export function ColorPicker({
       <div
         data-color-picker="true"
         className={cn(
-          "relative flex items-center rounded-[var(--radius-lg)] border border-hairline bg-surface px-2 py-1.5 transition focus-within:border-accent shadow-1",
+          "relative flex items-center rounded-[var(--radius-lg)] border border-hairline bg-surface px-2 py-1.5 transition focus-within:border-accent focus-ring-within shadow-1",
           className
         )}
         {...props}
@@ -517,8 +563,10 @@ export function ColorPicker({
           <PopoverPrimitive.Trigger asChild>
             <button
               type="button"
+              aria-label={`Pick color, current ${value}`}
               title="Pick color"
-              className="relative flex h-5 w-5 shrink-0 cursor-pointer items-center justify-center mr-2 select-none focus:outline-none"
+              // 20px swatch inside a 24px target (WCAG 2.5.8).
+              className="relative -my-0.5 -ml-0.5 mr-1.5 flex h-6 w-6 shrink-0 cursor-pointer items-center justify-center rounded-[var(--radius-lg)] select-none"
             >
               {/* ds-lint-disable-next-line no-hex — preview swatch */}
               <span
@@ -538,7 +586,7 @@ export function ColorPicker({
               data-panel
               sideOffset={6}
               align="start"
-              className="z-[100] outline-none shadow-panel rounded-[var(--radius-panel)]"
+              className="z-[var(--z-floating)] outline-none shadow-panel rounded-[var(--radius-panel)]"
             >
               <CanvasColorPickerPopup
                 value={normalizedValue}
@@ -572,10 +620,11 @@ export function ColorPicker({
           <PopoverPrimitive.Trigger asChild>
             <button
               type="button"
-              title="Pick color using eyedropper"
-              className="relative flex h-6 w-6 shrink-0 cursor-pointer items-center justify-center rounded-[var(--radius-lg)] text-fg-subtle transition hover:bg-surface-hover hover:text-fg ml-1 focus:outline-none"
+              aria-label="Open color picker"
+              title="Open color picker"
+              className="relative flex h-6 w-6 shrink-0 cursor-pointer items-center justify-center rounded-[var(--radius-lg)] text-fg-subtle transition hover:bg-surface-hover hover:text-fg ml-1"
             >
-              <Pipette className="h-3.5 w-3.5" />
+              <Pipette className="h-3.5 w-3.5" aria-hidden />
             </button>
           </PopoverPrimitive.Trigger>
           <PopoverPrimitive.Portal>
@@ -583,7 +632,7 @@ export function ColorPicker({
               data-panel
               sideOffset={6}
               align="end"
-              className="z-[100] outline-none shadow-panel rounded-[var(--radius-panel)]"
+              className="z-[var(--z-floating)] outline-none shadow-panel rounded-[var(--radius-panel)]"
             >
               <CanvasColorPickerPopup
                 value={normalizedValue}
@@ -604,15 +653,30 @@ export function ColorPicker({
       className={cn(colorPickerVariants({ size }), className)}
       {...props}
     >
+      {/* Radio group: one tab stop, arrows move and pick (Up/Down by a row in the grid). */}
       <div
+        role="radiogroup"
+        aria-label="Colors"
+        onKeyDown={(e) => {
+          const cols = swatchLayout === "scroll" ? 1 : 8;
+          const step = ({ ArrowRight: 1, ArrowLeft: -1, ArrowDown: cols, ArrowUp: -cols } as Record<string, number>)[e.key];
+          if (!step) return;
+          e.preventDefault();
+          const current = Math.max(0, visiblePresets.findIndex((p) => p.hex.toLowerCase() === normalizedValue));
+          const next = Math.min(visiblePresets.length - 1, Math.max(0, current + step));
+          onChange(visiblePresets[next].hex);
+          const buttons = e.currentTarget.querySelectorAll<HTMLElement>('[role="radio"]');
+          buttons[next]?.focus();
+        }}
         className={cn(
           swatchLayout === "scroll"
             ? "flex items-center gap-1 overflow-x-auto py-1 scrollbar-none select-none"
             : "grid grid-cols-8 gap-1 justify-items-center"
         )}
       >
-        {visiblePresets.map((p) => {
+        {visiblePresets.map((p, i) => {
           const isSelected = normalizedValue === p.hex.toLowerCase();
+          const anySelected = visiblePresets.some((x) => x.hex.toLowerCase() === normalizedValue);
           // ds-lint-disable-next-line no-hex — monochrome preset hex comparison
           const isMonochrome =
             p.hex === "#000000" || p.name.toLowerCase() === "monochrome";
@@ -622,8 +686,10 @@ export function ColorPicker({
               type="button"
               title={p.name}
               data-swatch="true"
-              aria-label={`Select ${p.name} color`}
-              aria-pressed={isSelected}
+              role="radio"
+              aria-label={p.name}
+              aria-checked={isSelected}
+              tabIndex={isSelected || (!anySelected && i === 0) ? 0 : -1}
               onClick={() => onChange(p.hex)}
               className={cn(
                 "flex h-7 w-7 shrink-0 items-center justify-center rounded-[var(--radius-lg)] border transition cursor-pointer",
@@ -660,10 +726,11 @@ export function ColorPicker({
               <PopoverPrimitive.Trigger asChild>
                 <button
                   type="button"
+                  aria-label={`Pick custom color, current ${value}`}
                   title="Pick custom color"
-                  className="relative flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-[var(--radius-lg)] border border-hairline text-fg-subtle transition hover:bg-surface-hover hover:text-fg focus:outline-none"
+                  className="relative flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-[var(--radius-lg)] border border-hairline text-fg-subtle transition hover:bg-surface-hover hover:text-fg"
                 >
-                  <Pipette className="h-3.5 w-3.5" />
+                  <Pipette className="h-3.5 w-3.5" aria-hidden />
                 </button>
               </PopoverPrimitive.Trigger>
               <PopoverPrimitive.Portal>
@@ -671,7 +738,7 @@ export function ColorPicker({
                   data-panel
                   sideOffset={6}
                   align="end"
-                  className="z-[100] outline-none shadow-panel rounded-[var(--radius-panel)]"
+                  className="z-[var(--z-floating)] outline-none shadow-panel rounded-[var(--radius-panel)]"
                 >
                   <CanvasColorPickerPopup
                     value={normalizedValue}
@@ -684,7 +751,7 @@ export function ColorPicker({
 
             <div
               className={cn(
-                "flex items-center gap-1.5 rounded-[var(--radius-lg)] border border-hairline bg-surface py-1 pl-1.5 pr-1.5 transition focus-within:border-accent",
+                "flex items-center gap-1.5 rounded-[var(--radius-lg)] border border-hairline bg-surface py-1 pl-1.5 pr-1.5 transition focus-within:border-accent focus-ring-within",
                 colorMode === "rgb" ? "w-32" : "w-24"
               )}
             >
@@ -692,8 +759,10 @@ export function ColorPicker({
                 <PopoverPrimitive.Trigger asChild>
                   <button
                     type="button"
-                    className="relative flex h-4 w-4 shrink-0 cursor-pointer items-center justify-center focus:outline-none"
-                    title="Click to pick color"
+                    // 16px swatch inside a 24px target (WCAG 2.5.8).
+                    className="relative -m-1 flex h-6 w-6 shrink-0 cursor-pointer items-center justify-center rounded-[var(--radius-lg)]"
+                    aria-label={`Pick color, current ${value}`}
+                    title="Pick color"
                   >
                     {/* ds-lint-disable-next-line no-hex — preview swatch */}
                     <span
@@ -713,7 +782,7 @@ export function ColorPicker({
                     data-panel
                     sideOffset={6}
                     align="end"
-                    className="z-[100] outline-none shadow-panel rounded-[var(--radius-panel)]"
+                    className="z-[var(--z-floating)] outline-none shadow-panel rounded-[var(--radius-panel)]"
                   >
                     <CanvasColorPickerPopup
                       value={normalizedValue}

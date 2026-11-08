@@ -1,10 +1,79 @@
 "use client";
-import { type ElementType, type ReactNode } from "react";
+import { type ComponentPropsWithoutRef, type ElementType, type ReactNode } from "react";
 import * as TabsPrimitive from "@radix-ui/react-tabs";
 import { cn } from "../../lib/cn";
+import { useSlidingIndicator } from "../../lib/useSlidingIndicator";
 
 export type TabVariant = "line" | "segmented" | "pills" | "button" | "pill";
 export type TabOrientation = "horizontal" | "vertical";
+
+/** Variants that get an animated sliding active indicator (continuity between tabs). */
+const SLIDING_TAB = new Set<TabVariant>(["line", "segmented", "pills", "pill"]);
+
+/**
+ * TabsPrimitive.List with a single active indicator that glides to the active trigger instead of each
+ * trigger drawing its own. Measures the active trigger ([data-state="active"]) and watches for changes via
+ * a MutationObserver, so it works for both data-driven and compositional (TabsList/TabsTrigger) usage.
+ * Only the line (underline) and segmented (pill) variants slide; others render a plain list.
+ */
+function IndicatorList({
+  variant,
+  orientation,
+  size = "md",
+  className,
+  children,
+  "aria-label": ariaLabel,
+}: {
+  variant: TabVariant;
+  orientation: TabOrientation;
+  size?: "sm" | "md";
+  className?: string;
+  children: ReactNode;
+  "aria-label"?: string;
+}) {
+  const horizontal = orientation !== "vertical";
+  const slides = SLIDING_TAB.has(variant);
+  const { ref, indicatorRef, pos, size: indSize, on, transitionClass: transition } = useSlidingIndicator<HTMLDivElement>({
+    enabled: slides,
+    orientation,
+    activeSelector: '[data-state="active"]',
+  });
+
+  const indStyle = horizontal
+    ? { transform: `translateX(${pos}px)`, width: indSize }
+    : { transform: `translateY(${pos}px)`, height: indSize };
+  const hidden = !on && "opacity-0";
+
+  return (
+    <TabsPrimitive.List ref={slides ? ref : undefined} aria-label={ariaLabel} className={cn(slides && "relative", listClass(variant, orientation, size), className)}>
+      {slides && (
+        variant === "line" ? (
+          <span
+            ref={indicatorRef}
+            aria-hidden="true"
+            className={cn("pointer-events-none absolute z-0 bg-accent", horizontal ? "bottom-0 h-0.5" : "left-0 w-0.5", transition, hidden)}
+            style={indStyle}
+          />
+        ) : variant === "pills" || variant === "pill" ? (
+          <span
+            ref={indicatorRef}
+            aria-hidden="true"
+            className={cn("pointer-events-none absolute z-0 rounded-full border border-hairline/40 bg-surface shadow-card", size === "sm" ? "top-0.5 bottom-0.5" : "top-1 bottom-1", transition, hidden)}
+            style={indStyle}
+          />
+        ) : (
+          <span
+            ref={indicatorRef}
+            aria-hidden="true"
+            className={cn("pointer-events-none absolute z-0 rounded-[calc(var(--radius-panel)-2px)] bg-accent", size === "sm" ? "top-0.5 bottom-0.5" : "top-1 bottom-1", transition, hidden)}
+            style={indStyle}
+          />
+        )
+      )}
+      {children}
+    </TabsPrimitive.List>
+  );
+}
 
 export interface TabItem {
   value?: string;
@@ -37,6 +106,8 @@ export interface TabsProps {
   linkComponent?: ElementType;
   children?: ReactNode;
   className?: string;
+  /** Names the tab list (states) or the `<nav>` landmark (navigation). */
+  "aria-label"?: string;
 }
 
 function listClass(variant: TabVariant, o: TabOrientation, size: "sm" | "md" = "md") {
@@ -75,22 +146,25 @@ function triggerClass(variant: TabVariant, o: TabOrientation, size: "sm" | "md" 
     );
   }
   if (variant === "pills" || variant === "pill") {
+    // Background comes from the sliding indicator; the trigger only toggles text.
     return cn(
-      "rounded-full font-medium text-fg-muted transition hover:text-fg active:scale-[0.97] data-[state=active]:bg-surface data-[state=active]:text-fg data-[state=active]:font-semibold data-[state=active]:shadow-card data-[state=active]:border data-[state=active]:border-hairline/40",
+      "relative z-10 rounded-full font-medium text-fg-muted transition hover:text-fg active:scale-[0.97] data-[state=active]:text-fg data-[state=active]:font-semibold",
       isSm ? "px-3 py-1 text-xs" : "px-4 py-1.5 text-sm"
     );
   }
   if (variant === "segmented") {
+    // Background comes from the sliding indicator; the trigger only toggles text.
     return cn(
-      "rounded-[calc(var(--radius-panel)-2px)] text-fg-muted transition hover:bg-surface-hover active:scale-[0.97] data-[state=active]:bg-accent data-[state=active]:text-accent-fg",
+      "relative z-10 rounded-[calc(var(--radius-panel)-2px)] text-fg-muted transition hover:text-fg active:scale-[0.97] data-[state=active]:text-accent-fg",
       isSm ? "px-2.5 py-1 text-xs font-medium" : "px-3 py-1.5 text-sm font-medium"
     );
   }
-  const active = "data-[state=active]:border-accent data-[state=active]:font-medium data-[state=active]:text-fg";
-  const inactive = "data-[state=inactive]:border-transparent data-[state=inactive]:text-fg-muted data-[state=inactive]:hover:text-fg";
+  // line: the underline comes from the sliding indicator; keep a transparent reserved border for layout.
+  const active = "data-[state=active]:font-medium data-[state=active]:text-fg";
+  const inactive = "data-[state=inactive]:text-fg-muted data-[state=inactive]:hover:text-fg";
   return o === "vertical"
-    ? cn("-ml-px border-l-2 text-left transition", isSm ? "px-2.5 py-1.5 text-xs" : "px-3 py-2 text-sm", active, inactive)
-    : cn("-mb-px border-b-2 transition", isSm ? "px-2.5 py-1.5 text-xs" : "px-3 py-2.5 text-sm", active, inactive);
+    ? cn("relative z-10 -ml-px border-l-2 border-transparent text-left transition", isSm ? "px-2.5 py-1.5 text-xs" : "px-3 py-2 text-sm", active, inactive)
+    : cn("relative z-10 -mb-px border-b-2 border-transparent transition", isSm ? "px-2.5 py-1.5 text-xs" : "px-3 py-2.5 text-sm", active, inactive);
 }
 
 export function Tabs({
@@ -106,21 +180,22 @@ export function Tabs({
   linkComponent: LinkComponent = "a",
   children,
   className,
+  "aria-label": ariaLabel,
 }: TabsProps) {
   const resolvedItems = items ?? tabs ?? [];
   const isNavMode = as === "navigation";
 
   if (isNavMode) {
     return (
-      <div className={cn(listClass(variant, orientation, size), className)} role="tablist">
+      // Page links are navigation, not tabs: a labelled <nav> with aria-current, no tab roles.
+      <nav aria-label={ariaLabel} className={cn(listClass(variant, orientation, size), className)}>
         {resolvedItems.map((item, i) => {
           const isActive = item.active ?? (value ? item.value === value : false);
           return (
             <LinkComponent
               key={`${item.href ?? item.value ?? i}`}
               href={item.href ?? "#"}
-              role="tab"
-              aria-selected={isActive}
+              aria-current={isActive ? "page" : undefined}
               target={item.external ? "_blank" : undefined}
               rel={item.external ? "noopener noreferrer" : undefined}
               className={cn(
@@ -165,7 +240,7 @@ export function Tabs({
           );
         })}
         {children}
-      </div>
+      </nav>
     );
   }
 
@@ -194,7 +269,7 @@ export function Tabs({
       orientation={orientation}
       className={cn(orientation === "vertical" ? "flex gap-4" : "flex flex-col gap-1", className)}
     >
-      <TabsPrimitive.List className={listClass(variant, orientation, size)}>
+      <IndicatorList variant={variant} orientation={orientation} size={size} aria-label={ariaLabel}>
         {resolvedItems.map((t, idx) => {
           const itemVal = t.value ?? String(idx);
           return (
@@ -202,14 +277,16 @@ export function Tabs({
               key={itemVal}
               value={itemVal}
               disabled={t.disabled}
-              className={cn("inline-flex items-center gap-1.5", triggerClass(variant, orientation, size))}
+              // Used as a filter with no panels here: don't point at panels that don't exist.
+              {...(hasPanels ? {} : { "aria-controls": undefined })}
+              className={cn("inline-flex items-center justify-center gap-1.5", triggerClass(variant, orientation, size))}
             >
               {t.icon && <span className="[&_svg]:h-4 [&_svg]:w-4">{t.icon}</span>}
               {t.label}
             </TabsPrimitive.Trigger>
           );
         })}
-      </TabsPrimitive.List>
+      </IndicatorList>
       {hasPanels && (
         <div className={orientation === "vertical" ? "flex-1" : ""}>
           {resolvedItems.map((t, idx) => {
@@ -218,7 +295,7 @@ export function Tabs({
               <TabsPrimitive.Content
                 key={itemVal}
                 value={itemVal}
-                className={cn("outline-none", orientation === "vertical" ? "" : "pt-4")}
+                className={cn(orientation === "vertical" ? "" : "pt-4")}
               >
                 {t.content}
               </TabsPrimitive.Content>
@@ -235,19 +312,23 @@ export function TabsList({
   className,
   variant = "line",
   orientation = "horizontal",
+  "aria-label": ariaLabel,
 }: {
   children: ReactNode;
   className?: string;
   variant?: TabVariant;
   orientation?: TabOrientation;
+  "aria-label"?: string;
 }) {
   return (
-    <TabsPrimitive.List className={cn(listClass(variant, orientation), className)}>
+    <IndicatorList variant={variant} orientation={orientation} className={className} aria-label={ariaLabel}>
       {children}
-    </TabsPrimitive.List>
+    </IndicatorList>
   );
 }
 
+/** Extra button props (aria-*, data-*, id, title, handlers) pass through to the Radix trigger and win over its own,
+ *  e.g. `aria-controls` when the panel is rendered outside `<Tabs>`. */
 export function TabsTrigger({
   value,
   children,
@@ -255,7 +336,8 @@ export function TabsTrigger({
   variant = "line",
   orientation = "horizontal",
   disabled,
-}: {
+  ...props
+}: Omit<ComponentPropsWithoutRef<typeof TabsPrimitive.Trigger>, "value" | "children" | "className" | "disabled"> & {
   value: string;
   children: ReactNode;
   className?: string;
@@ -265,6 +347,7 @@ export function TabsTrigger({
 }) {
   return (
     <TabsPrimitive.Trigger
+      {...props}
       value={value}
       disabled={disabled}
       className={cn(triggerClass(variant, orientation), className)}
@@ -278,13 +361,14 @@ export function TabsContent({
   value,
   children,
   className,
-}: {
+  ...props
+}: Omit<ComponentPropsWithoutRef<typeof TabsPrimitive.Content>, "value" | "children" | "className"> & {
   value: string;
   children: ReactNode;
   className?: string;
 }) {
   return (
-    <TabsPrimitive.Content value={value} className={cn("pt-4 outline-none", className)}>
+    <TabsPrimitive.Content {...props} value={value} className={cn("pt-4", className)}>
       {children}
     </TabsPrimitive.Content>
   );

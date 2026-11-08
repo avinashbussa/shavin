@@ -103,7 +103,7 @@ export class StudioRelay {
    * Connect to a Studio session by pairing code.
    * Waits for the Studio's `studio_ready` event before resolving.
    *
-   * @param {string} pairingCode - 6-char pairing code from Studio's "Connect AI" modal
+   * @param {string} pairingCode - 6-char pairing code from Studio's "Connect AI" panel
    * @param {Object} [opts]
    * @param {string} [opts.agentName] - Override agent display name
    * @param {number} [opts.timeoutMs=10000] - Max wait for studio_ready
@@ -435,7 +435,7 @@ export class StudioRelay {
       this.connected = false;
       throw new Error(
         "Studio connection lost. The page may have been refreshed or closed. " +
-        "Call connect_studio again with a fresh pairing code from Studio's 'Connect AI' modal."
+        "Call connect_studio again with a fresh pairing code from Studio's 'Connect AI' panel (the star tab in the inspector)."
       );
     }
   }

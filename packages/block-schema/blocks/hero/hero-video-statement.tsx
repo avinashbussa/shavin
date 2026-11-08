@@ -19,7 +19,7 @@ export function HeroVideoStatement() {
             </Text>
           </Flex>
           <Flex direction="row" wrap="wrap" gap="3">
-            <Button size="lg">Start free</Button>
+            <Button size="lg" asChild><a href="/signup">Start free</a></Button>
             <Button size="lg" variant="outline">Watch the 90-second tour</Button>
           </Flex>
         </Flex>

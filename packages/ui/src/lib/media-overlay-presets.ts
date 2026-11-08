@@ -59,6 +59,48 @@ export interface ShorthandLayer {
   /** Slow drift animation (mesh presets only, via "-animated" suffix). */
   animated?: boolean;
   stops?: Array<{ color: string; offset: number; opacity: number; token?: string }>;
+  /** For type "fx": the registered Backdrop variant. */
+  fxKey?: string;
+  /** For type "fx": params handed to the Backdrop renderer. */
+  fxParams?: Record<string, string>;
+}
+
+const FX_TOKEN_RE = /^fx:([A-Za-z0-9][\w-]*)(?:\s*\(([\s\S]*)\))?$/;
+const FX_BARE_VALUE_RE = /^[\w.#%+-]+$/;
+
+/** Parse fx params: `speed=1.2 color=accent text='Plan money'` (spaces or commas between pairs). */
+function parseFxParams(raw: string): Record<string, string> | null {
+  const out: Record<string, string> = {};
+  let i = 0;
+  const n = raw.length;
+  while (i < n) {
+    while (i < n && /[\s,]/.test(raw[i])) i++;
+    if (i >= n) break;
+    const keyMatch = /^[A-Za-z_][\w-]*/.exec(raw.slice(i));
+    if (!keyMatch) return null;
+    const key = keyMatch[0];
+    i += key.length;
+    if (raw[i] !== "=") return null;
+    i++;
+    let value = "";
+    if (raw[i] === "'") {
+      i++;
+      while (i < n && raw[i] !== "'") {
+        if (raw[i] === "\\" && i + 1 < n) i++;
+        value += raw[i++];
+      }
+      if (raw[i] !== "'") return null;
+      i++;
+    } else {
+      while (i < n && !/[\s,]/.test(raw[i])) value += raw[i++];
+    }
+    out[key] = value;
+  }
+  return out;
+}
+
+function printFxParamValue(v: string): string {
+  return FX_BARE_VALUE_RE.test(v) ? v : `'${v.replace(/\\/g, "\\\\").replace(/'/g, "\\'")}'`;
 }
 
 // ─── Shorthand syntax ───────────────────────────────────────────────
@@ -75,14 +117,21 @@ export interface ShorthandLayer {
 //              "linear(90deg, (accent)/0%, (fg)/100%)/80"
 //              "radial((accent)/0%, (accent)/100%)/60"
 //              "radial(at 20% 30%, (accent)/0%, #000/0%)" — off-centre radial
+//              "linear(180deg, (canvas)/57%, (canvas)/96%/80)" — a stop's own opacity
+//              goes after its offset
 //
 //   Mesh:      "mesh-accent" | "mesh-lime" | "mesh-night" | "mesh-dawn" | "mesh-rose" | "mesh-rose-vibrant" | "mesh-mint" | "mesh-peach"
 //              append "-animated" for a slow drift ("mesh-lime-animated")
 //              → type(angle, stops) with optional /opacity at the end
-//              → each stop: color-or-token/offset%
+//              → each stop: color-or-token/offset%, optionally /opacity after it
+//
+//   Fx:        "fx:dither-waves"  or  "fx:dither-waves(speed=1.2 color=accent)/80"
+//              "fx:type-tiles(text='Plan money')"
+//              → a registered Backdrop variant (e.g. from @shavin/fx); params are
+//                key=value pairs, quote values with spaces or symbols in '…'
 //
 // JSON array of OverlayLayer[] remains as fallback for Studio's internal use
-// (custom stops with per-stop opacity, hidden layers, etc).
+// (hidden layers, unknown layer types).
 
 /**
  * Parse a single shorthand token into a ShorthandLayer.
@@ -92,6 +141,21 @@ function parseShorthandToken(token: string, index: number): ShorthandLayer | nul
   // Extract trailing /opacity if present (but only when it's NOT inside parens)
   const { core, opacity } = splitTrailingOpacity(token);
   const id = `overlay-${index + 1}`;
+
+  // 0. Fx backdrop (e.g. "fx:dither-waves", "fx:fluid-silk(speed=1.2)")
+  const fxMatch = core.match(FX_TOKEN_RE);
+  if (fxMatch) {
+    const fxParams = fxMatch[2] !== undefined ? parseFxParams(fxMatch[2]) : {};
+    if (!fxParams) return null;
+    return {
+      id,
+      type: "fx",
+      fxKey: fxMatch[1],
+      ...(Object.keys(fxParams).length ? { fxParams } : {}),
+      opacity,
+      visible: true,
+    };
+  }
 
   // 1. Preset key (e.g. "dark-50", "scrim", "gradient-bottom")
   if (core in OVERLAY_PRESET_STYLES) {
@@ -174,8 +238,14 @@ function splitTrailingOpacity(token: string): { core: string; opacity: number } 
   // Find the LAST / that's outside any parentheses
   let depth = 0;
   let slashIdx = -1;
+  let quoted = false;
   for (let i = token.length - 1; i >= 0; i--) {
     const ch = token[i];
+    if (ch === "'" && token[i - 1] !== "\\") {
+      quoted = !quoted;
+      continue;
+    }
+    if (quoted) continue;
     if (ch === ")") depth++;
     else if (ch === "(") depth--;
     else if (ch === "/" && depth === 0) {
@@ -196,7 +266,7 @@ function splitTrailingOpacity(token: string): { core: string; opacity: number } 
 
 /**
  * Parse gradient stops: "#000/0%, #000/100%" or "(accent)/0%, (fg)/100%"
- * Each stop: color-or-token/offset%
+ * Each stop: color-or-token/offset%, with an optional /opacity after the offset
  */
 function parseGradientStops(stopsStr: string): Array<{ color: string; offset: number; opacity: number; token?: string }> {
   const stops: Array<{ color: string; offset: number; opacity: number; token?: string }> = [];
@@ -205,21 +275,26 @@ function parseGradientStops(stopsStr: string): Array<{ color: string; offset: nu
   for (const part of parts) {
     const trimmed = part.trim();
     if (!trimmed) continue;
-    // Split color from offset% on the last /
-    const lastSlash = trimmed.lastIndexOf("/");
-    if (lastSlash < 0) continue;
-    const colorPart = trimmed.slice(0, lastSlash).trim();
-    const offsetStr = trimmed.slice(lastSlash + 1).trim();
+    // "color/offset%" or "color/offset%/opacity". Neither a hex nor a (token) holds a "/".
+    const segs = trimmed.split("/").map((s) => s.trim());
+    if (segs.length < 2 || segs.length > 3) continue;
+    const [colorPart, offsetStr, stopOpStr] = segs;
     const offsetMatch = offsetStr.match(/^(\d+(?:\.\d+)?)%?$/);
     if (!offsetMatch) continue;
     const offset = parseFloat(offsetMatch[1]);
+    let opacity = 100;
+    if (stopOpStr !== undefined) {
+      const opMatch = stopOpStr.match(/^(\d+(?:\.\d+)?)$/);
+      if (!opMatch) continue;
+      opacity = Math.max(0, Math.min(100, parseFloat(opMatch[1])));
+    }
 
     // Determine if colorPart is a token or hex
     const tokenMatch = colorPart.match(/^\((.+)\)$/);
     if (tokenMatch) {
-      stops.push({ color: "", token: tokenMatch[1].trim(), offset, opacity: 100 });
+      stops.push({ color: "", token: tokenMatch[1].trim(), offset, opacity });
     } else if (/^#[0-9a-fA-F]{3,8}$/.test(colorPart)) {
-      stops.push({ color: colorPart, offset, opacity: 100 });
+      stops.push({ color: colorPart, offset, opacity });
     }
   }
   return stops;
@@ -230,8 +305,18 @@ function splitByCommaRespectingParens(str: string): string[] {
   const parts: string[] = [];
   let depth = 0;
   let current = "";
-  for (const ch of str) {
-    if (ch === "(") depth++;
+  let quoted = false;
+  for (let i = 0; i < str.length; i++) {
+    const ch = str[i];
+    // Quoted fx param values ('a, b') may hold commas and parens.
+    if (quoted) {
+      current += ch;
+      if (ch === "\\" && i + 1 < str.length) current += str[++i];
+      else if (ch === "'") quoted = false;
+      continue;
+    }
+    if (ch === "'") quoted = true;
+    else if (ch === "(") depth++;
     else if (ch === ")") depth--;
     if (ch === "," && depth === 0) {
       parts.push(current);
@@ -273,7 +358,7 @@ export function parseOverlayShorthand(raw: string): ShorthandLayer[] {
  *
  * Returns a shorthand string if all layers can be expressed in shorthand.
  * Returns null if any layer has features that require JSON (hidden layers,
- * per-stop opacity, stops with mixed token/hex that don't round-trip cleanly).
+ * unknown types, fx keys or params it cannot print).
  */
 export function overlayLayersToShorthand(layers: ShorthandLayer[]): string | null {
   if (layers.length === 0) return null;
@@ -297,14 +382,12 @@ export function overlayLayersToShorthand(layers: ShorthandLayer[]): string | nul
       }
     } else if (layer.type === "linear" || layer.type === "radial") {
       if (!layer.stops || layer.stops.length < 2) return null;
-      // Check no per-stop opacity (other than 100)
-      for (const s of layer.stops) {
-        if (s.opacity !== undefined && s.opacity !== 100) return null;
-      }
       const stopStr = layer.stops
         .map((s) => {
           const c = s.token ? `(${s.token})` : s.color;
-          return `${c}/${s.offset}%`;
+          // Per-stop opacity rides after the offset: "(canvas)/96%/80".
+          const stopOp = s.opacity !== undefined && s.opacity !== 100 ? `/${s.opacity}` : "";
+          return `${c}/${s.offset}%${stopOp}`;
         })
         .join(", ");
       if (layer.type === "linear") {
@@ -314,6 +397,16 @@ export function overlayLayersToShorthand(layers: ShorthandLayer[]): string | nul
         const at = layer.position && layer.position !== "center" ? `at ${layer.position}, ` : "";
         parts.push(`radial(${at}${stopStr})${opSuffix}`);
       }
+    } else if (layer.type === "fx") {
+      if (!layer.fxKey || !/^[A-Za-z0-9][\w-]*$/.test(layer.fxKey)) return null;
+      // Empty values are unset params (Studio leaves "" behind); omit them.
+      const params = Object.entries(layer.fxParams ?? {}).filter(
+        ([k, v]) => v !== "" && v != null && /^[A-Za-z_][\w-]*$/.test(k),
+      );
+      const paramStr = params.length
+        ? `(${params.map(([k, v]) => `${k}=${printFxParamValue(String(v))}`).join(" ")})`
+        : "";
+      parts.push(`fx:${layer.fxKey}${paramStr}${opSuffix}`);
     } else {
       return null; // unknown type
     }

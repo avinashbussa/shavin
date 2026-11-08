@@ -29,6 +29,7 @@
   --color-elevated:            var(--bg-elevated);
   --color-hairline:            var(--hairline);
   --color-hairline-strong:     var(--hairline-strong);
+  --color-border-control:      var(--border-control);
   --color-fg:                  var(--fg);
   --color-fg-muted:            var(--fg-muted);
   --color-fg-subtle:           var(--fg-subtle);

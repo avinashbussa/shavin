@@ -59,6 +59,7 @@ export function AppFrame({ sidebar, children, compactBelow = "md", navLabel = "N
   const scrimRef = useRef<HTMLDivElement>(null);
   const returnFocusRef = useRef<HTMLElement | null>(null);
   const navId = useId();
+  const mainId = useId();
   const [compact, setCompact] = useState(false);
   const [open, setOpen] = useState(false);
   const limit = COMPACT_LIMIT[compactBelow];
@@ -183,6 +184,17 @@ export function AppFrame({ sidebar, children, compactBelow = "md", navLabel = "N
           }
         }}
       >
+        {/* Skip link (WCAG 2.4.1): first tab stop, visible only while focused. */}
+        <a
+          href={`#${mainId}`}
+          onClick={(e) => {
+            e.preventDefault();
+            document.getElementById(mainId)?.focus();
+          }}
+          className="sr-only focus:not-sr-only focus:absolute focus:left-3 focus:top-3 focus:z-[var(--z-floating)] focus:rounded-[var(--radius-lg)] focus:bg-surface focus:px-3 focus:py-2 focus:text-sm focus:text-fg focus:shadow-panel"
+        >
+          Skip to content
+        </a>
         <div className="shavin-frame__inner">
           <div
             ref={navRef}
@@ -201,7 +213,7 @@ export function AppFrame({ sidebar, children, compactBelow = "md", navLabel = "N
             {sidebar}
           </div>
           <div ref={scrimRef} className="shavin-frame__scrim" data-open={isOpen || undefined} aria-hidden onClick={closeNav} />
-          <main className="flex min-w-0 flex-1 flex-col overflow-hidden" {...inertProps(isOpen)}>
+          <main id={mainId} tabIndex={-1} className="flex min-w-0 flex-1 flex-col overflow-hidden outline-none" {...inertProps(isOpen)}>
             {children}
           </main>
         </div>

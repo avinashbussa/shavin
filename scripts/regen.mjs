@@ -7,6 +7,7 @@
  *   npm run regen              # all generators
  *   npm run regen -- --list    # print the steps this repo will run
  *   npm run regen -- --figma   # also regenerate the Figma plugin bundle
+ *   npm run regen -- --check   # regenerate, then fail if any generated file was stale (CI drift guard)
  *
  * Order and why:
  *   brand:gen         brand-tokens.css → brand preset/theme files
@@ -18,6 +19,7 @@
  *   registry:build    open + pro blocks → generated trees, then the website /r registry JSON
  *   skills:build      packages/skills → .agents/
  *   agents:gen        rules + counts (manifest, skills) → AGENTS.md, CLAUDE.md, consumer copies
+ *   mcp:assets        packages/skills + tokens/components/AGENTS → @shavin/mcp assets (distribution copy)
  *   figma:gen         (--figma) tokens + manifest → Figma bundle
  */
 import fs from "node:fs";
@@ -30,6 +32,7 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const args = process.argv.slice(2);
 const LIST = args.includes("--list");
 const VERBOSE = args.includes("--verbose");
+const CHECK = args.includes("--check");
 
 const STEPS = [
   { script: "brand:gen", desc: "Brand tokens and preset" },
@@ -41,6 +44,7 @@ const STEPS = [
   { script: "registry:build", desc: "Open + pro block trees, website /r registry" },
   { script: "skills:build", desc: "Skills and commands → .agents/" },
   { script: "agents:gen", desc: "AGENTS.md, CLAUDE.md and consumer copies" },
+  { script: "mcp:assets", desc: "tokens, components.json, AGENTS.md, skills, commands → @shavin/mcp assets" },
   { script: "figma:gen", desc: "Figma plugin bundle", optIn: "--figma" },
 ];
 
@@ -88,6 +92,10 @@ printCard({
     { label: "Newly changed:", value: after ? `${c.fg}${fresh.length} file(s)${c.reset}` : `${c.fgMuted}not a git repo${c.reset}` },
   ],
   footer: fresh.length
-    ? `${c.fgSubtle}A generated file was stale. Commit these with your change:\n${fresh.slice(0, 20).join("\n")}${fresh.length > 20 ? `\n… and ${fresh.length - 20} more` : ""}${c.reset}`
+    ? `${c.fgSubtle}A generated file was stale. ${CHECK ? "Run `npm run regen` and commit these" : "Commit these with your change"}:\n${fresh.slice(0, 20).join("\n")}${fresh.length > 20 ? `\n… and ${fresh.length - 20} more` : ""}${c.reset}`
     : `${c.fgSubtle}${fmt.pass("Everything generated was already up to date.")}${c.reset}`,
 });
+
+// --check (CI drift guard): fail if regenerating produced any change, so a stale generated
+// file in the tree can't slip through. Only meaningful in a git repo.
+if (CHECK && after && fresh.length > 0) process.exit(1);

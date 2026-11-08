@@ -2,6 +2,7 @@
 import React, { type ReactNode } from "react";
 import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog";
 import { cn } from "../../lib/cn";
+import { useReturnFocus } from "../../lib/useReturnFocus";
 import { modalPanelVariants } from "../Dialog/Dialog";
 import { Button } from "../Button/Button";
 import { AlertTriangle, CheckCircle2, Info, Trash2 } from "lucide-react";
@@ -80,12 +81,13 @@ export function AlertDialog({
 
   const confirmClasses = {
     danger: "bg-danger text-danger-fg",
-    warning: "bg-warning text-surface hover:opacity-90",
+    warning: "bg-warning text-warning-fg hover:opacity-90",
     success: "bg-success text-success-fg hover:opacity-90",
     info: "bg-accent text-accent-fg",
     default: "bg-accent text-accent-fg",
   };
 
+  const returnFocus = useReturnFocus(open);
   const resolvedCircleClass = circleClasses[resolvedIntent];
   const confirmButtonClass = confirmClasses[resolvedIntent];
 
@@ -93,7 +95,12 @@ export function AlertDialog({
     <AlertDialogPrimitive.Root open={open} onOpenChange={onOpenChange}>
       <AlertDialogPrimitive.Portal>
         <AlertDialogPrimitive.Overlay className="animate-overlay fixed inset-0 z-[85]" />
-        <AlertDialogPrimitive.Content className="animate-modal-wrap fixed inset-0 z-[85] flex items-center justify-center p-4">
+        <AlertDialogPrimitive.Content
+          className="animate-modal-wrap fixed inset-0 z-[85] flex items-center justify-center p-4"
+          // No description: tell Radix so it does not warn about a missing one.
+          {...(description ? {} : { "aria-describedby": undefined })}
+          onCloseAutoFocus={returnFocus}
+        >
           <div data-panel className={cn(modalPanelVariants({ size: "sm" }), "p-6")}>
             {layout === "centered" ? (
               <div className="flex flex-col items-center text-center">

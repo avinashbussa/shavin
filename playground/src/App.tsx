@@ -3,6 +3,7 @@ import { Icon, Separator, Sidebar, TextField } from "@shavin/ui";
 import { CATEGORY_ORDER, loadPrimitives, passing, required } from "./data";
 import { Overview } from "./pages/Overview";
 import { PrimitivePage } from "./pages/PrimitivePage";
+import { MotionPlayground } from "./pages/MotionPlayground";
 import { Wordmark } from "./Wordmark";
 
 /** Hash routes: #/ (overview) and #/<Folder> (one primitive). No router needed. */
@@ -26,9 +27,10 @@ export function App() {
   const [query, setQuery] = useState("");
   const [mobileNav, setMobileNav] = useState(false);
   const current = primitives.find((p) => p.slug === route);
+  const isMotion = route === "motion";
 
   useEffect(() => {
-    document.title = current ? `${current.name} | Shavin Playground` : "Shavin Playground";
+    document.title = isMotion ? "Motion | Shavin Playground" : current ? `${current.name} | Shavin Playground` : "Shavin Playground";
     document.getElementById("main")?.scrollTo({ top: 0 });
     setMobileNav(false);
   }, [route, current?.name]);
@@ -91,8 +93,11 @@ export function App() {
                 leadingIcon={<Icon name="Search" size="xs" />}
               />
             </div>
-            <a href="#/" className={linkCls(!current)}>
+            <a href="#/" className={linkCls(!current && !isMotion)}>
               Overview
+            </a>
+            <a href="#/motion" className={linkCls(isMotion)}>
+              Motion
             </a>
             {groups.map((g) => (
               <div key={g.cat} className="my-0.5">
@@ -119,6 +124,8 @@ export function App() {
         <main id="main" className="pg-scroll min-w-0 flex-1 overflow-y-auto bg-canvas pt-14">
           {current ? (
             <PrimitivePage key={current.slug} primitive={current} />
+          ) : isMotion ? (
+            <MotionPlayground />
           ) : (
             <Overview primitives={primitives} missing={route || null} />
           )}

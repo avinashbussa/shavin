@@ -29,6 +29,8 @@ export interface SpinnerProps
   glyphs?: string[];
   /** Animation cycle interval in ms for variant="glyph" or variant="ellipsis". Default 200 */
   intervalMs?: number;
+  /** What is loading, for screen readers. Default "Loading". */
+  label?: string;
 }
 
 export function Spinner({
@@ -36,9 +38,13 @@ export function Spinner({
   size = "md",
   glyphs = DEFAULT_GLYPHS,
   intervalMs = 200,
+  label = "Loading",
   className,
   ...props
 }: SpinnerProps) {
+  // One stable text node in the status region; the animated glyphs are hidden so
+  // screen readers do not announce every frame.
+  const srLabel = <span className="sr-only">{label}</span>;
   const [glyphIdx, setGlyphIdx] = useState(0);
   const [ellipsisCount, setEllipsisCount] = useState(1);
 
@@ -63,14 +69,14 @@ export function Spinner({
     return (
       <span
         role="status"
-        aria-label="Loading"
         className={cn(
           "inline-block select-none text-current transition-opacity duration-150 align-baseline",
           className,
         )}
         {...(props as HTMLAttributes<HTMLSpanElement>)}
       >
-        {glyphs[glyphIdx] ?? DEFAULT_GLYPHS[0]}
+        <span aria-hidden="true">{glyphs[glyphIdx] ?? DEFAULT_GLYPHS[0]}</span>
+        {srLabel}
       </span>
     );
   }
@@ -79,14 +85,14 @@ export function Spinner({
     return (
       <span
         role="status"
-        aria-label="Loading"
         className={cn(
           "inline-block min-w-[1.2em] text-left text-current select-none align-baseline",
           className,
         )}
         {...(props as HTMLAttributes<HTMLSpanElement>)}
       >
-        {".".repeat(ellipsisCount)}
+        <span aria-hidden="true">{".".repeat(ellipsisCount)}</span>
+        {srLabel}
       </span>
     );
   }
@@ -98,19 +104,22 @@ export function Spinner({
     return (
       <span
         role="status"
-        aria-label="Loading"
         className={cn("inline-flex items-center gap-1 text-current align-middle", className)}
         {...(props as HTMLAttributes<HTMLSpanElement>)}
       >
+        {srLabel}
         <span
+          aria-hidden="true"
           className={cn("rounded-full bg-current animate-pulse-dot", dotSizeClass)}
           style={{ animationDelay: "0s" }}
         />
         <span
+          aria-hidden="true"
           className={cn("rounded-full bg-current animate-pulse-dot", dotSizeClass)}
           style={{ animationDelay: "0.15s" }}
         />
         <span
+          aria-hidden="true"
           className={cn("rounded-full bg-current animate-pulse-dot", dotSizeClass)}
           style={{ animationDelay: "0.3s" }}
         />
@@ -119,9 +128,9 @@ export function Spinner({
   }
 
   return (
+    <span role="status" className="inline-flex">
     <svg
-      role="status"
-      aria-label="Loading"
+      aria-hidden="true"
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -142,5 +151,7 @@ export function Spinner({
         d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
       />
     </svg>
+    {srLabel}
+    </span>
   );
 }

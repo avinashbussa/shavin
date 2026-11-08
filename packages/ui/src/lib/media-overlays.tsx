@@ -19,6 +19,9 @@
  */
 import * as React from "react";
 import { cn } from "./cn";
+import { useReducedMotion } from "./useReducedMotion";
+import { MotionPauseButton } from "../primitives/Video/PauseToggle";
+import { Backdrop } from "../primitives/Backdrop/Backdrop";
 import { OVERLAY_PRESET_KEYS, OVERLAY_PRESET_STYLES, parseOverlayShorthand as parseShorthandBase, overlayLayersToShorthand as layersToShorthandBase } from "./media-overlay-presets";
 
 // Internal preset styles moved to ./media-overlay-presets (pure .ts module —
@@ -41,7 +44,7 @@ export const isVideoUrl = (url?: string): boolean => {
 
 export type OverlayLayer = {
   id: string;
-  type: "solid" | "linear" | "radial" | "preset";
+  type: "solid" | "linear" | "radial" | "preset" | "fx";
   color?: string;
   token?: string;
   opacity: number; // 0 to 100
@@ -50,6 +53,12 @@ export type OverlayLayer = {
   animated?: boolean; // mesh presets: slow drift
   stops?: Array<{ color: string; offset: number; opacity: number; token?: string }>;
   presetKey?: string;
+  /** For type "fx": the registered Backdrop variant to render (e.g. "fluid-silk").
+   *  Rendered via the Backdrop registry so @shavin/ui needs no @shavin/fx dependency —
+   *  the host app registers fx backdrops with registerBackdrop(). */
+  fxKey?: string;
+  /** Optional per-fx params, passed to the backdrop renderer. */
+  fxParams?: Record<string, string>;
   visible: boolean;
 };
 
@@ -72,7 +81,7 @@ export interface BgMediaProps {
   bgImage?: string;
   /** Background media fit: "cover" fills the container (default), "contain" fits within. */
   bgSize?: "cover" | "contain";
-  /** Comma-separated shorthand for overlay layers. Supports presets ("dark-50"), solid colors (#hex or (token)), and gradients (linear/radial). JSON array of OverlayLayer[] as fallback for advanced cases. Layers composite top-to-bottom. */
+  /** Comma-separated shorthand for overlay layers. Supports presets ("dark-50"), solid colors (#hex or (token)), gradients (linear/radial), and fx backdrops ("fx:dither-waves(speed=1.2)" via the Backdrop registry). JSON array of OverlayLayer[] as fallback for advanced cases. Layers composite top-to-bottom. */
   bgOverlays?: string;
   /** When true, pauses the background video (renders a static poster frame instead of autoplay). */
   bgVideoPaused?: string;
@@ -114,14 +123,19 @@ export function bgMediaLayer<P extends BgMediaProps>(
     return { hasMedia: false, media: null, content: (children) => children };
   }
   const media = renderBgMedia(props as unknown as Record<string, string>);
+  // A playing background video or fx layer gets a pause button above the content (WCAG 2.2.2).
+  const video = Boolean(props.bgVideo) && props.bgVideoPaused !== "true";
+  const fx = parseOverlayLayers(props as unknown as Record<string, string>).some((l) => l.visible && l.type === "fx" && l.fxParams?.paused !== "true");
+  const toggle = video || fx ? React.createElement(BgMotionToggle, { fx }) : null;
   return {
     hasMedia: true,
     media,
     content: (children) =>
       React.createElement(
-        "div",
-        { className: cn("relative z-10 w-full h-full", contentClassName) },
-        children,
+        React.Fragment,
+        null,
+        React.createElement("div", { className: cn("relative z-10 w-full h-full", contentClassName) }, children),
+        toggle,
       ),
   };
 }
@@ -194,6 +208,10 @@ export function getPresetThumbnailStyle(presetKey?: string): React.CSSProperties
 export function getOverlayThumbnailStyle(layer: OverlayLayer): React.CSSProperties {
   if (layer.type === "preset" && layer.presetKey) {
     return getPresetThumbnailStyle(layer.presetKey);
+  }
+  // fx backdrops can't render a live canvas in a tiny swatch — show an accent wash.
+  if (layer.type === "fx") {
+    return { background: "conic-gradient(from 200deg at 50% 50%, rgb(var(--accent) / 0.5), rgb(var(--accent) / 0.1), rgb(var(--accent) / 0.5))" };
   }
   return getOverlayLayerStyle(layer) || { backgroundColor: layer.color || "#000000" };
 }
@@ -334,7 +352,7 @@ export const renderBgMedia = (props: Record<string, string>) => {
   const isPaused = props.bgVideoPaused === "true";
 
   return (
-    <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden rounded-[inherit] w-full h-full">
+    <div data-bg-media="" className="pointer-events-none absolute inset-0 z-0 overflow-hidden rounded-[inherit] w-full h-full">
       {imageSrc && (
         <img
           src={imageSrc}
@@ -353,37 +371,129 @@ export const renderBgMedia = (props: Record<string, string>) => {
         />
       )}
       {videoSrc && (
-        <video
+        <BgVideo
           key={`${videoSrc}-${isPaused ? "paused" : "playing"}`}
           src={videoSrc}
-          autoPlay={!isPaused}
-          loop
-          muted
-          playsInline
+          paused={isPaused}
           poster={props.bgPoster || undefined}
-          ref={(el) => {
-            if (el) {
-              if (isPaused) el.pause();
-              else el.play().catch(() => {});
-            }
-          }}
           className={cn("relative h-full w-full pointer-events-none", props.bgPoster && "motion-reduce:hidden", props.bgSize === "contain" ? "object-contain" : "object-cover")}
         />
       )}
-      {layers
-        .filter((l) => l.visible)
-        .map((l, idx) => {
-          const cls = getOverlayLayerClass(l);
-          const style = getOverlayLayerStyle(l);
-          return (
-            <div
-              key={l.id || idx}
-              data-overlay="true"
-              className={cn("absolute inset-0 z-[1] pointer-events-none", cls)}
-              style={style}
-            />
-          );
-        })}
+      {renderOverlayLayers(layers.filter((l) => l.visible))}
     </div>
   );
 };
+
+/**
+ * Render a list of overlay layers as absolutely-positioned nodes (z-[1]).
+ * Shared by `renderBgMedia` (layout backgrounds) and the `Image` primitive
+ * (overlays on top of the image) so both composite layers identically.
+ * An `fx` layer renders a registered Backdrop variant; the rest render CSS divs.
+ */
+export function renderOverlayLayers(layers: OverlayLayer[]): React.ReactNode[] {
+  return layers.map((l, idx) => {
+    if (l.type === "fx") {
+      // WebGL/canvas effect (@shavin/fx) via the Backdrop registry; falls back to
+      // the built-in "mesh" backdrop when the fx key isn't registered.
+      return (
+        <Backdrop
+          key={l.id || idx}
+          variant={l.fxKey || "mesh"}
+          params={l.fxParams}
+          data-overlay="true"
+          className="z-[1]"
+          style={typeof l.opacity === "number" && l.opacity < 100 ? { opacity: l.opacity / 100 } : undefined}
+        />
+      );
+    }
+    const cls = getOverlayLayerClass(l);
+    const style = getOverlayLayerStyle(l);
+    return (
+      <div
+        key={l.id || idx}
+        data-overlay="true"
+        className={cn("absolute inset-0 z-[1] pointer-events-none", cls)}
+        style={style}
+      />
+    );
+  });
+}
+
+/** Parse + render overlay layers from an `overlays`/`bgOverlays` string (for the Image primitive). */
+export function renderOverlays(overlays?: string): React.ReactNode[] {
+  if (!overlays) return [];
+  const layers = parseOverlayLayers({ bgOverlays: overlays }).filter((l) => l.visible);
+  return layers.length ? renderOverlayLayers(layers) : [];
+}
+
+/**
+ * Decorative background video. Hidden from assistive tech; never autoplays when
+ * the reader asked for reduced motion (the poster, or the first frame, shows).
+ */
+function BgVideo({ src, poster, paused, className }: { src: string; poster?: string; paused: boolean; className?: string }) {
+  const reduced = useReducedMotion();
+  const play = !paused && !reduced;
+  return (
+    <video
+      data-bg-video=""
+      src={src}
+      autoPlay={play}
+      loop
+      muted
+      playsInline
+      aria-hidden="true"
+      tabIndex={-1}
+      poster={poster}
+      ref={(el) => {
+        if (!el) return;
+        if (play) el.play().catch(() => {});
+        else el.pause();
+      }}
+      className={className}
+    />
+  );
+}
+
+/**
+ * One pause/play button for everything that moves in the surrounding layout primitive's
+ * background: the video and any running fx layers (WCAG 2.2.2). fx layers freeze through
+ * `data-fx-paused` on the media layer, which the @shavin/fx render loop reads every frame.
+ */
+function BgMotionToggle({ fx }: { fx: boolean }) {
+  const ref = React.useRef<HTMLSpanElement>(null);
+  const reduced = useReducedMotion();
+  const [video, setVideo] = React.useState<HTMLVideoElement | null>(null);
+  const [playing, setPlaying] = React.useState(true);
+  const layer = () => ref.current?.parentElement?.querySelector<HTMLElement>(":scope > [data-bg-media]") ?? null;
+  React.useEffect(() => {
+    const v = layer()?.querySelector<HTMLVideoElement>("video[data-bg-video]") ?? null;
+    setVideo(v);
+    if (!v) return;
+    setPlaying(!v.paused);
+    const on = () => setPlaying(true);
+    const off = () => setPlaying(false);
+    v.addEventListener("play", on);
+    v.addEventListener("pause", off);
+    return () => {
+      v.removeEventListener("play", on);
+      v.removeEventListener("pause", off);
+    };
+  }, []);
+  // Reduced motion already holds fx on a still frame; with no video there is nothing to pause.
+  if (reduced && !video) return null;
+  const toggle = () => {
+    const next = !playing;
+    if (video) {
+      if (next) void video.play().catch(() => {});
+      else video.pause();
+    }
+    if (fx) layer()?.toggleAttribute("data-fx-paused", !next);
+    setPlaying(next);
+  };
+  const label = video && fx ? "background motion" : video ? "background video" : "background animation";
+  return (
+    <span ref={ref} className="contents">
+      <MotionPauseButton playing={playing} onToggle={toggle} label={label} className="z-20" />
+    </span>
+  );
+}

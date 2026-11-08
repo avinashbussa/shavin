@@ -3,6 +3,9 @@ import { EventEmitter } from "node:events";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { BRIDGE_PORT, BRIDGE_HOST } from "./constants.mjs";
+
+export { BRIDGE_PORT, BRIDGE_HOST } from "./constants.mjs";
 
 export const SHAVIN_FAVICON_SVG = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <rect x="6.99382e-07" y="16" width="16" height="16" rx="4" transform="rotate(-90 6.99382e-07 16)" fill="black"/>
@@ -11,7 +14,7 @@ export const SHAVIN_FAVICON_SVG = `<svg width="16" height="16" viewBox="0 0 16 1
 </svg>`;
 
 export class ShavinBridgeServer extends EventEmitter {
-  constructor(port = 7428) {
+  constructor(port = BRIDGE_PORT) {
     super();
     this.port = port;
     this.server = null;
@@ -79,7 +82,7 @@ export class ShavinBridgeServer extends EventEmitter {
   start() {
     if (this.isRunning) return Promise.resolve(this.port);
 
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       this.server = createServer((req, res) => {
         // Enable CORS
         res.setHeader("Access-Control-Allow-Origin", "*");
@@ -1064,7 +1067,7 @@ end tell`;
         </div>
         <div class="brand-divider"></div>
         <span class="brand-label">Bridge Monitor</span>
-        <span class="port-tag">:7428</span>
+        <span class="port-tag">:${this.port}</span>
         <div class="bridge-status-indicator">
           <span class="pulse-dot"></span>
           <span>Connected</span>
@@ -1575,7 +1578,14 @@ end tell`;
         }
       });
 
-      this.server.listen(this.port, "127.0.0.1", () => {
+      // Reject on bind failure (e.g. EADDRINUSE when a bridge is already up) so
+      // callers like the dev-server integrations can treat it as "already running".
+      this.server.once("error", (err) => {
+        this.isRunning = false;
+        reject(err);
+      });
+
+      this.server.listen(this.port, BRIDGE_HOST, () => {
         this.isRunning = true;
         resolve(this.port);
       });

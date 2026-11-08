@@ -49,7 +49,7 @@ export function Reasoning({
         onClick={toggle}
         aria-expanded={open}
         aria-controls={id}
-        className="group inline-flex w-fit items-center gap-1.5 rounded-[var(--radius-lg)] px-1 py-0.5 text-xs font-medium text-fg-muted transition-colors hover:text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+        className="group inline-flex w-fit items-center gap-1.5 rounded-[var(--radius-lg)] px-1 py-0.5 text-xs font-medium text-fg-muted transition-colors hover:text-fg"
       >
         {thinking && <Murmur state="thinking" size={22} label="" />}
         <span>{text}</span>
