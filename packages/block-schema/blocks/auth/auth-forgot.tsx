@@ -16,8 +16,10 @@ export function AuthForgot() {
                 <Heading as="h1" size="lg">Reset your password</Heading>
                 <Text size="sm" color="muted" className="text-pretty">Enter the email on your account and we will send a reset link. It works once and expires in 30 minutes.</Text>
               </Flex>
-              <TextField label="Email" type="email" placeholder="you@example.com" autoComplete="email" />
-              <Button size="lg" className="w-full">Send reset link</Button>
+              <form className="flex flex-col gap-5">
+                <TextField label="Email" type="email" placeholder="you@example.com" autoComplete="email" />
+                <Button type="submit" size="lg" className="w-full">Send reset link</Button>
+              </form>
               <Text size="xs" color="muted" className="text-center text-pretty">The link comes from help@wiseowl.app. Check your spam folder if it has not arrived in a few minutes.</Text>
             </Flex>
           </Card>

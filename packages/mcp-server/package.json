@@ -28,7 +28,9 @@
   "main": "./src/index.mjs",
   "exports": {
     ".": "./src/index.mjs",
-    "./bridge": "./src/bridge/server.mjs"
+    "./bridge": "./src/bridge/server.mjs",
+    "./next": "./src/integrations/next.mjs",
+    "./vite": "./src/integrations/vite.mjs"
   },
   "bin": {
     "shavin-mcp": "./bin/shavin-mcp.mjs"

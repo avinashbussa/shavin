@@ -28,15 +28,17 @@ export function AuthSplitScreen() {
                 <Heading as="h1" size="xl">Sign in to your household</Heading>
                 <Text size="sm" color="muted" className="text-pretty">Pick up where you left off. Your partner sees the same numbers the moment you update a budget.</Text>
               </Flex>
+              <form className="flex flex-col gap-6">
               <Flex direction="column" gap="4">
                 <TextField label="Email" type="email" placeholder="you@example.com" autoComplete="email" />
                 <TextField label="Password" type="password" placeholder="Enter your password" autoComplete="current-password" />
                 <Link href="/forgot" size="sm" color="accent" className="w-fit">Forgot password?</Link>
               </Flex>
               <Flex direction="column" gap="3">
-                <Button size="lg" className="w-full">Sign in</Button>
+                <Button type="submit" size="lg" className="w-full">Sign in</Button>
                 <Button size="lg" variant="outline" className="w-full">Email me a sign-in link</Button>
               </Flex>
+              </form>
               <Text size="xs" color="muted">New to WiseOwl? <Link href="/signup" color="accent">Create a free account</Link></Text>
             </Flex>
           </Container>

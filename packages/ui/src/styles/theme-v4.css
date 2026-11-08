@@ -26,6 +26,7 @@
   --color-elevated:            rgb(var(--bg-elevated));
   --color-hairline:            rgb(var(--hairline));
   --color-hairline-strong:     rgb(var(--hairline-strong));
+  --color-border-control:      rgb(var(--border-control));
   --color-fg:                  rgb(var(--fg));
   --color-fg-muted:            rgb(var(--fg-muted));
   --color-fg-subtle:           rgb(var(--fg-subtle));

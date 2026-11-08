@@ -21,8 +21,8 @@
       "reason": "3 reference files (tokens, presets, composition-motion-map) plus SKILL.md. Small, focused skill — loaded when motion is needed on top of a composition."
     },
     "layout-choreography": {
-      "budget": 8000,
-      "reason": "3 reference files (scenes, tech-and-performance, fallbacks-and-accessibility) plus SKILL.md. Loaded only for cinematic/awwwards-tier motion requests."
+      "budget": 10000,
+      "reason": "4 reference files (scenes, tech-and-performance, fallbacks-and-accessibility, shavin-timelines) plus SKILL.md. Loaded only for cinematic/awwwards-tier motion requests."
     }
   },
   "alwaysLoadedFiles": {
@@ -72,7 +72,8 @@
     "layout-motion/references/composition-motion-map.md": { "trigger": "which preset per composition" },
     "layout-choreography/references/scenes.md": { "trigger": "cinematic scene recipes" },
     "layout-choreography/references/tech-and-performance.md": { "trigger": "choreography tech and budgets" },
-    "layout-choreography/references/fallbacks-and-accessibility.md": { "trigger": "choreography accessibility" }
+    "layout-choreography/references/fallbacks-and-accessibility.md": { "trigger": "choreography accessibility" },
+    "layout-choreography/references/shavin-timelines.md": { "trigger": "shavin timelines reference" }
   },
   "notes": [
     "alwaysLoadedBudget covers core-rules.md + the 8 files visual-compositor/SKILL.md's own body table marks ALWAYS (measured: ~19K tokens as of this rebuild; 20000 leaves ~1K headroom). Motion-and-physics.md grew with duration/distance/stagger token documentation.",

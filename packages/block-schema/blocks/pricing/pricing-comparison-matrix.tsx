@@ -64,7 +64,7 @@ export function PricingComparisonMatrix({ plans = defaultPlans, groups = default
                       <Heading as="p" size="lg" className="tabular-nums">{plan.price}</Heading>
                       <Text size="xs" color="muted">{plan.period}</Text>
                     </Flex>
-                    <Button size="sm" variant={plan.featured ? "solid" : "outline"}>{plan.cta}</Button>
+                    <Button size="sm" variant={plan.featured ? "solid" : "outline"} asChild><a href="/signup">{plan.cta}</a></Button>
                   </Flex>
                 ))}
               </Grid>

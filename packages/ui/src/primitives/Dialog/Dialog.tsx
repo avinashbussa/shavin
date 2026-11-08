@@ -3,6 +3,7 @@ import { useCallback, useState, type ReactNode } from "react";
 import * as RadixDialog from "@radix-ui/react-dialog";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "../../lib/cn";
+import { useReturnFocus } from "../../lib/useReturnFocus";
 
 export const modalPanelVariants = cva(
   "animate-modal-in w-full overflow-hidden rounded-[var(--radius-panel)] border border-hairline shadow-modal focus:outline-none",
@@ -93,6 +94,7 @@ export function Dialog({
     [controlled, onOpenChange],
   );
   const close = useCallback(() => setOpen(false), [setOpen]);
+  const returnFocus = useReturnFocus(open, Boolean(trigger));
   const desc = description ?? subtitle;
 
   return (
@@ -105,6 +107,7 @@ export function Dialog({
           // No description: tell Radix so it does not warn about a missing one.
           {...(desc ? {} : { "aria-describedby": undefined })}
           onPointerDownOutside={(e) => !dismissible && e.preventDefault()}
+          onCloseAutoFocus={returnFocus}
           onClick={(e) => {
             if (dismissible && e.target === e.currentTarget) close();
           }}
@@ -180,6 +183,7 @@ export function CloseButton({
 }) {
   return (
     <button
+      type="button"
       onClick={onClose}
       aria-label="Close"
       className={cn(
@@ -187,7 +191,7 @@ export function CloseButton({
         className,
       )}
     >
-      <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4">
+      <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4" aria-hidden="true">
         <path d="M6 6l12 12M18 6 6 18" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
       </svg>
     </button>

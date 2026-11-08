@@ -1,12 +1,12 @@
 "use client";
-import { useMemo, useRef, useState, type HTMLAttributes, type PointerEvent } from "react";
+import { useId, useMemo, useRef, useState, type HTMLAttributes, type PointerEvent } from "react";
 import { cn } from "../../lib/cn";
 import {
-  ChartLegend, ChartTooltip, DEFAULT_SERIES, makeFormatter, niceScale, seriesColor, xLabelClass, xLabelState, useSize,
-  type AxisProps, type SeriesSpec,
+  ChartDataTable, ChartLegend, ChartTooltip, DEFAULT_SERIES, SeriesMarker, SeriesPatterns, chartKeyProps, makeFormatter, niceScale, patternBase, seriesColor, seriesDash, seriesFill, xLabelClass, xLabelState, useSize,
+  type AxisProps, type ChartA11yProps, type SeriesSpec,
 } from "../../lib/chart-kit";
 
-export interface LineChartProps extends Omit<HTMLAttributes<HTMLDivElement>, "children">, AxisProps {
+export interface LineChartProps extends Omit<HTMLAttributes<HTMLDivElement>, "children" | "title">, AxisProps, ChartA11yProps {
   /** One record per x position: `label` plus a number under each series `key` (`value` when `series` is omitted). */
   data: Record<string, any>[];
   /** Omit for a single series of `value`s. */
@@ -38,8 +38,11 @@ function smoothPath(pts: { x: number; y: number }[]) {
 export function LineChart({
   data, series = DEFAULT_SERIES, type = "line", stacked = false, curve = "smooth", height = 260, showLegend = true,
   showGrid = true, showYAxis = true, showXAxis = true, showDots, xLabelEvery, xLabelEveryMobile, xLabels, tickCount = 4, yMax,
-  padding: paddingProp, yFormat, yPrefix, ySuffix, className, ...props
+  padding: paddingProp, yFormat, yPrefix, ySuffix, title, description, patterns = true, className, ...props
 }: LineChartProps) {
+  const descId = useId();
+  const pat = patterns && series.length > 1 ? patternBase(descId) : null;
+  const name = title ?? (type === "area" ? "Area chart" : "Line chart");
   const ref = useRef<HTMLDivElement>(null);
   const { width } = useSize(ref, height);
   const [hover, setHover] = useState<number | null>(null);
@@ -88,9 +91,16 @@ export function LineChart({
 
   return (
     <div className={cn("flex flex-col gap-3", className)} {...props}>
-      {showLegend && series.length > 1 && <ChartLegend series={series} />}
-      <div ref={ref} className="relative w-full" style={{ height }}>
-        <svg width={width} height={height} onPointerMove={onMove} onPointerLeave={() => setHover(null)} role="img" aria-label="Line chart">
+      {showLegend && series.length > 1 && <ChartLegend series={series} patterns={pat} kind="line" />}
+      {description && <p id={descId} className="sr-only">{description}</p>}
+      <div
+        ref={ref}
+        className="relative w-full rounded-[var(--radius-lg)]"
+        style={{ height }}
+        {...chartKeyProps({ name, descriptionId: description ? descId : undefined, count: data.length, hover, setHover })}
+      >
+        <svg width={width} height={height} onPointerMove={onMove} onPointerLeave={() => setHover(null)} aria-hidden="true">
+          {pat && <SeriesPatterns base={pat} colors={paths.map((p) => p.color)} />}
           {scale.ticks.map((t) => (
             <g key={t}>
               {showGrid && <line x1={PAD.left} x2={width - PAD.right} y1={y(t)} y2={y(t)} stroke="rgb(var(--hairline))" strokeDasharray="3 4" />}
@@ -101,16 +111,21 @@ export function LineChart({
             const state = xLabelState(String(d.label), i, { xLabelEvery, xLabelEveryMobile, xLabels });
             return state !== "hide" && <text key={i} x={x(i)} y={height - 8} textAnchor="middle" className={cn("fill-fg-subtle text-[11px]", xLabelClass(state))}>{d.label}</text>;
           })}
-          {type === "area" && paths.map((p, i) => <path key={`a${i}`} d={p.area} fill={p.color} opacity={stacked ? 0.55 : 0.12} />)}
-          {paths.map((p, i) => <path key={i} d={p.line} fill="none" stroke={p.color} strokeWidth={2} strokeLinejoin="round" strokeLinecap="round" />)}
+          {type === "area" && paths.map((p, i) => <path key={`a${i}`} d={p.area} fill={stacked ? seriesFill(pat, i, p.color) : p.color} opacity={stacked ? 0.55 : 0.12} />)}
+          {paths.map((p, i) => <path key={i} d={p.line} fill="none" stroke={p.color} strokeWidth={2} strokeDasharray={seriesDash(!!pat, i)} strokeLinejoin="round" strokeLinecap="round" />)}
           {hover !== null && <line x1={x(hover)} x2={x(hover)} y1={PAD.top} y2={PAD.top + innerH} stroke="rgb(var(--hairline-strong))" />}
-          {dots && series.map((s, si) => data.map((_, i) => <circle key={`${si}-${i}`} cx={x(i)} cy={y(stacks[i][si].y1)} r={hover === i ? 4 : 2.5} fill="rgb(var(--bg-surface))" stroke={paths[si].color} strokeWidth={2} />))}
-          {!dots && hover !== null && series.map((s, si) => <circle key={si} cx={x(hover)} cy={y(stacks[hover][si].y1)} r={4} fill="rgb(var(--bg-surface))" stroke={paths[si].color} strokeWidth={2} />)}
+          {dots && series.map((s, si) => data.map((_, i) => <SeriesMarker key={`${si}-${i}`} i={si} shaped={!!pat} cx={x(i)} cy={y(stacks[i][si].y1)} r={hover === i ? 4 : 2.5} fill="rgb(var(--bg-surface))" stroke={paths[si].color} strokeWidth={2} />))}
+          {!dots && hover !== null && series.map((s, si) => <SeriesMarker key={si} i={si} shaped={!!pat} cx={x(hover)} cy={y(stacks[hover][si].y1)} r={4} fill="rgb(var(--bg-surface))" stroke={paths[si].color} strokeWidth={2} />)}
         </svg>
         {hover !== null && (
-          <ChartTooltip left={x(hover)} width={width} title={String(data[hover].name ?? data[hover].label)} rows={series.map((s, si) => ({ name: s.name, value: fmt(stacks[hover][si].v, true), color: paths[si].color }))} />
+          <ChartTooltip left={x(hover)} width={width} title={String(data[hover].name ?? data[hover].label)} rows={series.map((s, si) => ({ name: s.name, value: fmt(stacks[hover][si].v, true), color: paths[si].color, index: si, patterns: pat, kind: "line" as const }))} />
         )}
       </div>
+      <ChartDataTable
+        caption={name}
+        columns={["Label", ...series.map((x) => x.name)]}
+        rows={data.map((d) => [String(d.name ?? d.label), ...series.map((x) => fmt(Number(d[x.key] ?? 0), true))])}
+      />
     </div>
   );
 }

@@ -35,6 +35,22 @@ const SEMANTIC = new Set();
 for (const m of presetSrc.matchAll(/(?:^|\s)(?:"([\w-]+)"|([\w-]+))\s*:\s*(?:tok\(|"(?:var|rgb)\()/g)) {
   SEMANTIC.add(m[1] ?? m[2]);
 }
+
+// App-extended colors from apps/*/tailwind.config.* (e.g. Studio-scoped canvas/selection tokens)
+const appsDir = join(ROOT, "apps");
+if (existsSync(appsDir)) {
+  for (const app of readdirSync(appsDir)) {
+    for (const ext of ["ts", "js", "mjs"]) {
+      const cfgPath = join(appsDir, app, `tailwind.config.${ext}`);
+      if (existsSync(cfgPath)) {
+        const cfgSrc = readFileSync(cfgPath, "utf8");
+        for (const m of cfgSrc.matchAll(/(?:^|\s)(?:"([\w-]+)"|([\w-]+))\s*:\s*(?:"(?:var|rgb)\(|tok\()/g)) {
+          SEMANTIC.add(m[1] ?? m[2]);
+        }
+      }
+    }
+  }
+}
 // custom boxShadow keys:  panel: "var(--shadow-panel)",
 const SHADOW_KEYS = new Set(["", "sm", "md", "lg", "xl", "2xl", "inner", "none"]);
 for (const m of presetSrc.matchAll(/boxShadow:\s*\{([\s\S]*?)\}/g)) {
@@ -143,6 +159,22 @@ function classCandidates(line) {
   return out;
 }
 
+// WCAG 2.4.7: `focus:outline-none` / `focus-visible:outline-none` beats the global
+// `*:focus-visible` ring, so in @shavin/ui it needs a visible replacement in the same
+// string. Floating panels (shadow-panel / shadow-modal) are exempt: they only take
+// programmatic focus from Radix, never keyboard focus of their own.
+function checkFocusRemoval(line) {
+  for (const m of line.matchAll(/["'`]([^"'`]*)["'`]/g)) {
+    const body = m[1];
+    const hit = body.match(/(?:^|\s)(focus(?:-visible)?:outline-none)(?=\s|$)/);
+    if (!hit) continue;
+    if (/\bshadow-(?:panel|modal)\b/.test(body)) continue;
+    if (/focus-visible:(?:ring-[2-9]|outline-\d|outline-\[)|focus-ring-within/.test(body)) continue;
+    return { cls: hit[1], msg: "removes the focus ring with no replacement (WCAG 2.4.7); drop it, or add focus-visible:outline-2 / ring-2" };
+  }
+  return null;
+}
+
 // Every kit under kits/<name>/src (private, sold separately).
 function kitSourceDirs() {
   const dir = join(ROOT, "kits");
@@ -185,6 +217,8 @@ for (const file of files) {
       const msg = checkUtility(baseUtility(cls));
       if (msg) violations.push({ rel, ln: i + 1, cls, msg });
     }
+    const focusMsg = rel.startsWith(join("packages", "ui", "src")) ? checkFocusRemoval(lines[i]) : null;
+    if (focusMsg) violations.push({ rel, ln: i + 1, cls: focusMsg.cls, msg: focusMsg.msg });
   }
 }
 

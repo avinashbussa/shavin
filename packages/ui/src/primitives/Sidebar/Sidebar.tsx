@@ -4,17 +4,18 @@ import React, {
   createContext,
   useContext,
   useState,
-  useRef,
   useCallback,
+  useId,
   type ReactNode,
   type HTMLAttributes,
-  type MouseEvent,
 } from "react";
 import { cn } from "../../lib/cn";
 import { Tooltip } from "../Tooltip/Tooltip";
 import { Text } from "../Text/Text";
 import { Menu, PanelLeft, PanelRight } from "lucide-react";
 import { useAppFrame } from "../AppShell/frame-context";
+import { useResizable } from "../../lib/useResizable";
+import { ResizeHandles, type ResizeHandleColor } from "../Resizable";
 
 export interface SidebarContextValue {
   side: "left" | "right";
@@ -56,31 +57,15 @@ export interface SidebarProps extends HTMLAttributes<HTMLElement> {
   minWidth?: number;
   /** Maximum width in pixels when resizable. Default 420. */
   maxWidth?: number;
+  /** Remember the resized width in localStorage under this key. */
+  persistKey?: string;
+  /** Resize handle colour on hover, focus and drag. Default "accent-subtle". */
+  resizeColor?: ResizeHandleColor;
   /** Custom sidebar content. */
   children?: ReactNode;
   /** Custom root class name. */
   className?: string;
 }
-
-const getElementScale = (el: HTMLElement | null): number => {
-  let scale = 1;
-  let curr: HTMLElement | null = el;
-  while (curr && curr !== document.body) {
-    const transform = window.getComputedStyle(curr).transform;
-    if (transform && transform !== "none") {
-      const match = transform.match(/^matrix\((.+)\)$/);
-      if (match) {
-        const values = match[1].split(",").map(Number);
-        const a = values[0];
-        const b = values[1];
-        const currentScale = Math.sqrt(a * a + b * b);
-        if (currentScale) scale *= currentScale;
-      }
-    }
-    curr = curr.parentElement;
-  }
-  return scale || 1;
-};
 
 export function Sidebar({
   side = "left",
@@ -93,6 +78,8 @@ export function Sidebar({
   resizable = false,
   minWidth = 180,
   maxWidth = 420,
+  persistKey,
+  resizeColor,
   children,
   className,
   style,
@@ -100,9 +87,6 @@ export function Sidebar({
 }: SidebarProps) {
   const frame = useAppFrame();
   const [internalCollapsed, setInternalCollapsed] = useState(defaultCollapsed);
-  const [customWidth, setCustomWidth] = useState<number | null>(null);
-  const [isDragging, setIsDragging] = useState(false);
-  const isResizing = useRef(false);
 
   // Inside a compact AppFrame the sidebar is a drawer: always shown in full, whatever its rail state.
   const isCollapsed = frame?.compact ? false : (controlledCollapsed ?? internalCollapsed);
@@ -119,49 +103,20 @@ export function Sidebar({
     setCollapsed(!isCollapsed);
   }, [isCollapsed, setCollapsed]);
 
-  const sidebarRef = useRef<HTMLElement>(null);
-
-  const handleMouseDown = (e: MouseEvent) => {
-    if (!resizable || isCollapsed || !sidebarRef.current) return;
-    e.preventDefault();
-    isResizing.current = true;
-    setIsDragging(true);
-    document.body.style.cursor = "col-resize";
-    document.body.style.userSelect = "none";
-
-    const scale = getElementScale(sidebarRef.current);
-    const startX = e.clientX;
-    const rectWidth = sidebarRef.current.getBoundingClientRect().width;
-    const startWidth = customWidth ?? (rectWidth / scale);
-
-    const handleMouseMove = (moveEvent: globalThis.MouseEvent) => {
-      if (!isResizing.current) return;
-      const deltaX = (moveEvent.clientX - startX) / scale;
-      let newWidth = side === "left" ? startWidth + deltaX : startWidth - deltaX;
-      if (newWidth >= minWidth && newWidth <= maxWidth) {
-        setCustomWidth(newWidth);
-      }
-    };
-
-    const handleMouseUp = () => {
-      isResizing.current = false;
-      setIsDragging(false);
-      document.body.style.cursor = "";
-      document.body.style.userSelect = "";
-      window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("mouseup", handleMouseUp);
-    };
-
-    window.addEventListener("mousemove", handleMouseMove);
-    window.addEventListener("mouseup", handleMouseUp);
-  };
+  const resize = useResizable({
+    edges: side === "left" ? "right" : "left",
+    minWidth,
+    maxWidth,
+    persistKey,
+    disabled: !resizable || isCollapsed,
+  });
 
   let computedWidthClass = width;
   if (variant === "collapsible" && isCollapsed) {
     computedWidthClass = collapsibleMode === "offcanvas" ? "w-0 overflow-hidden opacity-0 border-none" : "w-16";
   }
 
-  const computedStyle = customWidth && !isCollapsed ? { ...style, width: `${customWidth}px` } : style;
+  const computedStyle = resize.enabled ? { ...style, ...resize.style } : style;
 
   return (
     <SidebarContext.Provider
@@ -175,17 +130,20 @@ export function Sidebar({
       }}
     >
       <aside
-        ref={sidebarRef}
+        ref={resize.ref}
         data-side={side}
         data-variant={variant}
         data-state={isCollapsed ? "collapsed" : "expanded"}
+        // Offcanvas-collapsed: zero width but still in the DOM, so take it out of the
+        // tab order and the a11y tree (focus would land on invisible items).
+        inert={(variant === "collapsible" && isCollapsed && collapsibleMode === "offcanvas") || undefined}
         style={computedStyle}
         className={cn(
           "relative flex flex-col bg-surface transition-all duration-300 ease-in-out h-full select-none min-h-0 shrink-0",
           side === "left" ? "border-r border-hairline" : "border-l border-hairline",
           variant === "floating" && "m-2.5 rounded-[var(--radius-panel)] border border-hairline shadow-panel h-[calc(100%-1.25rem)]",
           variant === "inset" && "rounded-[var(--radius-panel)] border border-hairline shadow-card",
-          isDragging && "!transition-none select-none",
+          resize.isResizing && "!transition-none select-none",
           computedWidthClass,
           className
         )}
@@ -193,18 +151,7 @@ export function Sidebar({
       >
         {children}
 
-        {resizable && !isCollapsed && (
-          <div
-            onMouseDown={handleMouseDown}
-            onDoubleClick={() => setCustomWidth(null)}
-            title="Drag to resize, double click to reset"
-            className={cn(
-              "absolute top-0 bottom-0 w-1.5 hover:w-2 hover:bg-accent/40 transition-all cursor-col-resize z-20 opacity-0 hover:opacity-100 active:opacity-100 active:bg-accent",
-              isDragging && "w-2 opacity-100 bg-accent",
-              side === "left" ? "-right-1" : "-left-1"
-            )}
-          />
-        )}
+        <ResizeHandles state={resize} color={resizeColor} sizeHint={false} />
       </aside>
     </SidebarContext.Provider>
   );
@@ -337,10 +284,20 @@ export function SidebarSection({
   ...props
 }: SidebarSectionProps) {
   const { collapsed } = useSidebar();
+  const titleId = useId();
   return (
-    <div className={cn("space-y-1", className)} {...props}>
-      {title && !collapsed && (
-        <Text size="overline" color="subtle" className="px-2 pb-1 font-bold truncate block">
+    <div
+      className={cn("space-y-1", className)}
+      {...(title && { role: "group", "aria-labelledby": titleId })}
+      {...props}
+    >
+      {title && (
+        <Text
+          id={titleId}
+          size="overline"
+          color="subtle"
+          className={cn("px-2 pb-1 font-bold truncate block", collapsed && "sr-only")}
+        >
           {title}
         </Text>
       )}
@@ -379,6 +336,7 @@ export function SidebarNavItem({
     <>
       {icon && (
         <span
+          aria-hidden="true"
           className={cn(
             "h-4 w-4 shrink-0 flex items-center justify-center transition-colors",
             active ? "text-fg" : "text-fg-subtle opacity-80"
@@ -399,12 +357,17 @@ export function SidebarNavItem({
     className
   );
 
+  // Collapsed items show only an icon; the Tooltip describes, it does not name.
+  const a11y = {
+    "aria-current": active ? ("page" as const) : undefined,
+    "aria-label": collapsed ? label : undefined,
+  };
   const itemElement = href ? (
-    <a href={href} onClick={handleClick} className={cls}>
+    <a href={href} onClick={handleClick} className={cls} {...a11y}>
       {content}
     </a>
   ) : (
-    <button type="button" onClick={handleClick} className={cls}>
+    <button type="button" onClick={handleClick} className={cls} {...a11y}>
       {content}
     </button>
   );

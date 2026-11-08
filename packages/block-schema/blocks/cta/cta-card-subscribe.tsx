@@ -15,10 +15,10 @@ export function CtaCardSubscribe() {
                 </Text>
               </Flex>
               <Flex direction="column" gap="2">
-                <Flex direction="column" gap="2" className="sm:flex-row">
-                  <TextField type="email" placeholder="you@example.com" aria-label="Email address" className="h-10" />
-                  <Button className="w-full shrink-0 sm:w-auto">Subscribe</Button>
-                </Flex>
+                <form className="flex flex-col gap-2 sm:flex-row">
+                  <TextField type="email" placeholder="you@example.com" aria-label="Email address" autoComplete="email" className="h-10" />
+                  <Button type="submit" className="w-full shrink-0 sm:w-auto">Subscribe</Button>
+                </form>
                 <Text size="xs" color="muted">We never share your address. See our privacy policy.</Text>
               </Flex>
             </Flex>

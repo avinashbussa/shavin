@@ -5,7 +5,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "../../lib/cn";
 
 export const checkboxVariants = cva(
-  "peer inline-flex shrink-0 aspect-square items-center justify-center rounded-[var(--radius-lg)] border border-hairline bg-surface transition data-[state=checked]:border-accent data-[state=checked]:bg-accent disabled:cursor-not-allowed disabled:opacity-50",
+  "peer inline-flex shrink-0 aspect-square items-center justify-center rounded-[var(--radius-lg)] border border-border-control bg-surface transition data-[state=checked]:border-accent data-[state=checked]:bg-accent data-[state=indeterminate]:border-accent data-[state=indeterminate]:bg-accent disabled:cursor-not-allowed disabled:opacity-50",
   {
     variants: {
       size: {
@@ -50,8 +50,12 @@ export const Checkbox = forwardRef<
       {...props}
     >
       <RadixCheckbox.Indicator className="flex items-center justify-center text-accent-fg">
-        <svg viewBox="0 0 24 24" fill="none" className={iconSizeBySize[size ?? "md"]}>
-          <path d="M5 13l4 4L19 7" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+        <svg viewBox="0 0 24 24" fill="none" className={iconSizeBySize[size ?? "md"]} aria-hidden="true">
+          {props.checked === "indeterminate" ? (
+            <path d="M6 12h12" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />
+          ) : (
+            <path d="M5 13l4 4L19 7" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+          )}
         </svg>
       </RadixCheckbox.Indicator>
     </RadixCheckbox.Root>

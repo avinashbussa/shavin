@@ -1,6 +1,13 @@
 "use client";
 // Public export surface for @shavin/ui — enterprise design tokens and UI primitives.
+// Motion runtime self-boots on import (zero-setup legacy-browser reveal fallback + GSAP seam;
+// modern browsers use the pure-CSS scroll-driven path and need no JS). `initMotionRuntime` is the
+// explicit escape hatch for consumers whose bundler tree-shakes the side-effect import.
+import "./lib/motion-runtime";
+export { initMotionRuntime, motionConfig } from "./lib/motion-runtime";
 export { cn } from "./lib/cn";
+export { resolveBridgePort, bridgeOrigin, bridgeUrl, bridgeDashboardUrl, DEFAULT_BRIDGE_PORT, BRIDGE_HOST } from "./lib/bridge";
+export { announce, type Politeness } from "./lib/announce";
 export {
   concentricContainerStyle,
   concentricCompoundStyle,
@@ -24,6 +31,8 @@ export {
   getOverlayLayerClass,
   getOverlayLayerStyle,
   renderBgMedia,
+  renderOverlayLayers,
+  renderOverlays,
   bgMediaLayer,
   type OverlayLayer,
   type BgMediaProps,
@@ -177,8 +186,9 @@ export { Callout } from "./primitives/Callout";
 export { Avatar } from "./primitives/Avatar";
 export { Image, type ImageProps } from "./primitives/Image";
 export { Video, type VideoProps } from "./primitives/Video";
+export { MotionPauseButton } from "./primitives/Video/PauseToggle";
 export { ChatBubble, type ChatBubbleProps, type ChatRole, type ChatLayout, type ChatStatus } from "./primitives/ChatBubble";
-export { Murmur, registerMurmurState, MURMUR_FREE_STATES, type MurmurProps, type MurmurState, type MurmurStateFn, type MurmurDot, type MurmurFrame, type MurmurOut } from "./primitives/Murmur";
+export { Murmur, registerMurmurState, MURMUR_STATES, MURMUR_FREE_STATES, type MurmurProps, type MurmurState, type MurmurStateFn, type MurmurDot, type MurmurFrame, type MurmurOut } from "./primitives/Murmur";
 export { Backdrop, registerBackdrop, BACKDROP_FREE_VARIANTS, type BackdropProps, type BackdropVariant, type BackdropRenderer } from "./primitives/Backdrop";
 export { Reasoning, type ReasoningProps } from "./primitives/Reasoning";
 export { ToolCall, type ToolCallProps, type ToolCallStatus, type ToolApprovalScope } from "./primitives/ToolCall";
@@ -202,6 +212,25 @@ export { Row, RowDragHandle } from "./primitives/Row";
 // Layout primitives (radix-style structural building blocks)
 export { Box } from "./primitives/Box";
 export { Flex } from "./primitives/Flex";
+export {
+  ResizeHandle,
+  ResizeHandles,
+  resizeHandleVariants,
+  type ResizeHandleProps,
+  type ResizeHandleVariant,
+  type ResizeHandleColor,
+  type ResizableProps,
+} from "./primitives/Resizable";
+export {
+  useResizable,
+  resolveResizeEdges,
+  type ResizeEdge,
+  type ResizableEdges,
+  type ResizeSize,
+  type ResizeRadii,
+  type UseResizableOptions,
+  type UseResizableResult,
+} from "./lib/useResizable";
 export { Grid } from "./primitives/Grid";
 export { Container } from "./primitives/Container";
 export { Section } from "./primitives/Section";

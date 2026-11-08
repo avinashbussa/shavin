@@ -12,9 +12,9 @@ export const docs: ComponentDoc = {
   ],
   accessibility: [
     "Native ARIA slider accessibility implementation via Radix Slider and custom accessible pointer captures",
-    "Supports keyboard Arrow key value increment/decrement and Home/End jump"
+    "Supports keyboard Arrow key value increment/decrement, PageUp/PageDown jumps of ten steps and Home/End jump"
   ],
-  keyboard: "Left/Right arrow keys adjust slider value, Home/End jump to min/max",
+  keyboard: "Left/Right arrow keys adjust slider value, PageUp/PageDown move ten steps, Home/End jump to min/max",
   usage: {
     bestPractices: [
       {

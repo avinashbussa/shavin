@@ -44,8 +44,11 @@ Tailwind utilities for manual concentric: `rounded-panel-inner`, `rounded-panel-
 
 Section padding scale (vertical, per side). This is the canonical table; other skill files defer to it. Older names map as compact→`strip`, default→`body`, spacious→`hero` (`md:py-32`).
 
+**`Section` has no padding by default** (`size="none"`). Always choose a role below for content sections — a bare `<Section>` is a flat band (use that only for utility screens or when you set custom `py-*`).
+
 | Role | Use | Classes | `<Section size>` |
 |---|---|---|---|
+| none | Utility screens (auth, 404), custom spacing | `—` (no padding) | `size="none"` (default) |
 | strip | Logo wall, stat bar, announcement | `py-10 md:py-14` | `size="strip"` |
 | body | Features, pricing, testimonials, FAQ | `py-16 md:py-24` | `size="body"` |
 | hero | Hero, statement, closing CTA | `py-24 md:py-32` | `size="hero"` |

@@ -112,7 +112,7 @@ function ActionBarGroupTrigger({
           type="button"
           aria-label={group.label}
           className={cn(
-            "flex items-center gap-1.5 rounded-[var(--radius-lg)] px-3 py-1.5 text-sm text-fg-muted outline-none transition hover:bg-surface-hover hover:text-fg active:scale-[0.97] cursor-pointer",
+            "flex items-center gap-1.5 rounded-[var(--radius-lg)] px-3 py-1.5 text-sm text-fg-muted transition hover:bg-surface-hover hover:text-fg active:scale-[0.97] cursor-pointer",
             open && "bg-surface-hover text-fg",
           )}
         >
@@ -137,7 +137,7 @@ function ActionBarGroupTrigger({
           onKeyDown={onKeyDown}
           placeholder="Search…"
           aria-label={`Search ${group.label}`}
-          className="mb-2 w-full rounded-[var(--radius-lg)] border border-hairline bg-surface-hover px-2.5 py-1.5 text-sm text-fg outline-none placeholder:text-fg-subtle focus:border-hairline-strong"
+          className="mb-2 w-full rounded-[var(--radius-lg)] border border-border-control bg-surface-hover px-2.5 py-1.5 text-sm text-fg placeholder:text-fg-subtle"
         />
         <div className="max-h-64 overflow-y-auto">
           {filtered.length === 0 ? (

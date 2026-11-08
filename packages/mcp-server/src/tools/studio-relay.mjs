@@ -47,7 +47,7 @@ function requireRelay() {
   if (!relay) {
     return {
       error: errorResponse(
-        "Not connected to Studio. Call `connect_studio` first with a 6-character pairing code from Studio's 'Connect AI' modal.\n\n" +
+        "Not connected to Studio. Call `connect_studio` first with a 6-character pairing code from Studio's 'Connect AI' panel (the star tab in the inspector).\n\n" +
         "How to get a code:\n" +
         "1. Open studio.shavin.cc in your browser\n" +
         "2. Click 'Connect AI' in the toolbar\n" +
@@ -78,7 +78,7 @@ export function registerStudioRelayTools(server, COMPONENTS) {
             pairingCode: {
               type: "string",
               description:
-                "6-character pairing code shown in Studio's 'Connect AI' modal. " +
+                "6-character pairing code shown in Studio's 'Connect AI' panel (the star tab in the inspector). " +
                 "Example: 'K7M2X9'",
               minLength: 6,
               maxLength: 6,
@@ -101,7 +101,7 @@ export function registerStudioRelayTools(server, COMPONENTS) {
         const { pairingCode, agentName, timeoutMs } = args ?? {};
 
         if (!pairingCode) {
-          return errorResponse("pairingCode is required. Get it from Studio's 'Connect AI' modal.");
+          return errorResponse("pairingCode is required. Get it from Studio's 'Connect AI' panel (the star tab in the inspector).");
         }
 
         try {
@@ -141,7 +141,7 @@ export function registerStudioRelayTools(server, COMPONENTS) {
             `Failed to connect to Studio: ${err.message}\n\n` +
             `Make sure:\n` +
             `1. Studio is open at studio.shavin.cc\n` +
-            `2. The 'Connect AI' modal is showing a pairing code\n` +
+            `2. The 'Connect AI' panel (the star tab in the inspector) is showing a pairing code\n` +
             `3. The code hasn't expired (30-minute TTL — ask the user for a fresh code)\n\n` +
             `Only if you self-host Studio: point the MCP at your own Supabase — set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY (Supabase → Settings → API) and enable Realtime.`
           );
@@ -175,7 +175,8 @@ export function registerStudioRelayTools(server, COMPONENTS) {
               type: "string",
               enum: ["replace", "append"],
               description:
-                "Injection mode: 'replace' clears canvas first, 'append' adds to existing blocks. Default: 'replace'. Ignored when frame is provided.",
+                "Injection mode: 'replace' makes these the main (first) frame's sections, 'append' adds them after its existing sections. " +
+                "A frame holds any number of sections, stacked top to bottom. Default: 'replace'. Ignored when frame is provided.",
             },
             frame: {
               type: "object",
@@ -191,7 +192,7 @@ export function registerStudioRelayTools(server, COMPONENTS) {
                 device: {
                   type: "string",
                   enum: ["desktop", "mobile", "tablet", "auto", "block"],
-                  description: "Device preset for the frame. Default: 'block'.",
+                  description: "Device preset for the frame. Default: Studio's default viewport (Desktop unless the file says otherwise). 'block' is retired and becomes 'desktop'.",
                 },
                 width: { type: "integer", description: "Frame width in pixels. Default: 800." },
                 height: { type: "integer", description: "Frame height in pixels. Default: 600." },
@@ -374,7 +375,9 @@ export function registerStudioRelayTools(server, COMPONENTS) {
             mode: {
               type: "string",
               enum: ["replace", "append"],
-              description: "Injection mode. Default: 'replace'. Ignored when frame is provided.",
+              description:
+                "Injection mode: 'replace' makes the blocks the main (first) frame's sections, 'append' adds them after its existing " +
+                "sections (one call per section is fine). Default: 'replace'. Ignored when frame is provided.",
             },
             frame: {
               type: "object",
@@ -390,7 +393,7 @@ export function registerStudioRelayTools(server, COMPONENTS) {
                 device: {
                   type: "string",
                   enum: ["desktop", "mobile", "tablet", "auto", "block"],
-                  description: "Device preset for the frame. Default: 'block'.",
+                  description: "Device preset for the frame. Default: Studio's default viewport (Desktop unless the file says otherwise). 'block' is retired and becomes 'desktop'.",
                 },
                 width: { type: "integer", description: "Frame width in pixels. Default: 800." },
                 height: { type: "integer", description: "Frame height in pixels. Default: 600." },
@@ -534,7 +537,9 @@ export function registerStudioRelayTools(server, COMPONENTS) {
       schema: {
         name: "get_studio_state",
         description:
-          "Read the current Studio canvas state — all blocks and theme configuration. " +
+          "Read the current Studio canvas state — its frames, loose elements and theme. " +
+          "Each frame's rootBlock is a `Frame` node whose children are the frame's sections (any number, possibly none); " +
+          "`blocks` is the main frame's content. " +
           "Use this to understand what's currently on the canvas before making changes, or to verify that injected blocks rendered correctly. " +
           "Requires a prior `connect_studio` call.",
         inputSchema: {
@@ -556,10 +561,22 @@ export function registerStudioRelayTools(server, COMPONENTS) {
         try {
           const state = await relay.getState(timeoutMs);
 
-          const blockSummary = (state.blocks || []).map((b, i) => {
+          const describe = (b) => {
             const childCount = b.children?.length || 0;
-            return `  ${i + 1}. [${b.type}] ${b.props?.children || b.props?.title || b.id}${childCount > 0 ? ` (${childCount} children)` : ""}`;
-          });
+            return `[${b.type}] ${b.props?.children || b.props?.title || b.id}${childCount > 0 ? ` (${childCount} children)` : ""}`;
+          };
+          // Frames list their sections (the children of each frame's `Frame` node); older Studios send one root.
+          const frames = state.frames || [];
+          const blockSummary = frames.length
+            ? frames.flatMap((f, i) => {
+                const root = f.rootBlock;
+                const sections = root?.type === "Frame" ? root.children || [] : root ? [root] : [];
+                return [
+                  `  ${i + 1}. Frame "${f.title || f.id}" (${sections.length} section${sections.length === 1 ? "" : "s"})`,
+                  ...sections.map((b) => `     - ${describe(b)}`),
+                ];
+              })
+            : (state.blocks || []).map((b, i) => `  ${i + 1}. ${describe(b)}`);
 
           return {
             content: [
@@ -568,7 +585,7 @@ export function registerStudioRelayTools(server, COMPONENTS) {
                 text: [
                   `📊 Studio Canvas State`,
                   ``,
-                  `**Blocks**: ${(state.blocks || []).length}`,
+                  frames.length ? `**Frames**: ${frames.length}` : `**Blocks**: ${(state.blocks || []).length}`,
                   blockSummary.length > 0 ? blockSummary.join("\n") : "  (empty canvas)",
                   ``,
                   `**Theme**:`,

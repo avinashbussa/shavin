@@ -37,7 +37,7 @@ export function TestimonialsFeatured({ quotes = defaultQuotes }) {
                 <Flex direction="column" justify="between" gap="5" className="h-full">
                   <Text size="md" className="text-pretty">“{item.quote}”</Text>
                   <Flex direction="row" align="center" gap="3">
-                    <Avatar src={item.photo} alt={item.name} size="md" />
+                    <Avatar src={item.photo} size="md" />
                     <Flex direction="column" gap="0">
                       <Text size="sm" weight="semibold">{item.name}</Text>
                       <Text size="sm" color="muted">{item.role}</Text>

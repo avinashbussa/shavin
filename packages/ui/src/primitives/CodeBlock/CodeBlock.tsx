@@ -139,7 +139,8 @@ export function CodeBlock({
           {copied ? "Copied" : "Copy"}
         </button>
       )}
-      <pre className={cn("overflow-x-auto p-4 text-xs leading-relaxed text-fg h-full select-text cursor-text selection:bg-accent/20 selection:text-fg", wrap && "whitespace-pre-wrap break-words")}>
+      {/* Focusable so a keyboard can scroll long lines (WCAG 2.1.1). */}
+      <pre tabIndex={0} role="region" aria-label={footerText || (language ? `${language} code` : "Code")} className={cn("overflow-x-auto p-4 text-xs leading-relaxed text-fg h-full select-text cursor-text selection:bg-accent/20 selection:text-fg", wrap && "whitespace-pre-wrap break-words")}>
         <code className="font-mono select-text cursor-text selection:bg-accent/20 selection:text-fg">{highlightCode(code, language)}</code>
       </pre>
     </div>

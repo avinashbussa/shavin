@@ -26,6 +26,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { c, g, fmt, printBanner, printCard, startTaskSpinner } from "./lib/term-ui.mjs";
+import { BRIDGE_PORT } from "../packages/mcp-server/src/bridge/constants.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const SRC = path.join(ROOT, "packages/skills/agents");
@@ -76,7 +77,7 @@ function layoutTree(audience, n) {
     if (!open && audience !== "maintainer") continue;
     let desc = (p.description ?? "").replace(/\.$/, "");
     if (p.name === "@shavin/ui") desc += ` (${n.primitives} primitives)`;
-    if (p.name === "@shavin/mcp") desc += ` (${n.mcpTools} tools, bridge :7428)`;
+    if (p.name === "@shavin/mcp") desc += ` (${n.mcpTools} tools, bridge :${BRIDGE_PORT})`;
     rows.push(`  ${pad(d + "/").slice(0, 25)}${p.name}${open ? "" : " (private)"}: ${desc}`);
   }
   if (audience === "maintainer") {

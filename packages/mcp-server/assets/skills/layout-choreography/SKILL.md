@@ -21,12 +21,16 @@ sections:
   - id: fallbacks-and-accessibility
     file: references/fallbacks-and-accessibility.md
     description: "Reduced motion, keyboard, focus, scroll-jacking rules, test matrix (~1.5K tokens)"
+  - id: shavin-timelines
+    file: references/shavin-timelines.md
+    description: "Native sequenced motion via data-motion-tl-* — zero-setup load/scroll/click timelines the Studio Timelines tab emits; prefer over hand-rolled GSAP for sequenced reveals (~1.5K tokens)"
 ---
 
 - **Token-efficient usage:** This skill is modular. For specific rules, call:
 > - `get_skill({ name: "layout-choreography", section: "scenes" })` — 12 scene recipes
 > - `get_skill({ name: "layout-choreography", section: "tech-and-performance" })` — stack choices and budgets
 > - `get_skill({ name: "layout-choreography", section: "fallbacks-and-accessibility" })` — accessibility and fallback rules
+> - `get_skill({ name: "layout-choreography", section: "shavin-timelines" })` — native `data-motion-tl-*` sequenced motion (zero-setup; prefer for load/scroll/click sequences)
 >
 > **This is the cinematic brain partner.** It is deliberately separate from standard composition
 > guidelines (`layout-compositions`) and restrained motion (`layout-motion`). It only activates

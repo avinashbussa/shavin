@@ -27,12 +27,14 @@ export function AuthSignup({ providers = defaultProviders }) {
                 <Text size="xs" color="muted">or</Text>
                 <Separator className="flex-1" />
               </Flex>
+              <form className="flex flex-col gap-5">
               <Flex direction="column" gap="4">
                 <TextField label="Full name" placeholder="Maya Okafor" autoComplete="name" />
                 <TextField label="Email" type="email" placeholder="you@example.com" autoComplete="email" />
                 <TextField label="Password" type="password" placeholder="At least 12 characters" hint="Use 12+ characters with a number or symbol." autoComplete="new-password" />
               </Flex>
-              <Button size="lg" className="w-full">Create account</Button>
+              <Button type="submit" size="lg" className="w-full">Create account</Button>
+              </form>
               <Flex direction="column" gap="2">
                 <Text size="xs" color="muted" className="text-center text-pretty">By creating an account you agree to the <Link href="/legal/terms">Terms</Link> and <Link href="/legal/privacy">Privacy Policy</Link>.</Text>
                 <Text size="xs" color="muted" className="text-center">Already have an account? <Link href="/signin" color="accent">Sign in</Link></Text>

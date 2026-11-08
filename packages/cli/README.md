@@ -30,7 +30,7 @@ npx @shavin/cli init          # or: npx @shavin/cli init --oklch
 | `check` | Audit setup: Tailwind wiring, `@source`, styles, `ThemeProvider` |
 | `context` | Print a compact (< 300 token) project manifest for AI prompts |
 | `brand [--init] [--check] [--oklch]` | Generate brand colour tokens from the hex values in `brand-tokens.css` |
-| `bridge [--port <port>]` | Start the agent–browser bridge and live audit dashboard (default port 7428) |
+| `bridge [--port <port>]` | Start the agent–browser bridge and live audit dashboard (default port 7036) |
 | `publish <file>` | Validate a block against the quality gate and package its manifest |
 
 Common options: `--overwrite` (replace files when adding blocks), `--json` (machine-readable output), `--help`.

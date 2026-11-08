@@ -6,20 +6,33 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "../../lib/cn";
 
 export const textFieldVariants = cva(
-  "w-full rounded-[var(--radius-lg)] border border-hairline bg-surface text-fg outline-none transition placeholder:text-fg-subtle disabled:cursor-not-allowed disabled:opacity-50",
+  "w-full rounded-[var(--radius-lg)] border text-fg transition placeholder:text-fg-subtle disabled:cursor-not-allowed disabled:opacity-50",
   {
     variants: {
+      /**
+       * outline (default): a 3:1 control border (WCAG 1.4.11), for forms on any background.
+       * soft: filled, no border, for dense tool panels where a visible label and the value or
+       * placeholder identify the field. Both show the 2px focus ring.
+       */
+      variant: {
+        outline: "bg-surface",
+        soft: "bg-surface-hover hover:bg-hairline/60",
+      },
       size: {
         sm: "h-8 px-2.5 text-xs",
         md: "h-10 px-3 text-base md:text-sm",
         lg: "h-12 px-3.5 text-base",
       },
       invalid: {
-        true: "border-danger focus:border-danger",
-        false: "border-hairline focus:border-hairline",
+        true: "border-danger focus-visible:outline-danger",
+        false: "",
       },
     },
-    defaultVariants: { size: "md", invalid: false },
+    compoundVariants: [
+      { variant: "outline", invalid: false, class: "border-border-control" },
+      { variant: "soft", invalid: false, class: "border-transparent" },
+    ],
+    defaultVariants: { variant: "outline", size: "md", invalid: false },
   },
 );
 
@@ -56,6 +69,7 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function T
   {
     className,
     slotClassName,
+    variant,
     size = "md",
     invalid = false,
     leadingIcon,
@@ -82,6 +96,16 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function T
   const autoId = useId();
   const inputId = customId || autoId;
   const resolvedSize = size ?? "md";
+  // Hint and error text are linked to the input so they are read with it (WCAG 1.3.1,
+  // 3.3.1); an error message or `invalid` also sets aria-invalid.
+  const hintId = `${inputId}-hint`;
+  const errorId = `${inputId}-error`;
+  const describedBy =
+    [props["aria-describedby"], errorMessage ? errorId : hint ? hintId : undefined].filter(Boolean).join(" ") || undefined;
+  const fieldA11y = {
+    "aria-describedby": describedBy,
+    "aria-invalid": invalid || Boolean(errorMessage) || props["aria-invalid"] || undefined,
+  };
 
   // --- OTP Verification Input Mode ---
   const isOtp = type === "otp";
@@ -178,6 +202,7 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function T
           disabled={disabled}
           className="absolute inset-0 h-full w-full opacity-0 z-20 cursor-text select-none text-transparent bg-transparent caret-transparent"
           {...props}
+          {...fieldA11y}
         />
 
         {/* Visual Slots */}
@@ -199,13 +224,15 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function T
                   className={cn(
                     "relative shrink-0 flex items-center justify-center font-mono font-normal rounded-[var(--radius-lg)] border bg-surface transition-all text-fg",
                     slotSizeClasses,
+                    // Slot boxes are the visible field: 3:1 control border (WCAG 1.4.11); the active
+                    // slot shows the same 2px focus ring as other inputs (WCAG 2.4.7).
                     invalid
                       ? "border-danger ring-2 ring-danger/20 text-danger"
                       : isSlotActive
-                      ? "border-accent ring-2 ring-accent/20 text-fg shadow-1"
+                      ? "border-transparent outline outline-2 -outline-offset-1 outline-[rgb(var(--focus))] text-fg shadow-1"
                       : hasValue
-                      ? "border-hairline-strong text-fg"
-                      : "border-hairline text-fg-muted",
+                      ? "border-border-control text-fg"
+                      : "border-border-control text-fg-muted",
                     slotClassName
                   )}
                 >
@@ -239,11 +266,11 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function T
         )}
         {otpSlots}
         {errorMessage ? (
-          <span className={cn("text-xs text-danger", resolvedSize === "sm" && "text-[11px]")}>
+          <span id={errorId} className={cn("text-xs text-danger", resolvedSize === "sm" && "text-[11px]")}>
             {errorMessage}
           </span>
         ) : hint ? (
-          <span className={cn("text-xs text-fg-subtle", resolvedSize === "sm" && "text-[11px]")}>
+          <span id={hintId} className={cn("text-xs text-fg-subtle", resolvedSize === "sm" && "text-[11px]")}>
             {hint}
           </span>
         ) : null}
@@ -281,12 +308,13 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function T
       onChange={onChange}
       disabled={disabled}
       className={cn(
-        textFieldVariants({ size, invalid }),
+        textFieldVariants({ variant, size, invalid }),
         hasLeading && (resolvedSize === "sm" ? "pl-8" : resolvedSize === "lg" ? "pl-10" : "pl-9"),
         hasTrailing && trailingPad,
         className,
       )}
       {...props}
+      {...fieldA11y}
     />
   );
 
@@ -320,11 +348,12 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function T
       {usePwToggle && (
         <button
           type="button"
-          tabIndex={-1}
-          aria-label={pwVisible ? "Hide password" : "Show password"}
+          aria-label="Show password"
+          aria-pressed={pwVisible}
           onClick={() => setPwVisible((v) => !v)}
+          // At least 24px wide (WCAG 2.5.8); the icon stays where the padding put it.
           className={cn(
-            "absolute inset-y-0 right-0 flex items-center text-fg-muted hover:text-fg transition-colors",
+            "absolute inset-y-0 right-0 flex min-w-7 items-center justify-end text-fg-muted hover:text-fg transition-colors",
             resolvedSize === "sm" ? "pr-2.5" : resolvedSize === "lg" ? "pr-3.5" : "pr-3",
           )}
         >
@@ -345,11 +374,11 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function T
       )}
       {field}
       {errorMessage ? (
-        <span className={cn("text-xs text-danger", resolvedSize === "sm" && "text-[11px]")}>
+        <span id={errorId} className={cn("text-xs text-danger", resolvedSize === "sm" && "text-[11px]")}>
           {errorMessage}
         </span>
       ) : hint ? (
-        <span className={cn("text-xs text-fg-subtle", resolvedSize === "sm" && "text-[11px]")}>
+        <span id={hintId} className={cn("text-xs text-fg-subtle", resolvedSize === "sm" && "text-[11px]")}>
           {hint}
         </span>
       ) : null}

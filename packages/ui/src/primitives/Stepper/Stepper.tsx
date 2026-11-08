@@ -148,7 +148,7 @@ export function Stepper({
                   disabled={!clickableStep}
                   aria-current={isCurrent ? "step" : undefined}
                   className={cn(
-                    "group flex w-full items-center gap-2.5 rounded-[var(--radius-lg)] p-2 text-left transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent",
+                    "group flex w-full items-center gap-2.5 rounded-[var(--radius-lg)] p-2 text-left transition",
                     isCurrent
                       ? "border border-hairline bg-surface-hover shadow-1 cursor-default"
                       : isComplete
@@ -215,7 +215,7 @@ export function Stepper({
                   disabled={!clickableStep}
                   aria-current={isCurrent ? "step" : undefined}
                   className={cn(
-                    "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent",
+                    "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium transition",
                     isCurrent
                       ? "bg-accent text-accent-fg font-semibold shadow-1"
                       : isComplete
@@ -286,7 +286,7 @@ export function Stepper({
                   <button
                     type="button"
                     onClick={() => handleStepClick(i, step)}
-                    className="group w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-[var(--radius-md)] text-left"
+                    className="group w-full rounded-[var(--radius-md)] text-left"
                   >
                     {content}
                   </button>
@@ -334,7 +334,7 @@ export function Stepper({
                 <button
                   type="button"
                   onClick={() => handleStepClick(i, step)}
-                  className="group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-[var(--radius-md)] cursor-pointer"
+                  className="group rounded-[var(--radius-md)] cursor-pointer"
                 >
                   {content}
                 </button>

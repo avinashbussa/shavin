@@ -1,5 +1,5 @@
 "use client";
-import { useRef, useState, type HTMLAttributes, type KeyboardEvent } from "react";
+import { useId, useRef, useState, type HTMLAttributes, type KeyboardEvent } from "react";
 import { cva } from "class-variance-authority";
 import { cn } from "../../lib/cn";
 
@@ -47,6 +47,7 @@ export function NpsScale({ value, defaultValue = null, onValueChange, lowLabel =
   const refs = useRef<(HTMLButtonElement | null)[]>([]);
   const current = value !== undefined ? value : inner;
   const inert = readOnly || disabled;
+  const anchorsId = useId();
 
   function pick(n: number) {
     if (inert) return;
@@ -68,7 +69,15 @@ export function NpsScale({ value, defaultValue = null, onValueChange, lowLabel =
 
   return (
     <div className={cn("flex flex-col gap-2", disabled && "opacity-50", className)} {...props}>
-      <div role="radiogroup" aria-label={label} aria-disabled={disabled || undefined} onKeyDown={onKeyDown} className="flex w-full">
+      <div
+        role="radiogroup"
+        aria-label={label}
+        aria-describedby={anchorsId}
+        aria-disabled={disabled || undefined}
+        aria-readonly={readOnly || undefined}
+        onKeyDown={onKeyDown}
+        className="flex w-full"
+      >
         {Array.from({ length: 11 }).map((_, n) => {
           const selected = current === n;
           return (
@@ -89,9 +98,10 @@ export function NpsScale({ value, defaultValue = null, onValueChange, lowLabel =
           );
         })}
       </div>
-      <div className="flex items-center justify-between text-xs text-fg-subtle">
-        <span>{lowLabel}</span>
-        <span>{highLabel}</span>
+      {/* Read with the group so "0" and "10" have their meaning. */}
+      <div id={anchorsId} className="flex items-center justify-between text-xs text-fg-subtle">
+        <span><span className="sr-only">0, </span>{lowLabel}<span className="sr-only">.</span></span>
+        <span><span className="sr-only">10, </span>{highLabel}</span>
       </div>
     </div>
   );

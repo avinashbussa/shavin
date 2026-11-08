@@ -44,7 +44,7 @@ export function SidebarDualResizable({ rail = defaultRail, groups = defaultGroup
               </IconButton>
             ))}
           </Flex>
-          <Flex direction="column" className="w-full shrink-0 bg-surface md:w-72">
+          <Flex direction="column" resizable="right" minWidth={224} maxWidth={420} resizeHandle="grip" className="w-full shrink-0 border-r border-hairline bg-surface md:w-72">
             <Flex direction="column" gap="3" className="shrink-0 border-b border-hairline p-4">
               <Flex direction="row" align="center" justify="between" gap="2">
                 <Text size="sm" weight="semibold">Accounts</Text>
@@ -75,16 +75,10 @@ export function SidebarDualResizable({ rail = defaultRail, groups = defaultGroup
               <Text size="sm" weight="semibold" className="tabular-nums">$184,276.52</Text>
             </Flex>
           </Flex>
-          <Flex role="separator" aria-orientation="vertical" aria-label="Resize account list" align="center" justify="center" className="group relative w-3 shrink-0 cursor-col-resize max-md:hidden">
-            <Box className="absolute inset-y-0 left-1/2 w-px -translate-x-1/2 bg-hairline group-hover:bg-accent" />
-            <Flex align="center" justify="center" className="relative h-8 w-3 rounded-full border border-hairline bg-surface text-fg-muted">
-              <Icon name="grip-vertical" size="xs" color="inherit" />
-            </Flex>
-          </Flex>
           <Flex direction="column" gap="6" className="min-w-0 flex-1 overflow-y-auto p-6 max-md:hidden">
             <Flex direction="column" gap="1">
-              <Text size="sm" color="muted">Cascade Federal Checking ••6021</Text>
-              <Heading as="h1" size="xl" className="tabular-nums">$4,812.36</Heading>
+              <Text as="h1" size="sm" color="muted">Cascade Federal Checking ••6021</Text>
+              <Heading as="p" size="xl" className="tabular-nums">$4,812.36</Heading>
               <Text size="sm" color="muted">Synced 4 minutes ago</Text>
             </Flex>
             <Separator />

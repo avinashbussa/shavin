@@ -11,7 +11,9 @@ const data = [
 ];
 
 const texts = (c: HTMLElement) => Array.from(c.querySelectorAll("text")).map((t) => t.textContent);
-const bars = (c: HTMLElement) => Array.from(c.querySelectorAll("rect")).filter((r) => r.getAttribute("fill") !== "transparent");
+// Plot bars only: skip the hover hit areas, the series fill patterns and the legend swatches.
+const bars = (c: HTMLElement) =>
+  Array.from(c.querySelectorAll("[role=group] svg rect")).filter((r) => r.getAttribute("fill") !== "transparent" && !r.closest("pattern"));
 
 describe("formatChartValue", () => {
   it("formats number, compact, currency, percent", () => {
@@ -75,7 +77,10 @@ describe("BarChart", () => {
       <BarChart data={[{ label: "A", a: 10, b: 5 }]} series={[{ key: "a", name: "A", tone: "neutral" }, { key: "b", name: "B", tone: "accent" }]} maxBarWidth={20} />,
     );
     const rects = bars(container);
-    expect(rects[1].getAttribute("fill")).toBe("rgb(var(--accent))");
+    // Second series is patterned (WCAG 1.4.1); the pattern carries the series tone.
+    const fill = rects[1].getAttribute("fill")!;
+    expect(fill).toMatch(/^url\(#/);
+    expect(container.querySelector(`${fill.slice(4, -1).replace(/([^\w#-])/g, "\\$1")} rect`)?.getAttribute("fill")).toBe("rgb(var(--accent))");
     expect(Number(rects[0].getAttribute("width"))).toBeLessThanOrEqual(20);
   });
 

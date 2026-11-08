@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState, type RefObject } from "react";
+import { useEffect, useRef, useState, type KeyboardEvent, type RefObject, type SVGProps } from "react";
 import { CONCENTRIC_FLOOR } from "./concentric";
 
 /** Semantic colour tone for a series or datum (resolved to theme tokens). */
@@ -159,21 +159,98 @@ export function makeFormatter({ yFormat = "number", yPrefix, ySuffix }: FormatPr
 }
 
 /** The shared legend row. */
-export function ChartLegend({ series }: { series: SeriesSpec[] }) {
+/*
+ * Series cues beyond colour (WCAG 1.4.1). Series 0 stays plain; later series add a fill
+ * pattern (bars, donut slices, stacked areas), a dash (lines) and a marker shape (points).
+ * The legend and tooltip swatches repeat the same cue, so a series can be matched without
+ * telling the colours apart.
+ */
+const PATTERNS = 6;
+const DASHES = [undefined, "6 4", "2 3", "8 3 2 3"];
+const SHAPES = ["circle", "square", "triangle", "diamond"] as const;
+
+/** Pattern id prefix for one chart (useId output is not valid inside `url(#…)`). */
+export function patternBase(id: string) {
+  return `chp${id.replace(/[^a-zA-Z0-9_-]/g, "")}`;
+}
+/** Fill for series/slice `i`: the plain colour for 0, then a patterned fill. */
+export function seriesFill(base: string | null, i: number, color: string) {
+  return base && i % PATTERNS ? `url(#${base}-${i})` : color;
+}
+export function seriesDash(on: boolean, i: number) {
+  return on ? DASHES[i % DASHES.length] : undefined;
+}
+
+/** `<defs>` with one pattern per series colour. Render inside the chart's `<svg>`. */
+export function SeriesPatterns({ base, colors }: { base: string; colors: string[] }) {
+  const ink = { stroke: "rgb(var(--bg-surface))", strokeOpacity: 0.6, strokeWidth: 1.5 };
+  return (
+    <defs>
+      {colors.map((color, i) => {
+        const k = i % PATTERNS;
+        if (!k) return null;
+        return (
+          <pattern key={i} id={`${base}-${i}`} width={6} height={6} patternUnits="userSpaceOnUse">
+            <rect width={6} height={6} fill={color} />
+            {k === 1 && <path d="M-1 1 l2 -2 M0 6 l6 -6 M5 7 l2 -2" {...ink} />}
+            {k === 2 && <circle cx={3} cy={3} r={1.3} fill="rgb(var(--bg-surface))" fillOpacity={0.65} />}
+            {k === 3 && <path d="M-1 1 l2 -2 M0 6 l6 -6 M5 7 l2 -2 M-1 5 l2 2 M0 0 l6 6 M5 -1 l2 2" {...ink} strokeWidth={1} />}
+            {k === 4 && <path d="M0 1.5 h6 M0 4.5 h6" {...ink} />}
+            {k === 5 && <path d="M1.5 0 v6 M4.5 0 v6" {...ink} />}
+          </pattern>
+        );
+      })}
+    </defs>
+  );
+}
+
+/** A point marker whose shape follows the series index (circle, square, triangle, diamond). */
+export function SeriesMarker({ i, cx, cy, r, shaped = true, ...rest }: { i: number; cx: number; cy: number; r: number; shaped?: boolean } & Omit<SVGProps<SVGElement>, "ref">) {
+  const shape = shaped ? SHAPES[i % SHAPES.length] : "circle";
+  const p = rest as Record<string, unknown>;
+  if (shape === "square") return <rect x={cx - r * 0.9} y={cy - r * 0.9} width={r * 1.8} height={r * 1.8} {...p} />;
+  if (shape === "triangle") return <polygon points={`${cx},${cy - r * 1.15} ${cx + r * 1.1},${cy + r * 0.8} ${cx - r * 1.1},${cy + r * 0.8}`} {...p} />;
+  if (shape === "diamond") return <polygon points={`${cx},${cy - r * 1.2} ${cx + r * 1.2},${cy} ${cx},${cy + r * 1.2} ${cx - r * 1.2},${cy}`} {...p} />;
+  return <circle cx={cx} cy={cy} r={r} {...p} />;
+}
+
+/** How a swatch draws its series: a filled chip (bars, slices) or a line sample with a marker. */
+export interface SwatchSpec {
+  color: string;
+  index: number;
+  /** Pattern base from `patternBase`, or null when patterns are off. */
+  patterns: string | null;
+  kind?: "fill" | "line";
+}
+export function ChartSwatch({ color, index, patterns, kind = "fill", size = 10 }: SwatchSpec & { size?: number }) {
+  if (kind === "line") {
+    return (
+      <svg width={18} height={size} aria-hidden="true" className="shrink-0 overflow-visible">
+        <line x1={1} x2={17} y1={size / 2} y2={size / 2} stroke={color} strokeWidth={2} strokeDasharray={seriesDash(!!patterns, index)} strokeLinecap="round" />
+        <SeriesMarker i={index} shaped={!!patterns} cx={9} cy={size / 2} r={3} fill="rgb(var(--bg-surface))" stroke={color} strokeWidth={1.5} />
+      </svg>
+    );
+  }
+  return (
+    <svg width={size} height={size} aria-hidden="true" className="shrink-0 rounded-[2px]">
+      <rect width={size} height={size} fill={seriesFill(patterns, index, color)} />
+    </svg>
+  );
+}
+
+export function ChartLegend({ series, patterns = null, kind = "fill" }: { series: SeriesSpec[]; patterns?: string | null; kind?: "fill" | "line" }) {
   return (
     <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
       {series.map((s, i) => (
         <span key={s.key} className="inline-flex items-center gap-1.5 text-xs text-fg-muted">
-          <span className="h-2 w-2 rounded-full" style={{ background: seriesColor(s, i) }} />
+          <ChartSwatch color={seriesColor(s, i)} index={i} patterns={patterns} kind={kind} size={kind === "line" ? 10 : 8} />
           {s.name}
         </span>
       ))}
     </div>
   );
 }
-
-/** The shared hover tooltip card. `left` is a px offset inside the chart container. */
-export function ChartTooltip({ left, top = 8, title, rows, width }: { left: number; top?: number; title: string; rows: { name: string; value: string; color: string }[]; width: number }) {
+export function ChartTooltip({ left, top = 8, title, rows, width }: { left: number; top?: number; title: string; rows: ({ name: string; value: string } & SwatchSpec)[]; width: number }) {
   const flip = left > width * 0.62;
   return (
     <div
@@ -183,16 +260,99 @@ export function ChartTooltip({ left, top = 8, title, rows, width }: { left: numb
     >
       <div className="mb-1 text-xs font-medium text-fg">{title}</div>
       <div className="flex flex-col gap-0.5">
-        {rows.map((r) => (
-          <div key={r.name} className="flex items-center justify-between gap-4 text-xs">
+        {rows.map(({ name, value, ...swatch }) => (
+          <div key={name} className="flex items-center justify-between gap-4 text-xs">
             <span className="inline-flex items-center gap-1.5 text-fg-muted">
-              <span className="h-2 w-2 rounded-full" style={{ background: r.color }} />
-              {r.name}
+              <ChartSwatch {...swatch} size={swatch.kind === "line" ? 10 : 8} />
+              {name}
             </span>
-            <span className="font-medium tabular-nums text-fg">{r.value}</span>
+            <span className="font-medium tabular-nums text-fg">{value}</span>
           </div>
         ))}
       </div>
     </div>
   );
+}
+
+// ── Accessibility ───────────────────────────────────────────────────────────
+// The SVG is a picture; the information goes to screen readers as a real table
+// (WCAG 1.1.1, 1.3.1), and keyboard users step through the points to see the
+// same tooltip a pointer gets (WCAG 2.1.1).
+
+export interface ChartA11yProps {
+  /** Accessible name, e.g. "Monthly revenue, 2026". Read by screen readers and used as the data table caption. */
+  title?: string;
+  /** One-sentence takeaway, e.g. "Revenue doubled after the March launch." */
+  description?: string;
+  /**
+   * Tell series apart by more than colour: fill patterns on bars and slices, dashes and
+   * marker shapes on lines, repeated in the legend and tooltip (WCAG 1.4.1). Default true.
+   * Turn off only when every series is labelled directly on the chart.
+   */
+  patterns?: boolean;
+}
+
+/** Visually hidden table of the chart's data. First column is the row header. */
+export function ChartDataTable({ caption, columns, rows }: { caption: string; columns: string[]; rows: string[][] }) {
+  return (
+    <table className="sr-only">
+      <caption>{caption}</caption>
+      <thead>
+        <tr>
+          {columns.map((c) => (
+            <th key={c} scope="col">{c}</th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map((r, i) => (
+          <tr key={i}>
+            {r.map((cell, j) => (j === 0 ? <th key={j} scope="row">{cell}</th> : <td key={j}>{cell}</td>))}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+}
+
+/**
+ * Props for the focusable plot area: a named group whose arrow keys move the
+ * highlighted point (Left/Right, or Up/Down for horizontal bars; Home/End).
+ * Focus shows the first point; blur clears it.
+ */
+export function chartKeyProps(
+  { name, descriptionId, count, hover, setHover, vertical = false }: {
+    name: string;
+    descriptionId?: string;
+    count: number;
+    hover: number | null;
+    setHover: (i: number | null) => void;
+    vertical?: boolean;
+  },
+) {
+  return {
+    tabIndex: count > 0 ? 0 : -1,
+    role: "group",
+    "aria-roledescription": "chart",
+    "aria-label": `${name}. Use the arrow keys to read each value.`,
+    "aria-describedby": descriptionId,
+    onFocus: () => {
+      if (hover === null) setHover(0);
+    },
+    onBlur: () => setHover(null),
+    onKeyDown: (e: KeyboardEvent<HTMLElement>) => {
+      const prev = vertical ? "ArrowUp" : "ArrowLeft";
+      const next = vertical ? "ArrowDown" : "ArrowRight";
+      const at = hover ?? 0;
+      let to: number | null = null;
+      if (e.key === next) to = Math.min(count - 1, at + 1);
+      else if (e.key === prev) to = Math.max(0, at - 1);
+      else if (e.key === "Home") to = 0;
+      else if (e.key === "End") to = count - 1;
+      else if (e.key === "Escape") to = null;
+      else return;
+      e.preventDefault();
+      setHover(to);
+    },
+  } as const;
 }

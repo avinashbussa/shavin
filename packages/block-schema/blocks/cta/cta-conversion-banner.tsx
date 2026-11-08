@@ -18,8 +18,8 @@ export function CtaConversionBanner() {
             </Text>
           </Flex>
           <Flex direction="row" wrap="wrap" gap="3" className="shrink-0">
-            <Button size="lg">Start free trial</Button>
-            <Button size="lg" variant="outline">Compare plans</Button>
+            <Button size="lg" asChild><a href="/signup">Start free trial</a></Button>
+            <Button size="lg" variant="outline" asChild><a href="/pricing">Compare plans</a></Button>
           </Flex>
         </Flex>
       </Container>

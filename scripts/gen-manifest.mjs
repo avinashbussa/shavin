@@ -19,6 +19,7 @@ import { c, g, fmt, printBanner, printCard, startTaskSpinner } from "./lib/term-
 const ROOT = join(fileURLToPath(import.meta.url), "..", "..");
 const UI_DIR = existsSync(join(ROOT, "packages", "ui")) ? join(ROOT, "packages", "ui") : ROOT;
 const OUT = join(UI_DIR, "components.json");
+const RESIZABLE_SRC = join(UI_DIR, "src", "primitives", "Resizable", "ResizeHandle.tsx");
 const ROOT_OUT = join(ROOT, "components.json");
 const META_OUT = join(UI_DIR, "src", "lib", "meta.ts");
 const ROUTES_OUT = join(UI_DIR, "src", "lib", "docs-routes.ts");
@@ -56,6 +57,13 @@ const DOCS_PATH_BY_FOLDER = {
   // Internal tools
   BlockPreview: "/blocks/overview",
   ShavinDevTools: "/start/dev-inspector",
+};
+/**
+ * Primitives shipped on a subpath entry instead of the "@shavin/ui" root (kept out
+ * of the root bundle). Emitted as `importPath`; absent means the root.
+ */
+const IMPORT_PATH_BY_FOLDER = {
+  PanelGroup: "@shavin/ui/panels",
 };
 const kebab = (s) => s.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase();
 const docsPathFor = (folder) => DOCS_PATH_BY_FOLDER[folder] ?? `/components/${kebab(folder)}`;
@@ -248,9 +256,19 @@ function parseProps(src, componentName) {
       { name: "bgVideo", type: "string", required: false, doc: "Background video URL (mp4, webm, etc.). Renders an autoPlay/loop/muted <video> element behind children." },
       { name: "bgImage", type: "string", required: false, doc: "Background image URL. Renders an <img> with object-cover (default) or object-contain." },
       { name: "bgSize", type: '"cover" | "contain"', required: false, doc: "Background media fit. \"cover\" fills the container (default), \"contain\" fits within.", default: "cover" },
-      { name: "bgOverlays", type: "string", required: false, doc: "Comma-separated shorthand for overlay layers. Supports presets (\"dark-50\"), solid colors (#hex or (token)), and gradients (linear/radial). JSON array of OverlayLayer[] as fallback for advanced cases. Layers composite top-to-bottom." },
+      { name: "bgOverlays", type: "string", required: false, doc: "Comma-separated shorthand for overlay layers. Supports presets (\"dark-50\"), solid colors (#hex or (token)), gradients (linear/radial), and fx backdrops (\"fx:dither-waves\", \"fx:fluid-silk(speed=1.2)\"; needs @shavin/fx registered, else falls back to mesh). JSON array of OverlayLayer[] as fallback for advanced cases. Layers composite top-to-bottom." },
       { name: "bgVideoPaused", type: "boolean", required: false, doc: "When true, pauses the background video (renders a static poster frame instead of autoplay).", default: "false" },
     );
+  }
+
+  // ResizableProps (resizable, minWidth, ...) are shared by Box, Flex and Card through
+  // withResizable. Read them from their one declaration so the manifest never drifts.
+  const usesResizable =
+    componentName !== "Resizable" &&
+    (new RegExp(`export\\s+interface\\s+${componentName}Props\\s+extends[^{]*ResizableProps`).test(src) ||
+      new RegExp(`function\\s+${componentName}[\\s\\S]{0,800}?ResizableProps`).test(src));
+  if (usesResizable && existsSync(RESIZABLE_SRC)) {
+    props.push(...parseProps(readFileSync(RESIZABLE_SRC, "utf8"), "Resizable"));
   }
 
   if (!match) return props;
@@ -262,7 +280,7 @@ function parseProps(src, componentName) {
     const optional = Boolean(m[3]);
     const rawType = m[4].trim();
     let defaultVal = undefined;
-    const defMatch = rawComment.match(/@default\s+["']?([^"'\s]+)["']?/i) || rawComment.match(/Default\s+["']?([^"'.\s]+)["']?/i);
+    const defMatch = rawComment.match(/@default\s+["']?([^"'\s]+)["']?/i) || rawComment.match(/Default\s+["']?(-?\d+(?:\.\d+)?|[^"'.\s]+)["']?/i);
     if (defMatch) {
       defaultVal = defMatch[1];
     }
@@ -427,6 +445,7 @@ function build() {
         group: dirGroup.get(basename(fileDir)) ?? "components",
         ...(internal ? { internal: true } : {}),
         docsPath: docsPathFor(basename(fileDir)),
+        ...(IMPORT_PATH_BY_FOLDER[basename(fileDir)] ? { importPath: IMPORT_PATH_BY_FOLDER[basename(fileDir)] } : {}),
         file: relative(ROOT, file),
         kind: radixMatch ? "radix" : "plain",
         radix: radixMatch ? radixMatch[1] : null,

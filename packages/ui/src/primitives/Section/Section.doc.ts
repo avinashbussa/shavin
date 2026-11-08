@@ -3,14 +3,16 @@ import type { ComponentDoc } from "../../authoring/types";
 export const docs: ComponentDoc = {
   name: "Section",
   group: "layout",
-  description: "Vertical-rhythm section primitive with padding presets (1-4), responsive role sizes (compact/strip/body/hero) and background media props. Ideal for full-bleed hero bands with bgVideo or bgImage.",
+  description: "Semantic full-bleed band primitive. No padding by default (size=\"none\") — opt into vertical rhythm with a size preset or a py-* className. Padding presets (1-4), responsive role sizes (compact/strip/body/hero) and background media props. Ideal for full-bleed hero bands with bgVideo or bgImage.",
   features: [
+    "No padding by default (size=\"none\") — a bare <Section> is a flat full-bleed band; choose rhythm explicitly",
     "Padding presets: 1 (py-6), 2 (py-10), 3 (py-16), 4 (py-24)",
     "Role sizes (responsive): compact (py-8 md:py-12, dashboards), strip (py-10 md:py-14, logo walls/stat bars), body (py-16 md:py-24, most sections), hero (py-24 md:py-32, heroes/closing CTAs)",
     "Polymorphic tag support via as prop",
     "Surface contrast scope via surface prop for media backgrounds",
     "Background media: bgVideo, bgImage, bgOverlays (presets, hex, tokens, gradients via comma-separated shorthand), bgSize, bgVideoPaused, bgPoster (video poster + reduced-motion fallback)",
-    "Mesh backdrops: bgOverlays=\"mesh-lime\" | mesh-mint | mesh-peach | mesh-accent (append -animated for a slow drift); directional scrim-left and theme-aware fade-canvas; off-centre radial(at 20% 30%, ...)"
+    "Mesh backdrops: bgOverlays=\"mesh-lime\" | mesh-mint | mesh-peach | mesh-accent (append -animated for a slow drift); directional scrim-left and theme-aware fade-canvas; off-centre radial(at 20% 30%, ...)",
+    "Fx backdrops (needs @shavin/fx registered): bgOverlays=\"fx:dither-waves, gradient-bottom\"; params only when changed: fx:fluid-silk(speed=1.2 color=accent); quote text values: fx:type-tiles(text='Plan money')",
   ],
   accessibility: [
     "Supports semantic HTML tags via polymorphic as prop",
@@ -18,6 +20,7 @@ export const docs: ComponentDoc = {
   ],
   usage: {
     bestPractices: [
+      { guidance: true, description: "Section has no padding by default — always pick a size (or py-* className) for content sections; a bare <Section> is flat on purpose (utility screens, custom spacing)." },
       { guidance: true, description: "Use Section for page-level vertical rhythm bands — combine with Container inside for content width constraint." },
       { guidance: true, description: "Use role sizes (size=\"hero\" / \"body\" / \"strip\") for marketing blocks so padding scales from mobile to desktop." },
       { guidance: true, description: "Use bgVideo + bgPoster + bgOverlays=\"dark-50\" + surface=\"dark-always\" for full-bleed hero sections — dark-always keeps on-media text light in both themes." },
@@ -26,8 +29,14 @@ export const docs: ComponentDoc = {
   },
   examples: [
     {
-      title: "Padded Section with Container",
-      code: '<Section size="2"><Container size="md"><Heading size="xl">Section Title</Heading><Text>Content goes here.</Text></Container></Section>'
+      title: "Content Section with Container",
+      description: "Pick a rhythm size (bare <Section> has no padding)",
+      code: '<Section size="body"><Container size="md"><Heading size="xl">Section Title</Heading><Text>Content goes here.</Text></Container></Section>'
+    },
+    {
+      title: "Flat band (no padding)",
+      description: "Default — a bare Section is a semantic full-bleed band; add py-* or a size only when you want rhythm",
+      code: '<Section><Container size="md"><Text>Edge-to-edge band with no vertical padding.</Text></Container></Section>'
     },
     {
       title: "Full-Screen Hero with Background Video",

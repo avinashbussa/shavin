@@ -53,7 +53,8 @@ export async function runCli(argv = []) {
 
     case "bridge":
       const portIdx = rest.indexOf("--port");
-      const portVal = portIdx !== -1 ? rest[portIdx + 1] : 7428;
+      // No --port → undefined, so bridgeCommand resolves the canonical default from @shavin/mcp.
+      const portVal = portIdx !== -1 ? rest[portIdx + 1] : undefined;
       await bridgeCommand({ port: portVal });
       break;
 
@@ -76,14 +77,14 @@ export async function runCli(argv = []) {
     ${c.brand}${"check".padEnd(20)}${c.reset} ${c.fgSubtle}Audit project setup, tokens & ThemeProvider${c.reset}
     ${c.brand}${"context".padEnd(20)}${c.reset} ${c.fgSubtle}Extract < 300 token AI prompt manifest${c.reset}
     ${c.brand}${"publish <file>".padEnd(20)}${c.reset} ${c.fgSubtle}Verify block with MCP quality gate & package manifest${c.reset}
-    ${c.brand}${"bridge".padEnd(20)}${c.reset} ${c.fgSubtle}Start Agent-Browser Bridge daemon (:7428)${c.reset}
+    ${c.brand}${"bridge".padEnd(20)}${c.reset} ${c.fgSubtle}Start the Agent-Browser Bridge daemon${c.reset}
     ${c.brand}${"brand [--check|--init]".padEnd(20)}${c.reset} ${c.fgSubtle}Generate or scaffold brand color tokens${c.reset}
 
   ${c.bold}${c.fg}Options:${c.reset}
     ${c.fgMuted}${"--oklch".padEnd(20)}${c.reset} ${c.fgSubtle}Use OKLCH color space for init (v4 OKLCH path)${c.reset}
     ${c.fgMuted}${"--overwrite".padEnd(20)}${c.reset} ${c.fgSubtle}Overwrite existing files when adding blocks${c.reset}
     ${c.fgMuted}${"--community".padEnd(20)}${c.reset} ${c.fgSubtle}Query online community creator registry${c.reset}
-    ${c.fgMuted}${"--port <port>".padEnd(20)}${c.reset} ${c.fgSubtle}Custom port for bridge server (default: 7428)${c.reset}
+    ${c.fgMuted}${"--port <port>".padEnd(20)}${c.reset} ${c.fgSubtle}Override the bridge server port${c.reset}
     ${c.fgMuted}${"--json".padEnd(20)}${c.reset} ${c.fgSubtle}Output machine-readable JSON format${c.reset}
     ${c.fgMuted}${"--help, -h".padEnd(20)}${c.reset} ${c.fgSubtle}Show this help menu${c.reset}
 `);

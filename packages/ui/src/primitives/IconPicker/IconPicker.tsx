@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import React, { useRef, useState } from "react";
 import { Popover, PopoverTrigger, PopoverContent } from "../Popover";
 import { TextField } from "../TextField";
 import { cn } from "../../lib/cn";
@@ -213,6 +213,7 @@ export function IconPicker({
           size === "sm" ? "h-7 w-7" : size === "lg" ? "h-9 w-9" : "h-8 w-8",
           className
         )}
+        aria-label={value && value !== "none" ? `Icon: ${value}. Change icon` : "Pick icon"}
         title={value || "Pick icon"}
       >
         {SelectedIcon ? (
@@ -225,7 +226,7 @@ export function IconPicker({
       <button
         type="button"
         className={cn(
-          "flex w-full items-center justify-between gap-2 rounded-[var(--radius-lg)] border border-hairline bg-surface outline-none transition focus:border-hairline hover:bg-surface-hover cursor-pointer text-left",
+          "flex w-full items-center justify-between gap-2 rounded-[var(--radius-lg)] border border-border-control bg-surface transition hover:bg-surface-hover cursor-pointer text-left",
           size === "sm" ? "py-1 pl-2.5 pr-2 text-xs" : size === "lg" ? "py-2.5 pl-3 pr-2.5 text-base" : "py-1.5 pl-3 pr-2.5 text-sm",
           className
         )}
@@ -238,11 +239,33 @@ export function IconPicker({
           )}
           <span className="truncate text-xs text-fg">{value || "none"}</span>
         </span>
-        <svg viewBox="0 0 24 24" fill="none" className={cn("shrink-0 text-fg-muted", size === "sm" ? "h-3.5 w-3.5" : "h-4 w-4")}>
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className={cn("shrink-0 text-fg-muted", size === "sm" ? "h-3.5 w-3.5" : "h-4 w-4")}>
           <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </button>
     );
+
+  // Roving tab stop for the icon grid: the selected icon, else the first option.
+  const gridRef = useRef<HTMLDivElement>(null);
+  const offset = allowNone ? 1 : 0;
+  const selectedIndex = filteredIcons.findIndex(
+    (item) => value === item.name || value.toLowerCase() === item.name.toLowerCase(),
+  );
+  const tabbableIndex = allowNone && value === "none" ? 0 : selectedIndex >= 0 ? selectedIndex + offset : 0;
+  const onGridKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    const options = Array.from(e.currentTarget.querySelectorAll<HTMLElement>('[role="option"]'));
+    const current = options.indexOf(document.activeElement as HTMLElement);
+    if (current < 0) return;
+    const step = ({ ArrowRight: 1, ArrowLeft: -1, ArrowDown: 8, ArrowUp: -8 } as Record<string, number>)[e.key];
+    let next = step === undefined ? -1 : current + step;
+    if (e.key === "Home") next = 0;
+    if (e.key === "End") next = options.length - 1;
+    if (next < 0 || next >= options.length) return;
+    e.preventDefault();
+    options[current].tabIndex = -1;
+    options[next].tabIndex = 0;
+    options[next].focus();
+  };
 
   const availableTabs = libraries && libraries.length > 0
     ? ["all", ...Array.from(new Set(libraries.map((l) => l.toLowerCase())))]
@@ -253,24 +276,36 @@ export function IconPicker({
       <PopoverTrigger asChild>
         {children ? children : defaultTrigger}
       </PopoverTrigger>
-      <PopoverContent className="w-80 p-3 z-[100]">
+      <PopoverContent className="w-80 p-3">
         <div className="space-y-2.5">
           <TextField
             placeholder="Search icons…"
+            aria-label="Search icons"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
+            onKeyDown={(e) => {
+              // Down arrow moves from the search field into the icon grid.
+              if (e.key === "ArrowDown") {
+                e.preventDefault();
+                gridRef.current?.querySelector<HTMLElement>('[tabindex="0"]')?.focus();
+              }
+            }}
             size="sm"
             className="w-full"
           />
+          <div role="status" className="sr-only">
+            {filteredIcons.length === 0 ? "No matching icons" : `${filteredIcons.length} icons`}
+          </div>
           {availableTabs.length > 1 && (
-            <div className="flex items-center gap-1 border-b border-hairline pb-1.5 overflow-x-auto">
+            <div role="group" aria-label="Icon library" className="flex items-center gap-1 border-b border-hairline pb-1.5 overflow-x-auto">
               {availableTabs.map((lib) => (
                 <button
                   key={lib}
                   type="button"
                   onClick={() => setActiveLibrary(lib)}
+                  aria-pressed={activeLibrary.toLowerCase() === lib}
                   className={cn(
-                    "px-2 py-0.5 text-[10px] font-medium rounded-[var(--radius-lg)] capitalize transition cursor-pointer shrink-0",
+                    "min-h-6 px-2 text-xs font-medium rounded-[var(--radius-lg)] capitalize transition cursor-pointer shrink-0",
                     activeLibrary.toLowerCase() === lib
                       ? "bg-accent/15 text-accent font-semibold"
                       : "text-fg-muted hover:text-fg hover:bg-surface-hover"
@@ -281,10 +316,22 @@ export function IconPicker({
               ))}
             </div>
           )}
-          <div className="grid grid-cols-8 gap-1 max-h-56 overflow-y-auto pr-1">
+          {/* Listbox with roving focus: one tab stop, arrows move (Up/Down by a row of 8),
+              Home/End, Enter or Space picks. */}
+          <div
+            ref={gridRef}
+            role="listbox"
+            aria-label="Icons"
+            onKeyDown={onGridKeyDown}
+            className="grid grid-cols-8 gap-1 max-h-56 overflow-y-auto pr-1"
+          >
             {allowNone && (
               <button
                 type="button"
+                role="option"
+                aria-label="None"
+                aria-selected={value === "none"}
+                tabIndex={tabbableIndex === 0 ? 0 : -1}
                 onClick={() => {
                   onChange("none");
                   setOpen(false);
@@ -295,16 +342,20 @@ export function IconPicker({
                 )}
                 title="None"
               >
-                <LucideIcons.Ban className="h-4 w-4 text-fg-subtle" />
+                <LucideIcons.Ban className="h-4 w-4 text-fg-subtle" aria-hidden />
               </button>
             )}
-            {filteredIcons.map((item) => {
+            {filteredIcons.map((item, i) => {
               const IconComp = item.component;
               const isSelected = value === item.name || value.toLowerCase() === item.name.toLowerCase();
               return (
                 <button
                   key={item.id}
                   type="button"
+                  role="option"
+                  aria-label={`${item.name}, ${item.library}`}
+                  aria-selected={isSelected}
+                  tabIndex={tabbableIndex === i + offset ? 0 : -1}
                   onClick={() => {
                     onChange(item.name);
                     setOpen(false);
@@ -315,7 +366,7 @@ export function IconPicker({
                   )}
                   title={`${item.name} (${item.library})`}
                 >
-                  <IconComp className="h-4 w-4" />
+                  <IconComp className="h-4 w-4" aria-hidden />
                 </button>
               );
             })}

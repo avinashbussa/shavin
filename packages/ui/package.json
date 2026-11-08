@@ -49,6 +49,11 @@
       "import": "./dist/server.js",
       "default": "./dist/server.js"
     },
+    "./panels": {
+      "types": "./dist/panels.d.ts",
+      "import": "./dist/panels.js",
+      "default": "./dist/panels.js"
+    },
     "./primitives/*": {
       "types": "./src/primitives/*.tsx",
       "import": "./src/primitives/*.tsx",
@@ -122,17 +127,25 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^1.24.0",
+    "react-resizable-panels": "4.14.5",
     "tailwind-merge": "^2.6.0"
   },
   "peerDependencies": {
+    "gsap": "^3.12.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "tailwindcss": "^3.4.0 || ^4.0.0"
+  },
+  "peerDependenciesMeta": {
+    "gsap": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
+    "gsap": "^3.13.0",
     "tailwindcss": "^3.4.17",
     "tsup": "^8.5.1",
     "typescript": "^5.7.0"

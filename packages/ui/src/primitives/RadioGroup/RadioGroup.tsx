@@ -18,7 +18,7 @@ const RadioGroupContext = createContext<RadioGroupContextValue>({
 });
 
 export const ringRadiusVariants = cva(
-  "flex h-5 w-5 shrink-0 items-center justify-center border border-hairline bg-surface transition data-[state=checked]:border-accent disabled:cursor-not-allowed disabled:opacity-50",
+  "flex h-5 w-5 shrink-0 items-center justify-center border border-border-control bg-surface transition data-[state=checked]:border-accent disabled:cursor-not-allowed disabled:opacity-50",
   {
     variants: {
       radius: {
@@ -116,6 +116,8 @@ export interface RadioProps {
   className?: string;
   /** Custom children element to render inside card or label. */
   children?: ReactNode;
+  /** Accessible name when there is no visible `label` (e.g. the row text names it visually). */
+  "aria-label"?: string;
 }
 
 export function Radio({
@@ -127,6 +129,7 @@ export function Radio({
   variant: itemVariant,
   className,
   children,
+  "aria-label": ariaLabel,
 }: RadioProps) {
   const ctx = useContext(RadioGroupContext);
   const effectiveVariant = itemVariant ?? ctx.variant;
@@ -135,28 +138,30 @@ export function Radio({
 
   if (effectiveVariant === "cards") {
     return (
-      <RadixRadioGroup.Item value={value} disabled={isDisabled} asChild>
-        <label
-          className={cn(
-            cardRadiusVariants({ radius: effectiveRadius }),
-            isDisabled ? "cursor-not-allowed opacity-50" : "cursor-pointer hover:bg-surface-hover data-[state=checked]:hover:bg-accent/5",
-            className
-          )}
-        >
-          {children || (
-            <div className="flex flex-col gap-0.5 min-w-0">
-              {label && <span className="font-semibold text-fg">{label}</span>}
-              {description && <span className="text-xs text-fg-muted">{description}</span>}
-            </div>
-          )}
-        </label>
+      // The card IS the Radix radio (a button), so Space, arrows and role="radio" all work.
+      <RadixRadioGroup.Item
+        value={value}
+        disabled={isDisabled}
+        className={cn(
+          cardRadiusVariants({ radius: effectiveRadius }),
+          "w-full text-left",
+          isDisabled ? "cursor-not-allowed opacity-50" : "cursor-pointer hover:bg-surface-hover data-[state=checked]:hover:bg-accent/5",
+          className
+        )}
+      >
+        {children || (
+          <span className="flex flex-col gap-0.5 min-w-0">
+            {label && <span className="font-semibold text-fg">{label}</span>}
+            {description && <span className="text-xs text-fg-muted">{description}</span>}
+          </span>
+        )}
       </RadixRadioGroup.Item>
     );
   }
 
   return (
     <label className={cn("flex items-center gap-2 select-none", isDisabled ? "cursor-not-allowed" : "cursor-pointer", className)}>
-      <RadixRadioGroup.Item value={value} disabled={isDisabled} className={ringRadiusVariants({ radius: effectiveRadius })}>
+      <RadixRadioGroup.Item value={value} disabled={isDisabled} aria-label={ariaLabel} className={ringRadiusVariants({ radius: effectiveRadius })}>
         <RadixRadioGroup.Indicator className={dotRadiusVariants({ radius: effectiveRadius })} />
       </RadixRadioGroup.Item>
       {children || (

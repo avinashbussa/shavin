@@ -65,7 +65,7 @@ export const TOOL_CATEGORIES = {
     "disconnect_studio",
   ],
 
-  // Dev bridge tools — only in stdio mode (require localhost:7428)
+  // Dev bridge tools — only in stdio mode (require localhost:7036)
   DEV_BRIDGE: [
     "get_live_audit",
     "trigger_live_rescan",
@@ -104,7 +104,7 @@ export function getEnabledTools(transport) {
 
     case "remote":
       // Remote MCP: everything except filesystem tools and dev bridge
-      // (dev bridge requires localhost:7428 which isn't available remotely)
+      // (dev bridge requires localhost:7036 which isn't available remotely)
       return alwaysOn;
 
     case "rest":

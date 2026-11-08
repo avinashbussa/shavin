@@ -1,6 +1,6 @@
 # MCP server
 
-`@shavin/mcp` gives coding agents the component APIs, tokens and rules of `@shavin/ui`, checks the code they write, and connects to a running app through the browser bridge on `:7428`.
+`@shavin/mcp` gives coding agents the component APIs, tokens and rules of `@shavin/ui`, checks the code they write, and connects to a running app through the browser bridge on `:7036`.
 
 ```
 packages/mcp-server/
@@ -8,7 +8,7 @@ packages/mcp-server/
   src/server.mjs         creates the server and registers every tool
   src/tools/*.mjs        tools, grouped by topic (tokens, components, validation, skills, environment, …)
   src/next-steps.mjs     the short "Next:" line added to tool results
-  src/bridge/            the :7428 browser bridge
+  src/bridge/            the :7036 browser bridge
   assets/                bundled copies of components.json, tokens.json, AGENTS.md and the skills
   build.mjs              refreshes assets/
 ```

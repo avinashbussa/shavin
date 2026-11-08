@@ -6,7 +6,7 @@
 
 export const SHAVIN_META = {
   version: "0.1.0",
-  primitiveCount: 89,
+  primitiveCount: 91,
   mcpToolCount: 30,
   skillCount: 9,
   blockCount: 59,

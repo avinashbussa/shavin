@@ -1,10 +1,12 @@
 "use client";
-import type { ReactNode, CSSProperties } from "react";
+import { useId, type HTMLAttributes, type ReactNode, CSSProperties } from "react";
 import { Checkbox } from "../Checkbox/Checkbox";
 import { cn } from "../../lib/cn";
 import { concentricContainerStyle, withConcentricStyle } from "../../lib/concentric";
 
-export interface CheckboxCardsProps {
+export interface CheckboxCardsProps extends Omit<HTMLAttributes<HTMLDivElement>, "children"> {
+  /** Visible group label; names the group for screen readers (WCAG 1.3.1). Or pass `aria-label`. */
+  label?: ReactNode;
   /** Checkbox card items grid wrapper. */
   children: ReactNode;
   /** Custom CSS grid layout class name. */
@@ -14,10 +16,22 @@ export interface CheckboxCardsProps {
 export function CheckboxCards({
   children,
   className,
+  label,
+  ...props
 }: CheckboxCardsProps) {
-  return (
-    <div role="group" className={cn("grid gap-2 sm:grid-cols-2", className)}>
+  const labelId = useId();
+  const group = (
+    <div role="group" aria-labelledby={label ? labelId : undefined} className={cn("grid gap-2 sm:grid-cols-2", className)} {...props}>
       {children}
+    </div>
+  );
+  if (!label) return group;
+  return (
+    <div className="flex flex-col gap-2">
+      <span id={labelId} className="text-xs font-semibold text-fg-muted">
+        {label}
+      </span>
+      {group}
     </div>
   );
 }

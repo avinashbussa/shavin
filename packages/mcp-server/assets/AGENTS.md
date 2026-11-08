@@ -112,10 +112,10 @@ Mount once near app root to apply active theme presets:
 
 ---
 
-## 7. Real-Time Agent-Browser Bridge (:7428)
+## 7. Real-Time Agent-Browser Bridge (:7036)
 
 AI agents can verify live DOM compliance directly without screenshots or human intervention:
-- **`get_live_audit`**: Inspect active violations, contrast math, and connected tabs from `http://127.0.0.1:7428/api/audit`. Always pass `{ path: "/target/route" }` to isolate checks to the active work tab and avoid crosstalk when multiple tabs or browsers are open.
+- **`get_live_audit`**: Inspect active violations, contrast math, and connected tabs from `http://127.0.0.1:7036/api/audit`. Always pass `{ path: "/target/route" }` to isolate checks to the active work tab and avoid crosstalk when multiple tabs or browsers are open.
 - **`trigger_live_rescan`**: Broadcast an SSE rescan command (optionally targeted via `{ path: "..." }`) to force an immediate re-audit.
 - **`wait_for_live_clean`**: Block execution until zero violations remain after code changes (`{ path: "..." }` supported).
 - **Standalone Command**: Developers can launch the monitor dashboard independently via `npm run bridge` or `npx @shavin/cli bridge`.

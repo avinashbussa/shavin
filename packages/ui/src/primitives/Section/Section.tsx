@@ -8,6 +8,9 @@ import { bgMediaLayer, type BgMediaProps } from "../../lib/media-overlays";
 export const sectionVariants = cva("", {
   variants: {
     size: {
+      // No padding — the default. A Section is a semantic full-bleed band; vertical rhythm is an explicit
+      // choice (pick a preset below, or a `py-*` className). See docs/architecture/section-primitive.md.
+      none: "",
       "1": "py-6",
       "2": "py-10",
       "3": "py-16",
@@ -19,7 +22,7 @@ export const sectionVariants = cva("", {
       hero: "py-24 md:py-32", // heroes, statements, closing CTAs
     },
   },
-  defaultVariants: { size: "2" },
+  defaultVariants: { size: "none" },
 });
 
 export interface SectionProps

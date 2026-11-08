@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { startMcpServer, startRemoteServer, globalBridge } from "../src/index.mjs";
+import { startMcpServer, startRemoteServer, globalBridge, BRIDGE_PORT } from "../src/index.mjs";
 
 // A stray error in a timer or an unhandled rejection (e.g. a Realtime hiccup)
 // must never kill the MCP process: that silently drops the live Studio session.
@@ -18,7 +18,7 @@ const isHybridMode = args.includes("--hybrid"); // stdio + remote
 
 if (isBridgeMode) {
   const portIdx = args.indexOf("--port");
-  const port = portIdx !== -1 ? Number(args[portIdx + 1]) || 7428 : 7428;
+  const port = portIdx !== -1 ? Number(args[portIdx + 1]) || BRIDGE_PORT : BRIDGE_PORT;
   globalBridge.port = port;
 
   globalBridge.start().then(() => {

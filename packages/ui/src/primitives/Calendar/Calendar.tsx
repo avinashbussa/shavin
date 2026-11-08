@@ -1,7 +1,8 @@
 "use client";
-import { useState, useMemo, type ReactNode, type CSSProperties } from "react";
+import { useState, useMemo, useRef, useEffect, useId, type ReactNode, type CSSProperties, type KeyboardEvent } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "../../lib/cn";
+import { useClientLocale } from "../../lib/useClientLocale";
 import { concentricContainerStyle, withConcentricStyle } from "../../lib/concentric";
 import { Button } from "../Button/Button";
 import { Text } from "../Text";
@@ -49,6 +50,8 @@ export interface CalendarProps {
   /** Callback fired when an event chip is clicked. */
   onEventClick?: (event: CalendarEvent) => void;
 
+  /** Locale for day names read by screen readers. Defaults to the browser's locale. */
+  locale?: string;
   /** Stretch to fit parent container height & flex layout (defaults to true). */
   fitContainer?: boolean;
   className?: string;
@@ -90,6 +93,16 @@ export function CalendarEventChip({
   );
 }
 
+const WEEKDAYS = [
+  { short: "Sun", long: "Sunday" },
+  { short: "Mon", long: "Monday" },
+  { short: "Tue", long: "Tuesday" },
+  { short: "Wed", long: "Wednesday" },
+  { short: "Thu", long: "Thursday" },
+  { short: "Fri", long: "Friday" },
+  { short: "Sat", long: "Saturday" },
+];
+
 function formatDateKey(d: Date): string {
   const year = d.getFullYear();
   const month = String(d.getMonth() + 1).padStart(2, "0");
@@ -103,16 +116,16 @@ function addDays(d: Date, days: number): Date {
   return result;
 }
 
-function getHeaderTitle(anchor: Date, view: CalendarViewMode): string {
+function getHeaderTitle(anchor: Date, view: CalendarViewMode, locale?: string): string {
   if (view === "full") {
-    return anchor.toLocaleString("default", { month: "long", year: "numeric" });
+    return anchor.toLocaleString(locale, { month: "long", year: "numeric" });
   }
   if (view === "1day") {
-    return anchor.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
+    return anchor.toLocaleDateString(locale, { month: "short", day: "numeric", year: "numeric" });
   }
   const end = addDays(anchor, view === "2days" ? 1 : 2);
-  const startStr = anchor.toLocaleDateString(undefined, { month: "short", day: "numeric" });
-  const endStr = end.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
+  const startStr = anchor.toLocaleDateString(locale, { month: "short", day: "numeric" });
+  const endStr = end.toLocaleDateString(locale, { month: "short", day: "numeric", year: "numeric" });
   return `${startStr} – ${endStr}`;
 }
 
@@ -162,9 +175,11 @@ export function CalendarView({
   onSelectDate,
   onEventClick,
   fitContainer = true,
+  locale,
   className,
   style,
 }: CalendarProps) {
+  const dateLocale = useClientLocale(locale);
   const [currentAnchorState, setCurrentAnchorState] = useState<Date>(defaultDate ?? new Date());
   const [currentViewState, setCurrentViewState] = useState<CalendarViewMode>(defaultView);
 
@@ -190,7 +205,7 @@ export function CalendarView({
   const year = anchor.getFullYear();
   const month = anchor.getMonth();
 
-  const headerTitle = useMemo(() => getHeaderTitle(anchor, currentView), [anchor, currentView]);
+  const headerTitle = useMemo(() => getHeaderTitle(anchor, currentView, dateLocale), [anchor, currentView, dateLocale]);
 
   const daysGrid = useMemo(() => {
     const firstDayOfMonth = new Date(year, month, 1);
@@ -237,6 +252,66 @@ export function CalendarView({
   }, [events]);
 
   const todayKey = useMemo(() => formatDateKey(new Date()), []);
+  const anchorKey = formatDateKey(anchor);
+  const weeks = useMemo(
+    () => Array.from({ length: 6 }, (_, w) => daysGrid.slice(w * 7, w * 7 + 7)),
+    [daysGrid],
+  );
+  const stepDays = currentView === "1day" ? 1 : currentView === "2days" ? 2 : 3;
+
+  // Grid keyboard focus. focusKey is the day that holds the single tab stop; it
+  // moves with the arrows without selecting. Crossing into another month moves
+  // the view there (the anchor doubles as the visible month).
+  const titleId = useId();
+  const gridRef = useRef<HTMLDivElement>(null);
+  const [focusKey, setFocusKey] = useState<string | null>(null);
+  const pendingFocus = useRef(false);
+  const inMonth = (key: string | null) => !!key && daysGrid.some((c) => c.dateKey === key && c.isCurrentMonth);
+  const tabbableKey = inMonth(focusKey)
+    ? focusKey
+    : inMonth(anchorKey)
+      ? anchorKey
+      : formatDateKey(new Date(year, month, 1));
+
+  useEffect(() => {
+    if (!pendingFocus.current || !focusKey) return;
+    pendingFocus.current = false;
+    gridRef.current?.querySelector<HTMLElement>(`[data-date="${focusKey}"]`)?.focus();
+  }, [focusKey, daysGrid]);
+
+  const moveFocus = (d: Date) => {
+    if (d.getFullYear() !== year || d.getMonth() !== month) setAnchor(d);
+    pendingFocus.current = true;
+    setFocusKey(formatDateKey(d));
+  };
+
+  const onGridKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+    const target = e.target as HTMLElement;
+    const key = target.getAttribute("data-date");
+    if (!key) return; // keys on event chips keep their own behaviour
+    const [y, m, dd] = key.split("-").map(Number);
+    const from = new Date(y, m - 1, dd);
+    let next: Date | null = null;
+    switch (e.key) {
+      case "ArrowLeft": next = addDays(from, -1); break;
+      case "ArrowRight": next = addDays(from, 1); break;
+      case "ArrowUp": next = addDays(from, -7); break;
+      case "ArrowDown": next = addDays(from, 7); break;
+      case "Home": next = addDays(from, -from.getDay()); break;
+      case "End": next = addDays(from, 6 - from.getDay()); break;
+      case "PageUp":
+      case "PageDown": {
+        const dir = e.key === "PageUp" ? -1 : 1;
+        const t = e.shiftKey ? new Date(y + dir, m - 1, 1) : new Date(y, m - 1 + dir, 1);
+        const lastDay = new Date(t.getFullYear(), t.getMonth() + 1, 0).getDate();
+        next = new Date(t.getFullYear(), t.getMonth(), Math.min(dd, lastDay));
+        break;
+      }
+    }
+    if (!next) return;
+    e.preventDefault();
+    moveFocus(next);
+  };
 
   const handlePrev = () => {
     if (currentView === "full") {
@@ -275,7 +350,7 @@ export function CalendarView({
     >
       <div className="mb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shrink-0">
         <div>
-          <Text size="lg" weight="semibold" className="text-fg">
+          <Text id={titleId} size="lg" weight="semibold" className="text-fg" aria-live="polite">
             {headerTitle}
           </Text>
         </div>
@@ -303,18 +378,18 @@ export function CalendarView({
               <button
                 type="button"
                 onClick={handlePrev}
-                className="rounded p-1 text-fg-muted hover:bg-surface hover:text-fg transition cursor-pointer"
-                aria-label="Previous date"
+                className="flex h-7 w-7 items-center justify-center rounded text-fg-muted hover:bg-surface hover:text-fg transition cursor-pointer"
+                aria-label={currentView === "full" ? "Previous month" : `Previous ${stepDays === 1 ? "day" : `${stepDays} days`}`}
               >
-                <ChevronLeft className="h-4 w-4" />
+                <ChevronLeft className="h-4 w-4" aria-hidden />
               </button>
               <button
                 type="button"
                 onClick={handleNext}
-                className="rounded p-1 text-fg-muted hover:bg-surface hover:text-fg transition cursor-pointer"
-                aria-label="Next date"
+                className="flex h-7 w-7 items-center justify-center rounded text-fg-muted hover:bg-surface hover:text-fg transition cursor-pointer"
+                aria-label={currentView === "full" ? "Next month" : `Next ${stepDays === 1 ? "day" : `${stepDays} days`}`}
               >
-                <ChevronRight className="h-4 w-4" />
+                <ChevronRight className="h-4 w-4" aria-hidden />
               </button>
             </div>
           </div>
@@ -322,68 +397,101 @@ export function CalendarView({
       </div>
 
       {currentView === "full" && (
-        <div className="flex-1 flex flex-col min-h-0">
-          <div className="mb-2 grid grid-cols-7 gap-px text-center shrink-0">
-            {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
-              <div key={day} className="py-1 text-xs font-medium text-fg-muted uppercase tracking-wider">
-                {day}
+        // APG date grid: rows of gridcells, each holding a real button. One tab stop
+        // (roving tabindex); arrows move by day/week, Home/End to week start/end,
+        // PageUp/PageDown by month (Shift: year), Enter/Space selects.
+        <div
+          ref={gridRef}
+          role="grid"
+          aria-labelledby={titleId}
+          className="flex-1 flex flex-col min-h-0"
+          onKeyDown={onGridKeyDown}
+        >
+          <div role="row" className="mb-2 grid grid-cols-7 gap-px text-center shrink-0">
+            {WEEKDAYS.map((day) => (
+              <div
+                key={day.short}
+                role="columnheader"
+                aria-label={day.long}
+                className="py-1 text-xs font-medium text-fg-muted uppercase tracking-wider"
+              >
+                {day.short}
               </div>
             ))}
           </div>
 
-          <div className="grid grid-cols-7 gap-1 border-t border-hairline/60 pt-2 flex-1 auto-rows-fr">
-            {daysGrid.map(({ date: d, isCurrentMonth, dateKey }, index) => {
-              const isToday = dateKey === todayKey;
-              const isSelected =
-                anchor &&
-                anchor.getFullYear() === d.getFullYear() &&
-                anchor.getMonth() === d.getMonth() &&
-                anchor.getDate() === d.getDate();
+          <div role="rowgroup" className="grid grid-rows-6 gap-1 border-t border-hairline/60 pt-2 flex-1">
+            {weeks.map((week, w) => (
+              <div key={w} role="row" className="grid grid-cols-7 gap-1">
+                {week.map(({ date: d, isCurrentMonth, dateKey }) => {
+                  const isToday = dateKey === todayKey;
+                  const isSelected = dateKey === anchorKey;
+                  const dayEvents = eventsByDate[dateKey] ?? [];
+                  const fullDate = d.toLocaleDateString(dateLocale, { weekday: "long", month: "long", day: "numeric", year: "numeric" });
 
-              const dayEvents = eventsByDate[dateKey] ?? [];
-
-              return (
-                <div
-                  key={index}
-                  onClick={() => {
-                    setAnchor(d);
-                    onSelectDate?.(d);
-                  }}
-                  className={cn(
-                    "group relative min-h-[4.5rem] sm:min-h-[5.5rem] rounded-[var(--radius-lg)] border border-hairline/40 p-1.5 transition hover:border-hairline hover:bg-surface-hover/50 cursor-pointer flex flex-col justify-between overflow-hidden",
-                    !isCurrentMonth && "opacity-40 bg-surface-hover/20",
-                    isSelected && "ring-2 ring-accent border-transparent"
-                  )}
-                >
-                  <div className="flex items-center justify-between">
-                    <span
+                  return (
+                    <div
+                      key={dateKey}
+                      role="gridcell"
+                      aria-selected={isSelected}
                       className={cn(
-                        "flex h-5 w-5 sm:h-6 sm:w-6 items-center justify-center rounded-full text-xs font-medium text-fg",
-                        isToday && "bg-accent text-accent-fg font-bold"
+                        "group relative min-h-[4.5rem] sm:min-h-[5.5rem] rounded-[var(--radius-lg)] border border-hairline/40 p-1.5 transition hover:border-hairline hover:bg-surface-hover/50 flex flex-col justify-between overflow-hidden",
+                        !isCurrentMonth && "bg-surface-hover/20",
+                        isSelected && "ring-2 ring-accent border-transparent"
                       )}
                     >
-                      {d.getDate()}
-                    </span>
-                    {dayEvents.length > 0 && (
-                      <span className="hidden sm:inline-block text-[10px] font-mono text-fg-muted">
-                        {dayEvents.length} {dayEvents.length === 1 ? "evt" : "evts"}
-                      </span>
-                    )}
-                  </div>
+                      {/* The whole cell is the day button; event chips sit above it. */}
+                      <button
+                        type="button"
+                        data-date={dateKey}
+                        tabIndex={dateKey === tabbableKey ? 0 : -1}
+                        aria-current={isToday ? "date" : undefined}
+                        aria-label={
+                          dayEvents.length > 0
+                            ? `${fullDate}, ${dayEvents.length} event${dayEvents.length === 1 ? "" : "s"}`
+                            : fullDate
+                        }
+                        onClick={() => {
+                          setFocusKey(dateKey);
+                          setAnchor(d);
+                          onSelectDate?.(d);
+                        }}
+                        onFocus={() => setFocusKey(dateKey)}
+                        className="absolute inset-0 rounded-[var(--radius-lg)] cursor-pointer focus-visible:outline-offset-[-2px]"
+                      />
+                      <div className="pointer-events-none relative flex items-center justify-between">
+                        <span
+                          aria-hidden="true"
+                          className={cn(
+                            "flex h-5 w-5 sm:h-6 sm:w-6 items-center justify-center rounded-full text-xs font-medium",
+                            isCurrentMonth ? "text-fg" : "text-fg-subtle",
+                            isToday && "bg-accent text-accent-fg font-bold"
+                          )}
+                        >
+                          {d.getDate()}
+                        </span>
+                        {dayEvents.length > 0 && (
+                          <span aria-hidden="true" className="hidden sm:inline-block text-xs font-mono text-fg-muted">
+                            {dayEvents.length} {dayEvents.length === 1 ? "evt" : "evts"}
+                          </span>
+                        )}
+                      </div>
 
-                  <div className="mt-1 flex flex-col gap-1">
-                    {dayEvents.slice(0, 3).map((evt) => (
-                      <CalendarEventChip key={evt.id} event={evt} onClick={onEventClick} />
-                    ))}
-                    {dayEvents.length > 3 && (
-                      <span className="px-1 text-[10px] font-medium text-fg-muted">
-                        +{dayEvents.length - 3} more
-                      </span>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
+                      <div className="pointer-events-none relative mt-1 flex flex-col gap-1 [&>button]:pointer-events-auto">
+                        {dayEvents.slice(0, 3).map((evt) => (
+                          <CalendarEventChip key={evt.id} event={evt} onClick={onEventClick} />
+                        ))}
+                        {dayEvents.length > 3 && (
+                          <span aria-hidden="true" className="pointer-events-none px-1 text-xs font-medium text-fg-muted">
+                            +{dayEvents.length - 3} more
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            ))}
           </div>
         </div>
       )}
@@ -404,8 +512,11 @@ export function CalendarView({
                 const dateKey = formatDateKey(d);
                 const isToday = dateKey === todayKey;
                 return (
-                  <div
+                  <button
+                    type="button"
                     key={dateKey}
+                    aria-current={isToday ? "date" : undefined}
+                    aria-label={d.toLocaleDateString(dateLocale, { weekday: "long", month: "long", day: "numeric", year: "numeric" })}
                     onClick={() => {
                       setAnchor(d);
                       onSelectDate?.(d);
@@ -413,7 +524,7 @@ export function CalendarView({
                     className="p-2 text-center cursor-pointer hover:bg-surface-hover/60 transition"
                   >
                     <span className="block text-[10px] font-medium uppercase text-fg-muted">
-                      {d.toLocaleDateString(undefined, { weekday: "short" })}
+                      {d.toLocaleDateString(dateLocale, { weekday: "short" })}
                     </span>
                     <span
                       className={cn(
@@ -423,7 +534,7 @@ export function CalendarView({
                     >
                       {d.getDate()}
                     </span>
-                  </div>
+                  </button>
                 );
               })}
             </div>

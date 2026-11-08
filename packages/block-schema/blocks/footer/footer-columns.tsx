@@ -48,13 +48,13 @@ export function FooterColumns({ groups = defaultGroups, social = defaultSocial }
               <Heading as="p" size="md" tracking="tight">WiseOwl</Heading>
               <Text size="sm" color="muted" className="text-pretty">Calm control of your money, for you and everyone you share it with.</Text>
             </Flex>
-            <Grid columns="auto" minWidth="xs" maxColumns="3" gap="6" className="lg:min-w-[560px]">
+            <Grid as="nav" aria-label="Footer" columns="auto" minWidth="xs" maxColumns="3" gap="6" className="lg:min-w-[560px]">
               {groups.map((group) => (
                 <Flex key={group.title} direction="column" gap="4">
-                  <Text size="overline" color="muted">{group.title}</Text>
-                  <Flex direction="column" gap="3">
+                  <Text as="h2" size="overline" color="muted">{group.title}</Text>
+                  <Flex as="ul" direction="column" gap="2">
                     {group.links.map((link) => (
-                      <Link key={link.label} href={link.href} size="sm">{link.label}</Link>
+                      <li key={link.label}><Link href={link.href} size="sm" className="inline-flex min-h-6 items-center">{link.label}</Link></li>
                     ))}
                   </Flex>
                 </Flex>

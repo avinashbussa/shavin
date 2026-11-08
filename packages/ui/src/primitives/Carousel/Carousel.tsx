@@ -249,7 +249,7 @@ export function CarouselTrack({
       ref={scrollContainerRef}
       tabIndex={0}
       className={cn(
-        "flex w-full overflow-x-auto pb-4 pt-1 no-scrollbar scroll-smooth outline-none",
+        "flex w-full overflow-x-auto pb-4 pt-1 no-scrollbar scroll-smooth motion-reduce:scroll-auto",
         variant === "slider" && "snap-x snap-mandatory",
         gapClass,
         className
@@ -397,27 +397,31 @@ export function CarouselDots({
   const { activeIndex, scrollToIndex } = useCarousel();
 
   return (
+    // Plain buttons, not tabs: there are no tab panels to control (WCAG 4.1.2).
     <div
-      role="tablist"
+      role="group"
       aria-label="Slides"
-      className={cn("flex items-center justify-center gap-1.5 pt-3", className)}
+      className={cn("flex items-center justify-center pt-3", className)}
       {...props}
     >
       {Array.from({ length: count }, (_, i) => (
         <button
           key={i}
           type="button"
-          role="tab"
-          aria-selected={activeIndex === i}
+          aria-current={activeIndex === i ? "true" : undefined}
           aria-label={`Go to slide ${i + 1}`}
           onClick={() => scrollToIndex(i)}
-          className={cn(
-            "h-1.5 rounded-full transition-all duration-300 cursor-pointer",
-            activeIndex === i
-              ? "w-6 bg-fg"
-              : "w-1.5 bg-hairline-strong hover:bg-fg-muted"
-          )}
-        />
+          // The dot is small; the button around it is a 28px target (WCAG 2.5.8).
+          className="group flex h-7 min-w-7 items-center justify-center cursor-pointer"
+        >
+          <span
+            aria-hidden="true"
+            className={cn(
+              "h-1.5 rounded-full transition-all duration-300",
+              activeIndex === i ? "w-6 bg-fg" : "w-1.5 bg-hairline-strong group-hover:bg-fg-muted"
+            )}
+          />
+        </button>
       ))}
     </div>
   );

@@ -16,8 +16,8 @@ export function HeroSplitMedia({ points = defaultPoints }) {
               </Text>
             </Flex>
             <Flex direction="row" wrap="wrap" gap="3">
-              <Button size="lg">Start a household</Button>
-              <Button size="lg" variant="ghost">Compare plans</Button>
+              <Button size="lg" asChild><a href="/signup">Start a household</a></Button>
+              <Button size="lg" variant="ghost" asChild><a href="/pricing">Compare plans</a></Button>
             </Flex>
             <Flex direction="column" gap="2">
               {points.map((point) => (

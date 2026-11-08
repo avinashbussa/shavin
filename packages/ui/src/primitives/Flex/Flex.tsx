@@ -1,9 +1,10 @@
-import type { HTMLAttributes, ElementType } from "react";
+import type { HTMLAttributes, ElementType, Ref } from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "../../lib/cn";
 import { concentricContainerStyle, withConcentricStyle } from "../../lib/concentric";
 import { surfaceClass, type Surface } from "../../lib/surface";
 import { bgMediaLayer, type BgMediaProps } from "../../lib/media-overlays";
+import { withResizable, type ResizableProps } from "../Resizable";
 
 const GAP = {
   "0": "gap-0",
@@ -47,9 +48,10 @@ export const flexVariants = cva("flex", {
 });
 
 export interface FlexProps
-  extends HTMLAttributes<HTMLElement>,
+  extends Omit<HTMLAttributes<HTMLElement>, "onResize">,
     VariantProps<typeof flexVariants>,
-    BgMediaProps {
+    BgMediaProps,
+    ResizableProps {
   /** Polymorphic element tag: div, section, header, etc. Default "div". */
   as?: ElementType;
   /** Whether to apply translucent panel styling with data-panel attribute. */
@@ -58,9 +60,11 @@ export interface FlexProps
       theme (contrast band). "dark-always"/"light-always" lock to one theme
       regardless of page (for media backgrounds). Undefined inherits page theme. */
   surface?: Surface;
+  /** Ref to the rendered element. */
+  ref?: Ref<HTMLElement>;
 }
 
-export function Flex({
+function FlexBase({
   as: Tag = "div",
   className,
   direction,
@@ -106,3 +110,5 @@ export function Flex({
     </Tag>
   );
 }
+
+export const Flex = withResizable(FlexBase, "Flex");

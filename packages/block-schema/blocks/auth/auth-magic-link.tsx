@@ -12,11 +12,13 @@ export function AuthMagicLink() {
                 <Heading as="h1" size="lg">Sign in without a password</Heading>
                 <Text size="sm" color="muted" className="text-pretty">We will email you a secure link that signs you in on this device.</Text>
               </Flex>
-              <TextField label="Email" type="email" placeholder="you@example.com" autoComplete="email" hint="Check your inbox after sending. The link works once and expires in 15 minutes." />
-              <Flex direction="column" gap="2">
-                <Button size="lg" className="w-full" iconLeft={<Icon name="mail" size="sm" />}>Email me a link</Button>
-                <Button size="lg" variant="ghost" className="w-full">Use a password instead</Button>
-              </Flex>
+              <form className="flex flex-col gap-5">
+                <TextField label="Email" type="email" placeholder="you@example.com" autoComplete="email" hint="Check your inbox after sending. The link works once and expires in 15 minutes." />
+                <Flex direction="column" gap="2">
+                  <Button type="submit" size="lg" className="w-full" iconLeft={<Icon name="mail" size="sm" />}>Email me a link</Button>
+                  <Button size="lg" variant="ghost" className="w-full">Use a password instead</Button>
+                </Flex>
+              </form>
             </Flex>
           </Card>
         </Flex>

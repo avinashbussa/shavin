@@ -71,6 +71,8 @@ const FILE_EXEMPT = {
     join("packages", "ui", "src", "primitives", "ColorPicker", "ColorPicker.tsx"),
     // FxPlayground.tsx & FX showcase pages: creative shader parameter controls with hex uniform presets
     join("apps", "docs", "src", "components", "FxPlayground.tsx"),
+    // Starting hex values for the fx playgrounds' colour pickers (the picker edits hex)
+    join("apps", "docs", "src", "components", "fxColorDefaults.ts"),
     join("apps", "docs", "src", "app", "fx", "fluid-silk", "page.tsx"),
     join("apps", "docs", "src", "app", "fx", "hyperspeed", "page.tsx"),
     join("apps", "docs", "src", "app", "fx", "mesh-gradient", "page.tsx"),

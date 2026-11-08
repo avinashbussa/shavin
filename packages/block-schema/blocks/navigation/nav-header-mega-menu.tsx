@@ -46,10 +46,10 @@ export function NavHeaderMegaMenu({ links = defaultLinks, groups = defaultGroups
               ))}
             </Flex>
             <Flex direction="row" align="center" gap="2" className="max-md:hidden">
-              <Button variant="ghost" size="sm">Sign in</Button>
-              <Button size="sm">Start free</Button>
+              <Button variant="ghost" size="sm" asChild><a href="/signin">Sign in</a></Button>
+              <Button size="sm" asChild><a href="/signup">Start free</a></Button>
             </Flex>
-            <IconButton variant="ghost" size="md" aria-label="Open menu" className="md:hidden">
+            <IconButton variant="ghost" size="md" aria-label="Open menu" aria-expanded="false" className="md:hidden">
               <Icon name="menu" size="md" color="inherit" />
             </IconButton>
           </Flex>

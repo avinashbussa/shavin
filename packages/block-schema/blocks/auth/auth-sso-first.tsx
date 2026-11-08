@@ -28,10 +28,10 @@ export function AuthSsoFirst({ providers = defaultProviders }) {
                 <Text size="xs" color="muted">or use email</Text>
                 <Separator className="flex-1" />
               </Flex>
-              <Flex direction="column" gap="4">
+              <form className="flex flex-col gap-4">
                 <TextField label="Email" type="email" placeholder="you@example.com" autoComplete="email" />
-                <Button size="lg" className="w-full">Continue with email</Button>
-              </Flex>
+                <Button type="submit" size="lg" className="w-full">Continue with email</Button>
+              </form>
               <Text size="xs" color="muted" className="text-center text-pretty">By continuing you agree to the <Link href="/legal/terms">Terms of Service</Link> and <Link href="/legal/privacy">Privacy Policy</Link>.</Text>
             </Flex>
           </Card>

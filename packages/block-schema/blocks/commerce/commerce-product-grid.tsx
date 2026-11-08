@@ -20,7 +20,7 @@ export function CommerceProductGrid({ products = defaultProducts }) {
               <Heading as="h2" size="3xl">Tools for calmer money days</Heading>
               <Text size="lg" color="muted" className="max-w-[52ch] text-pretty">Paper planners, jars and pouches designed with the households who use WiseOwl. Free shipping over $60.</Text>
             </Flex>
-            <Button variant="outline" iconRight={<Icon name="arrow-right" size="sm" />}>View all 24 products</Button>
+            <Button variant="outline" iconRight={<Icon name="arrow-right" size="sm" />} asChild><a href="/products">View all 24 products</a></Button>
           </Flex>
           <Grid columns="auto" minWidth="md" maxColumns="3" gap="5">
             {products.map((product) => (

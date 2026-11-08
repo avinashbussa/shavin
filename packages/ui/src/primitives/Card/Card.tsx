@@ -1,10 +1,11 @@
-import type { ReactNode, HTMLAttributes, ElementType } from "react";
+import type { ReactNode, HTMLAttributes, ElementType, Ref } from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "../../lib/cn";
 import { concentricContainerStyle, withConcentricStyle } from "../../lib/concentric";
 import { Text } from "../Text";
 import { bgMediaLayer, type BgMediaProps } from "../../lib/media-overlays";
 import { surfaceClass, type Surface } from "../../lib/surface";
+import { withResizable, type ResizableProps } from "../Resizable";
 
 const cardVariants = cva("rounded-[var(--radius-panel)] border border-hairline bg-surface text-fg transition-all duration-200 ease-out", {
   variants: {
@@ -40,7 +41,7 @@ const CARD_PADDING: Record<string, string> = {
   "3xl": "p-12",
 };
 
-export function Card({
+function CardBase({
   className,
   padding,
   interactive,
@@ -57,7 +58,7 @@ export function Card({
   surface,
   children,
   ...props
-}: HTMLAttributes<HTMLDivElement> & VariantProps<typeof cardVariants> & BgMediaProps & { style?: React.CSSProperties; surface?: Surface }) {
+}: Omit<HTMLAttributes<HTMLDivElement>, "onResize"> & VariantProps<typeof cardVariants> & BgMediaProps & ResizableProps & { style?: React.CSSProperties; surface?: Surface; ref?: Ref<HTMLDivElement> }) {
   const concentricStyle = concentricContainerStyle(padding as string, true);
   const paddingClass = CARD_PADDING[(padding as string) || "none"] || "";
   const { hasMedia, media, content } = bgMediaLayer({ bgVideo, bgImage, bgSize, bgOverlays, bgVideoPaused, bgPoster }, paddingClass);
@@ -70,6 +71,8 @@ export function Card({
     {content(children)}
   </div>;
 }
+
+export const Card = withResizable(CardBase, "Card");
 
 export function CardList({
   as: Tag = "div",

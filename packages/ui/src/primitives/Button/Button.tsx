@@ -1,5 +1,5 @@
 import { forwardRef, type ButtonHTMLAttributes, type ReactNode } from "react";
-import { Slot } from "@radix-ui/react-slot";
+import { Slot, Slottable } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "../../lib/cn";
 
@@ -65,11 +65,26 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
   { className, variant, tone, size, type = "button", asChild = false, truncate = true, iconLeft, iconRight, children, ...props },
   ref,
 ) {
-  const Comp = asChild ? Slot : "button";
+  // asChild: Radix Slot merges the button props onto the child element (e.g. <a href>).
+  // Icons ride along as siblings of <Slottable>, passed as direct children so Slot
+  // finds the Slottable (inside a Fragment it would merge onto the Fragment).
+  if (asChild) {
+    return (
+      <Slot
+        ref={ref as never}
+        className={cn(buttonVariants({ variant, tone, size }), truncate && "max-w-full", className)}
+        {...props}
+      >
+        {iconLeft && <span className="inline-flex shrink-0 items-center [&>svg]:h-4 [&>svg]:w-4 [&>svg]:!text-inherit">{iconLeft}</span>}
+        <Slottable>{children}</Slottable>
+        {iconRight && <span className="inline-flex shrink-0 items-center [&>svg]:h-4 [&>svg]:w-4 [&>svg]:!text-inherit">{iconRight}</span>}
+      </Slot>
+    );
+  }
   return (
-    <Comp
-      ref={ref as never}
-      type={asChild ? undefined : type}
+    <button
+      ref={ref}
+      type={type}
       className={cn(
         buttonVariants({ variant, tone, size }),
         truncate && "max-w-full",
@@ -77,21 +92,15 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       )}
       {...props}
     >
-      {asChild ? (
-        children
+      {iconLeft && <span className="inline-flex shrink-0 items-center [&>svg]:h-4 [&>svg]:w-4 [&>svg]:!text-inherit">{iconLeft}</span>}
+      {typeof children === "string" ? (
+        <span className={cn("inline-block min-w-0", truncate ? "truncate" : "whitespace-normal")}>
+          {children}
+        </span>
       ) : (
-        <>
-          {iconLeft && <span className="inline-flex shrink-0 items-center [&>svg]:h-4 [&>svg]:w-4 [&>svg]:!text-inherit">{iconLeft}</span>}
-          {typeof children === "string" ? (
-            <span className={cn("inline-block min-w-0", truncate ? "truncate" : "whitespace-normal")}>
-              {children}
-            </span>
-          ) : (
-            children
-          )}
-          {iconRight && <span className="inline-flex shrink-0 items-center [&>svg]:h-4 [&>svg]:w-4 [&>svg]:!text-inherit">{iconRight}</span>}
-        </>
+        children
       )}
-    </Comp>
+      {iconRight && <span className="inline-flex shrink-0 items-center [&>svg]:h-4 [&>svg]:w-4 [&>svg]:!text-inherit">{iconRight}</span>}
+    </button>
   );
 });

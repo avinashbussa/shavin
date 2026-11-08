@@ -69,13 +69,13 @@ export function FooterSitemap({ groups = defaultGroups, legal = defaultLegal }) 
             <Heading as="p" size="md" tracking="tight">WiseOwl</Heading>
             <Text size="sm" color="muted">Calm control of your money.</Text>
           </Flex>
-          <Grid columns="auto" minWidth="xs" maxColumns="5" gap="6" className="gap-y-10">
+          <Grid as="nav" aria-label="Footer" columns="auto" minWidth="xs" maxColumns="5" gap="6" className="gap-y-10">
             {groups.map((group) => (
               <Flex key={group.title} direction="column" gap="4">
-                <Text size="overline" color="muted">{group.title}</Text>
-                <Flex direction="column" gap="3">
+                <Text as="h2" size="overline" color="muted">{group.title}</Text>
+                <Flex as="ul" direction="column" gap="2">
                   {group.links.map((link) => (
-                    <Link key={link.label} href={link.href} size="sm">{link.label}</Link>
+                    <li key={link.label}><Link href={link.href} size="sm" className="inline-flex min-h-6 items-center">{link.label}</Link></li>
                   ))}
                 </Flex>
               </Flex>

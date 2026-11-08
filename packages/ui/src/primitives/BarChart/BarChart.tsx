@@ -1,12 +1,12 @@
 "use client";
-import { useMemo, useRef, useState, type HTMLAttributes } from "react";
+import { useId, useMemo, useRef, useState, type HTMLAttributes } from "react";
 import { cn } from "../../lib/cn";
 import {
-  BAR_RADIUS, ChartLegend, ChartTooltip, DEFAULT_SERIES, datumColor, makeFormatter, niceScale, xLabelClass, xLabelState, useSize,
-  type AxisProps, type ChartBarRadius, type SeriesSpec,
+  BAR_RADIUS, ChartDataTable, ChartLegend, ChartTooltip, DEFAULT_SERIES, SeriesPatterns, chartKeyProps, datumColor, patternBase, seriesFill, makeFormatter, niceScale, xLabelClass, xLabelState, useSize,
+  type AxisProps, type ChartA11yProps, type ChartBarRadius, type SeriesSpec,
 } from "../../lib/chart-kit";
 
-export interface BarChartProps extends Omit<HTMLAttributes<HTMLDivElement>, "children">, AxisProps {
+export interface BarChartProps extends Omit<HTMLAttributes<HTMLDivElement>, "children" | "title">, AxisProps, ChartA11yProps {
   /**
    * One record per category: `label` plus a number under each series `key`.
    * Without `series`, the number is `value`, and a datum may carry its own `tone` or `color`.
@@ -31,14 +31,17 @@ export interface BarChartProps extends Omit<HTMLAttributes<HTMLDivElement>, "chi
 export function BarChart({
   data, series = DEFAULT_SERIES, orientation = "vertical", mode = "grouped", height = 260, showLegend = true,
   showGrid = true, showYAxis = true, showXAxis = true, xLabelEvery, xLabelEveryMobile, xLabels, tickCount = 4, yMax,
-  padding: paddingProp, barRadius = "sm", barGap, maxBarWidth, yFormat, yPrefix, ySuffix, className, ...props
+  padding: paddingProp, barRadius = "sm", barGap, maxBarWidth, yFormat, yPrefix, ySuffix, title, description, patterns = true, className, ...props
 }: BarChartProps) {
   const ref = useRef<HTMLDivElement>(null);
   const { width } = useSize(ref, height);
   const [hover, setHover] = useState<number | null>(null);
   const fmt = makeFormatter({ yFormat, yPrefix, ySuffix });
   const horizontal = orientation === "horizontal";
+  const descId = useId();
+  const name = title ?? "Bar chart";
   const single = series === DEFAULT_SERIES;
+  const pat = patterns && series.length > 1 ? patternBase(descId) : null;
   const longest = Math.max(...data.map((d) => String(d.label).length), 1);
   const PAD = {
     top: 12,
@@ -80,9 +83,16 @@ export function BarChart({
 
   return (
     <div className={cn("flex flex-col gap-3", className)} {...props}>
-      {showLegend && series.length > 1 && <ChartLegend series={series} />}
-      <div ref={ref} className="relative w-full" style={{ height }}>
-        <svg width={width} height={height} onPointerLeave={() => setHover(null)} role="img" aria-label="Bar chart">
+      {showLegend && series.length > 1 && <ChartLegend series={series} patterns={pat} />}
+      {description && <p id={descId} className="sr-only">{description}</p>}
+      <div
+        ref={ref}
+        className="relative w-full rounded-[var(--radius-lg)]"
+        style={{ height }}
+        {...chartKeyProps({ name, descriptionId: description ? descId : undefined, count: data.length, hover, setHover, vertical: horizontal })}
+      >
+        <svg width={width} height={height} onPointerLeave={() => setHover(null)} aria-hidden="true">
+          {pat && <SeriesPatterns base={pat} colors={series.map((s, si) => datumColor({}, s, si))} />}
           {scale.ticks.map((t) => {
             const pos = along(t);
             return (
@@ -109,7 +119,7 @@ export function BarChart({
                   const cross = mode === "grouped" ? center - groupW / 2 + si * (groupW / series.length) + (series.length > 1 ? 1 : 0) : center - barW / 2;
                   const last = mode === "grouped" || si === series.length - 1;
                   const attrs = horizontal ? { x: lo, y: cross, width: len, height: barW } : { x: cross, y: lo, width: barW, height: len };
-                  const fill = single ? datumColor(d, s, i) : datumColor({}, s, si);
+                  const fill = single ? datumColor(d, s, i) : seriesFill(pat, si, datumColor({}, s, si));
                   return <rect key={s.key} {...attrs} style={{ rx: last ? rx : "0px" }} fill={fill} />;
                 })}
                 {horizontal
@@ -121,9 +131,14 @@ export function BarChart({
           {scale.lo < 0 && !horizontal && <line x1={PAD.left} x2={width - PAD.right} y1={zero} y2={zero} stroke="rgb(var(--hairline-strong))" />}
         </svg>
         {hover !== null && (
-          <ChartTooltip left={horizontal ? PAD.left + innerW / 2 : PAD.left + slot * (hover + 0.5)} top={horizontal ? PAD.top + slot * (hover + 0.5) : 8} width={width} title={String(data[hover].name ?? data[hover].label)} rows={series.map((s, si) => ({ name: s.name, value: fmt(Number(data[hover][s.key] ?? 0), true), color: single ? datumColor(data[hover], s, hover) : datumColor({}, s, si) }))} />
+          <ChartTooltip left={horizontal ? PAD.left + innerW / 2 : PAD.left + slot * (hover + 0.5)} top={horizontal ? PAD.top + slot * (hover + 0.5) : 8} width={width} title={String(data[hover].name ?? data[hover].label)} rows={series.map((s, si) => ({ name: s.name, value: fmt(Number(data[hover][s.key] ?? 0), true), color: single ? datumColor(data[hover], s, hover) : datumColor({}, s, si), index: si, patterns: pat }))} />
         )}
       </div>
+      <ChartDataTable
+        caption={name}
+        columns={["Category", ...series.map((x) => x.name)]}
+        rows={data.map((d) => [String(d.name ?? d.label), ...series.map((x) => fmt(Number(d[x.key] ?? 0), true))])}
+      />
     </div>
   );
 }

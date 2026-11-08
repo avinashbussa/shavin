@@ -9,7 +9,7 @@
 | `shavin list` | Lists the open blocks |
 | `shavin check` | Audits a project's setup and reports what is missing or misconfigured |
 | `shavin context` | Prints the project context agents read |
-| `shavin bridge` | Starts the `:7428` browser bridge |
+| `shavin bridge` | Starts the `:7036` browser bridge |
 | `shavin brand` | Generates brand tokens and the preset from `brand-tokens.css` (`--init` scaffolds it, `--check` for CI) |
 | `shavin publish` | Packaging helper used by maintainers |
 

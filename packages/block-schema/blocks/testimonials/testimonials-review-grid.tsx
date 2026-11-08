@@ -30,7 +30,7 @@ export function TestimonialsReviewGrid({ reviews = defaultReviews }) {
             <Card padding="xl" className="md:col-span-2">
               <Flex direction="column" justify="between" gap="6" className="h-full">
                 <Flex direction="column" gap="4">
-                  <Flex direction="row" gap="1" aria-label="5 out of 5 stars">
+                  <Flex direction="row" gap="1" role="img" aria-label="5 out of 5 stars">
                     {featuredStars.map((star) => (
                       <Icon key={star} name="star" size="sm" color="accent" className="fill-current" />
                     ))}
@@ -52,7 +52,7 @@ export function TestimonialsReviewGrid({ reviews = defaultReviews }) {
               <Card key={review.name} padding="lg">
                 <Flex direction="column" justify="between" gap="5" className="h-full">
                   <Flex direction="column" gap="3">
-                    <Flex direction="row" gap="1" aria-label={`${review.rating} out of 5 stars`}>
+                    <Flex direction="row" gap="1" role="img" aria-label={`${review.rating} out of 5 stars`}>
                       {stars.map((star) => (
                         <Icon key={star} name="star" size="sm" color={star <= review.rating ? "accent" : "subtle"} className={star <= review.rating ? "fill-current" : ""} />
                       ))}
@@ -60,7 +60,7 @@ export function TestimonialsReviewGrid({ reviews = defaultReviews }) {
                     <Text size="md" className="text-pretty">“{review.quote}”</Text>
                   </Flex>
                   <Flex direction="row" align="center" gap="3">
-                    <Avatar src={review.photo} alt={review.name} size="md" />
+                    <Avatar src={review.photo} size="md" />
                     <Flex direction="column" gap="0">
                       <Text size="sm" weight="semibold">{review.name}</Text>
                       <Text size="sm" color="muted">{review.role}</Text>

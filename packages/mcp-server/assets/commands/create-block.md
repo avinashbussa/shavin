@@ -34,7 +34,7 @@ Activate skill modules based on the resolved mode — see `shavin-core/SKILL.md`
 
 ### 3. Spatial Hierarchy & Concentric Geometry
 
-- **Section wrapper**: Full-bleed `py-16 md:py-24` (or `py-24 md:py-32` for marketing showcases) with zero horizontal padding on `<section>`.
+- **Section wrapper**: `Section` has no padding by default — set `size="body"` (py-16 md:py-24) or `size="hero"` (py-24 md:py-32) for marketing showcases, or an explicit `py-16 md:py-24`. Full-bleed, zero horizontal padding on `<section>` (the `Container` is the gutter).
 - **Content wrapper**: `<Container size="lg" className="px-4 md:px-6">` (or `size="xl"` for split/dense grids).
 - **Container Surfaces**: `rounded-[var(--radius-panel)] border border-hairline bg-surface`.
 - **Controls & Chips**: `rounded-[var(--radius-lg)]` (inputs, buttons, badges).

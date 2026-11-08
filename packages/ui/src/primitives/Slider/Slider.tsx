@@ -5,6 +5,7 @@ import {
   useRef,
   useCallback,
   useMemo,
+  useId,
   type ComponentPropsWithoutRef,
   type ElementRef,
   type KeyboardEvent,
@@ -46,7 +47,7 @@ export const rangeRadiusVariants = cva("absolute h-full bg-accent", {
 });
 
 export const thumbRadiusVariants = cva(
-  "block h-4 w-4 border border-hairline-strong bg-surface shadow-card transition-all duration-150 hover:border-accent hover:scale-105 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent cursor-pointer active:scale-95",
+  "block h-4 w-4 border border-border-control bg-surface shadow-card transition-all duration-150 hover:border-accent hover:scale-105 cursor-pointer active:scale-95",
   {
     variants: {
       radius: {
@@ -108,7 +109,8 @@ export function CapsuleSlider({
   color = "accent",
   showStops,
   marks,
-}: CapsuleSliderProps) {
+  "aria-label": ariaLabel,
+}: CapsuleSliderProps & { "aria-label"?: string }) {
   const [internalValue, setInternalValue] = useState<number>(() => {
     if (defaultValue !== undefined) {
       return Array.isArray(defaultValue) ? defaultValue[0] ?? min : defaultValue;
@@ -122,6 +124,7 @@ export function CapsuleSlider({
 
   const [isDragging, setIsDragging] = useState(false);
   const trackRef = useRef<HTMLDivElement>(null);
+  const labelId = useId();
 
   const clampedValue = Math.max(min, Math.min(max, rawValue));
   const percent = max > min ? ((clampedValue - min) / (max - min)) * 100 : 0;
@@ -175,7 +178,8 @@ export function CapsuleSlider({
   );
 
   const handlePointerDown = (e: PointerEvent<HTMLDivElement>) => {
-    if (disabled) return;
+    // Only the primary button (left mouse, touch, pen tip) drags; right- and middle-clicks do not.
+    if (disabled || e.button !== 0) return;
     try {
       e.currentTarget.setPointerCapture(e.pointerId);
     } catch {}
@@ -184,9 +188,13 @@ export function CapsuleSlider({
   };
 
   const handlePointerMove = (e: PointerEvent<HTMLDivElement>) => {
-    if (isDragging && !disabled) {
-      updateFromPointer(e.clientX);
+    if (!isDragging || disabled) return;
+    // The release can go missing (context menu, window switch); with no button held, the drag is over.
+    if (e.pointerType === "mouse" && (e.buttons & 1) === 0) {
+      setIsDragging(false);
+      return;
     }
+    updateFromPointer(e.clientX);
   };
 
   const handlePointerUp = (e: PointerEvent<HTMLDivElement>) => {
@@ -195,6 +203,9 @@ export function CapsuleSlider({
       e.currentTarget.releasePointerCapture(e.pointerId);
     } catch {}
   };
+
+  // Losing pointer capture (another element took it, the pointer was cancelled) also ends the drag.
+  const handleLostPointerCapture = () => setIsDragging(false);
 
   const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
     if (disabled) return;
@@ -206,6 +217,13 @@ export function CapsuleSlider({
       e.preventDefault();
     } else if (e.key === "ArrowLeft" || e.key === "ArrowDown") {
       nextVal = Math.max(min, clampedValue - step);
+      e.preventDefault();
+    } else if (e.key === "PageUp") {
+      // Bigger jumps of ten steps, as the WAI-ARIA slider pattern suggests.
+      nextVal = Math.min(max, clampedValue + step * 10);
+      e.preventDefault();
+    } else if (e.key === "PageDown") {
+      nextVal = Math.max(min, clampedValue - step * 10);
       e.preventDefault();
     } else if (e.key === "Home") {
       nextVal = min;
@@ -238,17 +256,21 @@ export function CapsuleSlider({
       aria-valuemin={min}
       aria-valuemax={max}
       aria-valuenow={clampedValue}
+      aria-valuetext={String(displayVal)}
+      // Name: an explicit aria-label, else a string label, else the visible label element.
+      aria-label={ariaLabel ?? (typeof label === "string" ? label : undefined)}
+      aria-labelledby={ariaLabel === undefined && typeof label !== "string" && label != null ? labelId : undefined}
       aria-disabled={disabled}
       data-dragging={isDragging}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
       onPointerCancel={handlePointerUp}
+      onLostPointerCapture={handleLostPointerCapture}
       onKeyDown={handleKeyDown}
       className={cn(
         "group relative h-8 w-full rounded-[var(--radius-lg)] border border-hairline/80 overflow-hidden cursor-ew-resize select-none touch-none transition-all duration-150",
-        "bg-surface-hover/50 dark:bg-canvas/80 hover:border-hairline-strong focus-visible:outline-none focus-visible:ring-1",
-        color === "accent" ? "focus-visible:ring-accent" : "focus-visible:ring-fg/30",
+        "bg-surface-hover/50 dark:bg-canvas/80 hover:border-hairline-strong",
         disabled && "opacity-50 pointer-events-none",
         className
       )}
@@ -277,8 +299,8 @@ export function CapsuleSlider({
 
       {/* 2. Base Layer: Unfilled Track Content */}
       <div className="absolute inset-0 flex items-center justify-between px-3 pointer-events-none">
-        <span className="text-xs font-medium text-fg-subtle truncate">{label}</span>
-        <span className="text-xs text-fg-muted shrink-0 ml-2 tabular-nums">{displayVal}</span>
+        <span id={labelId} className="text-xs font-medium text-fg-subtle truncate" aria-hidden="true">{label}</span>
+        <span className="text-xs text-fg-muted shrink-0 ml-2 tabular-nums" aria-hidden="true">{displayVal}</span>
       </div>
 
       {/* 3. Clipped Active Fill Layer */}
@@ -295,7 +317,7 @@ export function CapsuleSlider({
         }}
       >
         {/* Inverted Text Layer */}
-        <div className="flex items-center justify-between w-full h-full px-3 text-xs font-medium pointer-events-none">
+        <div className="flex items-center justify-between w-full h-full px-3 text-xs font-medium pointer-events-none" aria-hidden="true">
           <span className="truncate">{label}</span>
           <span
             className={cn(
@@ -372,27 +394,6 @@ export const Slider = forwardRef<
   },
   ref,
 ) {
-  // ── Capsule Variant ──
-  if (variant === "capsule") {
-    return (
-      <CapsuleSlider
-        label={label}
-        value={value}
-        defaultValue={defaultValue}
-        min={min}
-        max={max}
-        step={step}
-        formatValue={formatValue}
-        onValueChange={onValueChange}
-        className={className}
-        disabled={disabled}
-        color={color}
-        showStops={showStops}
-        marks={marks}
-      />
-    );
-  }
-
   // ── Standard Default Track Variant ──
   const normalizedValue = value !== undefined
     ? (Array.isArray(value) ? value : [value])
@@ -407,6 +408,15 @@ export const Slider = forwardRef<
   const { "aria-label": ariaLabel, "aria-labelledby": ariaLabelledBy, ...rootProps } = props as typeof props & {
     "aria-label"?: string;
     "aria-labelledby"?: string;
+  };
+
+  // Name each thumb: the consumer's aria-label, else a string `label`; a two-thumb range
+  // says which end is which.
+  const baseName = ariaLabel ?? (typeof label === "string" ? label : undefined);
+  const thumbName = (i: number) => {
+    if (!baseName) return undefined;
+    if (thumbCount === 2) return `${baseName}, ${i === 0 ? "minimum" : "maximum"}`;
+    return thumbCount > 1 ? `${baseName} ${i + 1}` : baseName;
   };
 
   // Compute marks for track
@@ -426,6 +436,28 @@ export const Slider = forwardRef<
     }
     return [];
   }, [marks, min, max, step]);
+
+  // ── Capsule Variant ── (after the hooks above, so hook order never changes)
+  if (variant === "capsule") {
+    return (
+      <CapsuleSlider
+        label={label}
+        value={value}
+        defaultValue={defaultValue}
+        min={min}
+        max={max}
+        step={step}
+        formatValue={formatValue}
+        onValueChange={onValueChange}
+        className={className}
+        disabled={disabled}
+        color={color}
+        showStops={showStops}
+        marks={marks}
+        aria-label={ariaLabel}
+      />
+    );
+  }
 
   return (
     <RadixSlider.Root
@@ -462,7 +494,7 @@ export const Slider = forwardRef<
         <RadixSlider.Thumb
           key={i}
           className={thumbRadiusVariants({ radius })}
-          aria-label={ariaLabel ? (thumbCount > 1 ? `${ariaLabel} ${i + 1}` : ariaLabel) : undefined}
+          aria-label={thumbName(i)}
           aria-labelledby={ariaLabelledBy}
         />
       ))}

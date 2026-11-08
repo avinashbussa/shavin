@@ -16,6 +16,8 @@ export default defineConfig([
     ...shared,
     entry: {
       index: "src/index.ts",
+      // Opt-in subpath: keeps react-resizable-panels out of the root bundle.
+      panels: "src/panels.ts",
       "tailwind-preset": "tailwind-preset.ts",
       "styles/global": "src/styles/global.css",
       "styles/brand-tokens": "src/styles/brand-tokens.css",

@@ -53,7 +53,7 @@ export function Tooltip({
             avoidCollisions
             collisionPadding={8}
             className={cn(
-              "animate-rise-fast origin-[var(--radix-tooltip-content-transform-origin)] z-[90] rounded-[var(--radius-lg)] px-2.5 py-1.5 text-xs shadow-panel max-w-[240px]",
+              "animate-rise-fast origin-[var(--radix-tooltip-content-transform-origin)] z-[var(--z-floating)] rounded-[var(--radius-lg)] px-2.5 py-1.5 text-xs shadow-panel max-w-[240px]",
               TONE_CLASSES[tone],
               className,
             )}

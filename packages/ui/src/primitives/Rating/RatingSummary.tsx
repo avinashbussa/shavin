@@ -43,17 +43,18 @@ export function RatingSummary({ counts, average, onSelect, selected, noun = "rev
             </>
           );
           return onSelect ? (
-            <button
-              key={stars}
-              type="button"
-              role="listitem"
-              aria-pressed={selected === stars}
-              aria-label={`${stars} stars, ${c} ${noun}`}
-              onClick={() => onSelect(stars)}
-              className={cn("flex items-center gap-3 rounded-[var(--radius-lg)] px-1.5 py-0.5 transition-colors hover:bg-surface-hover focus-visible:outline-2 focus-visible:outline-accent", selected === stars && "bg-surface-hover")}
-            >
-              {row}
-            </button>
+            // A role on the button would erase its button semantics; the listitem wraps it.
+            <div key={stars} role="listitem">
+              <button
+                type="button"
+                aria-pressed={selected === stars}
+                aria-label={`${stars} stars, ${c} ${noun}`}
+                onClick={() => onSelect(stars)}
+                className={cn("flex w-full items-center gap-3 rounded-[var(--radius-lg)] px-1.5 py-0.5 transition-colors hover:bg-surface-hover", selected === stars && "bg-surface-hover")}
+              >
+                {row}
+              </button>
+            </div>
           ) : (
             <div key={stars} role="listitem" className="flex items-center gap-3 px-1.5 py-0.5">{row}</div>
           );

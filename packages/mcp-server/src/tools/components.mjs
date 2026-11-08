@@ -77,7 +77,7 @@ export function registerComponentsTool(server, COMPONENTS) {
           ...(comp.partOf ? [`part of: ${comp.partOf} (get_components "${comp.partOf}" has its usage, guidance and examples)`] : []),
           variantSummary ? `variants: ${variantSummary}` : "variants: none",
           `exports: ${exportsList}`,
-          `import: import { ${(comp.exports || []).includes(comp.name) || !(comp.exports || []).length ? comp.name : comp.exports.join(", ")} } from "@shavin/ui"`,
+          `import: import { ${(comp.exports || []).includes(comp.name) || !(comp.exports || []).length ? comp.name : comp.exports.join(", ")} } from "${comp.importPath || "@shavin/ui"}"`,
         ];
 
         if (comp.description) {
@@ -146,6 +146,12 @@ export function registerComponentsTool(server, COMPONENTS) {
       const denseLines = [
         `# @shavin/ui Primitives (${publicComponents.length} components — Dense Overview)`,
         "Import root: import { Component } from \"@shavin/ui\"",
+        ...Object.entries(
+          publicComponents.reduce((acc, c) => {
+            if (c.importPath) (acc[c.importPath] ||= []).push(c.name);
+            return acc;
+          }, {})
+        ).map(([path, names]) => `Subpath: import { ${names.join(", ")} } from "${path}"`),
         "",
       ];
 

@@ -67,7 +67,7 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "form"
     ],
     "version": "1.0.0",
-    "rawCode": "import { Button, Card, Container, Flex, Heading, Icon, Link, Section, Text, TextField } from \"@shavin/ui\";\n\nexport function AuthForgot() {\n  return (\n    <Section size=\"hero\" bgOverlays=\"mesh-accent\" className=\"flex items-center justify-center\">\n      <Container size=\"xs\">\n        <Flex direction=\"column\" align=\"center\" gap=\"6\">\n          <Heading as=\"p\" size=\"sm\" tracking=\"tight\">WiseOwl</Heading>\n          <Card padding=\"lg\" className=\"w-full max-w-[420px]\">\n            <Flex direction=\"column\" gap=\"5\">\n              <Link href=\"/signin\" size=\"sm\" underline=\"none\" className=\"inline-flex h-10 w-fit items-center gap-1.5 text-fg-muted hover:text-fg\">\n                <Icon name=\"arrow-left\" size=\"sm\" color=\"inherit\" />\n                Back to sign in\n              </Link>\n              <Flex direction=\"column\" gap=\"2\">\n                <Heading as=\"h1\" size=\"lg\">Reset your password</Heading>\n                <Text size=\"sm\" color=\"muted\" className=\"text-pretty\">Enter the email on your account and we will send a reset link. It works once and expires in 30 minutes.</Text>\n              </Flex>\n              <TextField label=\"Email\" type=\"email\" placeholder=\"you@example.com\" autoComplete=\"email\" />\n              <Button size=\"lg\" className=\"w-full\">Send reset link</Button>\n              <Text size=\"xs\" color=\"muted\" className=\"text-center text-pretty\">The link comes from help@wiseowl.app. Check your spam folder if it has not arrived in a few minutes.</Text>\n            </Flex>\n          </Card>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
+    "rawCode": "import { Button, Card, Container, Flex, Heading, Icon, Link, Section, Text, TextField } from \"@shavin/ui\";\n\nexport function AuthForgot() {\n  return (\n    <Section size=\"hero\" bgOverlays=\"mesh-accent\" className=\"flex items-center justify-center\">\n      <Container size=\"xs\">\n        <Flex direction=\"column\" align=\"center\" gap=\"6\">\n          <Heading as=\"p\" size=\"sm\" tracking=\"tight\">WiseOwl</Heading>\n          <Card padding=\"lg\" className=\"w-full max-w-[420px]\">\n            <Flex direction=\"column\" gap=\"5\">\n              <Link href=\"/signin\" size=\"sm\" underline=\"none\" className=\"inline-flex h-10 w-fit items-center gap-1.5 text-fg-muted hover:text-fg\">\n                <Icon name=\"arrow-left\" size=\"sm\" color=\"inherit\" />\n                Back to sign in\n              </Link>\n              <Flex direction=\"column\" gap=\"2\">\n                <Heading as=\"h1\" size=\"lg\">Reset your password</Heading>\n                <Text size=\"sm\" color=\"muted\" className=\"text-pretty\">Enter the email on your account and we will send a reset link. It works once and expires in 30 minutes.</Text>\n              </Flex>\n              <form className=\"flex flex-col gap-5\">\n                <TextField label=\"Email\" type=\"email\" placeholder=\"you@example.com\" autoComplete=\"email\" />\n                <Button type=\"submit\" size=\"lg\" className=\"w-full\">Send reset link</Button>\n              </form>\n              <Text size=\"xs\" color=\"muted\" className=\"text-center text-pretty\">The link comes from help@wiseowl.app. Check your spam folder if it has not arrived in a few minutes.</Text>\n            </Flex>\n          </Card>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
     "sourcePath": "packages/block-schema/blocks/auth/auth-forgot.tsx"
   },
   {
@@ -95,7 +95,7 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "form"
     ],
     "version": "1.0.0",
-    "rawCode": "import { Button, Card, Container, Flex, Heading, Icon, Section, Text, TextField } from \"@shavin/ui\";\n\nexport function AuthMagicLink() {\n  return (\n    <Section size=\"hero\" bgOverlays=\"mesh-accent\" className=\"flex items-center justify-center\">\n      <Container size=\"xs\">\n        <Flex direction=\"column\" align=\"center\" gap=\"6\">\n          <Heading as=\"p\" size=\"sm\" tracking=\"tight\">WiseOwl</Heading>\n          <Card padding=\"lg\" className=\"w-full max-w-[420px]\">\n            <Flex direction=\"column\" gap=\"5\">\n              <Flex direction=\"column\" gap=\"2\">\n                <Heading as=\"h1\" size=\"lg\">Sign in without a password</Heading>\n                <Text size=\"sm\" color=\"muted\" className=\"text-pretty\">We will email you a secure link that signs you in on this device.</Text>\n              </Flex>\n              <TextField label=\"Email\" type=\"email\" placeholder=\"you@example.com\" autoComplete=\"email\" hint=\"Check your inbox after sending. The link works once and expires in 15 minutes.\" />\n              <Flex direction=\"column\" gap=\"2\">\n                <Button size=\"lg\" className=\"w-full\" iconLeft={<Icon name=\"mail\" size=\"sm\" />}>Email me a link</Button>\n                <Button size=\"lg\" variant=\"ghost\" className=\"w-full\">Use a password instead</Button>\n              </Flex>\n            </Flex>\n          </Card>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
+    "rawCode": "import { Button, Card, Container, Flex, Heading, Icon, Section, Text, TextField } from \"@shavin/ui\";\n\nexport function AuthMagicLink() {\n  return (\n    <Section size=\"hero\" bgOverlays=\"mesh-accent\" className=\"flex items-center justify-center\">\n      <Container size=\"xs\">\n        <Flex direction=\"column\" align=\"center\" gap=\"6\">\n          <Heading as=\"p\" size=\"sm\" tracking=\"tight\">WiseOwl</Heading>\n          <Card padding=\"lg\" className=\"w-full max-w-[420px]\">\n            <Flex direction=\"column\" gap=\"5\">\n              <Flex direction=\"column\" gap=\"2\">\n                <Heading as=\"h1\" size=\"lg\">Sign in without a password</Heading>\n                <Text size=\"sm\" color=\"muted\" className=\"text-pretty\">We will email you a secure link that signs you in on this device.</Text>\n              </Flex>\n              <form className=\"flex flex-col gap-5\">\n                <TextField label=\"Email\" type=\"email\" placeholder=\"you@example.com\" autoComplete=\"email\" hint=\"Check your inbox after sending. The link works once and expires in 15 minutes.\" />\n                <Flex direction=\"column\" gap=\"2\">\n                  <Button type=\"submit\" size=\"lg\" className=\"w-full\" iconLeft={<Icon name=\"mail\" size=\"sm\" />}>Email me a link</Button>\n                  <Button size=\"lg\" variant=\"ghost\" className=\"w-full\">Use a password instead</Button>\n                </Flex>\n              </form>\n            </Flex>\n          </Card>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
     "sourcePath": "packages/block-schema/blocks/auth/auth-magic-link.tsx"
   },
   {
@@ -127,7 +127,7 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "form"
     ],
     "version": "1.0.0",
-    "rawCode": "import { Button, Card, Checkbox, Container, Flex, Grid, Heading, Icon, Link, Section, Separator, Text, TextField } from \"@shavin/ui\";\n\nconst defaultProviders = [\n  { label: \"Google\", icon: \"google-logo\" },\n  { label: \"GitHub\", icon: \"github-logo\" },\n];\n\nexport function AuthSignin({ providers = defaultProviders }) {\n  return (\n    <Section size=\"hero\" bgOverlays=\"mesh-accent\" className=\"flex items-center justify-center\">\n      <Container size=\"xs\">\n        <Flex direction=\"column\" align=\"center\" gap=\"6\">\n          <Heading as=\"p\" size=\"sm\" tracking=\"tight\">WiseOwl</Heading>\n          <Card padding=\"lg\" className=\"w-full max-w-[420px]\">\n            <Flex direction=\"column\" gap=\"5\">\n              <Flex direction=\"column\" gap=\"2\">\n                <Heading as=\"h1\" size=\"lg\">Welcome back</Heading>\n                <Text size=\"sm\" color=\"muted\" className=\"text-pretty\">Sign in to see your accounts, budgets and household.</Text>\n              </Flex>\n              <Grid columns=\"2\" gap=\"3\">\n                {providers.map((provider) => (\n                  <Button key={provider.label} variant=\"outline\" className=\"w-full\" iconLeft={<Icon name={provider.icon} size=\"sm\" />}>{provider.label}</Button>\n                ))}\n              </Grid>\n              <Flex direction=\"row\" align=\"center\" gap=\"3\">\n                <Separator className=\"flex-1\" />\n                <Text size=\"xs\" color=\"muted\">or</Text>\n                <Separator className=\"flex-1\" />\n              </Flex>\n              <Flex direction=\"column\" gap=\"4\">\n                <TextField label=\"Email\" type=\"email\" placeholder=\"you@example.com\" autoComplete=\"email\" />\n                <TextField label=\"Password\" type=\"password\" placeholder=\"Enter your password\" autoComplete=\"current-password\" />\n                <Flex direction=\"row\" align=\"center\" justify=\"between\" gap=\"3\" wrap=\"wrap\">\n                  <Checkbox label=\"Keep me signed in\" />\n                  <Link href=\"/forgot\" size=\"sm\" color=\"accent\">Forgot password?</Link>\n                </Flex>\n              </Flex>\n              <Button size=\"lg\" className=\"w-full\">Sign in</Button>\n              <Text size=\"xs\" color=\"muted\" className=\"text-center\">New to WiseOwl? <Link href=\"/signup\" color=\"accent\">Create a free account</Link></Text>\n            </Flex>\n          </Card>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
+    "rawCode": "import { Button, Card, Checkbox, Container, Flex, Grid, Heading, Icon, Link, Section, Separator, Text, TextField } from \"@shavin/ui\";\n\nconst defaultProviders = [\n  { label: \"Google\", icon: \"google-logo\" },\n  { label: \"GitHub\", icon: \"github-logo\" },\n];\n\nexport function AuthSignin({ providers = defaultProviders }) {\n  return (\n    <Section size=\"hero\" bgOverlays=\"mesh-accent\" className=\"flex items-center justify-center\">\n      <Container size=\"xs\">\n        <Flex direction=\"column\" align=\"center\" gap=\"6\">\n          <Heading as=\"p\" size=\"sm\" tracking=\"tight\">WiseOwl</Heading>\n          <Card padding=\"lg\" className=\"w-full max-w-[420px]\">\n            <Flex direction=\"column\" gap=\"5\">\n              <Flex direction=\"column\" gap=\"2\">\n                <Heading as=\"h1\" size=\"lg\">Welcome back</Heading>\n                <Text size=\"sm\" color=\"muted\" className=\"text-pretty\">Sign in to see your accounts, budgets and household.</Text>\n              </Flex>\n              <Grid columns=\"2\" gap=\"3\">\n                {providers.map((provider) => (\n                  <Button key={provider.label} variant=\"outline\" className=\"w-full\" iconLeft={<Icon name={provider.icon} size=\"sm\" />}>{provider.label}</Button>\n                ))}\n              </Grid>\n              <Flex direction=\"row\" align=\"center\" gap=\"3\">\n                <Separator className=\"flex-1\" />\n                <Text size=\"xs\" color=\"muted\">or</Text>\n                <Separator className=\"flex-1\" />\n              </Flex>\n              <form className=\"flex flex-col gap-5\">\n              <Flex direction=\"column\" gap=\"4\">\n                <TextField label=\"Email\" type=\"email\" placeholder=\"you@example.com\" autoComplete=\"email\" />\n                <TextField label=\"Password\" type=\"password\" placeholder=\"Enter your password\" autoComplete=\"current-password\" />\n                <Flex direction=\"row\" align=\"center\" justify=\"between\" gap=\"3\" wrap=\"wrap\">\n                  <Checkbox label=\"Keep me signed in\" />\n                  <Link href=\"/forgot\" size=\"sm\" color=\"accent\">Forgot password?</Link>\n                </Flex>\n              </Flex>\n              <Button type=\"submit\" size=\"lg\" className=\"w-full\">Sign in</Button>\n              </form>\n              <Text size=\"xs\" color=\"muted\" className=\"text-center\">New to WiseOwl? <Link href=\"/signup\" color=\"accent\">Create a free account</Link></Text>\n            </Flex>\n          </Card>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
     "sourcePath": "packages/block-schema/blocks/auth/auth-signin.tsx"
   },
   {
@@ -158,7 +158,7 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "form"
     ],
     "version": "1.0.0",
-    "rawCode": "import { Button, Card, Container, Flex, Grid, Heading, Icon, Link, Section, Separator, Text, TextField } from \"@shavin/ui\";\n\nconst defaultProviders = [\n  { label: \"Google\", icon: \"google-logo\" },\n  { label: \"GitHub\", icon: \"github-logo\" },\n];\n\nexport function AuthSignup({ providers = defaultProviders }) {\n  return (\n    <Section size=\"hero\" bgOverlays=\"mesh-accent\" className=\"flex items-center justify-center\">\n      <Container size=\"xs\">\n        <Flex direction=\"column\" align=\"center\" gap=\"6\">\n          <Heading as=\"p\" size=\"sm\" tracking=\"tight\">WiseOwl</Heading>\n          <Card padding=\"lg\" className=\"w-full max-w-[420px]\">\n            <Flex direction=\"column\" gap=\"5\">\n              <Flex direction=\"column\" gap=\"2\">\n                <Heading as=\"h1\" size=\"lg\">Create your free account</Heading>\n                <Text size=\"sm\" color=\"muted\" className=\"text-pretty\">Free for one person with two linked accounts. No card required.</Text>\n              </Flex>\n              <Grid columns=\"2\" gap=\"3\">\n                {providers.map((provider) => (\n                  <Button key={provider.label} variant=\"outline\" className=\"w-full\" iconLeft={<Icon name={provider.icon} size=\"sm\" />}>{provider.label}</Button>\n                ))}\n              </Grid>\n              <Flex direction=\"row\" align=\"center\" gap=\"3\">\n                <Separator className=\"flex-1\" />\n                <Text size=\"xs\" color=\"muted\">or</Text>\n                <Separator className=\"flex-1\" />\n              </Flex>\n              <Flex direction=\"column\" gap=\"4\">\n                <TextField label=\"Full name\" placeholder=\"Maya Okafor\" autoComplete=\"name\" />\n                <TextField label=\"Email\" type=\"email\" placeholder=\"you@example.com\" autoComplete=\"email\" />\n                <TextField label=\"Password\" type=\"password\" placeholder=\"At least 12 characters\" hint=\"Use 12+ characters with a number or symbol.\" autoComplete=\"new-password\" />\n              </Flex>\n              <Button size=\"lg\" className=\"w-full\">Create account</Button>\n              <Flex direction=\"column\" gap=\"2\">\n                <Text size=\"xs\" color=\"muted\" className=\"text-center text-pretty\">By creating an account you agree to the <Link href=\"/legal/terms\">Terms</Link> and <Link href=\"/legal/privacy\">Privacy Policy</Link>.</Text>\n                <Text size=\"xs\" color=\"muted\" className=\"text-center\">Already have an account? <Link href=\"/signin\" color=\"accent\">Sign in</Link></Text>\n              </Flex>\n            </Flex>\n          </Card>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
+    "rawCode": "import { Button, Card, Container, Flex, Grid, Heading, Icon, Link, Section, Separator, Text, TextField } from \"@shavin/ui\";\n\nconst defaultProviders = [\n  { label: \"Google\", icon: \"google-logo\" },\n  { label: \"GitHub\", icon: \"github-logo\" },\n];\n\nexport function AuthSignup({ providers = defaultProviders }) {\n  return (\n    <Section size=\"hero\" bgOverlays=\"mesh-accent\" className=\"flex items-center justify-center\">\n      <Container size=\"xs\">\n        <Flex direction=\"column\" align=\"center\" gap=\"6\">\n          <Heading as=\"p\" size=\"sm\" tracking=\"tight\">WiseOwl</Heading>\n          <Card padding=\"lg\" className=\"w-full max-w-[420px]\">\n            <Flex direction=\"column\" gap=\"5\">\n              <Flex direction=\"column\" gap=\"2\">\n                <Heading as=\"h1\" size=\"lg\">Create your free account</Heading>\n                <Text size=\"sm\" color=\"muted\" className=\"text-pretty\">Free for one person with two linked accounts. No card required.</Text>\n              </Flex>\n              <Grid columns=\"2\" gap=\"3\">\n                {providers.map((provider) => (\n                  <Button key={provider.label} variant=\"outline\" className=\"w-full\" iconLeft={<Icon name={provider.icon} size=\"sm\" />}>{provider.label}</Button>\n                ))}\n              </Grid>\n              <Flex direction=\"row\" align=\"center\" gap=\"3\">\n                <Separator className=\"flex-1\" />\n                <Text size=\"xs\" color=\"muted\">or</Text>\n                <Separator className=\"flex-1\" />\n              </Flex>\n              <form className=\"flex flex-col gap-5\">\n              <Flex direction=\"column\" gap=\"4\">\n                <TextField label=\"Full name\" placeholder=\"Maya Okafor\" autoComplete=\"name\" />\n                <TextField label=\"Email\" type=\"email\" placeholder=\"you@example.com\" autoComplete=\"email\" />\n                <TextField label=\"Password\" type=\"password\" placeholder=\"At least 12 characters\" hint=\"Use 12+ characters with a number or symbol.\" autoComplete=\"new-password\" />\n              </Flex>\n              <Button type=\"submit\" size=\"lg\" className=\"w-full\">Create account</Button>\n              </form>\n              <Flex direction=\"column\" gap=\"2\">\n                <Text size=\"xs\" color=\"muted\" className=\"text-center text-pretty\">By creating an account you agree to the <Link href=\"/legal/terms\">Terms</Link> and <Link href=\"/legal/privacy\">Privacy Policy</Link>.</Text>\n                <Text size=\"xs\" color=\"muted\" className=\"text-center\">Already have an account? <Link href=\"/signin\" color=\"accent\">Sign in</Link></Text>\n              </Flex>\n            </Flex>\n          </Card>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
     "sourcePath": "packages/block-schema/blocks/auth/auth-signup.tsx"
   },
   {
@@ -186,7 +186,7 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "media"
     ],
     "version": "1.0.0",
-    "rawCode": "import { Button, Container, Flex, Grid, Heading, Link, Section, Text, TextField } from \"@shavin/ui\";\n\nexport function AuthSplitScreen() {\n  return (\n    <Section className=\"py-0\">\n      <Grid columns=\"2\" gap=\"0\" stack=\"auto\" className=\"min-h-[100svh]\">\n        <Flex\n          direction=\"column\"\n          justify=\"end\"\n          surface=\"dark-always\"\n          bgImage=\"https://assets.lummi.ai/assets/QmVQ6Y2zm36g3VK9LHzgCKqJEbTbL8GYXtmjuHB3nkgzeX?auto=format&w=1600\"\n          bgOverlays=\"scrim\"\n          className=\"hidden p-10 md:flex lg:p-14\"\n        >\n          <Flex direction=\"column\" gap=\"4\" className=\"max-w-[40ch]\">\n            <Heading as=\"blockquote\" size=\"xl\" weight=\"medium\" className=\"text-pretty\">Sunday money check-ins went from an hour of spreadsheets to fifteen minutes with coffee.</Heading>\n            <Flex direction=\"column\" gap=\"1\">\n              <Text size=\"sm\" weight=\"medium\">Lena Hoffmann</Text>\n              <Text size=\"sm\" color=\"muted\">Household owner · Denver, CO</Text>\n            </Flex>\n          </Flex>\n        </Flex>\n        <Flex direction=\"column\" justify=\"center\" className=\"py-16\">\n          <Container size=\"xs\">\n            <Flex direction=\"column\" gap=\"6\" className=\"mx-auto w-full max-w-[400px]\">\n              <Heading as=\"p\" size=\"sm\" tracking=\"tight\">WiseOwl</Heading>\n              <Flex direction=\"column\" gap=\"2\">\n                <Heading as=\"h1\" size=\"xl\">Sign in to your household</Heading>\n                <Text size=\"sm\" color=\"muted\" className=\"text-pretty\">Pick up where you left off. Your partner sees the same numbers the moment you update a budget.</Text>\n              </Flex>\n              <Flex direction=\"column\" gap=\"4\">\n                <TextField label=\"Email\" type=\"email\" placeholder=\"you@example.com\" autoComplete=\"email\" />\n                <TextField label=\"Password\" type=\"password\" placeholder=\"Enter your password\" autoComplete=\"current-password\" />\n                <Link href=\"/forgot\" size=\"sm\" color=\"accent\" className=\"w-fit\">Forgot password?</Link>\n              </Flex>\n              <Flex direction=\"column\" gap=\"3\">\n                <Button size=\"lg\" className=\"w-full\">Sign in</Button>\n                <Button size=\"lg\" variant=\"outline\" className=\"w-full\">Email me a sign-in link</Button>\n              </Flex>\n              <Text size=\"xs\" color=\"muted\">New to WiseOwl? <Link href=\"/signup\" color=\"accent\">Create a free account</Link></Text>\n            </Flex>\n          </Container>\n        </Flex>\n      </Grid>\n    </Section>\n  );\n}\n",
+    "rawCode": "import { Button, Container, Flex, Grid, Heading, Link, Section, Text, TextField } from \"@shavin/ui\";\n\nexport function AuthSplitScreen() {\n  return (\n    <Section className=\"py-0\">\n      <Grid columns=\"2\" gap=\"0\" stack=\"auto\" className=\"min-h-[100svh]\">\n        <Flex\n          direction=\"column\"\n          justify=\"end\"\n          surface=\"dark-always\"\n          bgImage=\"https://assets.lummi.ai/assets/QmVQ6Y2zm36g3VK9LHzgCKqJEbTbL8GYXtmjuHB3nkgzeX?auto=format&w=1600\"\n          bgOverlays=\"scrim\"\n          className=\"hidden p-10 md:flex lg:p-14\"\n        >\n          <Flex direction=\"column\" gap=\"4\" className=\"max-w-[40ch]\">\n            <Heading as=\"blockquote\" size=\"xl\" weight=\"medium\" className=\"text-pretty\">Sunday money check-ins went from an hour of spreadsheets to fifteen minutes with coffee.</Heading>\n            <Flex direction=\"column\" gap=\"1\">\n              <Text size=\"sm\" weight=\"medium\">Lena Hoffmann</Text>\n              <Text size=\"sm\" color=\"muted\">Household owner · Denver, CO</Text>\n            </Flex>\n          </Flex>\n        </Flex>\n        <Flex direction=\"column\" justify=\"center\" className=\"py-16\">\n          <Container size=\"xs\">\n            <Flex direction=\"column\" gap=\"6\" className=\"mx-auto w-full max-w-[400px]\">\n              <Heading as=\"p\" size=\"sm\" tracking=\"tight\">WiseOwl</Heading>\n              <Flex direction=\"column\" gap=\"2\">\n                <Heading as=\"h1\" size=\"xl\">Sign in to your household</Heading>\n                <Text size=\"sm\" color=\"muted\" className=\"text-pretty\">Pick up where you left off. Your partner sees the same numbers the moment you update a budget.</Text>\n              </Flex>\n              <form className=\"flex flex-col gap-6\">\n              <Flex direction=\"column\" gap=\"4\">\n                <TextField label=\"Email\" type=\"email\" placeholder=\"you@example.com\" autoComplete=\"email\" />\n                <TextField label=\"Password\" type=\"password\" placeholder=\"Enter your password\" autoComplete=\"current-password\" />\n                <Link href=\"/forgot\" size=\"sm\" color=\"accent\" className=\"w-fit\">Forgot password?</Link>\n              </Flex>\n              <Flex direction=\"column\" gap=\"3\">\n                <Button type=\"submit\" size=\"lg\" className=\"w-full\">Sign in</Button>\n                <Button size=\"lg\" variant=\"outline\" className=\"w-full\">Email me a sign-in link</Button>\n              </Flex>\n              </form>\n              <Text size=\"xs\" color=\"muted\">New to WiseOwl? <Link href=\"/signup\" color=\"accent\">Create a free account</Link></Text>\n            </Flex>\n          </Container>\n        </Flex>\n      </Grid>\n    </Section>\n  );\n}\n",
     "sourcePath": "packages/block-schema/blocks/auth/auth-split-screen.tsx"
   },
   {
@@ -216,7 +216,7 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "form"
     ],
     "version": "1.0.0",
-    "rawCode": "import { Button, Card, Container, Flex, Heading, Icon, Link, Section, Separator, Text, TextField } from \"@shavin/ui\";\n\nconst defaultProviders = [\n  { label: \"Continue with Google\", icon: \"google-logo\" },\n  { label: \"Continue with GitHub\", icon: \"github-logo\" },\n  { label: \"Continue with Apple\", icon: \"apple-logo\" },\n];\n\nexport function AuthSsoFirst({ providers = defaultProviders }) {\n  return (\n    <Section size=\"hero\" bgOverlays=\"mesh-accent\" className=\"flex items-center justify-center\">\n      <Container size=\"xs\">\n        <Flex direction=\"column\" align=\"center\" gap=\"6\">\n          <Heading as=\"p\" size=\"sm\" tracking=\"tight\">WiseOwl</Heading>\n          <Card padding=\"lg\" className=\"w-full max-w-[420px]\">\n            <Flex direction=\"column\" gap=\"5\">\n              <Flex direction=\"column\" gap=\"2\">\n                <Heading as=\"h1\" size=\"lg\">Sign in to WiseOwl</Heading>\n                <Text size=\"sm\" color=\"muted\" className=\"text-pretty\">Use the account you already trust. We never see your provider password.</Text>\n              </Flex>\n              <Flex direction=\"column\" gap=\"3\">\n                {providers.map((provider) => (\n                  <Button key={provider.label} size=\"lg\" variant=\"outline\" className=\"w-full\" iconLeft={<Icon name={provider.icon} size=\"sm\" />}>{provider.label}</Button>\n                ))}\n              </Flex>\n              <Flex direction=\"row\" align=\"center\" gap=\"3\">\n                <Separator className=\"flex-1\" />\n                <Text size=\"xs\" color=\"muted\">or use email</Text>\n                <Separator className=\"flex-1\" />\n              </Flex>\n              <Flex direction=\"column\" gap=\"4\">\n                <TextField label=\"Email\" type=\"email\" placeholder=\"you@example.com\" autoComplete=\"email\" />\n                <Button size=\"lg\" className=\"w-full\">Continue with email</Button>\n              </Flex>\n              <Text size=\"xs\" color=\"muted\" className=\"text-center text-pretty\">By continuing you agree to the <Link href=\"/legal/terms\">Terms of Service</Link> and <Link href=\"/legal/privacy\">Privacy Policy</Link>.</Text>\n            </Flex>\n          </Card>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
+    "rawCode": "import { Button, Card, Container, Flex, Heading, Icon, Link, Section, Separator, Text, TextField } from \"@shavin/ui\";\n\nconst defaultProviders = [\n  { label: \"Continue with Google\", icon: \"google-logo\" },\n  { label: \"Continue with GitHub\", icon: \"github-logo\" },\n  { label: \"Continue with Apple\", icon: \"apple-logo\" },\n];\n\nexport function AuthSsoFirst({ providers = defaultProviders }) {\n  return (\n    <Section size=\"hero\" bgOverlays=\"mesh-accent\" className=\"flex items-center justify-center\">\n      <Container size=\"xs\">\n        <Flex direction=\"column\" align=\"center\" gap=\"6\">\n          <Heading as=\"p\" size=\"sm\" tracking=\"tight\">WiseOwl</Heading>\n          <Card padding=\"lg\" className=\"w-full max-w-[420px]\">\n            <Flex direction=\"column\" gap=\"5\">\n              <Flex direction=\"column\" gap=\"2\">\n                <Heading as=\"h1\" size=\"lg\">Sign in to WiseOwl</Heading>\n                <Text size=\"sm\" color=\"muted\" className=\"text-pretty\">Use the account you already trust. We never see your provider password.</Text>\n              </Flex>\n              <Flex direction=\"column\" gap=\"3\">\n                {providers.map((provider) => (\n                  <Button key={provider.label} size=\"lg\" variant=\"outline\" className=\"w-full\" iconLeft={<Icon name={provider.icon} size=\"sm\" />}>{provider.label}</Button>\n                ))}\n              </Flex>\n              <Flex direction=\"row\" align=\"center\" gap=\"3\">\n                <Separator className=\"flex-1\" />\n                <Text size=\"xs\" color=\"muted\">or use email</Text>\n                <Separator className=\"flex-1\" />\n              </Flex>\n              <form className=\"flex flex-col gap-4\">\n                <TextField label=\"Email\" type=\"email\" placeholder=\"you@example.com\" autoComplete=\"email\" />\n                <Button type=\"submit\" size=\"lg\" className=\"w-full\">Continue with email</Button>\n              </form>\n              <Text size=\"xs\" color=\"muted\" className=\"text-center text-pretty\">By continuing you agree to the <Link href=\"/legal/terms\">Terms of Service</Link> and <Link href=\"/legal/privacy\">Privacy Policy</Link>.</Text>\n            </Flex>\n          </Card>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
     "replaces": "auth-centered-card",
     "sourcePath": "packages/block-schema/blocks/auth/auth-sso-first.tsx"
   },
@@ -245,7 +245,7 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "form"
     ],
     "version": "1.0.0",
-    "rawCode": "import { Button, Card, Container, Flex, Heading, Link, Section, Text, TextField } from \"@shavin/ui\";\n\nexport function AuthVerify() {\n  return (\n    <Section size=\"hero\" bgOverlays=\"mesh-accent\" className=\"flex items-center justify-center\">\n      <Container size=\"xs\">\n        <Flex direction=\"column\" align=\"center\" gap=\"6\">\n          <Heading as=\"p\" size=\"sm\" tracking=\"tight\">WiseOwl</Heading>\n          <Card padding=\"lg\" className=\"w-full max-w-[420px]\">\n            <Flex direction=\"column\" gap=\"5\">\n              <Flex direction=\"column\" gap=\"2\">\n                <Heading as=\"h1\" size=\"lg\">Enter your verification code</Heading>\n                <Text size=\"sm\" color=\"muted\" className=\"text-pretty\">We sent a 6-digit code to maya.okafor@example.com. It expires in 10 minutes.</Text>\n              </Flex>\n              <TextField type=\"otp\" length={6} label=\"Verification code\" autoComplete=\"one-time-code\" className=\"flex w-full [&>div]:w-full\" slotClassName=\"w-auto min-w-0 flex-1\" />\n              <Button size=\"lg\" className=\"w-full\">Verify email</Button>\n              <Flex direction=\"column\" align=\"center\" gap=\"2\">\n                <Text size=\"sm\" color=\"muted\" className=\"tabular-nums\">No code yet? <Link href=\"/verify/resend\" color=\"accent\">Resend code</Link> in 0:42</Text>\n                <Text size=\"xs\" color=\"muted\">Wrong address? <Link href=\"/signup\">Change email</Link></Text>\n              </Flex>\n            </Flex>\n          </Card>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
+    "rawCode": "import { Button, Card, Container, Flex, Heading, Link, Section, Text, TextField } from \"@shavin/ui\";\n\nexport function AuthVerify() {\n  return (\n    <Section size=\"hero\" bgOverlays=\"mesh-accent\" className=\"flex items-center justify-center\">\n      <Container size=\"xs\">\n        <Flex direction=\"column\" align=\"center\" gap=\"6\">\n          <Heading as=\"p\" size=\"sm\" tracking=\"tight\">WiseOwl</Heading>\n          <Card padding=\"lg\" className=\"w-full max-w-[420px]\">\n            <Flex direction=\"column\" gap=\"5\">\n              <Flex direction=\"column\" gap=\"2\">\n                <Heading as=\"h1\" size=\"lg\">Enter your verification code</Heading>\n                <Text size=\"sm\" color=\"muted\" className=\"text-pretty\">We sent a 6-digit code to maya.okafor@example.com. It expires in 10 minutes.</Text>\n              </Flex>\n              <form className=\"flex flex-col gap-5\">\n                <TextField type=\"otp\" length={6} label=\"Verification code\" autoComplete=\"one-time-code\" className=\"flex w-full [&>div]:w-full\" slotClassName=\"w-auto min-w-0 flex-1\" />\n                <Button type=\"submit\" size=\"lg\" className=\"w-full\">Verify email</Button>\n              </form>\n              <Flex direction=\"column\" align=\"center\" gap=\"2\">\n                <Text size=\"sm\" color=\"muted\" className=\"tabular-nums\">No code yet? <Link href=\"/verify/resend\" color=\"accent\">Resend code</Link> in 0:42</Text>\n                <Text size=\"xs\" color=\"muted\">Wrong address? <Link href=\"/signup\">Change email</Link></Text>\n              </Flex>\n            </Flex>\n          </Card>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
     "sourcePath": "packages/block-schema/blocks/auth/auth-verify.tsx"
   },
   {
@@ -301,7 +301,7 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "form"
     ],
     "version": "1.0.0",
-    "rawCode": "import { Button, Card, Flex, Heading, Link, Text, TextField } from \"@shavin/ui\";\n\nexport function SignInCard() {\n  return (\n    <Card padding=\"lg\" className=\"w-full max-w-[400px]\">\n      <Flex direction=\"column\" gap=\"5\">\n        <Flex direction=\"column\" gap=\"1\">\n          <Heading as=\"h2\" size=\"md\">Sign in</Heading>\n          <Text size=\"sm\" color=\"muted\">Use your WiseOwl email and password.</Text>\n        </Flex>\n        <Flex direction=\"column\" gap=\"4\">\n          <TextField label=\"Email\" type=\"email\" placeholder=\"you@example.com\" autoComplete=\"email\" />\n          <TextField label=\"Password\" type=\"password\" placeholder=\"Enter your password\" autoComplete=\"current-password\" />\n        </Flex>\n        <Button className=\"w-full\">Sign in</Button>\n        <Link href=\"/forgot\" size=\"sm\" color=\"accent\" className=\"mx-auto\">Forgot password?</Link>\n      </Flex>\n    </Card>\n  );\n}\n",
+    "rawCode": "import { Button, Card, Flex, Heading, Link, Text, TextField } from \"@shavin/ui\";\n\nexport function SignInCard() {\n  return (\n    <Card padding=\"lg\" className=\"w-full max-w-[400px]\">\n      <Flex direction=\"column\" gap=\"5\">\n        <Flex direction=\"column\" gap=\"1\">\n          <Heading as=\"h2\" size=\"md\">Sign in</Heading>\n          <Text size=\"sm\" color=\"muted\">Use your WiseOwl email and password.</Text>\n        </Flex>\n        <form className=\"flex flex-col gap-5\">\n        <Flex direction=\"column\" gap=\"4\">\n          <TextField label=\"Email\" type=\"email\" placeholder=\"you@example.com\" autoComplete=\"email\" />\n          <TextField label=\"Password\" type=\"password\" placeholder=\"Enter your password\" autoComplete=\"current-password\" />\n        </Flex>\n        <Button type=\"submit\" className=\"w-full\">Sign in</Button>\n        </form>\n        <Link href=\"/forgot\" size=\"sm\" color=\"accent\" className=\"mx-auto\">Forgot password?</Link>\n      </Flex>\n    </Card>\n  );\n}\n",
     "sourcePath": "packages/block-schema/blocks/auth/sign-in-card.tsx"
   },
   {
@@ -333,7 +333,7 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "shop"
     ],
     "version": "1.0.0",
-    "rawCode": "import { Badge, Button, Card, Container, Flex, Grid, Heading, Icon, Image, Rating, Section, Text } from \"@shavin/ui\";\n\nconst defaultProducts = [\n  { name: \"Envelope Budget Kit\", note: \"12 monthly cards and 40 reusable envelopes\", price: \"$24.00\", rating: 4.9, reviews: 612, badge: \"Reordered 3,100 times\", image: \"https://assets.lummi.ai/assets/QmekBZwPh4KM1bLSWAVTRdXotDy2SMyHey3kHHihvoUMKS?auto=format&w=1200\", alt: \"A young pilea plant in a white pot by a window\" },\n  { name: \"Sinking Fund Jar Set\", note: \"Four glass jars with chalk labels\", price: \"$32.00\", rating: 4.8, reviews: 438, badge: \"\", image: \"https://assets.lummi.ai/assets/QmSETVchufAEGoYU15T4nFMVr5EKkqp5ZaM5UJmNe8omSw?auto=format&w=1200\", alt: \"Scattered coins on a peach background\" },\n  { name: \"Household Money Planner\", note: \"Undated, lay-flat, 52 weekly spreads\", price: \"$38.00\", rating: 4.8, reviews: 527, badge: \"New edition\", image: \"https://assets.lummi.ai/assets/QmVQ6Y2zm36g3VK9LHzgCKqJEbTbL8GYXtmjuHB3nkgzeX?auto=format&w=1200\", alt: \"A bright living room with a cream sofa in afternoon sun\" },\n  { name: \"Receipt Catcher Pouch\", note: \"Waxed canvas with a dated tab index\", price: \"$18.00\", rating: 4.7, reviews: 291, badge: \"\", image: \"https://assets.lummi.ai/assets/QmNqSc99v97Dd7Ba2F1aH4snKgMG1SuM6Mb32S7tox2N7p?auto=format&w=1200\", alt: \"A hand holding a printed receipt\" },\n];\n\nexport function CommerceBestsellers({ products = defaultProducts }) {\n  return (\n    <Section size=\"body\">\n      <Container size=\"xl\">\n        <Flex direction=\"column\" gap=\"7\">\n          <Flex direction=\"row\" align=\"end\" justify=\"between\" gap=\"5\" wrap=\"wrap\">\n            <Flex direction=\"column\" gap=\"4\">\n              <Text size=\"overline\" color=\"muted\">Bestsellers</Text>\n              <Heading as=\"h2\" size=\"3xl\" tracking=\"tight\" className=\"max-w-[24ch] text-balance\">The tools households reorder</Heading>\n              <Text size=\"lg\" color=\"muted\" className=\"max-w-[52ch] text-pretty\">The four planners and jars members buy again, rated by the households who use them every week.</Text>\n            </Flex>\n            <Button variant=\"outline\" iconRight={<Icon name=\"arrow-right\" size=\"sm\" />}>See everything</Button>\n          </Flex>\n          <Grid columns=\"auto\" minWidth=\"sm\" maxColumns=\"4\" gap=\"5\">\n            {products.map((product, i) => (\n              <Flex key={product.name} direction=\"column\" className={i % 2 === 1 ? \"lg:mt-10\" : undefined}>\n                <Card padding=\"sm\" interactive>\n                  <Flex direction=\"column\" gap=\"4\">\n                    <Image src={product.image} alt={product.alt} ratio=\"1/1\" radius=\"concentric\" />\n                    <Flex direction=\"column\" gap=\"2\" className=\"px-1 pb-1\">\n                      <Flex direction=\"row\" align=\"start\" justify=\"between\" gap=\"3\">\n                        <Heading as=\"h3\" size=\"md\">{product.name}</Heading>\n                        <Text weight=\"semibold\" className=\"tabular-nums\">{product.price}</Text>\n                      </Flex>\n                      <Text size=\"sm\" color=\"muted\" className=\"text-pretty\">{product.note}</Text>\n                      <Rating readOnly size=\"sm\" value={product.rating} count={product.reviews} />\n                      {product.badge && <Badge size=\"sm\" color=\"accent\" className=\"self-start\">{product.badge}</Badge>}\n                    </Flex>\n                  </Flex>\n                </Card>\n              </Flex>\n            ))}\n          </Grid>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
+    "rawCode": "import { Badge, Button, Card, Container, Flex, Grid, Heading, Icon, Image, Rating, Section, Text } from \"@shavin/ui\";\n\nconst defaultProducts = [\n  { name: \"Envelope Budget Kit\", note: \"12 monthly cards and 40 reusable envelopes\", price: \"$24.00\", rating: 4.9, reviews: 612, badge: \"Reordered 3,100 times\", image: \"https://assets.lummi.ai/assets/QmekBZwPh4KM1bLSWAVTRdXotDy2SMyHey3kHHihvoUMKS?auto=format&w=1200\", alt: \"A young pilea plant in a white pot by a window\" },\n  { name: \"Sinking Fund Jar Set\", note: \"Four glass jars with chalk labels\", price: \"$32.00\", rating: 4.8, reviews: 438, badge: \"\", image: \"https://assets.lummi.ai/assets/QmSETVchufAEGoYU15T4nFMVr5EKkqp5ZaM5UJmNe8omSw?auto=format&w=1200\", alt: \"Scattered coins on a peach background\" },\n  { name: \"Household Money Planner\", note: \"Undated, lay-flat, 52 weekly spreads\", price: \"$38.00\", rating: 4.8, reviews: 527, badge: \"New edition\", image: \"https://assets.lummi.ai/assets/QmVQ6Y2zm36g3VK9LHzgCKqJEbTbL8GYXtmjuHB3nkgzeX?auto=format&w=1200\", alt: \"A bright living room with a cream sofa in afternoon sun\" },\n  { name: \"Receipt Catcher Pouch\", note: \"Waxed canvas with a dated tab index\", price: \"$18.00\", rating: 4.7, reviews: 291, badge: \"\", image: \"https://assets.lummi.ai/assets/QmNqSc99v97Dd7Ba2F1aH4snKgMG1SuM6Mb32S7tox2N7p?auto=format&w=1200\", alt: \"A hand holding a printed receipt\" },\n];\n\nexport function CommerceBestsellers({ products = defaultProducts }) {\n  return (\n    <Section size=\"body\">\n      <Container size=\"xl\">\n        <Flex direction=\"column\" gap=\"7\">\n          <Flex direction=\"row\" align=\"end\" justify=\"between\" gap=\"5\" wrap=\"wrap\">\n            <Flex direction=\"column\" gap=\"4\">\n              <Text size=\"overline\" color=\"muted\">Bestsellers</Text>\n              <Heading as=\"h2\" size=\"3xl\" tracking=\"tight\" className=\"max-w-[24ch] text-balance\">The tools households reorder</Heading>\n              <Text size=\"lg\" color=\"muted\" className=\"max-w-[52ch] text-pretty\">The four planners and jars members buy again, rated by the households who use them every week.</Text>\n            </Flex>\n            <Button variant=\"outline\" iconRight={<Icon name=\"arrow-right\" size=\"sm\" />} asChild><a href=\"/products\">See everything</a></Button>\n          </Flex>\n          <Grid columns=\"auto\" minWidth=\"sm\" maxColumns=\"4\" gap=\"5\">\n            {products.map((product, i) => (\n              <Flex key={product.name} direction=\"column\" className={i % 2 === 1 ? \"lg:mt-10\" : undefined}>\n                <Card padding=\"sm\" interactive>\n                  <Flex direction=\"column\" gap=\"4\">\n                    <Image src={product.image} alt={product.alt} ratio=\"1/1\" radius=\"concentric\" />\n                    <Flex direction=\"column\" gap=\"2\" className=\"px-1 pb-1\">\n                      <Flex direction=\"row\" align=\"start\" justify=\"between\" gap=\"3\">\n                        <Heading as=\"h3\" size=\"md\">{product.name}</Heading>\n                        <Text weight=\"semibold\" className=\"tabular-nums\">{product.price}</Text>\n                      </Flex>\n                      <Text size=\"sm\" color=\"muted\" className=\"text-pretty\">{product.note}</Text>\n                      <Rating readOnly size=\"sm\" value={product.rating} count={product.reviews} />\n                      {product.badge && <Badge size=\"sm\" color=\"accent\" className=\"self-start\">{product.badge}</Badge>}\n                    </Flex>\n                  </Flex>\n                </Card>\n              </Flex>\n            ))}\n          </Grid>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
     "sourcePath": "packages/block-schema/blocks/commerce/commerce-bestsellers.tsx"
   },
   {
@@ -397,7 +397,7 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "grid"
     ],
     "version": "1.0.0",
-    "rawCode": "import { Badge, Button, Card, Container, Flex, Grid, Heading, Icon, Image, Section, Text } from \"@shavin/ui\";\n\nconst defaultProducts = [\n  { name: \"Envelope Budget Kit\", category: \"Planners\", price: \"$24.00\", note: \"12 monthly cards and 40 reusable envelopes\", badge: \"Best seller\", image: \"https://assets.lummi.ai/assets/QmekBZwPh4KM1bLSWAVTRdXotDy2SMyHey3kHHihvoUMKS?auto=format&w=1200\", alt: \"A young pilea plant in a white pot by a window\" },\n  { name: \"Sinking Fund Jar Set\", category: \"Saving\", price: \"$32.00\", note: \"Four glass jars with chalk labels\", badge: \"\", image: \"https://assets.lummi.ai/assets/QmSETVchufAEGoYU15T4nFMVr5EKkqp5ZaM5UJmNe8omSw?auto=format&w=1200\", alt: \"Scattered coins on a peach background\" },\n  { name: \"Household Money Planner\", category: \"Planners\", price: \"$38.00\", note: \"Undated, lay-flat, 52 weekly spreads\", badge: \"New\", image: \"https://assets.lummi.ai/assets/QmVQ6Y2zm36g3VK9LHzgCKqJEbTbL8GYXtmjuHB3nkgzeX?auto=format&w=1200\", alt: \"A bright living room with a cream sofa in afternoon sun\" },\n  { name: \"Receipt Catcher Pouch\", category: \"Organising\", price: \"$18.00\", note: \"Waxed canvas with a dated tab index\", badge: \"\", image: \"https://assets.lummi.ai/assets/QmNqSc99v97Dd7Ba2F1aH4snKgMG1SuM6Mb32S7tox2N7p?auto=format&w=1200\", alt: \"A hand holding a printed receipt\" },\n  { name: \"Quiet Hours Desk Plant\", category: \"Home office\", price: \"$29.00\", note: \"Hand-glazed pot, ready to plant\", badge: \"\", image: \"https://assets.lummi.ai/assets/QmfSCe21jQS5RRs8FtCXUt2MKCaKBGgDs2ziDzCs751LEx?auto=format&w=1200\", alt: \"A small potted tree against a two-tone peach wall\" },\n  { name: \"WiseOwl Tote\", category: \"Apparel\", price: \"$22.00\", note: \"Heavy cotton, lime owl mark\", badge: \"\", image: \"https://assets.lummi.ai/assets/QmWfAxfaHHUvxEgKJfYFFSnZH6HAiMKdem6ytSq1dx6CYk?auto=format&w=1200\", alt: \"A calm pastel living space with mint walls and a yellow armchair\" },\n];\n\nexport function CommerceProductGrid({ products = defaultProducts }) {\n  return (\n    <Section size=\"body\">\n      <Container size=\"lg\">\n        <Flex direction=\"column\" gap=\"7\">\n          <Flex direction=\"row\" align=\"end\" justify=\"between\" gap=\"5\" wrap=\"wrap\">\n            <Flex direction=\"column\" gap=\"4\">\n              <Text size=\"overline\" color=\"muted\">The WiseOwl shop</Text>\n              <Heading as=\"h2\" size=\"3xl\">Tools for calmer money days</Heading>\n              <Text size=\"lg\" color=\"muted\" className=\"max-w-[52ch] text-pretty\">Paper planners, jars and pouches designed with the households who use WiseOwl. Free shipping over $60.</Text>\n            </Flex>\n            <Button variant=\"outline\" iconRight={<Icon name=\"arrow-right\" size=\"sm\" />}>View all 24 products</Button>\n          </Flex>\n          <Grid columns=\"auto\" minWidth=\"md\" maxColumns=\"3\" gap=\"5\">\n            {products.map((product) => (\n              <Card key={product.name} padding=\"md\" interactive>\n                <Flex direction=\"column\" gap=\"4\">\n                  <Image src={product.image} alt={product.alt} ratio=\"4/5\" radius=\"concentric\" />\n                  <Flex direction=\"column\" gap=\"2\">\n                    <Flex direction=\"row\" align=\"center\" justify=\"between\" gap=\"3\">\n                      <Text size=\"overline\" color=\"muted\">{product.category}</Text>\n                      {product.badge && <Badge size=\"sm\" color=\"accent\">{product.badge}</Badge>}\n                    </Flex>\n                    <Heading as=\"h3\" size=\"md\">{product.name}</Heading>\n                    <Text size=\"sm\" color=\"muted\" className=\"text-pretty\">{product.note}</Text>\n                  </Flex>\n                  <Flex direction=\"row\" align=\"center\" justify=\"between\" gap=\"3\">\n                    <Text size=\"lg\" weight=\"semibold\" className=\"tabular-nums\">{product.price}</Text>\n                    <Button size=\"sm\" variant=\"outline\">Add to cart</Button>\n                  </Flex>\n                </Flex>\n              </Card>\n            ))}\n          </Grid>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
+    "rawCode": "import { Badge, Button, Card, Container, Flex, Grid, Heading, Icon, Image, Section, Text } from \"@shavin/ui\";\n\nconst defaultProducts = [\n  { name: \"Envelope Budget Kit\", category: \"Planners\", price: \"$24.00\", note: \"12 monthly cards and 40 reusable envelopes\", badge: \"Best seller\", image: \"https://assets.lummi.ai/assets/QmekBZwPh4KM1bLSWAVTRdXotDy2SMyHey3kHHihvoUMKS?auto=format&w=1200\", alt: \"A young pilea plant in a white pot by a window\" },\n  { name: \"Sinking Fund Jar Set\", category: \"Saving\", price: \"$32.00\", note: \"Four glass jars with chalk labels\", badge: \"\", image: \"https://assets.lummi.ai/assets/QmSETVchufAEGoYU15T4nFMVr5EKkqp5ZaM5UJmNe8omSw?auto=format&w=1200\", alt: \"Scattered coins on a peach background\" },\n  { name: \"Household Money Planner\", category: \"Planners\", price: \"$38.00\", note: \"Undated, lay-flat, 52 weekly spreads\", badge: \"New\", image: \"https://assets.lummi.ai/assets/QmVQ6Y2zm36g3VK9LHzgCKqJEbTbL8GYXtmjuHB3nkgzeX?auto=format&w=1200\", alt: \"A bright living room with a cream sofa in afternoon sun\" },\n  { name: \"Receipt Catcher Pouch\", category: \"Organising\", price: \"$18.00\", note: \"Waxed canvas with a dated tab index\", badge: \"\", image: \"https://assets.lummi.ai/assets/QmNqSc99v97Dd7Ba2F1aH4snKgMG1SuM6Mb32S7tox2N7p?auto=format&w=1200\", alt: \"A hand holding a printed receipt\" },\n  { name: \"Quiet Hours Desk Plant\", category: \"Home office\", price: \"$29.00\", note: \"Hand-glazed pot, ready to plant\", badge: \"\", image: \"https://assets.lummi.ai/assets/QmfSCe21jQS5RRs8FtCXUt2MKCaKBGgDs2ziDzCs751LEx?auto=format&w=1200\", alt: \"A small potted tree against a two-tone peach wall\" },\n  { name: \"WiseOwl Tote\", category: \"Apparel\", price: \"$22.00\", note: \"Heavy cotton, lime owl mark\", badge: \"\", image: \"https://assets.lummi.ai/assets/QmWfAxfaHHUvxEgKJfYFFSnZH6HAiMKdem6ytSq1dx6CYk?auto=format&w=1200\", alt: \"A calm pastel living space with mint walls and a yellow armchair\" },\n];\n\nexport function CommerceProductGrid({ products = defaultProducts }) {\n  return (\n    <Section size=\"body\">\n      <Container size=\"lg\">\n        <Flex direction=\"column\" gap=\"7\">\n          <Flex direction=\"row\" align=\"end\" justify=\"between\" gap=\"5\" wrap=\"wrap\">\n            <Flex direction=\"column\" gap=\"4\">\n              <Text size=\"overline\" color=\"muted\">The WiseOwl shop</Text>\n              <Heading as=\"h2\" size=\"3xl\">Tools for calmer money days</Heading>\n              <Text size=\"lg\" color=\"muted\" className=\"max-w-[52ch] text-pretty\">Paper planners, jars and pouches designed with the households who use WiseOwl. Free shipping over $60.</Text>\n            </Flex>\n            <Button variant=\"outline\" iconRight={<Icon name=\"arrow-right\" size=\"sm\" />} asChild><a href=\"/products\">View all 24 products</a></Button>\n          </Flex>\n          <Grid columns=\"auto\" minWidth=\"md\" maxColumns=\"3\" gap=\"5\">\n            {products.map((product) => (\n              <Card key={product.name} padding=\"md\" interactive>\n                <Flex direction=\"column\" gap=\"4\">\n                  <Image src={product.image} alt={product.alt} ratio=\"4/5\" radius=\"concentric\" />\n                  <Flex direction=\"column\" gap=\"2\">\n                    <Flex direction=\"row\" align=\"center\" justify=\"between\" gap=\"3\">\n                      <Text size=\"overline\" color=\"muted\">{product.category}</Text>\n                      {product.badge && <Badge size=\"sm\" color=\"accent\">{product.badge}</Badge>}\n                    </Flex>\n                    <Heading as=\"h3\" size=\"md\">{product.name}</Heading>\n                    <Text size=\"sm\" color=\"muted\" className=\"text-pretty\">{product.note}</Text>\n                  </Flex>\n                  <Flex direction=\"row\" align=\"center\" justify=\"between\" gap=\"3\">\n                    <Text size=\"lg\" weight=\"semibold\" className=\"tabular-nums\">{product.price}</Text>\n                    <Button size=\"sm\" variant=\"outline\">Add to cart</Button>\n                  </Flex>\n                </Flex>\n              </Card>\n            ))}\n          </Grid>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
     "sourcePath": "packages/block-schema/blocks/commerce/commerce-product-grid.tsx"
   },
   {
@@ -430,7 +430,7 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "app"
     ],
     "version": "1.0.0",
-    "rawCode": "import { Avatar, Badge, Box, Button, Card, ChatBubble, Container, Flex, Heading, Icon, IconButton, Section, Text, TextField } from \"@shavin/ui\";\n\nconst defaultMessages = [\n  { id: \"m1\", from: \"user\", time: \"9:41 am\", text: \"Hi, I moved $1,200.00 from checking to savings on Thursday and it still shows as pending. Is something wrong?\" },\n  {\n    id: \"m2\",\n    from: \"agent\",\n    time: \"9:43 am\",\n    text: \"Hi Daniel, thanks for checking. Here is the transfer I can see on your account.\",\n    transfer: { amount: \"$1,200.00\", route: \"Cascade Federal Checking ••6021 to Harborline Savings ••3390\", status: \"Pending\", eta: \"Expected to clear Monday, Oct 5\" },\n  },\n  { id: \"m3\", from: \"agent\", time: \"9:44 am\", text: \"Transfers between two different banks usually take 2–3 business days. Harborline posts incoming transfers overnight.\" },\n  { id: \"m4\", from: \"user\", time: \"9:46 am\", text: \"Got it. Will my savings goal update on its own once it clears?\" },\n  { id: \"m5\", from: \"agent\", time: \"9:47 am\", text: \"Yes. Once it posts, your Emergency fund goal moves from $11,460.00 to $12,660.00 automatically.\" },\n];\n\nconst defaultReplies = [\"Thanks, that helps\", \"Remind me on Monday\", \"Show my savings goal\"];\n\nexport function ChatUi({ messages = defaultMessages, replies = defaultReplies }) {\n  return (\n    <Section size=\"compact\">\n      <Container size=\"sm\">\n        <Card padding=\"none\" className=\"overflow-hidden\">\n          <Flex direction=\"column\" className=\"h-[680px]\">\n            <Flex direction=\"row\" align=\"center\" gap=\"3\" className=\"shrink-0 border-b border-hairline px-4 py-3\">\n              <Avatar size=\"md\" src=\"https://assets.lummi.ai/assets/Qma5G7Ysfs1veKyTEdAC8tPvCdM9KDGeGY3Jrsf7Bky7N7?auto=format&w=400\" alt=\"Noor Patel\" fallback=\"NP\" />\n              <Flex direction=\"column\" className=\"min-w-0 flex-1\">\n                <Heading as=\"h2\" size=\"inherit\" className=\"text-sm font-semibold\">Noor Patel</Heading>\n                <Text size=\"xs\" color=\"muted\" className=\"truncate\">WiseOwl support · replies in about 3 min</Text>\n              </Flex>\n              <IconButton variant=\"ghost\" size=\"md\" aria-label=\"Conversation options\">\n                <Icon name=\"more-horizontal\" size=\"md\" color=\"inherit\" />\n              </IconButton>\n            </Flex>\n            <Flex direction=\"column\" gap=\"4\" className=\"min-h-0 flex-1 overflow-y-auto px-4 py-5\">\n              <ChatBubble variant=\"system\">Today</ChatBubble>\n              {messages.map((message) => (\n                <ChatBubble\n                  key={message.id}\n                  variant={message.from === \"user\" ? \"outgoing\" : \"incoming\"}\n                  timestamp={message.time}\n                  avatarSrc=\"https://assets.lummi.ai/assets/Qma5G7Ysfs1veKyTEdAC8tPvCdM9KDGeGY3Jrsf7Bky7N7?auto=format&w=400\"\n                  avatarFallback=\"NP\"\n                  hideAvatar={message.from === \"user\"}\n                >\n                  {message.text}\n                  {message.transfer && (\n                    <Flex direction=\"column\" gap=\"2\" className=\"mt-3 min-w-[240px] rounded-panel-inner border border-hairline bg-surface p-3\">\n                      <Flex direction=\"row\" align=\"center\" justify=\"between\" gap=\"3\">\n                        <Text size=\"xs\" color=\"muted\">Transfer</Text>\n                        <Badge variant=\"soft\" tone=\"warning\" size=\"sm\">{message.transfer.status}</Badge>\n                      </Flex>\n                      <Heading as=\"p\" size=\"md\" className=\"tabular-nums\">{message.transfer.amount}</Heading>\n                      <Text size=\"xs\" color=\"muted\" className=\"text-pretty\">{message.transfer.route}</Text>\n                      <Flex direction=\"row\" align=\"center\" gap=\"2\">\n                        <Icon name=\"clock\" size=\"xs\" color=\"muted\" />\n                        <Text size=\"xs\" color=\"muted\">{message.transfer.eta}</Text>\n                      </Flex>\n                    </Flex>\n                  )}\n                </ChatBubble>\n              ))}\n              <Flex direction=\"row\" align=\"end\" gap=\"2\">\n                <Avatar size=\"sm\" src=\"https://assets.lummi.ai/assets/Qma5G7Ysfs1veKyTEdAC8tPvCdM9KDGeGY3Jrsf7Bky7N7?auto=format&w=400\" alt=\"Noor Patel\" fallback=\"NP\" />\n                <Flex direction=\"row\" align=\"center\" gap=\"1\" className=\"rounded-[var(--radius-panel)] rounded-tl-[var(--radius-sm)] bg-surface-hover px-3 py-3\" aria-label=\"Noor is typing\">\n                  <Box className=\"h-1.5 w-1.5 animate-pulse rounded-full bg-fg-subtle\" />\n                  <Box className=\"h-1.5 w-1.5 animate-pulse rounded-full bg-fg-subtle [animation-delay:150ms]\" />\n                  <Box className=\"h-1.5 w-1.5 animate-pulse rounded-full bg-fg-subtle [animation-delay:300ms]\" />\n                </Flex>\n              </Flex>\n            </Flex>\n            <Flex direction=\"column\" gap=\"3\" className=\"shrink-0 border-t border-hairline p-3\">\n              <Flex direction=\"row\" gap=\"2\" className=\"overflow-x-auto\">\n                {replies.map((reply) => (\n                  <Button key={reply} variant=\"outline\" size=\"sm\" className=\"shrink-0 rounded-full\">{reply}</Button>\n                ))}\n              </Flex>\n              <Flex direction=\"row\" align=\"center\" gap=\"2\">\n                <IconButton variant=\"ghost\" size=\"md\" aria-label=\"Attach screenshot\">\n                  <Icon name=\"paperclip\" size=\"md\" color=\"inherit\" />\n                </IconButton>\n                <TextField aria-label=\"Message\" placeholder=\"Write a message…\" className=\"h-10 min-w-0 flex-1\" />\n                <IconButton size=\"md\" aria-label=\"Send\">\n                  <Icon name=\"send-horizontal\" size=\"md\" color=\"inherit\" />\n                </IconButton>\n              </Flex>\n            </Flex>\n          </Flex>\n        </Card>\n      </Container>\n    </Section>\n  );\n}\n",
+    "rawCode": "import { Avatar, Badge, Box, Button, Card, ChatBubble, Container, Flex, Heading, Icon, IconButton, Section, Text, TextField } from \"@shavin/ui\";\n\nconst defaultMessages = [\n  { id: \"m1\", from: \"user\", time: \"9:41 am\", text: \"Hi, I moved $1,200.00 from checking to savings on Thursday and it still shows as pending. Is something wrong?\" },\n  {\n    id: \"m2\",\n    from: \"agent\",\n    time: \"9:43 am\",\n    text: \"Hi Daniel, thanks for checking. Here is the transfer I can see on your account.\",\n    transfer: { amount: \"$1,200.00\", route: \"Cascade Federal Checking ••6021 to Harborline Savings ••3390\", status: \"Pending\", eta: \"Expected to clear Monday, Oct 5\" },\n  },\n  { id: \"m3\", from: \"agent\", time: \"9:44 am\", text: \"Transfers between two different banks usually take 2–3 business days. Harborline posts incoming transfers overnight.\" },\n  { id: \"m4\", from: \"user\", time: \"9:46 am\", text: \"Got it. Will my savings goal update on its own once it clears?\" },\n  { id: \"m5\", from: \"agent\", time: \"9:47 am\", text: \"Yes. Once it posts, your Emergency fund goal moves from $11,460.00 to $12,660.00 automatically.\" },\n];\n\nconst defaultReplies = [\"Thanks, that helps\", \"Remind me on Monday\", \"Show my savings goal\"];\n\nexport function ChatUi({ messages = defaultMessages, replies = defaultReplies }) {\n  return (\n    <Section size=\"compact\">\n      <Container size=\"sm\">\n        <Card padding=\"none\" className=\"overflow-hidden\">\n          <Flex direction=\"column\" className=\"h-[680px]\">\n            <Flex direction=\"row\" align=\"center\" gap=\"3\" className=\"shrink-0 border-b border-hairline px-4 py-3\">\n              <Avatar size=\"md\" src=\"https://assets.lummi.ai/assets/Qma5G7Ysfs1veKyTEdAC8tPvCdM9KDGeGY3Jrsf7Bky7N7?auto=format&w=400\" fallback=\"NP\" />\n              <Flex direction=\"column\" className=\"min-w-0 flex-1\">\n                <Heading as=\"h2\" size=\"inherit\" className=\"text-sm font-semibold\">Noor Patel</Heading>\n                <Text size=\"xs\" color=\"muted\" className=\"truncate\">WiseOwl support · replies in about 3 min</Text>\n              </Flex>\n              <IconButton variant=\"ghost\" size=\"md\" aria-label=\"Conversation options\">\n                <Icon name=\"more-horizontal\" size=\"md\" color=\"inherit\" />\n              </IconButton>\n            </Flex>\n            <Flex direction=\"column\" gap=\"4\" role=\"log\" aria-label=\"Messages\" tabIndex={0} className=\"min-h-0 flex-1 overflow-y-auto px-4 py-5\">\n              <ChatBubble variant=\"system\">Today</ChatBubble>\n              {messages.map((message) => (\n                <ChatBubble\n                  key={message.id}\n                  variant={message.from === \"user\" ? \"outgoing\" : \"incoming\"}\n                  timestamp={message.time}\n                  avatarSrc=\"https://assets.lummi.ai/assets/Qma5G7Ysfs1veKyTEdAC8tPvCdM9KDGeGY3Jrsf7Bky7N7?auto=format&w=400\"\n                  avatarFallback=\"NP\"\n                  hideAvatar={message.from === \"user\"}\n                >\n                  {message.text}\n                  {message.transfer && (\n                    <Flex direction=\"column\" gap=\"2\" className=\"mt-3 min-w-[240px] rounded-panel-inner border border-hairline bg-surface p-3\">\n                      <Flex direction=\"row\" align=\"center\" justify=\"between\" gap=\"3\">\n                        <Text size=\"xs\" color=\"muted\">Transfer</Text>\n                        <Badge variant=\"soft\" tone=\"warning\" size=\"sm\">{message.transfer.status}</Badge>\n                      </Flex>\n                      <Heading as=\"p\" size=\"md\" className=\"tabular-nums\">{message.transfer.amount}</Heading>\n                      <Text size=\"xs\" color=\"muted\" className=\"text-pretty\">{message.transfer.route}</Text>\n                      <Flex direction=\"row\" align=\"center\" gap=\"2\">\n                        <Icon name=\"clock\" size=\"xs\" color=\"muted\" />\n                        <Text size=\"xs\" color=\"muted\">{message.transfer.eta}</Text>\n                      </Flex>\n                    </Flex>\n                  )}\n                </ChatBubble>\n              ))}\n              <Flex direction=\"row\" align=\"end\" gap=\"2\">\n                <Avatar size=\"sm\" src=\"https://assets.lummi.ai/assets/Qma5G7Ysfs1veKyTEdAC8tPvCdM9KDGeGY3Jrsf7Bky7N7?auto=format&w=400\" fallback=\"NP\" />\n                <Flex direction=\"row\" align=\"center\" gap=\"1\" className=\"rounded-[var(--radius-panel)] rounded-tl-[var(--radius-sm)] bg-surface-hover px-3 py-3\" role=\"status\" aria-label=\"Noor is typing\">\n                  <Box className=\"h-1.5 w-1.5 animate-pulse rounded-full bg-fg-subtle\" />\n                  <Box className=\"h-1.5 w-1.5 animate-pulse rounded-full bg-fg-subtle [animation-delay:150ms]\" />\n                  <Box className=\"h-1.5 w-1.5 animate-pulse rounded-full bg-fg-subtle [animation-delay:300ms]\" />\n                </Flex>\n              </Flex>\n            </Flex>\n            <Flex direction=\"column\" gap=\"3\" className=\"shrink-0 border-t border-hairline p-3\">\n              <Flex direction=\"row\" gap=\"2\" className=\"overflow-x-auto\">\n                {replies.map((reply) => (\n                  <Button key={reply} variant=\"outline\" size=\"sm\" className=\"shrink-0 rounded-full\">{reply}</Button>\n                ))}\n              </Flex>\n              <Flex direction=\"row\" align=\"center\" gap=\"2\">\n                <IconButton variant=\"ghost\" size=\"md\" aria-label=\"Attach screenshot\">\n                  <Icon name=\"paperclip\" size=\"md\" color=\"inherit\" />\n                </IconButton>\n                <TextField aria-label=\"Message\" placeholder=\"Write a message…\" className=\"h-10 min-w-0 flex-1\" />\n                <IconButton size=\"md\" aria-label=\"Send\">\n                  <Icon name=\"send-horizontal\" size=\"md\" color=\"inherit\" />\n                </IconButton>\n              </Flex>\n            </Flex>\n          </Flex>\n        </Card>\n      </Container>\n    </Section>\n  );\n}\n",
     "sourcePath": "packages/block-schema/blocks/content/chat-ui.tsx"
   },
   {
@@ -490,7 +490,7 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "media"
     ],
     "version": "1.0.0",
-    "rawCode": "import { Button, Card, Container, Flex, Grid, Heading, Image, Section, Text, TextField } from \"@shavin/ui\";\n\nexport function CtaCardSubscribe() {\n  return (\n    <Section size=\"body\">\n      <Container size=\"lg\">\n        <Card padding=\"lg\">\n          <Grid columns=\"2\" gap=\"7\" align=\"center\" stack=\"auto\">\n            <Flex direction=\"column\" gap=\"6\">\n              <Flex direction=\"column\" gap=\"4\">\n                <Text size=\"overline\" color=\"muted\">Newsletter</Text>\n                <Heading as=\"h2\" size=\"2xl\">One useful money idea, every Sunday</Heading>\n                <Text size=\"lg\" color=\"muted\" className=\"max-w-[46ch] text-pretty tabular-nums\">\n                  One practical habit, one reader question and one chart. Read by 21,786 people. Unsubscribe in one click.\n                </Text>\n              </Flex>\n              <Flex direction=\"column\" gap=\"2\">\n                <Flex direction=\"column\" gap=\"2\" className=\"sm:flex-row\">\n                  <TextField type=\"email\" placeholder=\"you@example.com\" aria-label=\"Email address\" className=\"h-10\" />\n                  <Button className=\"w-full shrink-0 sm:w-auto\">Subscribe</Button>\n                </Flex>\n                <Text size=\"xs\" color=\"muted\">We never share your address. See our privacy policy.</Text>\n              </Flex>\n            </Flex>\n            <Image\n              src=\"https://assets.lummi.ai/assets/QmQ57n8BauDZPxxXUZX1wLGVZDjYBbYXMd5JXWTrrenLqq?auto=format&w=1200\"\n              alt=\"A succulent on a bright windowsill\"\n              ratio=\"4/3\"\n              radius=\"concentric\"\n              className=\"object-bottom\"\n            />\n          </Grid>\n        </Card>\n      </Container>\n    </Section>\n  );\n}\n",
+    "rawCode": "import { Button, Card, Container, Flex, Grid, Heading, Image, Section, Text, TextField } from \"@shavin/ui\";\n\nexport function CtaCardSubscribe() {\n  return (\n    <Section size=\"body\">\n      <Container size=\"lg\">\n        <Card padding=\"lg\">\n          <Grid columns=\"2\" gap=\"7\" align=\"center\" stack=\"auto\">\n            <Flex direction=\"column\" gap=\"6\">\n              <Flex direction=\"column\" gap=\"4\">\n                <Text size=\"overline\" color=\"muted\">Newsletter</Text>\n                <Heading as=\"h2\" size=\"2xl\">One useful money idea, every Sunday</Heading>\n                <Text size=\"lg\" color=\"muted\" className=\"max-w-[46ch] text-pretty tabular-nums\">\n                  One practical habit, one reader question and one chart. Read by 21,786 people. Unsubscribe in one click.\n                </Text>\n              </Flex>\n              <Flex direction=\"column\" gap=\"2\">\n                <form className=\"flex flex-col gap-2 sm:flex-row\">\n                  <TextField type=\"email\" placeholder=\"you@example.com\" aria-label=\"Email address\" autoComplete=\"email\" className=\"h-10\" />\n                  <Button type=\"submit\" className=\"w-full shrink-0 sm:w-auto\">Subscribe</Button>\n                </form>\n                <Text size=\"xs\" color=\"muted\">We never share your address. See our privacy policy.</Text>\n              </Flex>\n            </Flex>\n            <Image\n              src=\"https://assets.lummi.ai/assets/QmQ57n8BauDZPxxXUZX1wLGVZDjYBbYXMd5JXWTrrenLqq?auto=format&w=1200\"\n              alt=\"A succulent on a bright windowsill\"\n              ratio=\"4/3\"\n              radius=\"concentric\"\n              className=\"object-bottom\"\n            />\n          </Grid>\n        </Card>\n      </Container>\n    </Section>\n  );\n}\n",
     "sourcePath": "packages/block-schema/blocks/cta/cta-card-subscribe.tsx"
   },
   {
@@ -514,7 +514,7 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "media"
     ],
     "version": "1.0.0",
-    "rawCode": "import { Button, Container, Flex, Heading, Section, Text } from \"@shavin/ui\";\n\nexport function CtaConversionBanner() {\n  return (\n    <Section\n      size=\"body\"\n      surface=\"dark-always\"\n      bgImage=\"https://assets.lummi.ai/assets/QmQrVUM5reCYVXq4MvwjghJ9Uhx9Uh4oKm6Y9xBzGE9x1S?auto=format&w=2000\"\n      bgOverlays=\"dark-50, scrim-left\"\n    >\n      <Container size=\"lg\">\n        <Flex direction=\"row\" align=\"end\" justify=\"between\" gap=\"7\" wrap=\"wrap\">\n          <Flex direction=\"column\" gap=\"3\" className=\"max-w-xl\">\n            <Text size=\"overline\" color=\"muted\">Plus trial</Text>\n            <Heading as=\"h2\" size=\"2xl\">Try Plus free for 14 days</Heading>\n            <Text size=\"lg\" color=\"muted\" className=\"max-w-[46ch] text-pretty\">\n              Unlimited budgets, receipt scanning and the WiseOwl assistant. We remind you three days before the trial ends.\n            </Text>\n          </Flex>\n          <Flex direction=\"row\" wrap=\"wrap\" gap=\"3\" className=\"shrink-0\">\n            <Button size=\"lg\">Start free trial</Button>\n            <Button size=\"lg\" variant=\"outline\">Compare plans</Button>\n          </Flex>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
+    "rawCode": "import { Button, Container, Flex, Heading, Section, Text } from \"@shavin/ui\";\n\nexport function CtaConversionBanner() {\n  return (\n    <Section\n      size=\"body\"\n      surface=\"dark-always\"\n      bgImage=\"https://assets.lummi.ai/assets/QmQrVUM5reCYVXq4MvwjghJ9Uhx9Uh4oKm6Y9xBzGE9x1S?auto=format&w=2000\"\n      bgOverlays=\"dark-50, scrim-left\"\n    >\n      <Container size=\"lg\">\n        <Flex direction=\"row\" align=\"end\" justify=\"between\" gap=\"7\" wrap=\"wrap\">\n          <Flex direction=\"column\" gap=\"3\" className=\"max-w-xl\">\n            <Text size=\"overline\" color=\"muted\">Plus trial</Text>\n            <Heading as=\"h2\" size=\"2xl\">Try Plus free for 14 days</Heading>\n            <Text size=\"lg\" color=\"muted\" className=\"max-w-[46ch] text-pretty\">\n              Unlimited budgets, receipt scanning and the WiseOwl assistant. We remind you three days before the trial ends.\n            </Text>\n          </Flex>\n          <Flex direction=\"row\" wrap=\"wrap\" gap=\"3\" className=\"shrink-0\">\n            <Button size=\"lg\" asChild><a href=\"/signup\">Start free trial</a></Button>\n            <Button size=\"lg\" variant=\"outline\" asChild><a href=\"/pricing\">Compare plans</a></Button>\n          </Flex>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
     "sourcePath": "packages/block-schema/blocks/cta/cta-conversion-banner.tsx"
   },
   {
@@ -538,7 +538,7 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "closing"
     ],
     "version": "1.0.0",
-    "rawCode": "import { Button, Container, Flex, Heading, Section, Text } from \"@shavin/ui\";\n\nexport function CtaMeshBand() {\n  return (\n    <Section size=\"hero\" bgOverlays=\"mesh-accent\">\n      <Container size=\"md\">\n        <Flex direction=\"column\" align=\"center\" gap=\"6\" className=\"text-center\">\n          <Flex direction=\"column\" align=\"center\" gap=\"5\">\n            <Text size=\"overline\" color=\"muted\">Get started</Text>\n            <Heading as=\"h2\" size=\"4xl\">Start your calmer money month</Heading>\n            <Text size=\"lg\" color=\"muted\" className=\"max-w-[52ch] text-pretty tabular-nums\">\n              Join 38,412 households who check in with WiseOwl a few minutes a week and stopped worrying about the rest.\n            </Text>\n          </Flex>\n          <Flex direction=\"row\" justify=\"center\" wrap=\"wrap\" gap=\"3\">\n            <Button size=\"lg\">Start free</Button>\n            <Button size=\"lg\" variant=\"outline\">Talk to us</Button>\n          </Flex>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
+    "rawCode": "import { Button, Container, Flex, Heading, Section, Text } from \"@shavin/ui\";\n\nexport function CtaMeshBand() {\n  return (\n    <Section size=\"hero\" bgOverlays=\"mesh-accent\">\n      <Container size=\"md\">\n        <Flex direction=\"column\" align=\"center\" gap=\"6\" className=\"text-center\">\n          <Flex direction=\"column\" align=\"center\" gap=\"5\">\n            <Text size=\"overline\" color=\"muted\">Get started</Text>\n            <Heading as=\"h2\" size=\"4xl\">Start your calmer money month</Heading>\n            <Text size=\"lg\" color=\"muted\" className=\"max-w-[52ch] text-pretty tabular-nums\">\n              Join 38,412 households who check in with WiseOwl a few minutes a week and stopped worrying about the rest.\n            </Text>\n          </Flex>\n          <Flex direction=\"row\" justify=\"center\" wrap=\"wrap\" gap=\"3\">\n            <Button size=\"lg\" asChild><a href=\"/signup\">Start free</a></Button>\n            <Button size=\"lg\" variant=\"outline\" asChild><a href=\"/contact\">Talk to us</a></Button>\n          </Flex>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
     "replaces": "cta-glow-centered",
     "sourcePath": "packages/block-schema/blocks/cta/cta-mesh-band.tsx"
   },
@@ -729,7 +729,7 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "media"
     ],
     "version": "1.0.0",
-    "rawCode": "import { Button, Card, Container, Flex, Heading, Icon, Image, Section, Separator, Text } from \"@shavin/ui\";\n\nconst defaultFeatures = [\n  \"Up to 6 household members\",\n  \"Owner, Editor and Viewer roles\",\n  \"Unlimited linked accounts\",\n  \"150 receipt scans per month\",\n];\n\nexport function CardPlanInset({ features = defaultFeatures }) {\n  return (\n    <Section size=\"body\">\n      <Container size=\"xs\">\n        <Card padding=\"lg\">\n          <Flex direction=\"column\" gap=\"5\">\n            <Image\n              src=\"https://assets.lummi.ai/assets/QmbWYxBrT5mY81ZfHxi7UgTKWrd8nZ1D5FbPKqNPXxq4Yr?auto=format&w=1200\"\n              alt=\"Layered strokes of pastel paint\"\n              ratio=\"3/1\"\n              radius=\"concentric\"\n            />\n            <Flex direction=\"column\" gap=\"4\">\n              <Flex direction=\"column\" gap=\"1\">\n                <Heading as=\"h3\" size=\"md\">Household</Heading>\n                <Text size=\"sm\" color=\"muted\" className=\"text-pretty\">For couples and families who share bills, budgets and goals.</Text>\n              </Flex>\n              <Flex direction=\"column\" gap=\"1\">\n                <Flex direction=\"row\" align=\"baseline\" gap=\"2\">\n                  <Heading as=\"p\" size=\"3xl\" className=\"tabular-nums\">$13.99</Heading>\n                  <Text size=\"sm\" color=\"muted\">per month</Text>\n                </Flex>\n                <Text size=\"xs\" color=\"muted\" className=\"tabular-nums\">or $134 billed yearly, save 20%</Text>\n              </Flex>\n              <Separator />\n              <Flex direction=\"column\" gap=\"3\">\n                {features.map((feature) => (\n                  <Flex key={feature} direction=\"row\" align=\"center\" gap=\"2\">\n                    <Icon name=\"check\" size=\"sm\" color=\"contrast\" />\n                    <Text size=\"sm\" className=\"tabular-nums\">{feature}</Text>\n                  </Flex>\n                ))}\n              </Flex>\n              <Button size=\"lg\" className=\"mt-2 w-full\">Start 14-day trial</Button>\n            </Flex>\n          </Flex>\n        </Card>\n      </Container>\n    </Section>\n  );\n}\n",
+    "rawCode": "import { Button, Card, Container, Flex, Heading, Icon, Image, Section, Separator, Text } from \"@shavin/ui\";\n\nconst defaultFeatures = [\n  \"Up to 6 household members\",\n  \"Owner, Editor and Viewer roles\",\n  \"Unlimited linked accounts\",\n  \"150 receipt scans per month\",\n];\n\nexport function CardPlanInset({ features = defaultFeatures }) {\n  return (\n    <Section size=\"body\">\n      <Container size=\"xs\">\n        <Card padding=\"lg\">\n          <Flex direction=\"column\" gap=\"5\">\n            <Image\n              src=\"https://assets.lummi.ai/assets/QmbWYxBrT5mY81ZfHxi7UgTKWrd8nZ1D5FbPKqNPXxq4Yr?auto=format&w=1200\"\n              alt=\"Layered strokes of pastel paint\"\n              ratio=\"3/1\"\n              radius=\"concentric\"\n            />\n            <Flex direction=\"column\" gap=\"4\">\n              <Flex direction=\"column\" gap=\"1\">\n                <Heading as=\"h3\" size=\"md\">Household</Heading>\n                <Text size=\"sm\" color=\"muted\" className=\"text-pretty\">For couples and families who share bills, budgets and goals.</Text>\n              </Flex>\n              <Flex direction=\"column\" gap=\"1\">\n                <Flex direction=\"row\" align=\"baseline\" gap=\"2\">\n                  <Heading as=\"p\" size=\"3xl\" className=\"tabular-nums\">$13.99</Heading>\n                  <Text size=\"sm\" color=\"muted\">per month</Text>\n                </Flex>\n                <Text size=\"xs\" color=\"muted\" className=\"tabular-nums\">or $134 billed yearly, save 20%</Text>\n              </Flex>\n              <Separator />\n              <Flex direction=\"column\" gap=\"3\">\n                {features.map((feature) => (\n                  <Flex key={feature} direction=\"row\" align=\"center\" gap=\"2\">\n                    <Icon name=\"check\" size=\"sm\" color=\"contrast\" />\n                    <Text size=\"sm\" className=\"tabular-nums\">{feature}</Text>\n                  </Flex>\n                ))}\n              </Flex>\n              <Button size=\"lg\" className=\"mt-2 w-full\" asChild><a href=\"/signup\">Start 14-day trial</a></Button>\n            </Flex>\n          </Flex>\n        </Card>\n      </Container>\n    </Section>\n  );\n}\n",
     "replaces": "card-inset-banner",
     "sourcePath": "packages/block-schema/blocks/features/card-plan-inset.tsx"
   },
@@ -914,7 +914,7 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "links"
     ],
     "version": "1.0.0",
-    "rawCode": "import { Container, Flex, Grid, Heading, Icon, Link, Section, Separator, Text } from \"@shavin/ui\";\n\nconst defaultGroups = [\n  {\n    title: \"Product\",\n    links: [\n      { label: \"Budgets\", href: \"/product/budgets\" },\n      { label: \"Savings goals\", href: \"/product/goals\" },\n      { label: \"Bills & subscriptions\", href: \"/product/bills\" },\n      { label: \"Net worth\", href: \"/product/net-worth\" },\n      { label: \"Pricing\", href: \"/pricing\" },\n    ],\n  },\n  {\n    title: \"Company\",\n    links: [\n      { label: \"About\", href: \"/about\" },\n      { label: \"Careers\", href: \"/careers\" },\n      { label: \"Press\", href: \"/press\" },\n      { label: \"Contact\", href: \"/contact\" },\n    ],\n  },\n  {\n    title: \"Resources\",\n    links: [\n      { label: \"Help centre\", href: \"/help\" },\n      { label: \"Money guides\", href: \"/guides\" },\n      { label: \"API docs\", href: \"/docs/api\" },\n      { label: \"System status\", href: \"https://status.wiseowl.app\" },\n    ],\n  },\n];\n\nconst defaultSocial = [\n  { name: \"GitHub\", icon: \"github-logo\", href: \"https://github.com/wiseowl-finance\" },\n  { name: \"X\", icon: \"x-logo\", href: \"https://x.com/wiseowlapp\" },\n  { name: \"LinkedIn\", icon: \"linkedin-logo\", href: \"https://linkedin.com/company/wiseowl-finance\" },\n  { name: \"YouTube\", icon: \"youtube-logo\", href: \"https://youtube.com/@wiseowlapp\" },\n];\n\nexport function FooterColumns({ groups = defaultGroups, social = defaultSocial }) {\n  return (\n    <Section as=\"footer\" size=\"strip\" className=\"border-t border-hairline\">\n      <Container size=\"lg\">\n        <Flex direction=\"column\" gap=\"7\">\n          <Flex direction=\"column\" gap=\"7\" className=\"lg:flex-row lg:justify-between\">\n            <Flex direction=\"column\" gap=\"3\" className=\"max-w-xs\">\n              <Heading as=\"p\" size=\"md\" tracking=\"tight\">WiseOwl</Heading>\n              <Text size=\"sm\" color=\"muted\" className=\"text-pretty\">Calm control of your money, for you and everyone you share it with.</Text>\n            </Flex>\n            <Grid columns=\"auto\" minWidth=\"xs\" maxColumns=\"3\" gap=\"6\" className=\"lg:min-w-[560px]\">\n              {groups.map((group) => (\n                <Flex key={group.title} direction=\"column\" gap=\"4\">\n                  <Text size=\"overline\" color=\"muted\">{group.title}</Text>\n                  <Flex direction=\"column\" gap=\"3\">\n                    {group.links.map((link) => (\n                      <Link key={link.label} href={link.href} size=\"sm\">{link.label}</Link>\n                    ))}\n                  </Flex>\n                </Flex>\n              ))}\n            </Grid>\n          </Flex>\n          <Separator />\n          <Flex direction=\"column\" gap=\"4\" className=\"md:flex-row md:items-center md:justify-between\">\n            <Text size=\"sm\" color=\"muted\" className=\"md:whitespace-nowrap\">© 2026 WiseOwl Finance, Inc. WiseOwl is not a bank.</Text>\n            <Flex direction=\"row\" gap=\"1\" className=\"-ml-2.5 md:ml-0 md:-mr-2.5\">\n              {social.map((item) => (\n                <Link key={item.name} href={item.href} aria-label={item.name} className=\"inline-flex h-10 w-10 items-center justify-center rounded-[var(--radius-lg)] text-fg-muted hover:bg-surface-hover hover:text-fg\">\n                  <Icon name={item.icon} size=\"md\" color=\"inherit\" />\n                </Link>\n              ))}\n            </Flex>\n          </Flex>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
+    "rawCode": "import { Container, Flex, Grid, Heading, Icon, Link, Section, Separator, Text } from \"@shavin/ui\";\n\nconst defaultGroups = [\n  {\n    title: \"Product\",\n    links: [\n      { label: \"Budgets\", href: \"/product/budgets\" },\n      { label: \"Savings goals\", href: \"/product/goals\" },\n      { label: \"Bills & subscriptions\", href: \"/product/bills\" },\n      { label: \"Net worth\", href: \"/product/net-worth\" },\n      { label: \"Pricing\", href: \"/pricing\" },\n    ],\n  },\n  {\n    title: \"Company\",\n    links: [\n      { label: \"About\", href: \"/about\" },\n      { label: \"Careers\", href: \"/careers\" },\n      { label: \"Press\", href: \"/press\" },\n      { label: \"Contact\", href: \"/contact\" },\n    ],\n  },\n  {\n    title: \"Resources\",\n    links: [\n      { label: \"Help centre\", href: \"/help\" },\n      { label: \"Money guides\", href: \"/guides\" },\n      { label: \"API docs\", href: \"/docs/api\" },\n      { label: \"System status\", href: \"https://status.wiseowl.app\" },\n    ],\n  },\n];\n\nconst defaultSocial = [\n  { name: \"GitHub\", icon: \"github-logo\", href: \"https://github.com/wiseowl-finance\" },\n  { name: \"X\", icon: \"x-logo\", href: \"https://x.com/wiseowlapp\" },\n  { name: \"LinkedIn\", icon: \"linkedin-logo\", href: \"https://linkedin.com/company/wiseowl-finance\" },\n  { name: \"YouTube\", icon: \"youtube-logo\", href: \"https://youtube.com/@wiseowlapp\" },\n];\n\nexport function FooterColumns({ groups = defaultGroups, social = defaultSocial }) {\n  return (\n    <Section as=\"footer\" size=\"strip\" className=\"border-t border-hairline\">\n      <Container size=\"lg\">\n        <Flex direction=\"column\" gap=\"7\">\n          <Flex direction=\"column\" gap=\"7\" className=\"lg:flex-row lg:justify-between\">\n            <Flex direction=\"column\" gap=\"3\" className=\"max-w-xs\">\n              <Heading as=\"p\" size=\"md\" tracking=\"tight\">WiseOwl</Heading>\n              <Text size=\"sm\" color=\"muted\" className=\"text-pretty\">Calm control of your money, for you and everyone you share it with.</Text>\n            </Flex>\n            <Grid as=\"nav\" aria-label=\"Footer\" columns=\"auto\" minWidth=\"xs\" maxColumns=\"3\" gap=\"6\" className=\"lg:min-w-[560px]\">\n              {groups.map((group) => (\n                <Flex key={group.title} direction=\"column\" gap=\"4\">\n                  <Text as=\"h2\" size=\"overline\" color=\"muted\">{group.title}</Text>\n                  <Flex as=\"ul\" direction=\"column\" gap=\"2\">\n                    {group.links.map((link) => (\n                      <li key={link.label}><Link href={link.href} size=\"sm\" className=\"inline-flex min-h-6 items-center\">{link.label}</Link></li>\n                    ))}\n                  </Flex>\n                </Flex>\n              ))}\n            </Grid>\n          </Flex>\n          <Separator />\n          <Flex direction=\"column\" gap=\"4\" className=\"md:flex-row md:items-center md:justify-between\">\n            <Text size=\"sm\" color=\"muted\" className=\"md:whitespace-nowrap\">© 2026 WiseOwl Finance, Inc. WiseOwl is not a bank.</Text>\n            <Flex direction=\"row\" gap=\"1\" className=\"-ml-2.5 md:ml-0 md:-mr-2.5\">\n              {social.map((item) => (\n                <Link key={item.name} href={item.href} aria-label={item.name} className=\"inline-flex h-10 w-10 items-center justify-center rounded-[var(--radius-lg)] text-fg-muted hover:bg-surface-hover hover:text-fg\">\n                  <Icon name={item.icon} size=\"md\" color=\"inherit\" />\n                </Link>\n              ))}\n            </Flex>\n          </Flex>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
     "replaces": "nav-multi-column-footer",
     "sourcePath": "packages/block-schema/blocks/footer/footer-columns.tsx"
   },
@@ -994,7 +994,7 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "links"
     ],
     "version": "1.0.0",
-    "rawCode": "import { Button, Container, Flex, Grid, Heading, Icon, Link, Section, Separator, Text } from \"@shavin/ui\";\n\nconst defaultGroups = [\n  {\n    title: \"Product\",\n    links: [\n      { label: \"Budgets\", href: \"/product/budgets\" },\n      { label: \"Savings goals\", href: \"/product/goals\" },\n      { label: \"Bills & subscriptions\", href: \"/product/bills\" },\n      { label: \"Net worth\", href: \"/product/net-worth\" },\n      { label: \"Receipt scanning\", href: \"/product/receipts\" },\n      { label: \"Pricing\", href: \"/pricing\" },\n    ],\n  },\n  {\n    title: \"Households\",\n    links: [\n      { label: \"Couples\", href: \"/households/couples\" },\n      { label: \"Families\", href: \"/households/families\" },\n      { label: \"Caring for parents\", href: \"/households/caregivers\" },\n      { label: \"Working with an accountant\", href: \"/households/accountants\" },\n    ],\n  },\n  {\n    title: \"Developers\",\n    links: [\n      { label: \"API overview\", href: \"/docs/api\" },\n      { label: \"API reference\", href: \"/docs/api/reference\" },\n      { label: \"Webhooks\", href: \"/docs/api/webhooks\" },\n      { label: \"Sandbox\", href: \"/docs/api/sandbox\" },\n      { label: \"Status\", href: \"https://status.wiseowl.app\" },\n    ],\n  },\n  {\n    title: \"Resources\",\n    links: [\n      { label: \"Help centre\", href: \"/help\" },\n      { label: \"Getting started\", href: \"/help/getting-started\" },\n      { label: \"Money guides\", href: \"/guides\" },\n      { label: \"Budget templates\", href: \"/guides/templates\" },\n      { label: \"Changelog\", href: \"/changelog\" },\n    ],\n  },\n  {\n    title: \"Company\",\n    links: [\n      { label: \"About\", href: \"/about\" },\n      { label: \"Careers\", href: \"/careers\" },\n      { label: \"Security\", href: \"/security\" },\n      { label: \"Press\", href: \"/press\" },\n      { label: \"Contact\", href: \"/contact\" },\n    ],\n  },\n];\n\nconst defaultLegal = [\n  { label: \"Privacy\", href: \"/legal/privacy\" },\n  { label: \"Terms\", href: \"/legal/terms\" },\n  { label: \"Cookie settings\", href: \"/legal/cookies\" },\n  { label: \"Accessibility\", href: \"/legal/accessibility\" },\n];\n\nexport function FooterSitemap({ groups = defaultGroups, legal = defaultLegal }) {\n  return (\n    <Section as=\"footer\" size=\"strip\" className=\"border-t border-hairline\">\n      <Container size=\"lg\">\n        <Flex direction=\"column\" gap=\"7\">\n          <Flex direction=\"column\" gap=\"2\">\n            <Heading as=\"p\" size=\"md\" tracking=\"tight\">WiseOwl</Heading>\n            <Text size=\"sm\" color=\"muted\">Calm control of your money.</Text>\n          </Flex>\n          <Grid columns=\"auto\" minWidth=\"xs\" maxColumns=\"5\" gap=\"6\" className=\"gap-y-10\">\n            {groups.map((group) => (\n              <Flex key={group.title} direction=\"column\" gap=\"4\">\n                <Text size=\"overline\" color=\"muted\">{group.title}</Text>\n                <Flex direction=\"column\" gap=\"3\">\n                  {group.links.map((link) => (\n                    <Link key={link.label} href={link.href} size=\"sm\">{link.label}</Link>\n                  ))}\n                </Flex>\n              </Flex>\n            ))}\n          </Grid>\n          <Separator />\n          <Flex direction=\"column\" gap=\"4\" className=\"w-full lg:flex-row lg:items-center lg:justify-between\">\n            <Flex direction=\"row\" align=\"center\" wrap=\"wrap\" gap=\"4\" className=\"gap-y-2\">\n              <Text size=\"sm\" color=\"muted\">© 2026 WiseOwl Finance, Inc. · Portland, OR</Text>\n              {legal.map((item) => (\n                <Link key={item.label} href={item.href} size=\"sm\" className=\"text-fg-muted hover:text-fg\">{item.label}</Link>\n              ))}\n            </Flex>\n            <Flex direction=\"row\" align=\"center\" wrap=\"wrap\" gap=\"4\" className=\"lg:ml-auto\">\n              <Flex direction=\"row\" align=\"center\" gap=\"2\">\n                <Icon name=\"shield-check\" size=\"sm\" color=\"muted\" />\n                <Text size=\"sm\" color=\"muted\">SOC 2 Type II</Text>\n              </Flex>\n              <Button variant=\"outline\" size=\"md\">\n                <Icon name=\"globe\" size=\"sm\" color=\"muted\" />\n                English (US)\n                <Icon name=\"chevron-down\" size=\"sm\" color=\"muted\" />\n              </Button>\n            </Flex>\n          </Flex>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
+    "rawCode": "import { Button, Container, Flex, Grid, Heading, Icon, Link, Section, Separator, Text } from \"@shavin/ui\";\n\nconst defaultGroups = [\n  {\n    title: \"Product\",\n    links: [\n      { label: \"Budgets\", href: \"/product/budgets\" },\n      { label: \"Savings goals\", href: \"/product/goals\" },\n      { label: \"Bills & subscriptions\", href: \"/product/bills\" },\n      { label: \"Net worth\", href: \"/product/net-worth\" },\n      { label: \"Receipt scanning\", href: \"/product/receipts\" },\n      { label: \"Pricing\", href: \"/pricing\" },\n    ],\n  },\n  {\n    title: \"Households\",\n    links: [\n      { label: \"Couples\", href: \"/households/couples\" },\n      { label: \"Families\", href: \"/households/families\" },\n      { label: \"Caring for parents\", href: \"/households/caregivers\" },\n      { label: \"Working with an accountant\", href: \"/households/accountants\" },\n    ],\n  },\n  {\n    title: \"Developers\",\n    links: [\n      { label: \"API overview\", href: \"/docs/api\" },\n      { label: \"API reference\", href: \"/docs/api/reference\" },\n      { label: \"Webhooks\", href: \"/docs/api/webhooks\" },\n      { label: \"Sandbox\", href: \"/docs/api/sandbox\" },\n      { label: \"Status\", href: \"https://status.wiseowl.app\" },\n    ],\n  },\n  {\n    title: \"Resources\",\n    links: [\n      { label: \"Help centre\", href: \"/help\" },\n      { label: \"Getting started\", href: \"/help/getting-started\" },\n      { label: \"Money guides\", href: \"/guides\" },\n      { label: \"Budget templates\", href: \"/guides/templates\" },\n      { label: \"Changelog\", href: \"/changelog\" },\n    ],\n  },\n  {\n    title: \"Company\",\n    links: [\n      { label: \"About\", href: \"/about\" },\n      { label: \"Careers\", href: \"/careers\" },\n      { label: \"Security\", href: \"/security\" },\n      { label: \"Press\", href: \"/press\" },\n      { label: \"Contact\", href: \"/contact\" },\n    ],\n  },\n];\n\nconst defaultLegal = [\n  { label: \"Privacy\", href: \"/legal/privacy\" },\n  { label: \"Terms\", href: \"/legal/terms\" },\n  { label: \"Cookie settings\", href: \"/legal/cookies\" },\n  { label: \"Accessibility\", href: \"/legal/accessibility\" },\n];\n\nexport function FooterSitemap({ groups = defaultGroups, legal = defaultLegal }) {\n  return (\n    <Section as=\"footer\" size=\"strip\" className=\"border-t border-hairline\">\n      <Container size=\"lg\">\n        <Flex direction=\"column\" gap=\"7\">\n          <Flex direction=\"column\" gap=\"2\">\n            <Heading as=\"p\" size=\"md\" tracking=\"tight\">WiseOwl</Heading>\n            <Text size=\"sm\" color=\"muted\">Calm control of your money.</Text>\n          </Flex>\n          <Grid as=\"nav\" aria-label=\"Footer\" columns=\"auto\" minWidth=\"xs\" maxColumns=\"5\" gap=\"6\" className=\"gap-y-10\">\n            {groups.map((group) => (\n              <Flex key={group.title} direction=\"column\" gap=\"4\">\n                <Text as=\"h2\" size=\"overline\" color=\"muted\">{group.title}</Text>\n                <Flex as=\"ul\" direction=\"column\" gap=\"2\">\n                  {group.links.map((link) => (\n                    <li key={link.label}><Link href={link.href} size=\"sm\" className=\"inline-flex min-h-6 items-center\">{link.label}</Link></li>\n                  ))}\n                </Flex>\n              </Flex>\n            ))}\n          </Grid>\n          <Separator />\n          <Flex direction=\"column\" gap=\"4\" className=\"w-full lg:flex-row lg:items-center lg:justify-between\">\n            <Flex direction=\"row\" align=\"center\" wrap=\"wrap\" gap=\"4\" className=\"gap-y-2\">\n              <Text size=\"sm\" color=\"muted\">© 2026 WiseOwl Finance, Inc. · Portland, OR</Text>\n              {legal.map((item) => (\n                <Link key={item.label} href={item.href} size=\"sm\" className=\"text-fg-muted hover:text-fg\">{item.label}</Link>\n              ))}\n            </Flex>\n            <Flex direction=\"row\" align=\"center\" wrap=\"wrap\" gap=\"4\" className=\"lg:ml-auto\">\n              <Flex direction=\"row\" align=\"center\" gap=\"2\">\n                <Icon name=\"shield-check\" size=\"sm\" color=\"muted\" />\n                <Text size=\"sm\" color=\"muted\">SOC 2 Type II</Text>\n              </Flex>\n              <Button variant=\"outline\" size=\"md\">\n                <Icon name=\"globe\" size=\"sm\" color=\"muted\" />\n                English (US)\n                <Icon name=\"chevron-down\" size=\"sm\" color=\"muted\" />\n              </Button>\n            </Flex>\n          </Flex>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
     "sourcePath": "packages/block-schema/blocks/footer/footer-sitemap.tsx"
   },
   {
@@ -1025,7 +1025,7 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "form"
     ],
     "version": "1.0.0",
-    "rawCode": "import { Button, Card, Container, Flex, Grid, Heading, Icon, Image, Link, Section, Separator, Text, TextField } from \"@shavin/ui\";\n\nconst defaultGroups = [\n  {\n    title: \"Product\",\n    links: [\n      { label: \"Budgets\", href: \"/product/budgets\" },\n      { label: \"Savings goals\", href: \"/product/goals\" },\n      { label: \"Bills & subscriptions\", href: \"/product/bills\" },\n      { label: \"Ask WiseOwl\", href: \"/product/assistant\" },\n    ],\n  },\n  {\n    title: \"Resources\",\n    links: [\n      { label: \"Help centre\", href: \"/help\" },\n      { label: \"Money guides\", href: \"/guides\" },\n      { label: \"Changelog\", href: \"/changelog\" },\n      { label: \"System status\", href: \"https://status.wiseowl.app\" },\n    ],\n  },\n  {\n    title: \"Company\",\n    links: [\n      { label: \"About\", href: \"/about\" },\n      { label: \"Careers\", href: \"/careers\" },\n      { label: \"Press\", href: \"/press\" },\n      { label: \"Contact\", href: \"/contact\" },\n    ],\n  },\n];\n\nconst defaultLegal = [\n  { label: \"Privacy\", href: \"/legal/privacy\" },\n  { label: \"Terms\", href: \"/legal/terms\" },\n];\n\nconst defaultSocial = [\n  { name: \"X\", icon: \"x-logo\", href: \"https://x.com/wiseowlapp\" },\n  { name: \"LinkedIn\", icon: \"linkedin-logo\", href: \"https://linkedin.com/company/wiseowl-finance\" },\n  { name: \"YouTube\", icon: \"youtube-logo\", href: \"https://youtube.com/@wiseowlapp\" },\n];\n\nexport function FooterWithNewsletter({ groups = defaultGroups, legal = defaultLegal, social = defaultSocial }) {\n  return (\n    <Section as=\"footer\" size=\"strip\" className=\"border-t border-hairline\">\n      <Container size=\"lg\">\n        <Flex direction=\"column\" gap=\"7\">\n          <Card padding=\"lg\">\n            <Flex direction=\"column\" gap=\"5\" className=\"md:flex-row md:items-center\">\n              <Image\n                src=\"https://assets.lummi.ai/assets/QmQ57n8BauDZPxxXUZX1wLGVZDjYBbYXMd5JXWTrrenLqq?auto=format&w=400\"\n                alt=\"A succulent on a bright windowsill\"\n                ratio=\"1/1\"\n                radius=\"concentric\"\n                className=\"w-20 shrink-0\"\n              />\n              <Flex direction=\"column\" gap=\"1\" className=\"flex-1\">\n                <Heading as=\"h2\" size=\"md\">One money idea every Sunday</Heading>\n                <Text size=\"sm\" color=\"muted\" className=\"max-w-[52ch] text-pretty tabular-nums\">Practical habits and one reader question, read by 21,786 people each week.</Text>\n              </Flex>\n              <Flex direction=\"column\" gap=\"2\" className=\"sm:flex-row md:w-[400px]\">\n                <TextField type=\"email\" placeholder=\"you@example.com\" aria-label=\"Email address\" className=\"h-10 flex-1\" />\n                <Button size=\"md\" className=\"w-full shrink-0 sm:w-auto\">Subscribe</Button>\n              </Flex>\n            </Flex>\n          </Card>\n          <Grid columns=\"4\" gap=\"6\" className=\"max-lg:grid-cols-3 max-md:grid-cols-2\">\n            <Flex direction=\"column\" gap=\"3\" className=\"max-lg:col-span-3 max-md:col-span-2\">\n              <Heading as=\"p\" size=\"md\" tracking=\"tight\">WiseOwl</Heading>\n              <Text size=\"sm\" color=\"muted\">Calm control of your money.</Text>\n            </Flex>\n            {groups.map((group) => (\n              <Flex key={group.title} direction=\"column\" gap=\"4\">\n                <Text size=\"overline\" color=\"muted\">{group.title}</Text>\n                <Flex direction=\"column\" gap=\"3\">\n                  {group.links.map((link) => (\n                    <Link key={link.label} href={link.href} size=\"sm\">{link.label}</Link>\n                  ))}\n                </Flex>\n              </Flex>\n            ))}\n          </Grid>\n          <Separator />\n          <Flex direction=\"column\" gap=\"4\" className=\"md:flex-row md:items-center md:justify-between\">\n            <Flex direction=\"row\" align=\"center\" wrap=\"wrap\" gap=\"4\" className=\"gap-y-1\">\n              <Text size=\"sm\" color=\"muted\">© 2026 WiseOwl Finance, Inc. WiseOwl is not a bank.</Text>\n              {legal.map((item) => (\n                <Link key={item.label} href={item.href} size=\"sm\" className=\"inline-flex h-10 items-center text-fg-muted hover:text-fg\">{item.label}</Link>\n              ))}\n            </Flex>\n            <Flex direction=\"row\" gap=\"1\" className=\"-ml-2.5 md:ml-0 md:-mr-2.5\">\n              {social.map((item) => (\n                <Link key={item.name} href={item.href} aria-label={item.name} className=\"inline-flex h-10 w-10 items-center justify-center rounded-[var(--radius-lg)] text-fg-muted hover:bg-surface-hover hover:text-fg\">\n                  <Icon name={item.icon} size=\"md\" color=\"inherit\" />\n                </Link>\n              ))}\n            </Flex>\n          </Flex>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
+    "rawCode": "import { Button, Card, Container, Flex, Grid, Heading, Icon, Image, Link, Section, Separator, Text, TextField } from \"@shavin/ui\";\n\nconst defaultGroups = [\n  {\n    title: \"Product\",\n    links: [\n      { label: \"Budgets\", href: \"/product/budgets\" },\n      { label: \"Savings goals\", href: \"/product/goals\" },\n      { label: \"Bills & subscriptions\", href: \"/product/bills\" },\n      { label: \"Ask WiseOwl\", href: \"/product/assistant\" },\n    ],\n  },\n  {\n    title: \"Resources\",\n    links: [\n      { label: \"Help centre\", href: \"/help\" },\n      { label: \"Money guides\", href: \"/guides\" },\n      { label: \"Changelog\", href: \"/changelog\" },\n      { label: \"System status\", href: \"https://status.wiseowl.app\" },\n    ],\n  },\n  {\n    title: \"Company\",\n    links: [\n      { label: \"About\", href: \"/about\" },\n      { label: \"Careers\", href: \"/careers\" },\n      { label: \"Press\", href: \"/press\" },\n      { label: \"Contact\", href: \"/contact\" },\n    ],\n  },\n];\n\nconst defaultLegal = [\n  { label: \"Privacy\", href: \"/legal/privacy\" },\n  { label: \"Terms\", href: \"/legal/terms\" },\n];\n\nconst defaultSocial = [\n  { name: \"X\", icon: \"x-logo\", href: \"https://x.com/wiseowlapp\" },\n  { name: \"LinkedIn\", icon: \"linkedin-logo\", href: \"https://linkedin.com/company/wiseowl-finance\" },\n  { name: \"YouTube\", icon: \"youtube-logo\", href: \"https://youtube.com/@wiseowlapp\" },\n];\n\nexport function FooterWithNewsletter({ groups = defaultGroups, legal = defaultLegal, social = defaultSocial }) {\n  return (\n    <Section as=\"footer\" size=\"strip\" className=\"border-t border-hairline\">\n      <Container size=\"lg\">\n        <Flex direction=\"column\" gap=\"7\">\n          <Card padding=\"lg\">\n            <Flex direction=\"column\" gap=\"5\" className=\"md:flex-row md:items-center\">\n              <Image\n                src=\"https://assets.lummi.ai/assets/QmQ57n8BauDZPxxXUZX1wLGVZDjYBbYXMd5JXWTrrenLqq?auto=format&w=400\"\n                alt=\"A succulent on a bright windowsill\"\n                ratio=\"1/1\"\n                radius=\"concentric\"\n                className=\"w-20 shrink-0\"\n              />\n              <Flex direction=\"column\" gap=\"1\" className=\"flex-1\">\n                <Heading as=\"h2\" size=\"md\">One money idea every Sunday</Heading>\n                <Text size=\"sm\" color=\"muted\" className=\"max-w-[52ch] text-pretty tabular-nums\">Practical habits and one reader question, read by 21,786 people each week.</Text>\n              </Flex>\n              <form className=\"flex flex-col gap-2 sm:flex-row md:w-[400px]\">\n                <TextField type=\"email\" placeholder=\"you@example.com\" aria-label=\"Email address\" autoComplete=\"email\" className=\"h-10 flex-1\" />\n                <Button type=\"submit\" size=\"md\" className=\"w-full shrink-0 sm:w-auto\">Subscribe</Button>\n              </form>\n            </Flex>\n          </Card>\n          <Grid as=\"nav\" aria-label=\"Footer\" columns=\"4\" gap=\"6\" className=\"max-lg:grid-cols-3 max-md:grid-cols-2\">\n            <Flex direction=\"column\" gap=\"3\" className=\"max-lg:col-span-3 max-md:col-span-2\">\n              <Heading as=\"p\" size=\"md\" tracking=\"tight\">WiseOwl</Heading>\n              <Text size=\"sm\" color=\"muted\">Calm control of your money.</Text>\n            </Flex>\n            {groups.map((group) => (\n              <Flex key={group.title} direction=\"column\" gap=\"4\">\n                <Text as=\"h2\" size=\"overline\" color=\"muted\">{group.title}</Text>\n                <Flex as=\"ul\" direction=\"column\" gap=\"2\">\n                  {group.links.map((link) => (\n                    <li key={link.label}><Link href={link.href} size=\"sm\" className=\"inline-flex min-h-6 items-center\">{link.label}</Link></li>\n                  ))}\n                </Flex>\n              </Flex>\n            ))}\n          </Grid>\n          <Separator />\n          <Flex direction=\"column\" gap=\"4\" className=\"md:flex-row md:items-center md:justify-between\">\n            <Flex direction=\"row\" align=\"center\" wrap=\"wrap\" gap=\"4\" className=\"gap-y-1\">\n              <Text size=\"sm\" color=\"muted\">© 2026 WiseOwl Finance, Inc. WiseOwl is not a bank.</Text>\n              {legal.map((item) => (\n                <Link key={item.label} href={item.href} size=\"sm\" className=\"inline-flex h-10 items-center text-fg-muted hover:text-fg\">{item.label}</Link>\n              ))}\n            </Flex>\n            <Flex direction=\"row\" gap=\"1\" className=\"-ml-2.5 md:ml-0 md:-mr-2.5\">\n              {social.map((item) => (\n                <Link key={item.name} href={item.href} aria-label={item.name} className=\"inline-flex h-10 w-10 items-center justify-center rounded-[var(--radius-lg)] text-fg-muted hover:bg-surface-hover hover:text-fg\">\n                  <Icon name={item.icon} size=\"md\" color=\"inherit\" />\n                </Link>\n              ))}\n            </Flex>\n          </Flex>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
     "sourcePath": "packages/block-schema/blocks/footer/footer-with-newsletter.tsx"
   },
   {
@@ -1050,7 +1050,7 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "landing"
     ],
     "version": "1.0.0",
-    "rawCode": "import { Button, Container, Flex, Heading, Section, Text } from \"@shavin/ui\";\n\nexport function HeroCenteredMedia() {\n  return (\n    <Section\n      size=\"hero\"\n      surface=\"dark-always\"\n      bgImage=\"https://assets.lummi.ai/assets/QmVUhpcUfSHzRLkfpCkKZb8Q2FrYitiVwsi4cRTXF2aXVY?auto=format&w=2000\"\n      bgOverlays=\"dark-30, gradient-bottom/70\"\n    >\n      <Container size=\"md\">\n        <Flex direction=\"column\" align=\"center\" gap=\"6\" className=\"text-center\">\n          <Flex direction=\"column\" align=\"center\" gap=\"4\">\n            <Text size=\"overline\" color=\"muted\">Personal finance</Text>\n            <Heading as=\"h1\" size=\"5xl\">Know where every dollar stands</Heading>\n            <Text size=\"lg\" color=\"muted\" className=\"max-w-[52ch] text-pretty\">\n              WiseOwl connects your bank accounts, budgets and bills in one calm view, so money decisions take minutes instead of evenings.\n            </Text>\n          </Flex>\n          <Flex direction=\"row\" justify=\"center\" wrap=\"wrap\" gap=\"3\">\n            <Button size=\"lg\">Start free</Button>\n            <Button size=\"lg\" variant=\"outline\">See how it works</Button>\n          </Flex>\n          <Text size=\"sm\" color=\"muted\" className=\"tabular-nums\">Rated 4.8/5 from 3,906 reviews · 38,412 households</Text>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
+    "rawCode": "import { Button, Container, Flex, Heading, Section, Text } from \"@shavin/ui\";\n\nexport function HeroCenteredMedia() {\n  return (\n    <Section\n      size=\"hero\"\n      surface=\"dark-always\"\n      bgImage=\"https://assets.lummi.ai/assets/QmVUhpcUfSHzRLkfpCkKZb8Q2FrYitiVwsi4cRTXF2aXVY?auto=format&w=2000\"\n      bgOverlays=\"dark-30, gradient-bottom/70\"\n    >\n      <Container size=\"md\">\n        <Flex direction=\"column\" align=\"center\" gap=\"6\" className=\"text-center\">\n          <Flex direction=\"column\" align=\"center\" gap=\"4\">\n            <Text size=\"overline\" color=\"muted\">Personal finance</Text>\n            <Heading as=\"h1\" size=\"5xl\">Know where every dollar stands</Heading>\n            <Text size=\"lg\" color=\"muted\" className=\"max-w-[52ch] text-pretty\">\n              WiseOwl connects your bank accounts, budgets and bills in one calm view, so money decisions take minutes instead of evenings.\n            </Text>\n          </Flex>\n          <Flex direction=\"row\" justify=\"center\" wrap=\"wrap\" gap=\"3\">\n            <Button size=\"lg\" asChild><a href=\"/signup\">Start free</a></Button>\n            <Button size=\"lg\" variant=\"outline\" asChild><a href=\"#how-it-works\">See how it works</a></Button>\n          </Flex>\n          <Text size=\"sm\" color=\"muted\" className=\"tabular-nums\">Rated 4.8/5 from 3,906 reviews · 38,412 households</Text>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
     "replaces": "hero-minimal-saas",
     "sourcePath": "packages/block-schema/blocks/hero/hero-centered-media.tsx"
   },
@@ -1076,7 +1076,7 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "landing"
     ],
     "version": "1.0.0",
-    "rawCode": "import { Button, Container, Flex, Heading, Section, Text } from \"@shavin/ui\";\n\nexport function HeroMeshType() {\n  return (\n    <Section size=\"hero\" surface=\"dark-always\" bgOverlays=\"mesh-lime-animated\">\n      <Container size=\"md\">\n        <Flex direction=\"column\" align=\"center\" gap=\"7\" className=\"text-center\">\n          <Flex direction=\"column\" align=\"center\" gap=\"5\">\n            <Heading as=\"h1\" size=\"5xl\">Your money, finally in one place</Heading>\n            <Text size=\"lg\" color=\"muted\" className=\"max-w-[50ch] text-pretty tabular-nums\">\n              Link 11,642 banks and credit unions, see every balance and bill, and plan the month ahead in one sitting.\n            </Text>\n          </Flex>\n          <Flex direction=\"column\" align=\"center\" gap=\"3\">\n            <Button size=\"lg\">Create your free account</Button>\n            <Text size=\"sm\" color=\"muted\">No card required. Read-only access. Cancel any time.</Text>\n          </Flex>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
+    "rawCode": "import { Button, Container, Flex, Heading, Section, Text } from \"@shavin/ui\";\n\nexport function HeroMeshType() {\n  return (\n    <Section size=\"hero\" surface=\"dark-always\" bgOverlays=\"mesh-lime-animated\">\n      <Container size=\"md\">\n        <Flex direction=\"column\" align=\"center\" gap=\"7\" className=\"text-center\">\n          <Flex direction=\"column\" align=\"center\" gap=\"5\">\n            <Heading as=\"h1\" size=\"5xl\">Your money, finally in one place</Heading>\n            <Text size=\"lg\" color=\"muted\" className=\"max-w-[50ch] text-pretty tabular-nums\">\n              Link 11,642 banks and credit unions, see every balance and bill, and plan the month ahead in one sitting.\n            </Text>\n          </Flex>\n          <Flex direction=\"column\" align=\"center\" gap=\"3\">\n            <Button size=\"lg\" asChild><a href=\"/signup\">Create your free account</a></Button>\n            <Text size=\"sm\" color=\"muted\">No card required. Read-only access. Cancel any time.</Text>\n          </Flex>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
     "replaces": "hero-saas-creative",
     "sourcePath": "packages/block-schema/blocks/hero/hero-mesh-type.tsx"
   },
@@ -1105,7 +1105,7 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "landing"
     ],
     "version": "1.0.0",
-    "rawCode": "import { Button, Container, Flex, Grid, Heading, Icon, Image, Section, Text } from \"@shavin/ui\";\n\nconst defaultPoints = [\"Read-only bank connections\", \"Owner, Editor and Viewer roles\", \"Free for one person, forever\"];\n\nexport function HeroSplitMedia({ points = defaultPoints }) {\n  return (\n    <Section size=\"hero\" bgOverlays=\"mesh-accent\">\n      <Container size=\"lg\">\n        <Grid columns=\"2\" gap=\"7\" align=\"center\" stack=\"auto\">\n          <Flex direction=\"column\" gap=\"6\">\n            <Flex direction=\"column\" gap=\"4\">\n              <Text size=\"overline\" color=\"muted\">For households</Text>\n              <Heading as=\"h1\" size=\"4xl\">Plan money together, without the arguments</Heading>\n              <Text size=\"lg\" color=\"muted\" className=\"max-w-[48ch] text-pretty\">\n                Share budgets, goals and bills with a partner or family member. Everyone sees the same numbers, and you choose who can edit.\n              </Text>\n            </Flex>\n            <Flex direction=\"row\" wrap=\"wrap\" gap=\"3\">\n              <Button size=\"lg\">Start a household</Button>\n              <Button size=\"lg\" variant=\"ghost\">Compare plans</Button>\n            </Flex>\n            <Flex direction=\"column\" gap=\"2\">\n              {points.map((point) => (\n                <Flex key={point} direction=\"row\" align=\"center\" gap=\"2\">\n                  <Icon name=\"check\" size=\"sm\" color=\"accent\" />\n                  <Text size=\"sm\" color=\"muted\">{point}</Text>\n                </Flex>\n              ))}\n            </Flex>\n          </Flex>\n          <Image\n            src=\"https://assets.lummi.ai/assets/QmTsaPtLFDMQpYQYMP9C1qWfaxtEWp1EcQUNPQgT4mXY29?auto=format&w=1200\"\n            alt=\"A couple sitting close together against a warm pink wall\"\n            ratio=\"4/5\"\n            className=\"shadow-panel\"\n          />\n        </Grid>\n      </Container>\n    </Section>\n  );\n}\n",
+    "rawCode": "import { Button, Container, Flex, Grid, Heading, Icon, Image, Section, Text } from \"@shavin/ui\";\n\nconst defaultPoints = [\"Read-only bank connections\", \"Owner, Editor and Viewer roles\", \"Free for one person, forever\"];\n\nexport function HeroSplitMedia({ points = defaultPoints }) {\n  return (\n    <Section size=\"hero\" bgOverlays=\"mesh-accent\">\n      <Container size=\"lg\">\n        <Grid columns=\"2\" gap=\"7\" align=\"center\" stack=\"auto\">\n          <Flex direction=\"column\" gap=\"6\">\n            <Flex direction=\"column\" gap=\"4\">\n              <Text size=\"overline\" color=\"muted\">For households</Text>\n              <Heading as=\"h1\" size=\"4xl\">Plan money together, without the arguments</Heading>\n              <Text size=\"lg\" color=\"muted\" className=\"max-w-[48ch] text-pretty\">\n                Share budgets, goals and bills with a partner or family member. Everyone sees the same numbers, and you choose who can edit.\n              </Text>\n            </Flex>\n            <Flex direction=\"row\" wrap=\"wrap\" gap=\"3\">\n              <Button size=\"lg\" asChild><a href=\"/signup\">Start a household</a></Button>\n              <Button size=\"lg\" variant=\"ghost\" asChild><a href=\"/pricing\">Compare plans</a></Button>\n            </Flex>\n            <Flex direction=\"column\" gap=\"2\">\n              {points.map((point) => (\n                <Flex key={point} direction=\"row\" align=\"center\" gap=\"2\">\n                  <Icon name=\"check\" size=\"sm\" color=\"accent\" />\n                  <Text size=\"sm\" color=\"muted\">{point}</Text>\n                </Flex>\n              ))}\n            </Flex>\n          </Flex>\n          <Image\n            src=\"https://assets.lummi.ai/assets/QmTsaPtLFDMQpYQYMP9C1qWfaxtEWp1EcQUNPQgT4mXY29?auto=format&w=1200\"\n            alt=\"A couple sitting close together against a warm pink wall\"\n            ratio=\"4/5\"\n            className=\"shadow-panel\"\n          />\n        </Grid>\n      </Container>\n    </Section>\n  );\n}\n",
     "replaces": "hero-split-gradient",
     "sourcePath": "packages/block-schema/blocks/hero/hero-split-media.tsx"
   },
@@ -1131,7 +1131,7 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "landing"
     ],
     "version": "1.0.0",
-    "rawCode": "import { Button, Container, Flex, Heading, Section, Text } from \"@shavin/ui\";\n\nexport function HeroVideoStatement() {\n  return (\n    <Section\n      size=\"hero\"\n      surface=\"dark-always\"\n      bgVideo=\"https://videos.pexels.com/video-files/33227529/14158549_1280_720_30fps.mp4\"\n      bgPoster=\"https://images.pexels.com/videos/33227529/fsky-33227529.jpeg?auto=compress&w=1600\"\n      bgOverlays=\"dark-30, scrim-left\"\n    >\n      <Container size=\"lg\">\n        <Flex direction=\"column\" gap=\"6\" className=\"max-w-2xl\">\n          <Flex direction=\"column\" gap=\"4\">\n            <Text size=\"overline\" color=\"muted\">Calm money</Text>\n            <Heading as=\"h1\" size=\"5xl\">Less checking. More knowing.</Heading>\n            <Text size=\"lg\" color=\"muted\" className=\"max-w-[46ch] text-pretty\">\n              Quiet alerts tell you only what matters: a bill due, a budget near its limit, a charge that looks unfamiliar.\n            </Text>\n          </Flex>\n          <Flex direction=\"row\" wrap=\"wrap\" gap=\"3\">\n            <Button size=\"lg\">Start free</Button>\n            <Button size=\"lg\" variant=\"outline\">Watch the 90-second tour</Button>\n          </Flex>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
+    "rawCode": "import { Button, Container, Flex, Heading, Section, Text } from \"@shavin/ui\";\n\nexport function HeroVideoStatement() {\n  return (\n    <Section\n      size=\"hero\"\n      surface=\"dark-always\"\n      bgVideo=\"https://videos.pexels.com/video-files/33227529/14158549_1280_720_30fps.mp4\"\n      bgPoster=\"https://images.pexels.com/videos/33227529/fsky-33227529.jpeg?auto=compress&w=1600\"\n      bgOverlays=\"dark-30, scrim-left\"\n    >\n      <Container size=\"lg\">\n        <Flex direction=\"column\" gap=\"6\" className=\"max-w-2xl\">\n          <Flex direction=\"column\" gap=\"4\">\n            <Text size=\"overline\" color=\"muted\">Calm money</Text>\n            <Heading as=\"h1\" size=\"5xl\">Less checking. More knowing.</Heading>\n            <Text size=\"lg\" color=\"muted\" className=\"max-w-[46ch] text-pretty\">\n              Quiet alerts tell you only what matters: a bill due, a budget near its limit, a charge that looks unfamiliar.\n            </Text>\n          </Flex>\n          <Flex direction=\"row\" wrap=\"wrap\" gap=\"3\">\n            <Button size=\"lg\" asChild><a href=\"/signup\">Start free</a></Button>\n            <Button size=\"lg\" variant=\"outline\">Watch the 90-second tour</Button>\n          </Flex>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
     "replaces": "hero-spotlight-feature",
     "sourcePath": "packages/block-schema/blocks/hero/hero-video-statement.tsx"
   },
@@ -1267,7 +1267,7 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "marketing"
     ],
     "version": "1.0.0",
-    "rawCode": "import { Button, Card, Container, Flex, Grid, Heading, Icon, IconButton, Image, Link, Section, Text } from \"@shavin/ui\";\n\nconst defaultLinks = [\n  { label: \"Household\", href: \"/household\" },\n  { label: \"Pricing\", href: \"/pricing\" },\n  { label: \"Developers\", href: \"/developers\" },\n];\n\nconst defaultGroups = [\n  {\n    title: \"Plan\",\n    items: [\n      { icon: \"target\", label: \"Budgets\", description: \"Monthly limits by category\", href: \"/product/budgets\" },\n      { icon: \"piggy-bank\", label: \"Savings goals\", description: \"Amounts and dates that add up\", href: \"/product/goals\" },\n      { icon: \"trending-up\", label: \"Cash-flow forecast\", description: \"The next 90 days, estimated\", href: \"/product/forecast\" },\n    ],\n  },\n  {\n    title: \"Track\",\n    items: [\n      { icon: \"landmark\", label: \"Accounts\", description: \"11,642 banks and credit unions\", href: \"/product/accounts\" },\n      { icon: \"receipt\", label: \"Bills & subscriptions\", description: \"Every recurring charge in one list\", href: \"/product/bills\" },\n      { icon: \"line-chart\", label: \"Net worth\", description: \"Assets and debts over time\", href: \"/product/net-worth\" },\n    ],\n  },\n  {\n    title: \"Ask\",\n    items: [\n      { icon: \"message-circle\", label: \"Ask WiseOwl\", description: \"Questions about your spending\", href: \"/product/ask\" },\n      { icon: \"scan-line\", label: \"Receipt scanning\", description: \"Line items from a photo\", href: \"/product/receipts\" },\n    ],\n  },\n];\n\nexport function NavHeaderMegaMenu({ links = defaultLinks, groups = defaultGroups }) {\n  return (\n    <Section as=\"header\" size=\"compact\">\n      <Container size=\"lg\">\n        <Flex direction=\"column\" gap=\"3\">\n          <Flex direction=\"row\" align=\"center\" justify=\"between\" gap=\"6\" className=\"h-14\">\n            <Heading as=\"p\" size=\"md\" tracking=\"tight\">WiseOwl</Heading>\n            <Flex as=\"nav\" direction=\"row\" align=\"center\" gap=\"1\" aria-label=\"Main\" className=\"max-md:hidden\">\n              <Button variant=\"ghost\" size=\"sm\" aria-expanded=\"true\" className=\"bg-surface-hover text-fg\" iconRight={<Icon name=\"chevron-down\" size=\"sm\" />}>Product</Button>\n              {links.map((link) => (\n                <Link key={link.label} href={link.href} size=\"sm\" underline=\"none\" className=\"rounded-[var(--radius-lg)] px-3 py-2 font-medium text-fg-muted hover:bg-surface-hover hover:text-fg\">{link.label}</Link>\n              ))}\n            </Flex>\n            <Flex direction=\"row\" align=\"center\" gap=\"2\" className=\"max-md:hidden\">\n              <Button variant=\"ghost\" size=\"sm\">Sign in</Button>\n              <Button size=\"sm\">Start free</Button>\n            </Flex>\n            <IconButton variant=\"ghost\" size=\"md\" aria-label=\"Open menu\" className=\"md:hidden\">\n              <Icon name=\"menu\" size=\"md\" color=\"inherit\" />\n            </IconButton>\n          </Flex>\n          <Card padding=\"none\" className=\"overflow-hidden shadow-panel max-md:hidden\">\n            <Flex direction=\"column\" className=\"lg:flex-row\">\n              <Grid columns=\"3\" gap=\"6\" className=\"flex-1 p-6\">\n                {groups.map((group) => (\n                  <Flex key={group.title} direction=\"column\" gap=\"3\">\n                    <Text size=\"overline\" color=\"muted\" className=\"px-2\">{group.title}</Text>\n                    <Flex direction=\"column\" gap=\"1\">\n                      {group.items.map((item) => (\n                        <Link key={item.label} href={item.href} underline=\"none\" className=\"flex items-start gap-3 rounded-[var(--radius-lg)] p-2 hover:bg-surface-hover\">\n                          <Flex align=\"center\" justify=\"center\" className=\"h-9 w-9 shrink-0 rounded-[var(--radius-lg)] border border-hairline bg-canvas\">\n                            <Icon name={item.icon} size=\"sm\" color=\"accent\" />\n                          </Flex>\n                          <Flex direction=\"column\" gap=\"1\" className=\"min-w-0\">\n                            <Text size=\"sm\" weight=\"medium\">{item.label}</Text>\n                            <Text size=\"sm\" color=\"muted\">{item.description}</Text>\n                          </Flex>\n                        </Link>\n                      ))}\n                    </Flex>\n                  </Flex>\n                ))}\n              </Grid>\n              <Flex direction=\"column\" gap=\"4\" className=\"border-hairline bg-canvas p-6 max-lg:border-t lg:w-[320px] lg:border-l\">\n                <Image src=\"https://assets.lummi.ai/assets/QmQrVUM5reCYVXq4MvwjghJ9Uhx9Uh4oKm6Y9xBzGE9x1S?auto=format&w=800\" alt=\"A warm red living room with a low sofa\" ratio=\"16/10\" radius=\"concentric\" className=\"max-lg:hidden\" />\n                <Flex direction=\"column\" gap=\"2\">\n                  <Text size=\"overline\" color=\"muted\">New in 3.8</Text>\n                  <Text size=\"md\" weight=\"semibold\">Shared goals for households</Text>\n                  <Text size=\"sm\" color=\"muted\" className=\"text-pretty\">Track one goal with contributions from everyone in the household.</Text>\n                </Flex>\n                <Link href=\"/changelog\" size=\"sm\" className=\"inline-flex items-center gap-1.5 font-medium\">\n                  Read the release notes\n                  <Icon name=\"arrow-right\" size=\"sm\" color=\"inherit\" />\n                </Link>\n              </Flex>\n            </Flex>\n          </Card>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
+    "rawCode": "import { Button, Card, Container, Flex, Grid, Heading, Icon, IconButton, Image, Link, Section, Text } from \"@shavin/ui\";\n\nconst defaultLinks = [\n  { label: \"Household\", href: \"/household\" },\n  { label: \"Pricing\", href: \"/pricing\" },\n  { label: \"Developers\", href: \"/developers\" },\n];\n\nconst defaultGroups = [\n  {\n    title: \"Plan\",\n    items: [\n      { icon: \"target\", label: \"Budgets\", description: \"Monthly limits by category\", href: \"/product/budgets\" },\n      { icon: \"piggy-bank\", label: \"Savings goals\", description: \"Amounts and dates that add up\", href: \"/product/goals\" },\n      { icon: \"trending-up\", label: \"Cash-flow forecast\", description: \"The next 90 days, estimated\", href: \"/product/forecast\" },\n    ],\n  },\n  {\n    title: \"Track\",\n    items: [\n      { icon: \"landmark\", label: \"Accounts\", description: \"11,642 banks and credit unions\", href: \"/product/accounts\" },\n      { icon: \"receipt\", label: \"Bills & subscriptions\", description: \"Every recurring charge in one list\", href: \"/product/bills\" },\n      { icon: \"line-chart\", label: \"Net worth\", description: \"Assets and debts over time\", href: \"/product/net-worth\" },\n    ],\n  },\n  {\n    title: \"Ask\",\n    items: [\n      { icon: \"message-circle\", label: \"Ask WiseOwl\", description: \"Questions about your spending\", href: \"/product/ask\" },\n      { icon: \"scan-line\", label: \"Receipt scanning\", description: \"Line items from a photo\", href: \"/product/receipts\" },\n    ],\n  },\n];\n\nexport function NavHeaderMegaMenu({ links = defaultLinks, groups = defaultGroups }) {\n  return (\n    <Section as=\"header\" size=\"compact\">\n      <Container size=\"lg\">\n        <Flex direction=\"column\" gap=\"3\">\n          <Flex direction=\"row\" align=\"center\" justify=\"between\" gap=\"6\" className=\"h-14\">\n            <Heading as=\"p\" size=\"md\" tracking=\"tight\">WiseOwl</Heading>\n            <Flex as=\"nav\" direction=\"row\" align=\"center\" gap=\"1\" aria-label=\"Main\" className=\"max-md:hidden\">\n              <Button variant=\"ghost\" size=\"sm\" aria-expanded=\"true\" className=\"bg-surface-hover text-fg\" iconRight={<Icon name=\"chevron-down\" size=\"sm\" />}>Product</Button>\n              {links.map((link) => (\n                <Link key={link.label} href={link.href} size=\"sm\" underline=\"none\" className=\"rounded-[var(--radius-lg)] px-3 py-2 font-medium text-fg-muted hover:bg-surface-hover hover:text-fg\">{link.label}</Link>\n              ))}\n            </Flex>\n            <Flex direction=\"row\" align=\"center\" gap=\"2\" className=\"max-md:hidden\">\n              <Button variant=\"ghost\" size=\"sm\" asChild><a href=\"/signin\">Sign in</a></Button>\n              <Button size=\"sm\" asChild><a href=\"/signup\">Start free</a></Button>\n            </Flex>\n            <IconButton variant=\"ghost\" size=\"md\" aria-label=\"Open menu\" aria-expanded=\"false\" className=\"md:hidden\">\n              <Icon name=\"menu\" size=\"md\" color=\"inherit\" />\n            </IconButton>\n          </Flex>\n          <Card padding=\"none\" className=\"overflow-hidden shadow-panel max-md:hidden\">\n            <Flex direction=\"column\" className=\"lg:flex-row\">\n              <Grid columns=\"3\" gap=\"6\" className=\"flex-1 p-6\">\n                {groups.map((group) => (\n                  <Flex key={group.title} direction=\"column\" gap=\"3\">\n                    <Text size=\"overline\" color=\"muted\" className=\"px-2\">{group.title}</Text>\n                    <Flex direction=\"column\" gap=\"1\">\n                      {group.items.map((item) => (\n                        <Link key={item.label} href={item.href} underline=\"none\" className=\"flex items-start gap-3 rounded-[var(--radius-lg)] p-2 hover:bg-surface-hover\">\n                          <Flex align=\"center\" justify=\"center\" className=\"h-9 w-9 shrink-0 rounded-[var(--radius-lg)] border border-hairline bg-canvas\">\n                            <Icon name={item.icon} size=\"sm\" color=\"accent\" />\n                          </Flex>\n                          <Flex direction=\"column\" gap=\"1\" className=\"min-w-0\">\n                            <Text size=\"sm\" weight=\"medium\">{item.label}</Text>\n                            <Text size=\"sm\" color=\"muted\">{item.description}</Text>\n                          </Flex>\n                        </Link>\n                      ))}\n                    </Flex>\n                  </Flex>\n                ))}\n              </Grid>\n              <Flex direction=\"column\" gap=\"4\" className=\"border-hairline bg-canvas p-6 max-lg:border-t lg:w-[320px] lg:border-l\">\n                <Image src=\"https://assets.lummi.ai/assets/QmQrVUM5reCYVXq4MvwjghJ9Uhx9Uh4oKm6Y9xBzGE9x1S?auto=format&w=800\" alt=\"A warm red living room with a low sofa\" ratio=\"16/10\" radius=\"concentric\" className=\"max-lg:hidden\" />\n                <Flex direction=\"column\" gap=\"2\">\n                  <Text size=\"overline\" color=\"muted\">New in 3.8</Text>\n                  <Text size=\"md\" weight=\"semibold\">Shared goals for households</Text>\n                  <Text size=\"sm\" color=\"muted\" className=\"text-pretty\">Track one goal with contributions from everyone in the household.</Text>\n                </Flex>\n                <Link href=\"/changelog\" size=\"sm\" className=\"inline-flex items-center gap-1.5 font-medium\">\n                  Read the release notes\n                  <Icon name=\"arrow-right\" size=\"sm\" color=\"inherit\" />\n                </Link>\n              </Flex>\n            </Flex>\n          </Card>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
     "sourcePath": "packages/block-schema/blocks/navigation/nav-header-mega-menu.tsx"
   },
   {
@@ -1370,7 +1370,7 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "app"
     ],
     "version": "1.0.0",
-    "rawCode": "import { Box, Container, Flex, Heading, Icon, IconButton, Link, Section, Separator, Text, TextField } from \"@shavin/ui\";\n\nconst defaultRail = [\n  { icon: \"layout-dashboard\", label: \"Overview\", active: false },\n  { icon: \"landmark\", label: \"Accounts\", active: true },\n  { icon: \"target\", label: \"Budgets\", active: false },\n  { icon: \"piggy-bank\", label: \"Goals\", active: false },\n  { icon: \"settings\", label: \"Settings\", active: false },\n];\n\nconst defaultGroups = [\n  {\n    title: \"Cash\",\n    items: [\n      { name: \"Cascade Federal Checking\", mask: \"••6021\", balance: \"$4,812.36\", active: true },\n      { name: \"Harborline High-Yield Savings\", mask: \"••3390\", balance: \"$11,460.00\", active: false },\n    ],\n  },\n  {\n    title: \"Credit\",\n    items: [\n      { name: \"Meridian Rewards Visa\", mask: \"••4417\", balance: \"-$1,236.18\", active: false },\n      { name: \"Pinecrest Cash Back\", mask: \"••8805\", balance: \"-$342.09\", active: false },\n    ],\n  },\n  {\n    title: \"Loans and investments\",\n    items: [\n      { name: \"Harborline Auto Loan\", mask: \"••2274\", balance: \"-$6,918.40\", active: false },\n      { name: \"Northgate 401(k)\", mask: \"••1150\", balance: \"$98,540.83\", active: false },\n    ],\n  },\n];\n\nexport function SidebarDualResizable({ rail = defaultRail, groups = defaultGroups }) {\n  return (\n    <Section size=\"compact\">\n      <Container size=\"lg\">\n        <Flex direction=\"row\" className=\"h-[640px] overflow-hidden rounded-[var(--radius-panel)] border border-hairline bg-canvas\">\n          <Flex as=\"nav\" direction=\"column\" align=\"center\" gap=\"1\" aria-label=\"Main\" className=\"w-16 shrink-0 border-r border-hairline bg-surface py-3 max-md:hidden\">\n            {rail.map((item) => (\n              <IconButton key={item.label} variant=\"ghost\" size=\"md\" aria-label={item.label} title={item.label} className={item.active ? \"bg-surface-hover text-fg\" : \"\"}>\n                <Icon name={item.icon} size=\"md\" color=\"inherit\" />\n              </IconButton>\n            ))}\n          </Flex>\n          <Flex direction=\"column\" className=\"w-full shrink-0 bg-surface md:w-72\">\n            <Flex direction=\"column\" gap=\"3\" className=\"shrink-0 border-b border-hairline p-4\">\n              <Flex direction=\"row\" align=\"center\" justify=\"between\" gap=\"2\">\n                <Text size=\"sm\" weight=\"semibold\">Accounts</Text>\n                <IconButton variant=\"ghost\" size=\"sm\" aria-label=\"Add account\">\n                  <Icon name=\"plus\" size=\"sm\" color=\"inherit\" />\n                </IconButton>\n              </Flex>\n              <TextField type=\"search\" placeholder=\"Filter accounts\" aria-label=\"Filter accounts\" leadingIcon={<Icon name=\"search\" size=\"sm\" color=\"muted\" />} />\n            </Flex>\n            <Flex direction=\"column\" gap=\"4\" className=\"min-h-0 flex-1 overflow-y-auto p-2\">\n              {groups.map((group) => (\n                <Flex key={group.title} direction=\"column\" gap=\"1\">\n                  <Text size=\"overline\" color=\"muted\" className=\"px-3 pb-1 pt-2\">{group.title}</Text>\n                  {group.items.map((item) => (\n                    <Link key={item.name} href=\"/accounts\" underline=\"none\" className={item.active ? \"flex items-center justify-between gap-3 rounded-[var(--radius-lg)] bg-surface-hover px-3 py-2\" : \"flex items-center justify-between gap-3 rounded-[var(--radius-lg)] px-3 py-2 hover:bg-surface-hover\"}>\n                      <Flex direction=\"column\" className=\"min-w-0\">\n                        <Text size=\"sm\" weight=\"medium\" truncate>{item.name}</Text>\n                        <Text size=\"xs\" color=\"muted\" className=\"tabular-nums\">{item.mask}</Text>\n                      </Flex>\n                      <Text size=\"sm\" className=\"shrink-0 tabular-nums\">{item.balance}</Text>\n                    </Link>\n                  ))}\n                </Flex>\n              ))}\n            </Flex>\n            <Flex direction=\"row\" align=\"center\" justify=\"between\" gap=\"2\" className=\"shrink-0 border-t border-hairline px-5 py-3\">\n              <Text size=\"sm\" color=\"muted\">Net worth</Text>\n              <Text size=\"sm\" weight=\"semibold\" className=\"tabular-nums\">$184,276.52</Text>\n            </Flex>\n          </Flex>\n          <Flex role=\"separator\" aria-orientation=\"vertical\" aria-label=\"Resize account list\" align=\"center\" justify=\"center\" className=\"group relative w-3 shrink-0 cursor-col-resize max-md:hidden\">\n            <Box className=\"absolute inset-y-0 left-1/2 w-px -translate-x-1/2 bg-hairline group-hover:bg-accent\" />\n            <Flex align=\"center\" justify=\"center\" className=\"relative h-8 w-3 rounded-full border border-hairline bg-surface text-fg-muted\">\n              <Icon name=\"grip-vertical\" size=\"xs\" color=\"inherit\" />\n            </Flex>\n          </Flex>\n          <Flex direction=\"column\" gap=\"6\" className=\"min-w-0 flex-1 overflow-y-auto p-6 max-md:hidden\">\n            <Flex direction=\"column\" gap=\"1\">\n              <Text size=\"sm\" color=\"muted\">Cascade Federal Checking ••6021</Text>\n              <Heading as=\"h1\" size=\"xl\" className=\"tabular-nums\">$4,812.36</Heading>\n              <Text size=\"sm\" color=\"muted\">Synced 4 minutes ago</Text>\n            </Flex>\n            <Separator />\n            <Flex direction=\"column\" className=\"min-h-[200px] flex-1 rounded-[var(--radius-panel)] border border-dashed border-hairline\" />\n          </Flex>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
+    "rawCode": "import { Box, Container, Flex, Heading, Icon, IconButton, Link, Section, Separator, Text, TextField } from \"@shavin/ui\";\n\nconst defaultRail = [\n  { icon: \"layout-dashboard\", label: \"Overview\", active: false },\n  { icon: \"landmark\", label: \"Accounts\", active: true },\n  { icon: \"target\", label: \"Budgets\", active: false },\n  { icon: \"piggy-bank\", label: \"Goals\", active: false },\n  { icon: \"settings\", label: \"Settings\", active: false },\n];\n\nconst defaultGroups = [\n  {\n    title: \"Cash\",\n    items: [\n      { name: \"Cascade Federal Checking\", mask: \"••6021\", balance: \"$4,812.36\", active: true },\n      { name: \"Harborline High-Yield Savings\", mask: \"••3390\", balance: \"$11,460.00\", active: false },\n    ],\n  },\n  {\n    title: \"Credit\",\n    items: [\n      { name: \"Meridian Rewards Visa\", mask: \"••4417\", balance: \"-$1,236.18\", active: false },\n      { name: \"Pinecrest Cash Back\", mask: \"••8805\", balance: \"-$342.09\", active: false },\n    ],\n  },\n  {\n    title: \"Loans and investments\",\n    items: [\n      { name: \"Harborline Auto Loan\", mask: \"••2274\", balance: \"-$6,918.40\", active: false },\n      { name: \"Northgate 401(k)\", mask: \"••1150\", balance: \"$98,540.83\", active: false },\n    ],\n  },\n];\n\nexport function SidebarDualResizable({ rail = defaultRail, groups = defaultGroups }) {\n  return (\n    <Section size=\"compact\">\n      <Container size=\"lg\">\n        <Flex direction=\"row\" className=\"h-[640px] overflow-hidden rounded-[var(--radius-panel)] border border-hairline bg-canvas\">\n          <Flex as=\"nav\" direction=\"column\" align=\"center\" gap=\"1\" aria-label=\"Main\" className=\"w-16 shrink-0 border-r border-hairline bg-surface py-3 max-md:hidden\">\n            {rail.map((item) => (\n              <IconButton key={item.label} variant=\"ghost\" size=\"md\" aria-label={item.label} title={item.label} className={item.active ? \"bg-surface-hover text-fg\" : \"\"}>\n                <Icon name={item.icon} size=\"md\" color=\"inherit\" />\n              </IconButton>\n            ))}\n          </Flex>\n          <Flex direction=\"column\" resizable=\"right\" minWidth={224} maxWidth={420} resizeHandle=\"grip\" className=\"w-full shrink-0 border-r border-hairline bg-surface md:w-72\">\n            <Flex direction=\"column\" gap=\"3\" className=\"shrink-0 border-b border-hairline p-4\">\n              <Flex direction=\"row\" align=\"center\" justify=\"between\" gap=\"2\">\n                <Text size=\"sm\" weight=\"semibold\">Accounts</Text>\n                <IconButton variant=\"ghost\" size=\"sm\" aria-label=\"Add account\">\n                  <Icon name=\"plus\" size=\"sm\" color=\"inherit\" />\n                </IconButton>\n              </Flex>\n              <TextField type=\"search\" placeholder=\"Filter accounts\" aria-label=\"Filter accounts\" leadingIcon={<Icon name=\"search\" size=\"sm\" color=\"muted\" />} />\n            </Flex>\n            <Flex direction=\"column\" gap=\"4\" className=\"min-h-0 flex-1 overflow-y-auto p-2\">\n              {groups.map((group) => (\n                <Flex key={group.title} direction=\"column\" gap=\"1\">\n                  <Text size=\"overline\" color=\"muted\" className=\"px-3 pb-1 pt-2\">{group.title}</Text>\n                  {group.items.map((item) => (\n                    <Link key={item.name} href=\"/accounts\" underline=\"none\" className={item.active ? \"flex items-center justify-between gap-3 rounded-[var(--radius-lg)] bg-surface-hover px-3 py-2\" : \"flex items-center justify-between gap-3 rounded-[var(--radius-lg)] px-3 py-2 hover:bg-surface-hover\"}>\n                      <Flex direction=\"column\" className=\"min-w-0\">\n                        <Text size=\"sm\" weight=\"medium\" truncate>{item.name}</Text>\n                        <Text size=\"xs\" color=\"muted\" className=\"tabular-nums\">{item.mask}</Text>\n                      </Flex>\n                      <Text size=\"sm\" className=\"shrink-0 tabular-nums\">{item.balance}</Text>\n                    </Link>\n                  ))}\n                </Flex>\n              ))}\n            </Flex>\n            <Flex direction=\"row\" align=\"center\" justify=\"between\" gap=\"2\" className=\"shrink-0 border-t border-hairline px-5 py-3\">\n              <Text size=\"sm\" color=\"muted\">Net worth</Text>\n              <Text size=\"sm\" weight=\"semibold\" className=\"tabular-nums\">$184,276.52</Text>\n            </Flex>\n          </Flex>\n          <Flex direction=\"column\" gap=\"6\" className=\"min-w-0 flex-1 overflow-y-auto p-6 max-md:hidden\">\n            <Flex direction=\"column\" gap=\"1\">\n              <Text as=\"h1\" size=\"sm\" color=\"muted\">Cascade Federal Checking ••6021</Text>\n              <Heading as=\"p\" size=\"xl\" className=\"tabular-nums\">$4,812.36</Heading>\n              <Text size=\"sm\" color=\"muted\">Synced 4 minutes ago</Text>\n            </Flex>\n            <Separator />\n            <Flex direction=\"column\" className=\"min-h-[200px] flex-1 rounded-[var(--radius-panel)] border border-dashed border-hairline\" />\n          </Flex>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
     "sourcePath": "packages/block-schema/blocks/navigation/sidebar-dual-resizable.tsx"
   },
   {
@@ -1407,7 +1407,7 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "app"
     ],
     "version": "1.0.0",
-    "rawCode": "import { AppFrame, Button, Card, Container, Flex, Grid, Heading, Icon, Section, Sidebar, SidebarBody, SidebarFooter, SidebarHeader, SidebarNavItem, SidebarSection, SidebarTrigger, Text } from \"@shavin/ui\";\n\nconst defaultItems = [\n  { icon: \"layout-dashboard\", label: \"Overview\", active: true },\n  { icon: \"arrow-left-right\", label: \"Transactions\", active: false },\n  { icon: \"target\", label: \"Budgets\", active: false },\n  { icon: \"piggy-bank\", label: \"Goals\", active: false },\n  { icon: \"message-circle\", label: \"Ask WiseOwl\", active: false },\n];\n\nconst defaultStats = [\n  { label: \"Net worth\", value: \"$184,276.52\", note: \"Up $2,914.08 since August\" },\n  { label: \"Left to spend\", value: \"$1,284.60\", note: \"18 days left in September\" },\n];\n\nexport function SidebarFloating({ items = defaultItems, stats = defaultStats }) {\n  return (\n    <Section size=\"compact\">\n      <Container size=\"lg\">\n        <Flex bgOverlays=\"mesh-accent\" className=\"relative h-[640px] overflow-hidden rounded-[var(--radius-panel)] border border-hairline bg-canvas\">\n          <AppFrame\n            className=\"h-full w-full\"\n            sidebar={\n              <Sidebar variant=\"floating\" width=\"w-60\" className=\"bg-surface/80 backdrop-blur\">\n                <SidebarHeader className=\"border-b-0\">\n                  <Heading as=\"p\" size=\"sm\" tracking=\"tight\">WiseOwl</Heading>\n                </SidebarHeader>\n                <SidebarBody>\n                  <SidebarSection>\n                    {items.map((item) => (\n                      <SidebarNavItem key={item.label} label={item.label} active={item.active} icon={<Icon name={item.icon} size=\"sm\" color=\"inherit\" />} />\n                    ))}\n                  </SidebarSection>\n                </SidebarBody>\n                <SidebarFooter className=\"border-t-0 p-4\">\n                  <Flex direction=\"column\" gap=\"3\" className=\"w-full\">\n                    <Flex direction=\"column\" gap=\"1\">\n                      <Text size=\"overline\" color=\"muted\">Bills due this week</Text>\n                      <Text size=\"sm\" className=\"text-pretty tabular-nums\">3 bills totalling $1,418.72 before Friday.</Text>\n                    </Flex>\n                    <Button variant=\"outline\" size=\"sm\" className=\"w-full\">Review bills</Button>\n                  </Flex>\n                </SidebarFooter>\n              </Sidebar>\n            }\n          >\n            <Flex direction=\"row\" align=\"center\" gap=\"2\" className=\"shavin-frame-compact-only m-3 mb-0 h-14 shrink-0 rounded-[var(--radius-panel)] border border-hairline bg-surface/80 pl-2 pr-4 shadow-panel backdrop-blur\">\n              <SidebarTrigger />\n              <Heading as=\"p\" size=\"sm\" tracking=\"tight\">WiseOwl</Heading>\n            </Flex>\n            <Flex direction=\"column\" gap=\"6\" className=\"relative min-h-0 min-w-0 flex-1 overflow-y-auto p-6\">\n              <Flex direction=\"column\" gap=\"1\">\n                <Heading as=\"h1\" size=\"lg\">Good morning, Maya</Heading>\n                <Text size=\"sm\" color=\"muted\">Everything synced 4 minutes ago. Two budgets need a look this week.</Text>\n              </Flex>\n              <Grid columns=\"auto\" minWidth=\"sm\" maxColumns=\"2\" gap=\"4\">\n                {stats.map((stat) => (\n                  <Card key={stat.label} padding=\"lg\">\n                    <Flex direction=\"column\" gap=\"2\">\n                      <Text size=\"sm\" color=\"muted\">{stat.label}</Text>\n                      <Heading as=\"p\" size=\"xl\" className=\"tabular-nums\">{stat.value}</Heading>\n                      <Text size=\"sm\" color=\"muted\">{stat.note}</Text>\n                    </Flex>\n                  </Card>\n                ))}\n              </Grid>\n            </Flex>\n          </AppFrame>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
+    "rawCode": "import { AppFrame, Button, Card, Container, Flex, Grid, Heading, Icon, Section, Sidebar, SidebarBody, SidebarFooter, SidebarHeader, SidebarNavItem, SidebarSection, SidebarTrigger, Text } from \"@shavin/ui\";\n\nconst defaultItems = [\n  { icon: \"layout-dashboard\", label: \"Overview\", active: true },\n  { icon: \"arrow-left-right\", label: \"Transactions\", active: false },\n  { icon: \"target\", label: \"Budgets\", active: false },\n  { icon: \"piggy-bank\", label: \"Goals\", active: false },\n  { icon: \"message-circle\", label: \"Ask WiseOwl\", active: false },\n];\n\nconst defaultStats = [\n  { label: \"Net worth\", value: \"$184,276.52\", note: \"Up $2,914.08 since August\" },\n  { label: \"Left to spend\", value: \"$1,284.60\", note: \"18 days left in September\" },\n];\n\nexport function SidebarFloating({ items = defaultItems, stats = defaultStats }) {\n  return (\n    <Section size=\"compact\">\n      <Container size=\"lg\">\n        <Flex bgOverlays=\"mesh-accent\" className=\"relative h-[640px] overflow-hidden rounded-[var(--radius-panel)] border border-hairline bg-canvas\">\n          <AppFrame\n            className=\"h-full w-full\"\n            sidebar={\n              <Sidebar variant=\"floating\" width=\"w-60\" className=\"bg-surface/80 backdrop-blur\">\n                <SidebarHeader className=\"border-b-0\">\n                  <Heading as=\"p\" size=\"sm\" tracking=\"tight\">WiseOwl</Heading>\n                </SidebarHeader>\n                <SidebarBody>\n                  <SidebarSection>\n                    {items.map((item) => (\n                      <SidebarNavItem key={item.label} label={item.label} active={item.active} icon={<Icon name={item.icon} size=\"sm\" color=\"inherit\" />} />\n                    ))}\n                  </SidebarSection>\n                </SidebarBody>\n                <SidebarFooter className=\"border-t-0 p-4\">\n                  <Flex direction=\"column\" gap=\"3\" className=\"w-full\">\n                    <Flex direction=\"column\" gap=\"1\">\n                      <Text size=\"overline\" color=\"muted\">Bills due this week</Text>\n                      <Text size=\"sm\" className=\"text-pretty tabular-nums\">3 bills totalling $1,418.72 before Friday.</Text>\n                    </Flex>\n                    <Button variant=\"outline\" size=\"sm\" className=\"w-full\">Review bills</Button>\n                  </Flex>\n                </SidebarFooter>\n              </Sidebar>\n            }\n          >\n            <Flex direction=\"row\" align=\"center\" gap=\"2\" className=\"shavin-frame-compact-only m-3 mb-0 h-14 shrink-0 rounded-[var(--radius-panel)] border border-hairline bg-surface/80 pl-2 pr-4 shadow-panel backdrop-blur\">\n              <SidebarTrigger />\n              <Heading as=\"p\" size=\"sm\" tracking=\"tight\">WiseOwl</Heading>\n            </Flex>\n            <Flex direction=\"column\" gap=\"6\" role=\"region\" aria-label=\"Content\" tabIndex={0} className=\"relative min-h-0 min-w-0 flex-1 overflow-y-auto p-6\">\n              <Flex direction=\"column\" gap=\"1\">\n                <Heading as=\"h1\" size=\"lg\">Good morning, Maya</Heading>\n                <Text size=\"sm\" color=\"muted\">Everything synced 4 minutes ago. Two budgets need a look this week.</Text>\n              </Flex>\n              <Grid columns=\"auto\" minWidth=\"sm\" maxColumns=\"2\" gap=\"4\">\n                {stats.map((stat) => (\n                  <Card key={stat.label} padding=\"lg\">\n                    <Flex direction=\"column\" gap=\"2\">\n                      <Text size=\"sm\" color=\"muted\">{stat.label}</Text>\n                      <Heading as=\"p\" size=\"xl\" className=\"tabular-nums\">{stat.value}</Heading>\n                      <Text size=\"sm\" color=\"muted\">{stat.note}</Text>\n                    </Flex>\n                  </Card>\n                ))}\n              </Grid>\n            </Flex>\n          </AppFrame>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
     "sourcePath": "packages/block-schema/blocks/navigation/sidebar-floating.tsx"
   },
   {
@@ -1550,7 +1550,7 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "matrix"
     ],
     "version": "1.0.0",
-    "rawCode": "import { Badge, Button, Container, Flex, Grid, Heading, Icon, Section, Text } from \"@shavin/ui\";\n\nconst defaultPlans = [\n  { name: \"Free\", price: \"$0\", period: \"forever\", featured: false, cta: \"Start free\" },\n  { name: \"Plus\", price: \"$7.99\", period: \"per month\", featured: false, cta: \"Start trial\" },\n  { name: \"Household\", price: \"$13.99\", period: \"per month\", featured: true, cta: \"Start trial\" },\n];\n\nconst defaultGroups = [\n  {\n    title: \"Accounts\",\n    rows: [\n      { feature: \"Linked accounts\", values: [\"2\", \"Unlimited\", \"Unlimited\"] },\n      { feature: \"Transaction history\", values: [\"12 months\", \"24 months\", \"24 months\"] },\n      { feature: \"Manual and cash accounts\", values: [\"yes\", \"yes\", \"yes\"] },\n    ],\n  },\n  {\n    title: \"Planning\",\n    rows: [\n      { feature: \"Budget categories\", values: [\"10\", \"Unlimited\", \"Unlimited\"] },\n      { feature: \"Savings goals\", values: [\"1\", \"Unlimited\", \"Unlimited\"] },\n      { feature: \"Cash-flow forecast\", values: [\"no\", \"90 days\", \"90 days\"] },\n    ],\n  },\n  {\n    title: \"Smart tools\",\n    rows: [\n      { feature: \"Receipt scans per month\", values: [\"5\", \"50\", \"150\"] },\n      { feature: \"AI questions per month\", values: [\"10\", \"75\", \"200\"] },\n      { feature: \"Subscription tracking\", values: [\"yes\", \"yes\", \"yes\"] },\n    ],\n  },\n  {\n    title: \"Sharing and support\",\n    rows: [\n      { feature: \"Household members\", values: [\"1\", \"1\", \"Up to 6\"] },\n      { feature: \"Roles and permissions\", values: [\"no\", \"no\", \"yes\"] },\n      { feature: \"Support\", values: [\"Email\", \"Email and chat\", \"Priority chat\"] },\n    ],\n  },\n];\n\nexport function PricingComparisonMatrix({ plans = defaultPlans, groups = defaultGroups }) {\n  return (\n    <Section size=\"body\">\n      <Container size=\"lg\">\n        <Flex direction=\"column\" gap=\"7\">\n          <Flex direction=\"column\" gap=\"4\">\n            <Text size=\"overline\" color=\"muted\">Compare plans</Text>\n            <Heading as=\"h2\" size=\"3xl\">Every feature, side by side</Heading>\n          </Flex>\n          <Flex direction=\"column\" gap=\"0\" className=\"-mx-4 overflow-x-auto px-4\">\n            <Flex direction=\"column\" gap=\"0\" className=\"min-w-[44rem]\">\n              <Grid columns=\"4\" gap=\"4\" className=\"grid-cols-[1.6fr_repeat(3,minmax(0,1fr))] items-end border-b border-hairline pb-5\">\n                <Text size=\"sm\" color=\"muted\">Prices in USD</Text>\n                {plans.map((plan) => (\n                  <Flex key={plan.name} direction=\"column\" align=\"start\" gap=\"3\">\n                    <Flex direction=\"row\" align=\"center\" wrap=\"wrap\" gap=\"2\">\n                      <Heading as=\"h3\" size=\"sm\">{plan.name}</Heading>\n                      {plan.featured && <Badge variant=\"soft\" tone=\"accent\" size=\"sm\" radius=\"full\">Most popular</Badge>}\n                    </Flex>\n                    <Flex direction=\"row\" align=\"baseline\" gap=\"1\">\n                      <Heading as=\"p\" size=\"lg\" className=\"tabular-nums\">{plan.price}</Heading>\n                      <Text size=\"xs\" color=\"muted\">{plan.period}</Text>\n                    </Flex>\n                    <Button size=\"sm\" variant={plan.featured ? \"solid\" : \"outline\"}>{plan.cta}</Button>\n                  </Flex>\n                ))}\n              </Grid>\n              {groups.map((group) => (\n                <Flex key={group.title} direction=\"column\" gap=\"0\">\n                  <Text size=\"sm\" weight=\"semibold\" className=\"border-b border-hairline pb-3 pt-7\">{group.title}</Text>\n                  {group.rows.map((row) => (\n                    <Grid key={row.feature} columns=\"4\" gap=\"4\" align=\"center\" className=\"grid-cols-[1.6fr_repeat(3,minmax(0,1fr))] border-b border-hairline py-3\">\n                      <Text size=\"sm\" color=\"muted\">{row.feature}</Text>\n                      {row.values.map((value, i) => (\n                        <Flex key={i} direction=\"row\" align=\"center\" gap=\"2\">\n                          {value === \"yes\" && <Icon name=\"check\" size=\"sm\" color=\"contrast\" aria-label=\"Included\" />}\n                          {value === \"no\" && <Icon name=\"minus\" size=\"sm\" color=\"muted\" aria-label=\"Not included\" />}\n                          {value !== \"yes\" && value !== \"no\" && <Text size=\"sm\" className=\"tabular-nums\">{value}</Text>}\n                        </Flex>\n                      ))}\n                    </Grid>\n                  ))}\n                </Flex>\n              ))}\n            </Flex>\n          </Flex>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
+    "rawCode": "import { Badge, Button, Container, Flex, Grid, Heading, Icon, Section, Text } from \"@shavin/ui\";\n\nconst defaultPlans = [\n  { name: \"Free\", price: \"$0\", period: \"forever\", featured: false, cta: \"Start free\" },\n  { name: \"Plus\", price: \"$7.99\", period: \"per month\", featured: false, cta: \"Start trial\" },\n  { name: \"Household\", price: \"$13.99\", period: \"per month\", featured: true, cta: \"Start trial\" },\n];\n\nconst defaultGroups = [\n  {\n    title: \"Accounts\",\n    rows: [\n      { feature: \"Linked accounts\", values: [\"2\", \"Unlimited\", \"Unlimited\"] },\n      { feature: \"Transaction history\", values: [\"12 months\", \"24 months\", \"24 months\"] },\n      { feature: \"Manual and cash accounts\", values: [\"yes\", \"yes\", \"yes\"] },\n    ],\n  },\n  {\n    title: \"Planning\",\n    rows: [\n      { feature: \"Budget categories\", values: [\"10\", \"Unlimited\", \"Unlimited\"] },\n      { feature: \"Savings goals\", values: [\"1\", \"Unlimited\", \"Unlimited\"] },\n      { feature: \"Cash-flow forecast\", values: [\"no\", \"90 days\", \"90 days\"] },\n    ],\n  },\n  {\n    title: \"Smart tools\",\n    rows: [\n      { feature: \"Receipt scans per month\", values: [\"5\", \"50\", \"150\"] },\n      { feature: \"AI questions per month\", values: [\"10\", \"75\", \"200\"] },\n      { feature: \"Subscription tracking\", values: [\"yes\", \"yes\", \"yes\"] },\n    ],\n  },\n  {\n    title: \"Sharing and support\",\n    rows: [\n      { feature: \"Household members\", values: [\"1\", \"1\", \"Up to 6\"] },\n      { feature: \"Roles and permissions\", values: [\"no\", \"no\", \"yes\"] },\n      { feature: \"Support\", values: [\"Email\", \"Email and chat\", \"Priority chat\"] },\n    ],\n  },\n];\n\nexport function PricingComparisonMatrix({ plans = defaultPlans, groups = defaultGroups }) {\n  return (\n    <Section size=\"body\">\n      <Container size=\"lg\">\n        <Flex direction=\"column\" gap=\"7\">\n          <Flex direction=\"column\" gap=\"4\">\n            <Text size=\"overline\" color=\"muted\">Compare plans</Text>\n            <Heading as=\"h2\" size=\"3xl\">Every feature, side by side</Heading>\n          </Flex>\n          <Flex direction=\"column\" gap=\"0\" className=\"-mx-4 overflow-x-auto px-4\">\n            <Flex direction=\"column\" gap=\"0\" className=\"min-w-[44rem]\">\n              <Grid columns=\"4\" gap=\"4\" className=\"grid-cols-[1.6fr_repeat(3,minmax(0,1fr))] items-end border-b border-hairline pb-5\">\n                <Text size=\"sm\" color=\"muted\">Prices in USD</Text>\n                {plans.map((plan) => (\n                  <Flex key={plan.name} direction=\"column\" align=\"start\" gap=\"3\">\n                    <Flex direction=\"row\" align=\"center\" wrap=\"wrap\" gap=\"2\">\n                      <Heading as=\"h3\" size=\"sm\">{plan.name}</Heading>\n                      {plan.featured && <Badge variant=\"soft\" tone=\"accent\" size=\"sm\" radius=\"full\">Most popular</Badge>}\n                    </Flex>\n                    <Flex direction=\"row\" align=\"baseline\" gap=\"1\">\n                      <Heading as=\"p\" size=\"lg\" className=\"tabular-nums\">{plan.price}</Heading>\n                      <Text size=\"xs\" color=\"muted\">{plan.period}</Text>\n                    </Flex>\n                    <Button size=\"sm\" variant={plan.featured ? \"solid\" : \"outline\"} asChild><a href=\"/signup\">{plan.cta}</a></Button>\n                  </Flex>\n                ))}\n              </Grid>\n              {groups.map((group) => (\n                <Flex key={group.title} direction=\"column\" gap=\"0\">\n                  <Text size=\"sm\" weight=\"semibold\" className=\"border-b border-hairline pb-3 pt-7\">{group.title}</Text>\n                  {group.rows.map((row) => (\n                    <Grid key={row.feature} columns=\"4\" gap=\"4\" align=\"center\" className=\"grid-cols-[1.6fr_repeat(3,minmax(0,1fr))] border-b border-hairline py-3\">\n                      <Text size=\"sm\" color=\"muted\">{row.feature}</Text>\n                      {row.values.map((value, i) => (\n                        <Flex key={i} direction=\"row\" align=\"center\" gap=\"2\">\n                          {value === \"yes\" && <Icon name=\"check\" size=\"sm\" color=\"contrast\" aria-label=\"Included\" />}\n                          {value === \"no\" && <Icon name=\"minus\" size=\"sm\" color=\"muted\" aria-label=\"Not included\" />}\n                          {value !== \"yes\" && value !== \"no\" && <Text size=\"sm\" className=\"tabular-nums\">{value}</Text>}\n                        </Flex>\n                      ))}\n                    </Grid>\n                  ))}\n                </Flex>\n              ))}\n            </Flex>\n          </Flex>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
     "sourcePath": "packages/block-schema/blocks/pricing/pricing-comparison-matrix.tsx"
   },
   {
@@ -1580,7 +1580,7 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "guarantee"
     ],
     "version": "1.0.0",
-    "rawCode": "import { Button, Card, Container, Flex, Grid, Heading, Icon, Image, Section, Separator, Text } from \"@shavin/ui\";\n\nconst defaultFeatures = [\n  { icon: \"users\", label: \"Up to 6 household members\" },\n  { icon: \"landmark\", label: \"Unlimited linked accounts\" },\n  { icon: \"target\", label: \"Unlimited budgets and goals\" },\n  { icon: \"trending-up\", label: \"90-day cash-flow forecast\" },\n  { icon: \"receipt\", label: \"150 receipt scans per month\" },\n  { icon: \"sparkles\", label: \"200 AI questions per month\" },\n  { icon: \"message-circle\", label: \"Priority chat support\" },\n];\n\nexport function PricingSinglePlan({ features = defaultFeatures }) {\n  return (\n    <Section size=\"body\">\n      <Container size=\"lg\">\n        <Grid columns=\"2\" gap=\"7\" stack=\"auto\" align=\"center\">\n          <Flex direction=\"column\" gap=\"7\">\n            <Flex direction=\"column\" gap=\"4\">\n              <Text size=\"overline\" color=\"muted\">One plan</Text>\n              <Heading as=\"h2\" size=\"3xl\">Household, billed once a year</Heading>\n              <Text size=\"lg\" color=\"muted\" className=\"max-w-[52ch] text-pretty\">Everything WiseOwl does, for your whole household. One payment of $134 that renews each October.</Text>\n            </Flex>\n            <Grid columns=\"auto\" minWidth=\"xs\" maxColumns=\"2\" gap=\"4\">\n              {features.map((feature) => (\n                <Flex key={feature.label} direction=\"row\" align=\"center\" gap=\"3\">\n                  <Icon name={feature.icon} size=\"sm\" color=\"contrast\" className=\"shrink-0\" />\n                  <Text size=\"sm\" className=\"tabular-nums\">{feature.label}</Text>\n                </Flex>\n              ))}\n            </Grid>\n          </Flex>\n          <Card padding=\"lg\">\n            <Flex direction=\"column\" gap=\"5\">\n              <Image\n                src=\"https://assets.lummi.ai/assets/QmVQ6Y2zm36g3VK9LHzgCKqJEbTbL8GYXtmjuHB3nkgzeX?auto=format&w=1200\"\n                alt=\"A bright living room with a cream sofa in afternoon sun\"\n                ratio=\"21/9\"\n                radius=\"concentric\"\n              />\n              <Flex direction=\"column\" gap=\"1\">\n                <Flex direction=\"row\" align=\"baseline\" gap=\"2\">\n                  <Heading as=\"p\" size=\"4xl\" className=\"tabular-nums\">$134</Heading>\n                  <Text size=\"sm\" color=\"muted\">per year</Text>\n                </Flex>\n                <Text size=\"sm\" color=\"muted\" className=\"tabular-nums\">Works out to $11.17 a month</Text>\n              </Flex>\n              <Flex direction=\"column\" gap=\"2\">\n                <Button size=\"lg\" className=\"w-full\">Get Household</Button>\n                <Button size=\"lg\" variant=\"ghost\" className=\"w-full\">Start a 14-day trial first</Button>\n              </Flex>\n              <Separator />\n              <Flex direction=\"row\" align=\"start\" gap=\"3\">\n                <Icon name=\"shield-check\" size=\"sm\" color=\"muted\" className=\"mt-0.5 shrink-0\" />\n                <Text size=\"xs\" color=\"muted\" className=\"text-pretty tabular-nums\">30-day money-back guarantee. If WiseOwl is not for you, we refund the full $134.</Text>\n              </Flex>\n            </Flex>\n          </Card>\n        </Grid>\n      </Container>\n    </Section>\n  );\n}\n",
+    "rawCode": "import { Button, Card, Container, Flex, Grid, Heading, Icon, Image, Section, Separator, Text } from \"@shavin/ui\";\n\nconst defaultFeatures = [\n  { icon: \"users\", label: \"Up to 6 household members\" },\n  { icon: \"landmark\", label: \"Unlimited linked accounts\" },\n  { icon: \"target\", label: \"Unlimited budgets and goals\" },\n  { icon: \"trending-up\", label: \"90-day cash-flow forecast\" },\n  { icon: \"receipt\", label: \"150 receipt scans per month\" },\n  { icon: \"sparkles\", label: \"200 AI questions per month\" },\n  { icon: \"message-circle\", label: \"Priority chat support\" },\n];\n\nexport function PricingSinglePlan({ features = defaultFeatures }) {\n  return (\n    <Section size=\"body\">\n      <Container size=\"lg\">\n        <Grid columns=\"2\" gap=\"7\" stack=\"auto\" align=\"center\">\n          <Flex direction=\"column\" gap=\"7\">\n            <Flex direction=\"column\" gap=\"4\">\n              <Text size=\"overline\" color=\"muted\">One plan</Text>\n              <Heading as=\"h2\" size=\"3xl\">Household, billed once a year</Heading>\n              <Text size=\"lg\" color=\"muted\" className=\"max-w-[52ch] text-pretty\">Everything WiseOwl does, for your whole household. One payment of $134 that renews each October.</Text>\n            </Flex>\n            <Grid columns=\"auto\" minWidth=\"xs\" maxColumns=\"2\" gap=\"4\">\n              {features.map((feature) => (\n                <Flex key={feature.label} direction=\"row\" align=\"center\" gap=\"3\">\n                  <Icon name={feature.icon} size=\"sm\" color=\"contrast\" className=\"shrink-0\" />\n                  <Text size=\"sm\" className=\"tabular-nums\">{feature.label}</Text>\n                </Flex>\n              ))}\n            </Grid>\n          </Flex>\n          <Card padding=\"lg\">\n            <Flex direction=\"column\" gap=\"5\">\n              <Image\n                src=\"https://assets.lummi.ai/assets/QmVQ6Y2zm36g3VK9LHzgCKqJEbTbL8GYXtmjuHB3nkgzeX?auto=format&w=1200\"\n                alt=\"A bright living room with a cream sofa in afternoon sun\"\n                ratio=\"21/9\"\n                radius=\"concentric\"\n              />\n              <Flex direction=\"column\" gap=\"1\">\n                <Flex direction=\"row\" align=\"baseline\" gap=\"2\">\n                  <Heading as=\"p\" size=\"4xl\" className=\"tabular-nums\">$134</Heading>\n                  <Text size=\"sm\" color=\"muted\">per year</Text>\n                </Flex>\n                <Text size=\"sm\" color=\"muted\" className=\"tabular-nums\">Works out to $11.17 a month</Text>\n              </Flex>\n              <Flex direction=\"column\" gap=\"2\">\n                <Button size=\"lg\" className=\"w-full\" asChild><a href=\"/signup\">Get Household</a></Button>\n                <Button size=\"lg\" variant=\"ghost\" className=\"w-full\" asChild><a href=\"/signup?trial=1\">Start a 14-day trial first</a></Button>\n              </Flex>\n              <Separator />\n              <Flex direction=\"row\" align=\"start\" gap=\"3\">\n                <Icon name=\"shield-check\" size=\"sm\" color=\"muted\" className=\"mt-0.5 shrink-0\" />\n                <Text size=\"xs\" color=\"muted\" className=\"text-pretty tabular-nums\">30-day money-back guarantee. If WiseOwl is not for you, we refund the full $134.</Text>\n              </Flex>\n            </Flex>\n          </Card>\n        </Grid>\n      </Container>\n    </Section>\n  );\n}\n",
     "sourcePath": "packages/block-schema/blocks/pricing/pricing-single-plan.tsx"
   },
   {
@@ -1610,7 +1610,7 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "cards"
     ],
     "version": "1.0.0",
-    "rawCode": "import { Badge, Button, Card, Container, Flex, Grid, Heading, Icon, Section, Separator, Text } from \"@shavin/ui\";\n\nconst defaultTiers = [\n  {\n    name: \"Free\",\n    price: \"$0\",\n    period: \"forever\",\n    description: \"For one person getting organised.\",\n    featured: false,\n    features: [\"2 linked accounts\", \"10 budget categories\", \"Bill reminders\", \"Web and mobile apps\"],\n    cta: \"Start free\",\n  },\n  {\n    name: \"Plus\",\n    price: \"$7.99\",\n    period: \"per month\",\n    description: \"For individuals who want the full picture.\",\n    featured: false,\n    features: [\"Unlimited linked accounts\", \"Unlimited budgets and goals\", \"50 receipt scans per month\", \"75 AI questions per month\", \"CSV and PDF export\"],\n    cta: \"Start 14-day trial\",\n  },\n  {\n    name: \"Household\",\n    price: \"$13.99\",\n    period: \"per month\",\n    description: \"For couples and families sharing money.\",\n    featured: true,\n    features: [\"Everything in Plus\", \"Up to 6 household members\", \"Owner, Editor and Viewer roles\", \"150 receipt scans per month\", \"200 AI questions per month\"],\n    cta: \"Start 14-day trial\",\n  },\n];\n\nexport function PricingThreeTier({ tiers = defaultTiers }) {\n  return (\n    <Section size=\"body\">\n      <Container size=\"lg\">\n        <Flex direction=\"column\" gap=\"7\">\n          <Flex direction=\"column\" align=\"center\" gap=\"4\" className=\"text-center\">\n            <Text size=\"overline\" color=\"muted\">Pricing</Text>\n            <Heading as=\"h2\" size=\"3xl\">Simple plans for every household</Heading>\n            <Text size=\"lg\" color=\"muted\" className=\"max-w-[52ch] text-pretty\">Start free and upgrade when you need more. Every plan includes read-only bank connections and two-factor sign-in.</Text>\n          </Flex>\n          <Grid columns=\"auto\" minWidth=\"md\" maxColumns=\"3\" gap=\"5\">\n            {tiers.map((tier) => (\n              <Card key={tier.name} padding=\"lg\" className={tier.featured ? \"border-hairline-strong bg-surface-hover/15\" : \"\"}>\n                <Flex direction=\"column\" gap=\"5\" className=\"h-full\">\n                  <Flex direction=\"column\" gap=\"2\">\n                    <Flex direction=\"row\" align=\"center\" justify=\"between\" gap=\"2\">\n                      <Heading as=\"h3\" size=\"md\">{tier.name}</Heading>\n                      {tier.featured && <Badge variant=\"soft\" tone=\"accent\" size=\"sm\" radius=\"full\">Most popular</Badge>}\n                    </Flex>\n                    <Text size=\"sm\" color=\"muted\" className=\"text-pretty\">{tier.description}</Text>\n                  </Flex>\n                  <Flex direction=\"row\" align=\"baseline\" gap=\"2\">\n                    <Heading as=\"p\" size=\"3xl\" className=\"tabular-nums\">{tier.price}</Heading>\n                    <Text size=\"sm\" color=\"muted\">{tier.period}</Text>\n                  </Flex>\n                  <Separator />\n                  <Flex direction=\"column\" gap=\"3\">\n                    {tier.features.map((feature) => (\n                      <Flex key={feature} direction=\"row\" align=\"start\" gap=\"2\">\n                        <Icon name=\"check\" size=\"sm\" color=\"contrast\" className=\"mt-0.5 shrink-0\" />\n                        <Text size=\"sm\" className=\"tabular-nums\">{feature}</Text>\n                      </Flex>\n                    ))}\n                  </Flex>\n                  <Button size=\"lg\" variant={tier.featured ? \"solid\" : \"outline\"} className=\"mt-auto w-full\">{tier.cta}</Button>\n                </Flex>\n              </Card>\n            ))}\n          </Grid>\n          <Text size=\"xs\" color=\"muted\" className=\"text-center\">Prices in USD. Taxes may apply.</Text>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
+    "rawCode": "import { Badge, Button, Card, Container, Flex, Grid, Heading, Icon, Section, Separator, Text } from \"@shavin/ui\";\n\nconst defaultTiers = [\n  {\n    name: \"Free\",\n    price: \"$0\",\n    period: \"forever\",\n    description: \"For one person getting organised.\",\n    featured: false,\n    features: [\"2 linked accounts\", \"10 budget categories\", \"Bill reminders\", \"Web and mobile apps\"],\n    cta: \"Start free\",\n  },\n  {\n    name: \"Plus\",\n    price: \"$7.99\",\n    period: \"per month\",\n    description: \"For individuals who want the full picture.\",\n    featured: false,\n    features: [\"Unlimited linked accounts\", \"Unlimited budgets and goals\", \"50 receipt scans per month\", \"75 AI questions per month\", \"CSV and PDF export\"],\n    cta: \"Start 14-day trial\",\n  },\n  {\n    name: \"Household\",\n    price: \"$13.99\",\n    period: \"per month\",\n    description: \"For couples and families sharing money.\",\n    featured: true,\n    features: [\"Everything in Plus\", \"Up to 6 household members\", \"Owner, Editor and Viewer roles\", \"150 receipt scans per month\", \"200 AI questions per month\"],\n    cta: \"Start 14-day trial\",\n  },\n];\n\nexport function PricingThreeTier({ tiers = defaultTiers }) {\n  return (\n    <Section size=\"body\">\n      <Container size=\"lg\">\n        <Flex direction=\"column\" gap=\"7\">\n          <Flex direction=\"column\" align=\"center\" gap=\"4\" className=\"text-center\">\n            <Text size=\"overline\" color=\"muted\">Pricing</Text>\n            <Heading as=\"h2\" size=\"3xl\">Simple plans for every household</Heading>\n            <Text size=\"lg\" color=\"muted\" className=\"max-w-[52ch] text-pretty\">Start free and upgrade when you need more. Every plan includes read-only bank connections and two-factor sign-in.</Text>\n          </Flex>\n          <Grid columns=\"auto\" minWidth=\"md\" maxColumns=\"3\" gap=\"5\">\n            {tiers.map((tier) => (\n              <Card key={tier.name} padding=\"lg\" className={tier.featured ? \"border-hairline-strong bg-surface-hover/15\" : \"\"}>\n                <Flex direction=\"column\" gap=\"5\" className=\"h-full\">\n                  <Flex direction=\"column\" gap=\"2\">\n                    <Flex direction=\"row\" align=\"center\" justify=\"between\" gap=\"2\">\n                      <Heading as=\"h3\" size=\"md\">{tier.name}</Heading>\n                      {tier.featured && <Badge variant=\"soft\" tone=\"accent\" size=\"sm\" radius=\"full\">Most popular</Badge>}\n                    </Flex>\n                    <Text size=\"sm\" color=\"muted\" className=\"text-pretty\">{tier.description}</Text>\n                  </Flex>\n                  <Flex direction=\"row\" align=\"baseline\" gap=\"2\">\n                    <Heading as=\"p\" size=\"3xl\" className=\"tabular-nums\">{tier.price}</Heading>\n                    <Text size=\"sm\" color=\"muted\">{tier.period}</Text>\n                  </Flex>\n                  <Separator />\n                  <Flex direction=\"column\" gap=\"3\">\n                    {tier.features.map((feature) => (\n                      <Flex key={feature} direction=\"row\" align=\"start\" gap=\"2\">\n                        <Icon name=\"check\" size=\"sm\" color=\"contrast\" className=\"mt-0.5 shrink-0\" />\n                        <Text size=\"sm\" className=\"tabular-nums\">{feature}</Text>\n                      </Flex>\n                    ))}\n                  </Flex>\n                  <Button size=\"lg\" variant={tier.featured ? \"solid\" : \"outline\"} className=\"mt-auto w-full\" asChild><a href=\"/signup\">{tier.cta}</a></Button>\n                </Flex>\n              </Card>\n            ))}\n          </Grid>\n          <Text size=\"xs\" color=\"muted\" className=\"text-center\">Prices in USD. Taxes may apply.</Text>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
     "sourcePath": "packages/block-schema/blocks/pricing/pricing-three-tier.tsx"
   },
   {
@@ -1642,7 +1642,7 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "annual"
     ],
     "version": "1.0.0",
-    "rawCode": "import { Button, Card, Container, Flex, Grid, Heading, Icon, Link, Section, SegmentedControl, SegmentedControlItem, Separator, Text } from \"@shavin/ui\";\n\nconst defaultPlans = [\n  {\n    name: \"Plus\",\n    description: \"For individuals who want the full picture.\",\n    price: \"$6.33\",\n    billed: \"$76 billed yearly\",\n    monthly: \"or $7.99 billed monthly\",\n    featured: false,\n    features: [\"Unlimited accounts and budgets\", \"50 receipt scans per month\", \"75 AI questions per month\"],\n    cta: \"Choose Plus\",\n  },\n  {\n    name: \"Household\",\n    description: \"For couples and families sharing money.\",\n    price: \"$11.17\",\n    billed: \"$134 billed yearly\",\n    monthly: \"or $13.99 billed monthly\",\n    featured: true,\n    features: [\"Up to 6 members with roles\", \"150 receipt scans per month\", \"200 AI questions per month\"],\n    cta: \"Choose Household\",\n  },\n];\n\nconst defaultAdvisor = { label: \"Talk to our team\", href: \"/advisors\" };\n\nexport function PricingToggle({ plans = defaultPlans, advisor = defaultAdvisor }) {\n  return (\n    <Section size=\"body\">\n      <Container size=\"md\">\n        <Flex direction=\"column\" gap=\"7\">\n          <Flex direction=\"column\" align=\"center\" gap=\"4\" className=\"text-center\">\n            <Text size=\"overline\" color=\"muted\">Pricing</Text>\n            <Heading as=\"h2\" size=\"3xl\">Pay monthly or save 20% yearly</Heading>\n            <Text size=\"lg\" color=\"muted\" className=\"max-w-[52ch] text-pretty\">Switch plans at any time. Changes are prorated to the day, and you can cancel from settings in two clicks.</Text>\n            <Flex direction=\"row\" align=\"center\" justify=\"center\" wrap=\"wrap\" gap=\"3\" className=\"pt-2\">\n              <SegmentedControl defaultValue=\"annual\" variant=\"pill\" size=\"md\" aria-label=\"Billing period\">\n                <SegmentedControlItem value=\"monthly\">Monthly</SegmentedControlItem>\n                <SegmentedControlItem value=\"annual\">Annual</SegmentedControlItem>\n              </SegmentedControl>\n              <Text size=\"sm\" weight=\"medium\" color=\"accent\">Save 20% with annual billing</Text>\n            </Flex>\n          </Flex>\n          <Grid columns=\"auto\" minWidth=\"md\" maxColumns=\"2\" gap=\"5\">\n            {plans.map((plan) => (\n              <Card key={plan.name} padding=\"lg\" className={plan.featured ? \"border-hairline-strong bg-surface-hover/15\" : \"\"}>\n                <Flex direction=\"column\" gap=\"5\" className=\"h-full\">\n                  <Flex direction=\"column\" gap=\"2\">\n                    <Heading as=\"h3\" size=\"md\">{plan.name}</Heading>\n                    <Text size=\"sm\" color=\"muted\" className=\"text-pretty\">{plan.description}</Text>\n                  </Flex>\n                  <Flex direction=\"column\" gap=\"1\">\n                    <Flex direction=\"row\" align=\"baseline\" gap=\"2\">\n                      <Heading as=\"p\" size=\"3xl\" className=\"tabular-nums\">{plan.price}</Heading>\n                      <Text size=\"sm\" color=\"muted\">per month</Text>\n                    </Flex>\n                    <Text size=\"xs\" color=\"muted\" className=\"tabular-nums\">{plan.billed}, {plan.monthly}</Text>\n                  </Flex>\n                  <Separator />\n                  <Flex direction=\"column\" gap=\"3\">\n                    {plan.features.map((feature) => (\n                      <Flex key={feature} direction=\"row\" align=\"start\" gap=\"2\">\n                        <Icon name=\"check\" size=\"sm\" color=\"contrast\" className=\"mt-0.5 shrink-0\" />\n                        <Text size=\"sm\" className=\"tabular-nums\">{feature}</Text>\n                      </Flex>\n                    ))}\n                  </Flex>\n                  <Button size=\"lg\" variant={plan.featured ? \"solid\" : \"outline\"} className=\"mt-auto w-full\">{plan.cta}</Button>\n                </Flex>\n              </Card>\n            ))}\n          </Grid>\n          <Card padding=\"lg\">\n            <Flex direction=\"column\" justify=\"between\" gap=\"4\" className=\"md:flex-row md:items-center\">\n              <Flex direction=\"row\" align=\"start\" gap=\"4\">\n                <Icon name=\"briefcase\" size=\"md\" color=\"muted\" className=\"mt-1 shrink-0\" />\n                <Flex direction=\"column\" gap=\"1\">\n                  <Flex direction=\"row\" align=\"baseline\" wrap=\"wrap\" gap=\"2\">\n                    <Heading as=\"h3\" size=\"md\">Advisor</Heading>\n                    <Text size=\"sm\" color=\"muted\" className=\"tabular-nums\">$39 per advisor seat, per month</Text>\n                  </Flex>\n                  <Text size=\"sm\" color=\"muted\" className=\"max-w-[52ch] text-pretty\">For accountants and planners managing client households with read-only access, notes and bulk exports.</Text>\n                </Flex>\n              </Flex>\n              <Link href={advisor.href} size=\"sm\" className=\"inline-flex h-10 shrink-0 items-center font-medium\">{advisor.label}</Link>\n            </Flex>\n          </Card>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
+    "rawCode": "import { Button, Card, Container, Flex, Grid, Heading, Icon, Link, Section, SegmentedControl, SegmentedControlItem, Separator, Text } from \"@shavin/ui\";\n\nconst defaultPlans = [\n  {\n    name: \"Plus\",\n    description: \"For individuals who want the full picture.\",\n    price: \"$6.33\",\n    billed: \"$76 billed yearly\",\n    monthly: \"or $7.99 billed monthly\",\n    featured: false,\n    features: [\"Unlimited accounts and budgets\", \"50 receipt scans per month\", \"75 AI questions per month\"],\n    cta: \"Choose Plus\",\n  },\n  {\n    name: \"Household\",\n    description: \"For couples and families sharing money.\",\n    price: \"$11.17\",\n    billed: \"$134 billed yearly\",\n    monthly: \"or $13.99 billed monthly\",\n    featured: true,\n    features: [\"Up to 6 members with roles\", \"150 receipt scans per month\", \"200 AI questions per month\"],\n    cta: \"Choose Household\",\n  },\n];\n\nconst defaultAdvisor = { label: \"Talk to our team\", href: \"/advisors\" };\n\nexport function PricingToggle({ plans = defaultPlans, advisor = defaultAdvisor }) {\n  return (\n    <Section size=\"body\">\n      <Container size=\"md\">\n        <Flex direction=\"column\" gap=\"7\">\n          <Flex direction=\"column\" align=\"center\" gap=\"4\" className=\"text-center\">\n            <Text size=\"overline\" color=\"muted\">Pricing</Text>\n            <Heading as=\"h2\" size=\"3xl\">Pay monthly or save 20% yearly</Heading>\n            <Text size=\"lg\" color=\"muted\" className=\"max-w-[52ch] text-pretty\">Switch plans at any time. Changes are prorated to the day, and you can cancel from settings in two clicks.</Text>\n            <Flex direction=\"row\" align=\"center\" justify=\"center\" wrap=\"wrap\" gap=\"3\" className=\"pt-2\">\n              <SegmentedControl defaultValue=\"annual\" variant=\"pill\" size=\"md\" aria-label=\"Billing period\">\n                <SegmentedControlItem value=\"monthly\">Monthly</SegmentedControlItem>\n                <SegmentedControlItem value=\"annual\">Annual</SegmentedControlItem>\n              </SegmentedControl>\n              <Text size=\"sm\" weight=\"medium\" color=\"accent\">Save 20% with annual billing</Text>\n            </Flex>\n          </Flex>\n          <Grid columns=\"auto\" minWidth=\"md\" maxColumns=\"2\" gap=\"5\">\n            {plans.map((plan) => (\n              <Card key={plan.name} padding=\"lg\" className={plan.featured ? \"border-hairline-strong bg-surface-hover/15\" : \"\"}>\n                <Flex direction=\"column\" gap=\"5\" className=\"h-full\">\n                  <Flex direction=\"column\" gap=\"2\">\n                    <Heading as=\"h3\" size=\"md\">{plan.name}</Heading>\n                    <Text size=\"sm\" color=\"muted\" className=\"text-pretty\">{plan.description}</Text>\n                  </Flex>\n                  <Flex direction=\"column\" gap=\"1\">\n                    <Flex direction=\"row\" align=\"baseline\" gap=\"2\">\n                      <Heading as=\"p\" size=\"3xl\" className=\"tabular-nums\">{plan.price}</Heading>\n                      <Text size=\"sm\" color=\"muted\">per month</Text>\n                    </Flex>\n                    <Text size=\"xs\" color=\"muted\" className=\"tabular-nums\">{plan.billed}, {plan.monthly}</Text>\n                  </Flex>\n                  <Separator />\n                  <Flex direction=\"column\" gap=\"3\">\n                    {plan.features.map((feature) => (\n                      <Flex key={feature} direction=\"row\" align=\"start\" gap=\"2\">\n                        <Icon name=\"check\" size=\"sm\" color=\"contrast\" className=\"mt-0.5 shrink-0\" />\n                        <Text size=\"sm\" className=\"tabular-nums\">{feature}</Text>\n                      </Flex>\n                    ))}\n                  </Flex>\n                  <Button size=\"lg\" variant={plan.featured ? \"solid\" : \"outline\"} className=\"mt-auto w-full\" asChild><a href=\"/signup\">{plan.cta}</a></Button>\n                </Flex>\n              </Card>\n            ))}\n          </Grid>\n          <Card padding=\"lg\">\n            <Flex direction=\"column\" justify=\"between\" gap=\"4\" className=\"md:flex-row md:items-center\">\n              <Flex direction=\"row\" align=\"start\" gap=\"4\">\n                <Icon name=\"briefcase\" size=\"md\" color=\"muted\" className=\"mt-1 shrink-0\" />\n                <Flex direction=\"column\" gap=\"1\">\n                  <Flex direction=\"row\" align=\"baseline\" wrap=\"wrap\" gap=\"2\">\n                    <Heading as=\"h3\" size=\"md\">Advisor</Heading>\n                    <Text size=\"sm\" color=\"muted\" className=\"tabular-nums\">$39 per advisor seat, per month</Text>\n                  </Flex>\n                  <Text size=\"sm\" color=\"muted\" className=\"max-w-[52ch] text-pretty\">For accountants and planners managing client households with read-only access, notes and bulk exports.</Text>\n                </Flex>\n              </Flex>\n              <Link href={advisor.href} size=\"sm\" className=\"inline-flex h-10 shrink-0 items-center font-medium\">{advisor.label}</Link>\n            </Flex>\n          </Card>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
     "replaces": "pricing-plans",
     "sourcePath": "packages/block-schema/blocks/pricing/pricing-toggle.tsx"
   },
@@ -1670,7 +1670,7 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "grid"
     ],
     "version": "1.0.0",
-    "rawCode": "import { Avatar, Card, Container, Flex, Grid, Heading, Icon, Section, Text } from \"@shavin/ui\";\n\nconst defaultQuotes = [\n  { name: \"Aiyana Whitehorse\", role: \"Civil engineer\", photo: \"https://assets.lummi.ai/assets/QmQcKhezkk7r1v6yWpKETiLR22bUnVth1qxou372nTSS7w?auto=format&w=400\", quote: \"The home goal says $612 per paycheck. Knowing the exact number made it easy to stick with.\" },\n  { name: \"Samir Haddad\", role: \"Small-business owner\", photo: \"https://assets.lummi.ai/assets/QmXfEoGQdAQxXbT8ydEjxDR8UtXpmywjsqyUQCUeDLz4Ej?auto=format&w=400\", quote: \"Separate households for home and the shop finally stopped me mixing the two.\" },\n];\n\nexport function TestimonialsFeatured({ quotes = defaultQuotes }) {\n  return (\n    <Section size=\"body\">\n      <Container size=\"lg\">\n        <Flex direction=\"column\" gap=\"7\">\n          <Flex direction=\"column\" gap=\"4\">\n            <Text size=\"overline\" color=\"muted\">In their words</Text>\n            <Heading as=\"h2\" size=\"3xl\">Households who stopped guessing</Heading>\n          </Flex>\n          <Grid columns=\"auto\" minWidth=\"md\" maxColumns=\"3\" gap=\"5\">\n            <Card padding=\"xl\" className=\"md:col-span-2 lg:row-span-2\">\n              <Flex direction=\"column\" justify=\"between\" gap=\"7\" className=\"h-full\">\n                <Flex direction=\"column\" gap=\"5\">\n                  <Icon name=\"quote\" size=\"xl\" color=\"muted\" />\n                  <Heading as=\"p\" size=\"2xl\" weight=\"normal\" className=\"text-pretty\">\n                    I can see my parents’ bills from two states away and catch a missed payment before it becomes a late fee. They keep full control.\n                  </Heading>\n                </Flex>\n                <Flex direction=\"row\" align=\"center\" gap=\"4\">\n                  <Avatar src=\"https://assets.lummi.ai/assets/QmX5eK5oLpmJmSstwYVDmKtsUjU7UPN3BXVMSjJkup2FZV?auto=format&w=400\" alt=\"Fatima Al-Sayed\" size=\"lg\" />\n                  <Flex direction=\"column\" gap=\"0\">\n                    <Text size=\"md\" weight=\"semibold\">Fatima Al-Sayed</Text>\n                    <Text size=\"sm\" color=\"muted\">Pharmacist · manages her parents’ household</Text>\n                  </Flex>\n                </Flex>\n              </Flex>\n            </Card>\n            {quotes.map((item) => (\n              <Card key={item.name} padding=\"lg\">\n                <Flex direction=\"column\" justify=\"between\" gap=\"5\" className=\"h-full\">\n                  <Text size=\"md\" className=\"text-pretty\">“{item.quote}”</Text>\n                  <Flex direction=\"row\" align=\"center\" gap=\"3\">\n                    <Avatar src={item.photo} alt={item.name} size=\"md\" />\n                    <Flex direction=\"column\" gap=\"0\">\n                      <Text size=\"sm\" weight=\"semibold\">{item.name}</Text>\n                      <Text size=\"sm\" color=\"muted\">{item.role}</Text>\n                    </Flex>\n                  </Flex>\n                </Flex>\n              </Card>\n            ))}\n          </Grid>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
+    "rawCode": "import { Avatar, Card, Container, Flex, Grid, Heading, Icon, Section, Text } from \"@shavin/ui\";\n\nconst defaultQuotes = [\n  { name: \"Aiyana Whitehorse\", role: \"Civil engineer\", photo: \"https://assets.lummi.ai/assets/QmQcKhezkk7r1v6yWpKETiLR22bUnVth1qxou372nTSS7w?auto=format&w=400\", quote: \"The home goal says $612 per paycheck. Knowing the exact number made it easy to stick with.\" },\n  { name: \"Samir Haddad\", role: \"Small-business owner\", photo: \"https://assets.lummi.ai/assets/QmXfEoGQdAQxXbT8ydEjxDR8UtXpmywjsqyUQCUeDLz4Ej?auto=format&w=400\", quote: \"Separate households for home and the shop finally stopped me mixing the two.\" },\n];\n\nexport function TestimonialsFeatured({ quotes = defaultQuotes }) {\n  return (\n    <Section size=\"body\">\n      <Container size=\"lg\">\n        <Flex direction=\"column\" gap=\"7\">\n          <Flex direction=\"column\" gap=\"4\">\n            <Text size=\"overline\" color=\"muted\">In their words</Text>\n            <Heading as=\"h2\" size=\"3xl\">Households who stopped guessing</Heading>\n          </Flex>\n          <Grid columns=\"auto\" minWidth=\"md\" maxColumns=\"3\" gap=\"5\">\n            <Card padding=\"xl\" className=\"md:col-span-2 lg:row-span-2\">\n              <Flex direction=\"column\" justify=\"between\" gap=\"7\" className=\"h-full\">\n                <Flex direction=\"column\" gap=\"5\">\n                  <Icon name=\"quote\" size=\"xl\" color=\"muted\" />\n                  <Heading as=\"p\" size=\"2xl\" weight=\"normal\" className=\"text-pretty\">\n                    I can see my parents’ bills from two states away and catch a missed payment before it becomes a late fee. They keep full control.\n                  </Heading>\n                </Flex>\n                <Flex direction=\"row\" align=\"center\" gap=\"4\">\n                  <Avatar src=\"https://assets.lummi.ai/assets/QmX5eK5oLpmJmSstwYVDmKtsUjU7UPN3BXVMSjJkup2FZV?auto=format&w=400\" alt=\"Fatima Al-Sayed\" size=\"lg\" />\n                  <Flex direction=\"column\" gap=\"0\">\n                    <Text size=\"md\" weight=\"semibold\">Fatima Al-Sayed</Text>\n                    <Text size=\"sm\" color=\"muted\">Pharmacist · manages her parents’ household</Text>\n                  </Flex>\n                </Flex>\n              </Flex>\n            </Card>\n            {quotes.map((item) => (\n              <Card key={item.name} padding=\"lg\">\n                <Flex direction=\"column\" justify=\"between\" gap=\"5\" className=\"h-full\">\n                  <Text size=\"md\" className=\"text-pretty\">“{item.quote}”</Text>\n                  <Flex direction=\"row\" align=\"center\" gap=\"3\">\n                    <Avatar src={item.photo} size=\"md\" />\n                    <Flex direction=\"column\" gap=\"0\">\n                      <Text size=\"sm\" weight=\"semibold\">{item.name}</Text>\n                      <Text size=\"sm\" color=\"muted\">{item.role}</Text>\n                    </Flex>\n                  </Flex>\n                </Flex>\n              </Card>\n            ))}\n          </Grid>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
     "replaces": "testimonials-grid",
     "sourcePath": "packages/block-schema/blocks/testimonials/testimonials-featured.tsx"
   },
@@ -1721,7 +1721,7 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "grid"
     ],
     "version": "1.0.0",
-    "rawCode": "import { Avatar, Card, Container, Flex, Grid, Heading, Icon, Section, Text } from \"@shavin/ui\";\n\nconst stars = [1, 2, 3, 4, 5];\nconst featuredStars = [1, 2, 3, 4, 5];\n\nconst defaultReviews = [\n  { name: \"Marcus Bell\", role: \"Restaurant manager\", rating: 5, photo: \"https://assets.lummi.ai/assets/QmXfEoGQdAQxXbT8ydEjxDR8UtXpmywjsqyUQCUeDLz4Ej?auto=format&w=400\", quote: \"The subscriptions list paid for the app in the first week. I had no idea about two of them.\" },\n  { name: \"Ingrid Solberg\", role: \"Retired librarian\", rating: 5, photo: \"https://assets.lummi.ai/assets/QmX5eK5oLpmJmSstwYVDmKtsUjU7UPN3BXVMSjJkup2FZV?auto=format&w=400\", quote: \"Large text, plain words, and a reminder before each bill. My daughter set it up in an afternoon.\" },\n  { name: \"Amara Nwosu\", role: \"Graduate student\", rating: 4, photo: \"https://assets.lummi.ai/assets/Qma5G7Ysfs1veKyTEdAC8tPvCdM9KDGeGY3Jrsf7Bky7N7?auto=format&w=400\", quote: \"The free plan covers what I need on a tight stipend. I wish custom category icons were on Android too.\" },\n  { name: \"Diego Morales\", role: \"Electrician\", rating: 5, photo: \"https://assets.lummi.ai/assets/QmajivGeNJJBhcUZrd52CDSeGopQ5cpeS3ew2qopjdXQBX?auto=format&w=400\", quote: \"I scan job receipts in the truck. My accountant gets a clean export instead of a shoebox.\" },\n];\n\nexport function TestimonialsReviewGrid({ reviews = defaultReviews }) {\n  return (\n    <Section size=\"body\">\n      <Container size=\"lg\">\n        <Flex direction=\"column\" gap=\"7\">\n          <Flex direction=\"column\" gap=\"4\">\n            <Text size=\"overline\" color=\"muted\">Reviews</Text>\n            <Heading as=\"h2\" size=\"3xl\">What members say after a year</Heading>\n            <Flex direction=\"row\" align=\"baseline\" wrap=\"wrap\" gap=\"2\">\n              <Heading as=\"p\" size=\"3xl\" weight=\"medium\" className=\"tabular-nums\">4.8</Heading>\n              <Text size=\"lg\" color=\"muted\" className=\"tabular-nums\">/ 5 · 3,906 reviews</Text>\n            </Flex>\n            <Text size=\"lg\" color=\"muted\" className=\"max-w-[52ch] text-pretty\">\n              Average rating from member reviews on the App Store, Google Play and Trustpilot.\n            </Text>\n          </Flex>\n          <Grid columns=\"auto\" minWidth=\"md\" maxColumns=\"3\" gap=\"5\">\n            <Card padding=\"xl\" className=\"md:col-span-2\">\n              <Flex direction=\"column\" justify=\"between\" gap=\"6\" className=\"h-full\">\n                <Flex direction=\"column\" gap=\"4\">\n                  <Flex direction=\"row\" gap=\"1\" aria-label=\"5 out of 5 stars\">\n                    {featuredStars.map((star) => (\n                      <Icon key={star} name=\"star\" size=\"sm\" color=\"accent\" className=\"fill-current\" />\n                    ))}\n                  </Flex>\n                  <Heading as=\"p\" size=\"lg\" weight=\"normal\" className=\"max-w-[40ch] text-pretty\">\n                    “Watching the payoff date move closer each month kept me going. $18,420 cleared in 22 months.”\n                  </Heading>\n                </Flex>\n                <Flex direction=\"row\" align=\"center\" gap=\"3\">\n                  <Avatar src=\"https://assets.lummi.ai/assets/QmQcKhezkk7r1v6yWpKETiLR22bUnVth1qxou372nTSS7w?auto=format&w=400\" alt=\"Priya Raman\" size=\"lg\" />\n                  <Flex direction=\"column\" gap=\"0\">\n                    <Text size=\"md\" weight=\"semibold\">Priya Raman</Text>\n                    <Text size=\"sm\" color=\"muted\">Nurse practitioner</Text>\n                  </Flex>\n                </Flex>\n              </Flex>\n            </Card>\n            {reviews.map((review) => (\n              <Card key={review.name} padding=\"lg\">\n                <Flex direction=\"column\" justify=\"between\" gap=\"5\" className=\"h-full\">\n                  <Flex direction=\"column\" gap=\"3\">\n                    <Flex direction=\"row\" gap=\"1\" aria-label={`${review.rating} out of 5 stars`}>\n                      {stars.map((star) => (\n                        <Icon key={star} name=\"star\" size=\"sm\" color={star <= review.rating ? \"accent\" : \"subtle\"} className={star <= review.rating ? \"fill-current\" : \"\"} />\n                      ))}\n                    </Flex>\n                    <Text size=\"md\" className=\"text-pretty\">“{review.quote}”</Text>\n                  </Flex>\n                  <Flex direction=\"row\" align=\"center\" gap=\"3\">\n                    <Avatar src={review.photo} alt={review.name} size=\"md\" />\n                    <Flex direction=\"column\" gap=\"0\">\n                      <Text size=\"sm\" weight=\"semibold\">{review.name}</Text>\n                      <Text size=\"sm\" color=\"muted\">{review.role}</Text>\n                    </Flex>\n                  </Flex>\n                </Flex>\n              </Card>\n            ))}\n          </Grid>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
+    "rawCode": "import { Avatar, Card, Container, Flex, Grid, Heading, Icon, Section, Text } from \"@shavin/ui\";\n\nconst stars = [1, 2, 3, 4, 5];\nconst featuredStars = [1, 2, 3, 4, 5];\n\nconst defaultReviews = [\n  { name: \"Marcus Bell\", role: \"Restaurant manager\", rating: 5, photo: \"https://assets.lummi.ai/assets/QmXfEoGQdAQxXbT8ydEjxDR8UtXpmywjsqyUQCUeDLz4Ej?auto=format&w=400\", quote: \"The subscriptions list paid for the app in the first week. I had no idea about two of them.\" },\n  { name: \"Ingrid Solberg\", role: \"Retired librarian\", rating: 5, photo: \"https://assets.lummi.ai/assets/QmX5eK5oLpmJmSstwYVDmKtsUjU7UPN3BXVMSjJkup2FZV?auto=format&w=400\", quote: \"Large text, plain words, and a reminder before each bill. My daughter set it up in an afternoon.\" },\n  { name: \"Amara Nwosu\", role: \"Graduate student\", rating: 4, photo: \"https://assets.lummi.ai/assets/Qma5G7Ysfs1veKyTEdAC8tPvCdM9KDGeGY3Jrsf7Bky7N7?auto=format&w=400\", quote: \"The free plan covers what I need on a tight stipend. I wish custom category icons were on Android too.\" },\n  { name: \"Diego Morales\", role: \"Electrician\", rating: 5, photo: \"https://assets.lummi.ai/assets/QmajivGeNJJBhcUZrd52CDSeGopQ5cpeS3ew2qopjdXQBX?auto=format&w=400\", quote: \"I scan job receipts in the truck. My accountant gets a clean export instead of a shoebox.\" },\n];\n\nexport function TestimonialsReviewGrid({ reviews = defaultReviews }) {\n  return (\n    <Section size=\"body\">\n      <Container size=\"lg\">\n        <Flex direction=\"column\" gap=\"7\">\n          <Flex direction=\"column\" gap=\"4\">\n            <Text size=\"overline\" color=\"muted\">Reviews</Text>\n            <Heading as=\"h2\" size=\"3xl\">What members say after a year</Heading>\n            <Flex direction=\"row\" align=\"baseline\" wrap=\"wrap\" gap=\"2\">\n              <Heading as=\"p\" size=\"3xl\" weight=\"medium\" className=\"tabular-nums\">4.8</Heading>\n              <Text size=\"lg\" color=\"muted\" className=\"tabular-nums\">/ 5 · 3,906 reviews</Text>\n            </Flex>\n            <Text size=\"lg\" color=\"muted\" className=\"max-w-[52ch] text-pretty\">\n              Average rating from member reviews on the App Store, Google Play and Trustpilot.\n            </Text>\n          </Flex>\n          <Grid columns=\"auto\" minWidth=\"md\" maxColumns=\"3\" gap=\"5\">\n            <Card padding=\"xl\" className=\"md:col-span-2\">\n              <Flex direction=\"column\" justify=\"between\" gap=\"6\" className=\"h-full\">\n                <Flex direction=\"column\" gap=\"4\">\n                  <Flex direction=\"row\" gap=\"1\" role=\"img\" aria-label=\"5 out of 5 stars\">\n                    {featuredStars.map((star) => (\n                      <Icon key={star} name=\"star\" size=\"sm\" color=\"accent\" className=\"fill-current\" />\n                    ))}\n                  </Flex>\n                  <Heading as=\"p\" size=\"lg\" weight=\"normal\" className=\"max-w-[40ch] text-pretty\">\n                    “Watching the payoff date move closer each month kept me going. $18,420 cleared in 22 months.”\n                  </Heading>\n                </Flex>\n                <Flex direction=\"row\" align=\"center\" gap=\"3\">\n                  <Avatar src=\"https://assets.lummi.ai/assets/QmQcKhezkk7r1v6yWpKETiLR22bUnVth1qxou372nTSS7w?auto=format&w=400\" alt=\"Priya Raman\" size=\"lg\" />\n                  <Flex direction=\"column\" gap=\"0\">\n                    <Text size=\"md\" weight=\"semibold\">Priya Raman</Text>\n                    <Text size=\"sm\" color=\"muted\">Nurse practitioner</Text>\n                  </Flex>\n                </Flex>\n              </Flex>\n            </Card>\n            {reviews.map((review) => (\n              <Card key={review.name} padding=\"lg\">\n                <Flex direction=\"column\" justify=\"between\" gap=\"5\" className=\"h-full\">\n                  <Flex direction=\"column\" gap=\"3\">\n                    <Flex direction=\"row\" gap=\"1\" role=\"img\" aria-label={`${review.rating} out of 5 stars`}>\n                      {stars.map((star) => (\n                        <Icon key={star} name=\"star\" size=\"sm\" color={star <= review.rating ? \"accent\" : \"subtle\"} className={star <= review.rating ? \"fill-current\" : \"\"} />\n                      ))}\n                    </Flex>\n                    <Text size=\"md\" className=\"text-pretty\">“{review.quote}”</Text>\n                  </Flex>\n                  <Flex direction=\"row\" align=\"center\" gap=\"3\">\n                    <Avatar src={review.photo} size=\"md\" />\n                    <Flex direction=\"column\" gap=\"0\">\n                      <Text size=\"sm\" weight=\"semibold\">{review.name}</Text>\n                      <Text size=\"sm\" color=\"muted\">{review.role}</Text>\n                    </Flex>\n                  </Flex>\n                </Flex>\n              </Card>\n            ))}\n          </Grid>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
     "sourcePath": "packages/block-schema/blocks/testimonials/testimonials-review-grid.tsx"
   },
   {
@@ -2006,8 +2006,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       },
                       "children": [
                         {
-                          "id": "1pjmxxo",
-                          "type": "Repeat",
+                          "id": "6mcduxs",
+                          "type": "RepeatGrid",
                           "props": {
                             "item": "item",
                             "index": "index",
@@ -2018,7 +2018,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           },
                           "children": [
                             {
-                              "id": "18mdbn2",
+                              "id": "1869rre",
                               "type": "FlexLayout",
                               "props": {
                                 "direction": "column",
@@ -2026,7 +2026,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               },
                               "children": [
                                 {
-                                  "id": "aetet8q",
+                                  "id": "14kmqyu",
                                   "type": "Separator",
                                   "props": {
                                     "$if": "index > 0"
@@ -2034,7 +2034,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   "children": []
                                 },
                                 {
-                                  "id": "n80mfma",
+                                  "id": "1d15izi",
                                   "type": "FlexLayout",
                                   "props": {
                                     "direction": "row",
@@ -2044,7 +2044,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   },
                                   "children": [
                                     {
-                                      "id": "17t2ttc",
+                                      "id": "fe1dmr8",
                                       "type": "FlexLayout",
                                       "props": {
                                         "direction": "column",
@@ -2054,7 +2054,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                       },
                                       "children": [
                                         {
-                                          "id": "tsfa1ry",
+                                          "id": "1f5q3y2",
                                           "type": "Text",
                                           "props": {
                                             "size": "sm",
@@ -2064,7 +2064,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                           "children": []
                                         },
                                         {
-                                          "id": "o0pv2kg",
+                                          "id": "k9xnnb8",
                                           "type": "Text",
                                           "props": {
                                             "size": "sm",
@@ -2077,7 +2077,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                       ]
                                     },
                                     {
-                                      "id": "1yilmdg",
+                                      "id": "1bjnc08",
                                       "type": "Switch",
                                       "props": {
                                         "$aria-label": "item.label",
@@ -2223,28 +2223,39 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           ]
                         },
                         {
-                          "id": "rqex3fs",
-                          "type": "TextField",
+                          "id": "ps0rq8g",
+                          "type": "RawHTML",
                           "props": {
-                            "label": "Email",
-                            "type": "email",
-                            "placeholder": "you@example.com",
-                            "autoComplete": "email"
+                            "tag": "form",
+                            "className": "flex flex-col gap-5"
                           },
-                          "children": []
+                          "children": [
+                            {
+                              "id": "dsmq8cw",
+                              "type": "TextField",
+                              "props": {
+                                "label": "Email",
+                                "type": "email",
+                                "placeholder": "you@example.com",
+                                "autoComplete": "email"
+                              },
+                              "children": []
+                            },
+                            {
+                              "id": "999qyd6",
+                              "type": "Button",
+                              "props": {
+                                "type": "submit",
+                                "size": "lg",
+                                "className": "w-full",
+                                "children": "Send reset link"
+                              },
+                              "children": []
+                            }
+                          ]
                         },
                         {
-                          "id": "neuuj8y",
-                          "type": "Button",
-                          "props": {
-                            "size": "lg",
-                            "className": "w-full",
-                            "children": "Send reset link"
-                          },
-                          "children": []
-                        },
-                        {
-                          "id": "1y7bsw6",
+                          "id": "8km2hhc",
                           "type": "Text",
                           "props": {
                             "size": "xs",
@@ -2353,47 +2364,58 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           ]
                         },
                         {
-                          "id": "hhi2i38",
-                          "type": "TextField",
+                          "id": "nrpdh18",
+                          "type": "RawHTML",
                           "props": {
-                            "label": "Email",
-                            "type": "email",
-                            "placeholder": "you@example.com",
-                            "autoComplete": "email",
-                            "hint": "Check your inbox after sending. The link works once and expires in 15 minutes."
-                          },
-                          "children": []
-                        },
-                        {
-                          "id": "6p03p7s",
-                          "type": "FlexLayout",
-                          "props": {
-                            "direction": "column",
-                            "gap": "2"
+                            "tag": "form",
+                            "className": "flex flex-col gap-5"
                           },
                           "children": [
                             {
-                              "id": "1n5hwfc",
-                              "type": "Button",
+                              "id": "1v6pa0k",
+                              "type": "TextField",
                               "props": {
-                                "size": "lg",
-                                "className": "w-full",
-                                "iconLeft": "mail",
-                                "_icons": "{\"iconLeft\":[\"Icon\",\"mail\",{\"size\":\"sm\"}]}",
-                                "children": "Email me a link"
+                                "label": "Email",
+                                "type": "email",
+                                "placeholder": "you@example.com",
+                                "autoComplete": "email",
+                                "hint": "Check your inbox after sending. The link works once and expires in 15 minutes."
                               },
                               "children": []
                             },
                             {
-                              "id": "13hgiwi",
-                              "type": "Button",
+                              "id": "auvyh7s",
+                              "type": "FlexLayout",
                               "props": {
-                                "size": "lg",
-                                "variant": "ghost",
-                                "className": "w-full",
-                                "children": "Use a password instead"
+                                "direction": "column",
+                                "gap": "2"
                               },
-                              "children": []
+                              "children": [
+                                {
+                                  "id": "17zvurs",
+                                  "type": "Button",
+                                  "props": {
+                                    "type": "submit",
+                                    "size": "lg",
+                                    "className": "w-full",
+                                    "iconLeft": "mail",
+                                    "_icons": "{\"iconLeft\":[\"Icon\",\"mail\",{\"size\":\"sm\"}]}",
+                                    "children": "Email me a link"
+                                  },
+                                  "children": []
+                                },
+                                {
+                                  "id": "wkamgj2",
+                                  "type": "Button",
+                                  "props": {
+                                    "size": "lg",
+                                    "variant": "ghost",
+                                    "className": "w-full",
+                                    "children": "Use a password instead"
+                                  },
+                                  "children": []
+                                }
+                              ]
                             }
                           ]
                         }
@@ -2552,82 +2574,93 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           ]
                         },
                         {
-                          "id": "37a5p56",
-                          "type": "FlexLayout",
+                          "id": "58cw3xk",
+                          "type": "RawHTML",
                           "props": {
-                            "direction": "column",
-                            "gap": "4"
+                            "tag": "form",
+                            "className": "flex flex-col gap-5"
                           },
                           "children": [
                             {
-                              "id": "12qdj42",
-                              "type": "TextField",
-                              "props": {
-                                "label": "Email",
-                                "type": "email",
-                                "placeholder": "you@example.com",
-                                "autoComplete": "email"
-                              },
-                              "children": []
-                            },
-                            {
-                              "id": "1r407m0",
-                              "type": "TextField",
-                              "props": {
-                                "label": "Password",
-                                "type": "password",
-                                "placeholder": "Enter your password",
-                                "autoComplete": "current-password"
-                              },
-                              "children": []
-                            },
-                            {
-                              "id": "9ob50mc",
+                              "id": "d2xm9mi",
                               "type": "FlexLayout",
                               "props": {
-                                "direction": "row",
-                                "align": "center",
-                                "justify": "between",
-                                "gap": "3",
-                                "wrap": "wrap"
+                                "direction": "column",
+                                "gap": "4"
                               },
                               "children": [
                                 {
-                                  "id": "lr44zu2",
-                                  "type": "Checkbox",
+                                  "id": "x4vm33e",
+                                  "type": "TextField",
                                   "props": {
-                                    "label": "Keep me signed in"
+                                    "label": "Email",
+                                    "type": "email",
+                                    "placeholder": "you@example.com",
+                                    "autoComplete": "email"
                                   },
                                   "children": []
                                 },
                                 {
-                                  "id": "1jzwc24",
-                                  "type": "Text",
+                                  "id": "1aqmrm8",
+                                  "type": "TextField",
                                   "props": {
-                                    "href": "/forgot",
-                                    "size": "sm",
-                                    "color": "accent",
-                                    "textType": "link",
-                                    "children": "Forgot password?"
+                                    "label": "Password",
+                                    "type": "password",
+                                    "placeholder": "Enter your password",
+                                    "autoComplete": "current-password"
                                   },
                                   "children": []
+                                },
+                                {
+                                  "id": "1m1oxb8",
+                                  "type": "FlexLayout",
+                                  "props": {
+                                    "direction": "row",
+                                    "align": "center",
+                                    "justify": "between",
+                                    "gap": "3",
+                                    "wrap": "wrap"
+                                  },
+                                  "children": [
+                                    {
+                                      "id": "12cw66q",
+                                      "type": "Checkbox",
+                                      "props": {
+                                        "label": "Keep me signed in"
+                                      },
+                                      "children": []
+                                    },
+                                    {
+                                      "id": "wd2ew8k",
+                                      "type": "Text",
+                                      "props": {
+                                        "href": "/forgot",
+                                        "size": "sm",
+                                        "color": "accent",
+                                        "textType": "link",
+                                        "children": "Forgot password?"
+                                      },
+                                      "children": []
+                                    }
+                                  ]
                                 }
                               ]
+                            },
+                            {
+                              "id": "1r7h9z2",
+                              "type": "Button",
+                              "props": {
+                                "type": "submit",
+                                "size": "lg",
+                                "className": "w-full",
+                                "children": "Sign in"
+                              },
+                              "children": []
                             }
                           ]
                         },
                         {
-                          "id": "1kdh2xm",
-                          "type": "Button",
-                          "props": {
-                            "size": "lg",
-                            "className": "w-full",
-                            "children": "Sign in"
-                          },
-                          "children": []
-                        },
-                        {
-                          "id": "1ot01yi",
+                          "id": "1mgqoo0",
                           "type": "Text",
                           "props": {
                             "size": "xs",
@@ -2636,7 +2669,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           },
                           "children": [
                             {
-                              "id": "1ogtofc",
+                              "id": "1ydxfii",
                               "type": "Text",
                               "props": {
                                 "children": "New to WiseOwl? ",
@@ -2645,7 +2678,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               "children": []
                             },
                             {
-                              "id": "1pi7eca",
+                              "id": "13ukmwg",
                               "type": "Text",
                               "props": {
                                 "href": "/signup",
@@ -2812,60 +2845,71 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           ]
                         },
                         {
-                          "id": "dl3vy0y",
-                          "type": "FlexLayout",
+                          "id": "1qiw0lo",
+                          "type": "RawHTML",
                           "props": {
-                            "direction": "column",
-                            "gap": "4"
+                            "tag": "form",
+                            "className": "flex flex-col gap-5"
                           },
                           "children": [
                             {
-                              "id": "t8ya9qa",
-                              "type": "TextField",
+                              "id": "1n957rm",
+                              "type": "FlexLayout",
                               "props": {
-                                "label": "Full name",
-                                "placeholder": "Maya Okafor",
-                                "autoComplete": "name"
+                                "direction": "column",
+                                "gap": "4"
                               },
-                              "children": []
+                              "children": [
+                                {
+                                  "id": "1uwmgm2",
+                                  "type": "TextField",
+                                  "props": {
+                                    "label": "Full name",
+                                    "placeholder": "Maya Okafor",
+                                    "autoComplete": "name"
+                                  },
+                                  "children": []
+                                },
+                                {
+                                  "id": "1axodsc",
+                                  "type": "TextField",
+                                  "props": {
+                                    "label": "Email",
+                                    "type": "email",
+                                    "placeholder": "you@example.com",
+                                    "autoComplete": "email"
+                                  },
+                                  "children": []
+                                },
+                                {
+                                  "id": "107e67m",
+                                  "type": "TextField",
+                                  "props": {
+                                    "label": "Password",
+                                    "type": "password",
+                                    "placeholder": "At least 12 characters",
+                                    "hint": "Use 12+ characters with a number or symbol.",
+                                    "autoComplete": "new-password"
+                                  },
+                                  "children": []
+                                }
+                              ]
                             },
                             {
-                              "id": "ygl4rwc",
-                              "type": "TextField",
+                              "id": "15tqazq",
+                              "type": "Button",
                               "props": {
-                                "label": "Email",
-                                "type": "email",
-                                "placeholder": "you@example.com",
-                                "autoComplete": "email"
-                              },
-                              "children": []
-                            },
-                            {
-                              "id": "rqbu4vu",
-                              "type": "TextField",
-                              "props": {
-                                "label": "Password",
-                                "type": "password",
-                                "placeholder": "At least 12 characters",
-                                "hint": "Use 12+ characters with a number or symbol.",
-                                "autoComplete": "new-password"
+                                "type": "submit",
+                                "size": "lg",
+                                "className": "w-full",
+                                "children": "Create account"
                               },
                               "children": []
                             }
                           ]
                         },
                         {
-                          "id": "1km7fqa",
-                          "type": "Button",
-                          "props": {
-                            "size": "lg",
-                            "className": "w-full",
-                            "children": "Create account"
-                          },
-                          "children": []
-                        },
-                        {
-                          "id": "bh6e466",
+                          "id": "1g52i2o",
                           "type": "FlexLayout",
                           "props": {
                             "direction": "column",
@@ -2873,7 +2917,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           },
                           "children": [
                             {
-                              "id": "twhypa0",
+                              "id": "m3ugnm6",
                               "type": "Text",
                               "props": {
                                 "size": "xs",
@@ -2882,7 +2926,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               },
                               "children": [
                                 {
-                                  "id": "n6v8ory",
+                                  "id": "151gfhs",
                                   "type": "Text",
                                   "props": {
                                     "children": "By creating an account you agree to the ",
@@ -2891,7 +2935,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   "children": []
                                 },
                                 {
-                                  "id": "18j0neo",
+                                  "id": "f2bundq",
                                   "type": "Text",
                                   "props": {
                                     "href": "/legal/terms",
@@ -2901,7 +2945,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   "children": []
                                 },
                                 {
-                                  "id": "108j616",
+                                  "id": "1hvvh3c",
                                   "type": "Text",
                                   "props": {
                                     "children": " and ",
@@ -2910,7 +2954,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   "children": []
                                 },
                                 {
-                                  "id": "szbxoig",
+                                  "id": "1spesii",
                                   "type": "Text",
                                   "props": {
                                     "href": "/legal/privacy",
@@ -2920,7 +2964,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   "children": []
                                 },
                                 {
-                                  "id": "10g4w3y",
+                                  "id": "618mksw",
                                   "type": "Text",
                                   "props": {
                                     "children": ".",
@@ -2931,7 +2975,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               ]
                             },
                             {
-                              "id": "sk3r2su",
+                              "id": "1lofewg",
                               "type": "Text",
                               "props": {
                                 "size": "xs",
@@ -2940,7 +2984,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               },
                               "children": [
                                 {
-                                  "id": "kcsxxlk",
+                                  "id": "dz100c6",
                                   "type": "Text",
                                   "props": {
                                     "children": "Already have an account? ",
@@ -2949,7 +2993,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   "children": []
                                 },
                                 {
-                                  "id": "16gtktq",
+                                  "id": "1vokvb4",
                                   "type": "Text",
                                   "props": {
                                     "href": "/signin",
@@ -3130,83 +3174,94 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           ]
                         },
                         {
-                          "id": "12bqo5y",
-                          "type": "FlexLayout",
+                          "id": "974lq7k",
+                          "type": "RawHTML",
                           "props": {
-                            "direction": "column",
-                            "gap": "4"
+                            "tag": "form",
+                            "className": "flex flex-col gap-6"
                           },
                           "children": [
                             {
-                              "id": "jqoqv26",
-                              "type": "TextField",
+                              "id": "1ylw22u",
+                              "type": "FlexLayout",
                               "props": {
-                                "label": "Email",
-                                "type": "email",
-                                "placeholder": "you@example.com",
-                                "autoComplete": "email"
+                                "direction": "column",
+                                "gap": "4"
                               },
-                              "children": []
+                              "children": [
+                                {
+                                  "id": "xxicn86",
+                                  "type": "TextField",
+                                  "props": {
+                                    "label": "Email",
+                                    "type": "email",
+                                    "placeholder": "you@example.com",
+                                    "autoComplete": "email"
+                                  },
+                                  "children": []
+                                },
+                                {
+                                  "id": "1l8i4x4",
+                                  "type": "TextField",
+                                  "props": {
+                                    "label": "Password",
+                                    "type": "password",
+                                    "placeholder": "Enter your password",
+                                    "autoComplete": "current-password"
+                                  },
+                                  "children": []
+                                },
+                                {
+                                  "id": "1jo9z5c",
+                                  "type": "Text",
+                                  "props": {
+                                    "href": "/forgot",
+                                    "size": "sm",
+                                    "color": "accent",
+                                    "className": "w-fit",
+                                    "textType": "link",
+                                    "children": "Forgot password?"
+                                  },
+                                  "children": []
+                                }
+                              ]
                             },
                             {
-                              "id": "1wo34wg",
-                              "type": "TextField",
+                              "id": "1drymss",
+                              "type": "FlexLayout",
                               "props": {
-                                "label": "Password",
-                                "type": "password",
-                                "placeholder": "Enter your password",
-                                "autoComplete": "current-password"
+                                "direction": "column",
+                                "gap": "3"
                               },
-                              "children": []
-                            },
-                            {
-                              "id": "rnibbj4",
-                              "type": "Text",
-                              "props": {
-                                "href": "/forgot",
-                                "size": "sm",
-                                "color": "accent",
-                                "className": "w-fit",
-                                "textType": "link",
-                                "children": "Forgot password?"
-                              },
-                              "children": []
+                              "children": [
+                                {
+                                  "id": "bmglbtw",
+                                  "type": "Button",
+                                  "props": {
+                                    "type": "submit",
+                                    "size": "lg",
+                                    "className": "w-full",
+                                    "children": "Sign in"
+                                  },
+                                  "children": []
+                                },
+                                {
+                                  "id": "ulg9o9e",
+                                  "type": "Button",
+                                  "props": {
+                                    "size": "lg",
+                                    "variant": "outline",
+                                    "className": "w-full",
+                                    "children": "Email me a sign-in link"
+                                  },
+                                  "children": []
+                                }
+                              ]
                             }
                           ]
                         },
                         {
-                          "id": "17ggz3o",
-                          "type": "FlexLayout",
-                          "props": {
-                            "direction": "column",
-                            "gap": "3"
-                          },
-                          "children": [
-                            {
-                              "id": "14xs88k",
-                              "type": "Button",
-                              "props": {
-                                "size": "lg",
-                                "className": "w-full",
-                                "children": "Sign in"
-                              },
-                              "children": []
-                            },
-                            {
-                              "id": "1k3k0d6",
-                              "type": "Button",
-                              "props": {
-                                "size": "lg",
-                                "variant": "outline",
-                                "className": "w-full",
-                                "children": "Email me a sign-in link"
-                              },
-                              "children": []
-                            }
-                          ]
-                        },
-                        {
-                          "id": "1kgjf3q",
+                          "id": "w4zopsw",
                           "type": "Text",
                           "props": {
                             "size": "xs",
@@ -3214,7 +3269,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           },
                           "children": [
                             {
-                              "id": "1azu7g0",
+                              "id": "kjd412y",
                               "type": "Text",
                               "props": {
                                 "children": "New to WiseOwl? ",
@@ -3223,7 +3278,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               "children": []
                             },
                             {
-                              "id": "13532ee",
+                              "id": "dh7qwgw",
                               "type": "Text",
                               "props": {
                                 "href": "/signup",
@@ -3390,15 +3445,15 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           ]
                         },
                         {
-                          "id": "hrra7fw",
-                          "type": "FlexLayout",
+                          "id": "1eeolmm",
+                          "type": "RawHTML",
                           "props": {
-                            "direction": "column",
-                            "gap": "4"
+                            "tag": "form",
+                            "className": "flex flex-col gap-4"
                           },
                           "children": [
                             {
-                              "id": "1mwnrdo",
+                              "id": "13jla6e",
                               "type": "TextField",
                               "props": {
                                 "label": "Email",
@@ -3409,9 +3464,10 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               "children": []
                             },
                             {
-                              "id": "dpodhdm",
+                              "id": "j65zjkw",
                               "type": "Button",
                               "props": {
+                                "type": "submit",
                                 "size": "lg",
                                 "className": "w-full",
                                 "children": "Continue with email"
@@ -3577,30 +3633,41 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           ]
                         },
                         {
-                          "id": "0agey5u",
-                          "type": "TextField",
+                          "id": "29v96bi",
+                          "type": "RawHTML",
                           "props": {
-                            "type": "otp",
-                            "length": "6",
-                            "label": "Verification code",
-                            "autoComplete": "one-time-code",
-                            "className": "flex w-full [&>div]:w-full",
-                            "slotClassName": "w-auto min-w-0 flex-1"
+                            "tag": "form",
+                            "className": "flex flex-col gap-5"
                           },
-                          "children": []
+                          "children": [
+                            {
+                              "id": "1iyp11u",
+                              "type": "TextField",
+                              "props": {
+                                "type": "otp",
+                                "length": "6",
+                                "label": "Verification code",
+                                "autoComplete": "one-time-code",
+                                "className": "flex w-full [&>div]:w-full",
+                                "slotClassName": "w-auto min-w-0 flex-1"
+                              },
+                              "children": []
+                            },
+                            {
+                              "id": "8amrgfw",
+                              "type": "Button",
+                              "props": {
+                                "type": "submit",
+                                "size": "lg",
+                                "className": "w-full",
+                                "children": "Verify email"
+                              },
+                              "children": []
+                            }
+                          ]
                         },
                         {
-                          "id": "og221t8",
-                          "type": "Button",
-                          "props": {
-                            "size": "lg",
-                            "className": "w-full",
-                            "children": "Verify email"
-                          },
-                          "children": []
-                        },
-                        {
-                          "id": "wnmsre4",
+                          "id": "1oqc1li",
                           "type": "FlexLayout",
                           "props": {
                             "direction": "column",
@@ -3609,7 +3676,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           },
                           "children": [
                             {
-                              "id": "sgeu8rq",
+                              "id": "bra6ozg",
                               "type": "Text",
                               "props": {
                                 "size": "sm",
@@ -3618,7 +3685,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               },
                               "children": [
                                 {
-                                  "id": "8pk3mn0",
+                                  "id": "172yyd2",
                                   "type": "Text",
                                   "props": {
                                     "children": "No code yet? ",
@@ -3627,7 +3694,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   "children": []
                                 },
                                 {
-                                  "id": "x1553g6",
+                                  "id": "oy3ve30",
                                   "type": "Text",
                                   "props": {
                                     "href": "/verify/resend",
@@ -3638,7 +3705,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   "children": []
                                 },
                                 {
-                                  "id": "6nlq64k",
+                                  "id": "1irorjm",
                                   "type": "Text",
                                   "props": {
                                     "children": " in 0:42",
@@ -3649,7 +3716,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               ]
                             },
                             {
-                              "id": "1si0czg",
+                              "id": "1e9xqvi",
                               "type": "Text",
                               "props": {
                                 "size": "xs",
@@ -3657,7 +3724,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               },
                               "children": [
                                 {
-                                  "id": "1ske812",
+                                  "id": "mapzkfw",
                                   "type": "Text",
                                   "props": {
                                     "children": "Wrong address? ",
@@ -3666,7 +3733,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   "children": []
                                 },
                                 {
-                                  "id": "2jiykus",
+                                  "id": "1uj4bdq",
                                   "type": "Text",
                                   "props": {
                                     "href": "/signup",
@@ -3781,8 +3848,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           },
                           "children": [
                             {
-                              "id": "1cidbfw",
-                              "type": "Repeat",
+                              "id": "16zm00g",
+                              "type": "RepeatGrid",
                               "props": {
                                 "item": "item",
                                 "index": "index",
@@ -3793,7 +3860,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               },
                               "children": [
                                 {
-                                  "id": "4vczwne",
+                                  "id": "17oyyqu",
                                   "type": "FlexLayout",
                                   "props": {
                                     "direction": "column",
@@ -3801,7 +3868,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   },
                                   "children": [
                                     {
-                                      "id": "icpuffa",
+                                      "id": "27e1cmq",
                                       "type": "Separator",
                                       "props": {
                                         "$if": "index > 0"
@@ -3809,7 +3876,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                       "children": []
                                     },
                                     {
-                                      "id": "3aj4fsu",
+                                      "id": "1uj7hii",
                                       "type": "FlexLayout",
                                       "props": {
                                         "direction": "row",
@@ -3819,7 +3886,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                       },
                                       "children": [
                                         {
-                                          "id": "191n4gw",
+                                          "id": "360dj5g",
                                           "type": "FlexLayout",
                                           "props": {
                                             "direction": "column",
@@ -3829,7 +3896,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                           },
                                           "children": [
                                             {
-                                              "id": "l8avyai",
+                                              "id": "1ui6f1y",
                                               "type": "Text",
                                               "props": {
                                                 "size": "sm",
@@ -3839,7 +3906,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                               "children": []
                                             },
                                             {
-                                              "id": "1vcwdf4",
+                                              "id": "1vpu3fo",
                                               "type": "Text",
                                               "props": {
                                                 "size": "sm",
@@ -3852,7 +3919,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                           ]
                                         },
                                         {
-                                          "id": "178x6r8",
+                                          "id": "zwh2fc8",
                                           "type": "Switch",
                                           "props": {
                                             "$aria-label": "item.label",
@@ -4137,48 +4204,59 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
               ]
             },
             {
-              "id": "032oz02",
-              "type": "FlexLayout",
+              "id": "czf3sxc",
+              "type": "RawHTML",
               "props": {
-                "direction": "column",
-                "gap": "4"
+                "tag": "form",
+                "className": "flex flex-col gap-5"
               },
               "children": [
                 {
-                  "id": "1xha23y",
-                  "type": "TextField",
+                  "id": "ukpqeze",
+                  "type": "FlexLayout",
                   "props": {
-                    "label": "Email",
-                    "type": "email",
-                    "placeholder": "you@example.com",
-                    "autoComplete": "email"
+                    "direction": "column",
+                    "gap": "4"
                   },
-                  "children": []
+                  "children": [
+                    {
+                      "id": "119l59q",
+                      "type": "TextField",
+                      "props": {
+                        "label": "Email",
+                        "type": "email",
+                        "placeholder": "you@example.com",
+                        "autoComplete": "email"
+                      },
+                      "children": []
+                    },
+                    {
+                      "id": "1811nis",
+                      "type": "TextField",
+                      "props": {
+                        "label": "Password",
+                        "type": "password",
+                        "placeholder": "Enter your password",
+                        "autoComplete": "current-password"
+                      },
+                      "children": []
+                    }
+                  ]
                 },
                 {
-                  "id": "1md4fjg",
-                  "type": "TextField",
+                  "id": "qdot4ea",
+                  "type": "Button",
                   "props": {
-                    "label": "Password",
-                    "type": "password",
-                    "placeholder": "Enter your password",
-                    "autoComplete": "current-password"
+                    "type": "submit",
+                    "className": "w-full",
+                    "children": "Sign in"
                   },
                   "children": []
                 }
               ]
             },
             {
-              "id": "11z76ca",
-              "type": "Button",
-              "props": {
-                "className": "w-full",
-                "children": "Sign in"
-              },
-              "children": []
-            },
-            {
-              "id": "11kcpna",
+              "id": "xksxmys",
               "type": "Text",
               "props": {
                 "href": "/forgot",
@@ -4283,10 +4361,22 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       "props": {
                         "variant": "outline",
                         "iconRight": "arrow-right",
-                        "_icons": "{\"iconRight\":[\"Icon\",\"arrow-right\",{\"size\":\"sm\"}]}",
-                        "children": "See everything"
+                        "asChild": "true",
+                        "_icons": "{\"iconRight\":[\"Icon\",\"arrow-right\",{\"size\":\"sm\"}]}"
                       },
-                      "children": []
+                      "children": [
+                        {
+                          "id": "v3xmr64",
+                          "type": "Text",
+                          "props": {
+                            "children": "See everything",
+                            "textType": "link",
+                            "href": "/products",
+                            "_tag": "a"
+                          },
+                          "children": []
+                        }
+                      ]
                     }
                   ]
                 },
@@ -4301,8 +4391,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                   },
                   "children": [
                     {
-                      "id": "1v89dy2",
-                      "type": "Repeat",
+                      "id": "9jdfupa",
+                      "type": "RepeatGrid",
                       "props": {
                         "item": "product",
                         "index": "i",
@@ -4313,7 +4403,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       },
                       "children": [
                         {
-                          "id": "1yq6it8",
+                          "id": "d3jd488",
                           "type": "FlexLayout",
                           "props": {
                             "direction": "column",
@@ -4321,7 +4411,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           },
                           "children": [
                             {
-                              "id": "116f7bc",
+                              "id": "g6zi4ok",
                               "type": "CardLayout",
                               "props": {
                                 "padding": "sm",
@@ -4329,7 +4419,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               },
                               "children": [
                                 {
-                                  "id": "1r0usju",
+                                  "id": "147u7by",
                                   "type": "FlexLayout",
                                   "props": {
                                     "direction": "column",
@@ -4337,7 +4427,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   },
                                   "children": [
                                     {
-                                      "id": "q2pq3pm",
+                                      "id": "imlzru6",
                                       "type": "Image",
                                       "props": {
                                         "$src": "product.image",
@@ -4348,7 +4438,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                       "children": []
                                     },
                                     {
-                                      "id": "1ccb4gm",
+                                      "id": "1iuhgwq",
                                       "type": "FlexLayout",
                                       "props": {
                                         "direction": "column",
@@ -4357,7 +4447,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                       },
                                       "children": [
                                         {
-                                          "id": "1y9d9qk",
+                                          "id": "pfta32g",
                                           "type": "FlexLayout",
                                           "props": {
                                             "direction": "row",
@@ -4367,7 +4457,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                           },
                                           "children": [
                                             {
-                                              "id": "ilm1y5y",
+                                              "id": "mcgnm16",
                                               "type": "Heading",
                                               "props": {
                                                 "as": "h3",
@@ -4377,7 +4467,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                               "children": []
                                             },
                                             {
-                                              "id": "1iaxc5g",
+                                              "id": "1qs0jr4",
                                               "type": "Text",
                                               "props": {
                                                 "weight": "semibold",
@@ -4389,7 +4479,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                           ]
                                         },
                                         {
-                                          "id": "qezo2jy",
+                                          "id": "ailw1o2",
                                           "type": "Text",
                                           "props": {
                                             "size": "sm",
@@ -4400,7 +4490,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                           "children": []
                                         },
                                         {
-                                          "id": "1mlapzw",
+                                          "id": "bf3ibiw",
                                           "type": "Rating",
                                           "props": {
                                             "readOnly": "true",
@@ -4411,7 +4501,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                           "children": []
                                         },
                                         {
-                                          "id": "agsui4w",
+                                          "id": "6ydrut8",
                                           "type": "Badge",
                                           "props": {
                                             "size": "sm",
@@ -4619,8 +4709,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           },
                           "children": [
                             {
-                              "id": "1mbpdpu",
-                              "type": "Repeat",
+                              "id": "8dmnls6",
+                              "type": "RepeatGrid",
                               "props": {
                                 "item": "colour",
                                 "index": "index",
@@ -4631,7 +4721,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               },
                               "children": [
                                 {
-                                  "id": "14bmdu2",
+                                  "id": "vq3nl0u",
                                   "type": "Button",
                                   "props": {
                                     "$variant": "index === 0 ? \"solid\" : \"outline\"",
@@ -4692,8 +4782,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       },
                       "children": [
                         {
-                          "id": "1q8jbuo",
-                          "type": "Repeat",
+                          "id": "1adc1tw",
+                          "type": "RepeatGrid",
                           "props": {
                             "item": "item",
                             "key": "item.label",
@@ -4703,7 +4793,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           },
                           "children": [
                             {
-                              "id": "f2lxmmu",
+                              "id": "1ko858y",
                               "type": "FlexLayout",
                               "props": {
                                 "direction": "row",
@@ -4712,7 +4802,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               },
                               "children": [
                                 {
-                                  "id": "15zm71g",
+                                  "id": "ccylrd4",
                                   "type": "Icon",
                                   "props": {
                                     "$name": "item.icon",
@@ -4723,7 +4813,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   "children": []
                                 },
                                 {
-                                  "id": "byzet2e",
+                                  "id": "176u0ea",
                                   "type": "Text",
                                   "props": {
                                     "size": "sm",
@@ -4748,8 +4838,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       },
                       "children": [
                         {
-                          "id": "1n7549i",
-                          "type": "Repeat",
+                          "id": "m5jdbvu",
+                          "type": "RepeatGrid",
                           "props": {
                             "item": "detail",
                             "index": "index",
@@ -4760,14 +4850,14 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           },
                           "children": [
                             {
-                              "id": "ak1uzre",
+                              "id": "i1u2e4u",
                               "type": "AccordionItem",
                               "props": {
                                 "$value": "`detail-${index}`"
                               },
                               "children": [
                                 {
-                                  "id": "17l5xni",
+                                  "id": "j5pbeki",
                                   "type": "AccordionTrigger",
                                   "props": {
                                     "className": "gap-4 py-4 text-left text-base",
@@ -4776,7 +4866,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   "children": []
                                 },
                                 {
-                                  "id": "1xuedv2",
+                                  "id": "1ongsz6",
                                   "type": "AccordionContent",
                                   "props": {
                                     "className": "max-w-[60ch] text-pretty",
@@ -4885,10 +4975,22 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       "props": {
                         "variant": "outline",
                         "iconRight": "arrow-right",
-                        "_icons": "{\"iconRight\":[\"Icon\",\"arrow-right\",{\"size\":\"sm\"}]}",
-                        "children": "View all 24 products"
+                        "asChild": "true",
+                        "_icons": "{\"iconRight\":[\"Icon\",\"arrow-right\",{\"size\":\"sm\"}]}"
                       },
-                      "children": []
+                      "children": [
+                        {
+                          "id": "tbx4ise",
+                          "type": "Text",
+                          "props": {
+                            "children": "View all 24 products",
+                            "textType": "link",
+                            "href": "/products",
+                            "_tag": "a"
+                          },
+                          "children": []
+                        }
+                      ]
                     }
                   ]
                 },
@@ -4903,8 +5005,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                   },
                   "children": [
                     {
-                      "id": "fjd4x5c",
-                      "type": "Repeat",
+                      "id": "rzvxjbo",
+                      "type": "RepeatGrid",
                       "props": {
                         "item": "product",
                         "key": "product.name",
@@ -4914,7 +5016,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       },
                       "children": [
                         {
-                          "id": "21i7elo",
+                          "id": "qer0ju8",
                           "type": "CardLayout",
                           "props": {
                             "padding": "md",
@@ -4922,7 +5024,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           },
                           "children": [
                             {
-                              "id": "1svxina",
+                              "id": "kyykvnm",
                               "type": "FlexLayout",
                               "props": {
                                 "direction": "column",
@@ -4930,7 +5032,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               },
                               "children": [
                                 {
-                                  "id": "1px7dwm",
+                                  "id": "wiwgsg2",
                                   "type": "Image",
                                   "props": {
                                     "$src": "product.image",
@@ -4941,7 +5043,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   "children": []
                                 },
                                 {
-                                  "id": "35mz05e",
+                                  "id": "j30gr66",
                                   "type": "FlexLayout",
                                   "props": {
                                     "direction": "column",
@@ -4949,7 +5051,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   },
                                   "children": [
                                     {
-                                      "id": "1k9vyso",
+                                      "id": "fuxbmzg",
                                       "type": "FlexLayout",
                                       "props": {
                                         "direction": "row",
@@ -4959,7 +5061,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                       },
                                       "children": [
                                         {
-                                          "id": "17e0wpi",
+                                          "id": "12ouhpu",
                                           "type": "Text",
                                           "props": {
                                             "size": "overline",
@@ -4969,7 +5071,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                           "children": []
                                         },
                                         {
-                                          "id": "qnulqx6",
+                                          "id": "1pjw1na",
                                           "type": "Badge",
                                           "props": {
                                             "size": "sm",
@@ -4982,7 +5084,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                       ]
                                     },
                                     {
-                                      "id": "12l1dsu",
+                                      "id": "1pz3ve2",
                                       "type": "Heading",
                                       "props": {
                                         "as": "h3",
@@ -4992,7 +5094,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                       "children": []
                                     },
                                     {
-                                      "id": "197tlag",
+                                      "id": "1ulnl3w",
                                       "type": "Text",
                                       "props": {
                                         "size": "sm",
@@ -5005,7 +5107,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   ]
                                 },
                                 {
-                                  "id": "1b5awmk",
+                                  "id": "1i7lh6o",
                                   "type": "FlexLayout",
                                   "props": {
                                     "direction": "row",
@@ -5015,7 +5117,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   },
                                   "children": [
                                     {
-                                      "id": "k3429dy",
+                                      "id": "1g5lrpe",
                                       "type": "Text",
                                       "props": {
                                         "size": "lg",
@@ -5026,7 +5128,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                       "children": []
                                     },
                                     {
-                                      "id": "aoa3jiy",
+                                      "id": "y9y2dba",
                                       "type": "Button",
                                       "props": {
                                         "size": "sm",
@@ -5102,7 +5204,6 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           "props": {
                             "size": "md",
                             "src": "https://assets.lummi.ai/assets/Qma5G7Ysfs1veKyTEdAC8tPvCdM9KDGeGY3Jrsf7Bky7N7?auto=format&w=400",
-                            "alt": "Noor Patel",
                             "fallback": "NP"
                           },
                           "children": []
@@ -5168,6 +5269,9 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       "props": {
                         "direction": "column",
                         "gap": "4",
+                        "role": "log",
+                        "aria-label": "Messages",
+                        "tabIndex": "0",
                         "className": "min-h-0 flex-1 overflow-y-auto px-4 py-5"
                       },
                       "children": [
@@ -5181,8 +5285,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           "children": []
                         },
                         {
-                          "id": "345cnwi",
-                          "type": "Repeat",
+                          "id": "1rsi4ae",
+                          "type": "RepeatGrid",
                           "props": {
                             "item": "message",
                             "key": "message.id",
@@ -5192,7 +5296,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           },
                           "children": [
                             {
-                              "id": "1qg5ada",
+                              "id": "io5s8rm",
                               "type": "ChatBubble",
                               "props": {
                                 "$variant": "message.from === \"user\" ? \"outgoing\" : \"incoming\"",
@@ -5203,7 +5307,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               },
                               "children": [
                                 {
-                                  "id": "1ltdyzg",
+                                  "id": "ja53g6w",
                                   "type": "Text",
                                   "props": {
                                     "$children": "{message.text}",
@@ -5212,7 +5316,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   "children": []
                                 },
                                 {
-                                  "id": "1pzl9fm",
+                                  "id": "15ka8ie",
                                   "type": "FlexLayout",
                                   "props": {
                                     "direction": "column",
@@ -5222,7 +5326,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   },
                                   "children": [
                                     {
-                                      "id": "5cgnz2s",
+                                      "id": "lkl2k5s",
                                       "type": "FlexLayout",
                                       "props": {
                                         "direction": "row",
@@ -5232,7 +5336,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                       },
                                       "children": [
                                         {
-                                          "id": "37k4tpa",
+                                          "id": "jxexof6",
                                           "type": "Text",
                                           "props": {
                                             "size": "xs",
@@ -5242,7 +5346,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                           "children": []
                                         },
                                         {
-                                          "id": "1ovh4qa",
+                                          "id": "1qdulw6",
                                           "type": "Badge",
                                           "props": {
                                             "variant": "soft",
@@ -5255,7 +5359,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                       ]
                                     },
                                     {
-                                      "id": "1bkbzdy",
+                                      "id": "1u6vune",
                                       "type": "Heading",
                                       "props": {
                                         "as": "p",
@@ -5266,7 +5370,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                       "children": []
                                     },
                                     {
-                                      "id": "1pyx9vo",
+                                      "id": "5vykwmo",
                                       "type": "Text",
                                       "props": {
                                         "size": "xs",
@@ -5277,7 +5381,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                       "children": []
                                     },
                                     {
-                                      "id": "140ou0e",
+                                      "id": "11b30hu",
                                       "type": "FlexLayout",
                                       "props": {
                                         "direction": "row",
@@ -5286,7 +5390,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                       },
                                       "children": [
                                         {
-                                          "id": "1e1k54w",
+                                          "id": "1ffcf4s",
                                           "type": "Icon",
                                           "props": {
                                             "name": "clock",
@@ -5296,7 +5400,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                           "children": []
                                         },
                                         {
-                                          "id": "1rpux6m",
+                                          "id": "312amgi",
                                           "type": "Text",
                                           "props": {
                                             "size": "xs",
@@ -5328,7 +5432,6 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               "props": {
                                 "size": "sm",
                                 "src": "https://assets.lummi.ai/assets/Qma5G7Ysfs1veKyTEdAC8tPvCdM9KDGeGY3Jrsf7Bky7N7?auto=format&w=400",
-                                "alt": "Noor Patel",
                                 "fallback": "NP"
                               },
                               "children": []
@@ -5341,6 +5444,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                 "align": "center",
                                 "gap": "1",
                                 "className": "rounded-[var(--radius-panel)] rounded-tl-[var(--radius-sm)] bg-surface-hover px-3 py-3 w-fit",
+                                "role": "status",
                                 "aria-label": "Noor is typing",
                                 "_autoHug": "true"
                               },
@@ -5394,8 +5498,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           },
                           "children": [
                             {
-                              "id": "vui8u70",
-                              "type": "Repeat",
+                              "id": "1s1zkh4",
+                              "type": "RepeatGrid",
                               "props": {
                                 "item": "reply",
                                 "key": "reply",
@@ -5405,7 +5509,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               },
                               "children": [
                                 {
-                                  "id": "1l46wls",
+                                  "id": "ehj7330",
                                   "type": "Button",
                                   "props": {
                                     "variant": "outline",
@@ -5595,8 +5699,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                   },
                   "children": [
                     {
-                      "id": "d8159qa",
-                      "type": "Repeat",
+                      "id": "1jiqgxy",
+                      "type": "RepeatGrid",
                       "props": {
                         "item": "question",
                         "index": "index",
@@ -5607,14 +5711,14 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       },
                       "children": [
                         {
-                          "id": "1oa69pq",
+                          "id": "18rkfya",
                           "type": "AccordionItem",
                           "props": {
                             "$value": "`question-${index}`"
                           },
                           "children": [
                             {
-                              "id": "2w9tyje",
+                              "id": "uxhryby",
                               "type": "AccordionTrigger",
                               "props": {
                                 "className": "gap-4 py-4 text-left text-base",
@@ -5623,7 +5727,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               "children": []
                             },
                             {
-                              "id": "1s3e7n6",
+                              "id": "182wwc6",
                               "type": "AccordionContent",
                               "props": {
                                 "className": "max-w-[60ch] pr-8 text-pretty",
@@ -5737,29 +5841,30 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           },
                           "children": [
                             {
-                              "id": "8gf8roo",
-                              "type": "FlexLayout",
+                              "id": "1v7fhy6",
+                              "type": "RawHTML",
                               "props": {
-                                "direction": "column",
-                                "gap": "2",
-                                "className": "sm:flex-row"
+                                "tag": "form",
+                                "className": "flex flex-col gap-2 sm:flex-row"
                               },
                               "children": [
                                 {
-                                  "id": "kk13x9w",
+                                  "id": "1v2lyuy",
                                   "type": "TextField",
                                   "props": {
                                     "type": "email",
                                     "placeholder": "you@example.com",
                                     "aria-label": "Email address",
+                                    "autoComplete": "email",
                                     "className": "h-10"
                                   },
                                   "children": []
                                 },
                                 {
-                                  "id": "yimodny",
+                                  "id": "yzqsens",
                                   "type": "Button",
                                   "props": {
+                                    "type": "submit",
                                     "className": "w-full shrink-0 sm:w-auto",
                                     "children": "Subscribe"
                                   },
@@ -5893,9 +5998,21 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       "type": "Button",
                       "props": {
                         "size": "lg",
-                        "children": "Start free trial"
+                        "asChild": "true"
                       },
-                      "children": []
+                      "children": [
+                        {
+                          "id": "1cjlfvi",
+                          "type": "Text",
+                          "props": {
+                            "children": "Start free trial",
+                            "textType": "link",
+                            "href": "/signup",
+                            "_tag": "a"
+                          },
+                          "children": []
+                        }
+                      ]
                     },
                     {
                       "id": "1xra9cu",
@@ -5903,9 +6020,21 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       "props": {
                         "size": "lg",
                         "variant": "outline",
-                        "children": "Compare plans"
+                        "asChild": "true"
                       },
-                      "children": []
+                      "children": [
+                        {
+                          "id": "i7xfgmo",
+                          "type": "Text",
+                          "props": {
+                            "children": "Compare plans",
+                            "textType": "link",
+                            "href": "/pricing",
+                            "_tag": "a"
+                          },
+                          "children": []
+                        }
+                      ]
                     }
                   ]
                 }
@@ -6002,9 +6131,21 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       "type": "Button",
                       "props": {
                         "size": "lg",
-                        "children": "Start free"
+                        "asChild": "true"
                       },
-                      "children": []
+                      "children": [
+                        {
+                          "id": "1t73h5y",
+                          "type": "Text",
+                          "props": {
+                            "children": "Start free",
+                            "textType": "link",
+                            "href": "/signup",
+                            "_tag": "a"
+                          },
+                          "children": []
+                        }
+                      ]
                     },
                     {
                       "id": "omjy9cu",
@@ -6012,9 +6153,21 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       "props": {
                         "size": "lg",
                         "variant": "outline",
-                        "children": "Talk to us"
+                        "asChild": "true"
                       },
-                      "children": []
+                      "children": [
+                        {
+                          "id": "wclws44",
+                          "type": "Text",
+                          "props": {
+                            "children": "Talk to us",
+                            "textType": "link",
+                            "href": "/contact",
+                            "_tag": "a"
+                          },
+                          "children": []
+                        }
+                      ]
                     }
                   ]
                 }
@@ -6334,8 +6487,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
               },
               "children": [
                 {
-                  "id": "edlydr2",
-                  "type": "Repeat",
+                  "id": "6l9ax3u",
+                  "type": "RepeatGrid",
                   "props": {
                     "item": "kpi",
                     "key": "kpi.label",
@@ -6345,14 +6498,14 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                   },
                   "children": [
                     {
-                      "id": "1tlkg8e",
+                      "id": "1tygwwa",
                       "type": "CardLayout",
                       "props": {
                         "padding": "sm"
                       },
                       "children": [
                         {
-                          "id": "5tlk26c",
+                          "id": "xgh60vc",
                           "type": "FlexLayout",
                           "props": {
                             "direction": "column",
@@ -6360,7 +6513,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           },
                           "children": [
                             {
-                              "id": "19ed202",
+                              "id": "1yyzsla",
                               "type": "Text",
                               "props": {
                                 "size": "xs",
@@ -6370,7 +6523,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               "children": []
                             },
                             {
-                              "id": "t8p2qmg",
+                              "id": "1j1b724",
                               "type": "Heading",
                               "props": {
                                 "as": "p",
@@ -6382,7 +6535,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               "children": []
                             },
                             {
-                              "id": "h6zokwu",
+                              "id": "13rnibe",
                               "type": "Text",
                               "props": {
                                 "size": "xs",
@@ -6515,8 +6668,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           "props": {},
                           "children": [
                             {
-                              "id": "xbhif22",
-                              "type": "Repeat",
+                              "id": "1m2bpna",
+                              "type": "RepeatGrid",
                               "props": {
                                 "item": "txn",
                                 "key": "`${txn.date}-${txn.merchant}`",
@@ -6526,12 +6679,12 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               },
                               "children": [
                                 {
-                                  "id": "46i9tki",
+                                  "id": "1odua0u",
                                   "type": "TableRow",
                                   "props": {},
                                   "children": [
                                     {
-                                      "id": "dx8yrh4",
+                                      "id": "1lp657w",
                                       "type": "TableCell",
                                       "props": {
                                         "className": "whitespace-nowrap text-fg-muted tabular-nums",
@@ -6540,12 +6693,12 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                       "children": []
                                     },
                                     {
-                                      "id": "6crhdjq",
+                                      "id": "1b4qj8y",
                                       "type": "TableCell",
                                       "props": {},
                                       "children": [
                                         {
-                                          "id": "4m76nb8",
+                                          "id": "g2niei0",
                                           "type": "FlexLayout",
                                           "props": {
                                             "direction": "row",
@@ -6554,7 +6707,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                           },
                                           "children": [
                                             {
-                                              "id": "8oaz9de",
+                                              "id": "wl1wn3i",
                                               "type": "Text",
                                               "props": {
                                                 "size": "sm",
@@ -6565,7 +6718,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                               "children": []
                                             },
                                             {
-                                              "id": "17ol6k6",
+                                              "id": "9v7tixu",
                                               "type": "Badge",
                                               "props": {
                                                 "variant": "soft",
@@ -6582,7 +6735,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                       ]
                                     },
                                     {
-                                      "id": "bevrjb4",
+                                      "id": "v83ttro",
                                       "type": "TableCell",
                                       "props": {
                                         "className": "text-fg-muted max-md:hidden",
@@ -6591,7 +6744,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                       "children": []
                                     },
                                     {
-                                      "id": "1fzu28i",
+                                      "id": "1lw8dke",
                                       "type": "TableCell",
                                       "props": {
                                         "className": "whitespace-nowrap text-fg-muted max-lg:hidden",
@@ -6600,7 +6753,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                       "children": []
                                     },
                                     {
-                                      "id": "1yi2zds",
+                                      "id": "1626ij8",
                                       "type": "TableCell",
                                       "props": {
                                         "$className": "txn.credit ? \"whitespace-nowrap text-right font-medium text-success tabular-nums\" : \"whitespace-nowrap text-right font-medium tabular-nums\"",
@@ -6737,8 +6890,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       },
                       "children": [
                         {
-                          "id": "re86s3q",
-                          "type": "Repeat",
+                          "id": "jf2gvxe",
+                          "type": "RepeatGrid",
                           "props": {
                             "item": "stat",
                             "key": "stat.label",
@@ -6748,7 +6901,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           },
                           "children": [
                             {
-                              "id": "jibzxlc",
+                              "id": "rag9zkk",
                               "type": "FlexLayout",
                               "props": {
                                 "direction": "column",
@@ -6756,7 +6909,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               },
                               "children": [
                                 {
-                                  "id": "4j9j8wu",
+                                  "id": "198xwuy",
                                   "type": "Heading",
                                   "props": {
                                     "as": "p",
@@ -6768,7 +6921,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   "children": []
                                 },
                                 {
-                                  "id": "864qy9s",
+                                  "id": "whb21pg",
                                   "type": "Text",
                                   "props": {
                                     "size": "xs",
@@ -6916,8 +7069,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           },
                           "children": [
                             {
-                              "id": "1dhuzjk",
-                              "type": "Repeat",
+                              "id": "wjg9bvo",
+                              "type": "RepeatGrid",
                               "props": {
                                 "item": "task",
                                 "key": "task.id",
@@ -6927,7 +7080,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               },
                               "children": [
                                 {
-                                  "id": "ixk0nwq",
+                                  "id": "avcoyg6",
                                   "type": "FlexLayout",
                                   "props": {
                                     "direction": "row",
@@ -6937,7 +7090,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   },
                                   "children": [
                                     {
-                                      "id": "145wjms",
+                                      "id": "0htn97s",
                                       "type": "Icon",
                                       "props": {
                                         "$name": "task.done ? \"circle-check\" : \"circle\"",
@@ -6947,7 +7100,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                       "children": []
                                     },
                                     {
-                                      "id": "lltsxgm",
+                                      "id": "1z582z6",
                                       "type": "FlexLayout",
                                       "props": {
                                         "direction": "column",
@@ -6956,7 +7109,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                       },
                                       "children": [
                                         {
-                                          "id": "7c5rdg0",
+                                          "id": "bs7bo90",
                                           "type": "Text",
                                           "props": {
                                             "size": "sm",
@@ -6967,7 +7120,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                           "children": []
                                         },
                                         {
-                                          "id": "qa2j15a",
+                                          "id": "1vj5cq2",
                                           "type": "Text",
                                           "props": {
                                             "size": "xs",
@@ -6980,7 +7133,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                       ]
                                     },
                                     {
-                                      "id": "z8qpqf2",
+                                      "id": "1tqqv22",
                                       "type": "Button",
                                       "props": {
                                         "variant": "solid",
@@ -7547,8 +7700,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           },
                           "children": [
                             {
-                              "id": "1s851wi",
-                              "type": "Repeat",
+                              "id": "14xxyme",
+                              "type": "RepeatGrid",
                               "props": {
                                 "item": "feature",
                                 "key": "feature",
@@ -7558,7 +7711,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               },
                               "children": [
                                 {
-                                  "id": "1geckk0",
+                                  "id": "sh8gd8c",
                                   "type": "FlexLayout",
                                   "props": {
                                     "direction": "row",
@@ -7567,7 +7720,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   },
                                   "children": [
                                     {
-                                      "id": "1cn3kkm",
+                                      "id": "1omqyuy",
                                       "type": "Icon",
                                       "props": {
                                         "name": "check",
@@ -7577,7 +7730,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                       "children": []
                                     },
                                     {
-                                      "id": "5pb6ceo",
+                                      "id": "tmdwn5o",
                                       "type": "Text",
                                       "props": {
                                         "size": "sm",
@@ -7598,9 +7751,21 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           "props": {
                             "size": "lg",
                             "className": "mt-2 w-full",
-                            "children": "Start 14-day trial"
+                            "asChild": "true"
                           },
-                          "children": []
+                          "children": [
+                            {
+                              "id": "gq6x3u2",
+                              "type": "Text",
+                              "props": {
+                                "children": "Start 14-day trial",
+                                "textType": "link",
+                                "href": "/signup",
+                                "_tag": "a"
+                              },
+                              "children": []
+                            }
+                          ]
                         }
                       ]
                     }
@@ -7754,8 +7919,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       ]
                     },
                     {
-                      "id": "hfysd3g",
-                      "type": "Repeat",
+                      "id": "9uspklc",
+                      "type": "RepeatGrid",
                       "props": {
                         "item": "cell",
                         "key": "cell.title",
@@ -7765,14 +7930,14 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       },
                       "children": [
                         {
-                          "id": "coy3b74",
+                          "id": "1ts3uxg",
                           "type": "CardLayout",
                           "props": {
                             "padding": "lg"
                           },
                           "children": [
                             {
-                              "id": "qstknoe",
+                              "id": "izvvatm",
                               "type": "FlexLayout",
                               "props": {
                                 "direction": "column",
@@ -7781,7 +7946,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               },
                               "children": [
                                 {
-                                  "id": "14icpz0",
+                                  "id": "wj2sps0",
                                   "type": "Icon",
                                   "props": {
                                     "$name": "cell.icon",
@@ -7791,7 +7956,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   "children": []
                                 },
                                 {
-                                  "id": "lm1drwy",
+                                  "id": "t8tqxsu",
                                   "type": "FlexLayout",
                                   "props": {
                                     "direction": "column",
@@ -7800,7 +7965,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   },
                                   "children": [
                                     {
-                                      "id": "ig58urg",
+                                      "id": "az112i8",
                                       "type": "Heading",
                                       "props": {
                                         "as": "h3",
@@ -7810,7 +7975,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                       "children": []
                                     },
                                     {
-                                      "id": "1837w4a",
+                                      "id": "6y5pk92",
                                       "type": "Text",
                                       "props": {
                                         "size": "sm",
@@ -7916,8 +8081,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                   },
                   "children": [
                     {
-                      "id": "1ok1rm8",
-                      "type": "Repeat",
+                      "id": "8ujl4yk",
+                      "type": "RepeatGrid",
                       "props": {
                         "item": "item",
                         "key": "item.title",
@@ -7927,7 +8092,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       },
                       "children": [
                         {
-                          "id": "2cdrwam",
+                          "id": "qqwclj6",
                           "type": "FlexLayout",
                           "props": {
                             "direction": "row",
@@ -7937,7 +8102,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           },
                           "children": [
                             {
-                              "id": "kuq1gcw",
+                              "id": "1kzgp7g",
                               "type": "FlexLayout",
                               "props": {
                                 "align": "center",
@@ -7946,7 +8111,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               },
                               "children": [
                                 {
-                                  "id": "ex0bk6a",
+                                  "id": "mzjvrzq",
                                   "type": "Icon",
                                   "props": {
                                     "$name": "item.icon",
@@ -7958,7 +8123,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               ]
                             },
                             {
-                              "id": "xdt40ki",
+                              "id": "hh63inq",
                               "type": "FlexLayout",
                               "props": {
                                 "direction": "column",
@@ -7968,7 +8133,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               },
                               "children": [
                                 {
-                                  "id": "eogkf0c",
+                                  "id": "1eh8ni0",
                                   "type": "Heading",
                                   "props": {
                                     "as": "h3",
@@ -7978,7 +8143,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   "children": []
                                 },
                                 {
-                                  "id": "u2zajqy",
+                                  "id": "qmskd4u",
                                   "type": "Text",
                                   "props": {
                                     "size": "sm",
@@ -8081,8 +8246,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                   },
                   "children": [
                     {
-                      "id": "1j8d33a",
-                      "type": "Repeat",
+                      "id": "1fvl8ei",
+                      "type": "RepeatGrid",
                       "props": {
                         "item": "card",
                         "key": "card.title",
@@ -8092,7 +8257,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       },
                       "children": [
                         {
-                          "id": "kiysr7e",
+                          "id": "kino1hq",
                           "type": "CardLayout",
                           "props": {
                             "padding": "lg",
@@ -8101,7 +8266,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           },
                           "children": [
                             {
-                              "id": "1174pes",
+                              "id": "1oazlbk",
                               "type": "FlexLayout",
                               "props": {
                                 "direction": "column",
@@ -8110,7 +8275,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               },
                               "children": [
                                 {
-                                  "id": "wfcdv6i",
+                                  "id": "kv8zzz2",
                                   "type": "FlexLayout",
                                   "props": {
                                     "align": "center",
@@ -8119,7 +8284,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   },
                                   "children": [
                                     {
-                                      "id": "15opf3s",
+                                      "id": "1y9w1as",
                                       "type": "Icon",
                                       "props": {
                                         "$name": "card.icon",
@@ -8131,7 +8296,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   ]
                                 },
                                 {
-                                  "id": "162n320",
+                                  "id": "1r4jzdw",
                                   "type": "FlexLayout",
                                   "props": {
                                     "direction": "column",
@@ -8139,7 +8304,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   },
                                   "children": [
                                     {
-                                      "id": "1qo27gq",
+                                      "id": "vy0qzce",
                                       "type": "Text",
                                       "props": {
                                         "size": "overline",
@@ -8149,7 +8314,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                       "children": []
                                     },
                                     {
-                                      "id": "h8z6nik",
+                                      "id": "12oeryw",
                                       "type": "Heading",
                                       "props": {
                                         "as": "h3",
@@ -8159,7 +8324,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                       "children": []
                                     },
                                     {
-                                      "id": "1edlk3a",
+                                      "id": "1htt6re",
                                       "type": "Text",
                                       "props": {
                                         "size": "sm",
@@ -8172,7 +8337,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   ]
                                 },
                                 {
-                                  "id": "1ia0aga",
+                                  "id": "1i4hzxa",
                                   "type": "FlexLayout",
                                   "props": {
                                     "direction": "row",
@@ -8182,7 +8347,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   },
                                   "children": [
                                     {
-                                      "id": "ep3b8n8",
+                                      "id": "1n2ocq8",
                                       "type": "Text",
                                       "props": {
                                         "$href": "card.href",
@@ -8195,7 +8360,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                       "children": []
                                     },
                                     {
-                                      "id": "9d7olny",
+                                      "id": "xgdr9j6",
                                       "type": "Icon",
                                       "props": {
                                         "name": "arrow-right",
@@ -8313,8 +8478,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       "children": []
                     },
                     {
-                      "id": "12wuyvo",
-                      "type": "Repeat",
+                      "id": "xdgrvq0",
+                      "type": "RepeatGrid",
                       "props": {
                         "item": "step",
                         "index": "i",
@@ -8325,7 +8490,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       },
                       "children": [
                         {
-                          "id": "9i115f6",
+                          "id": "11zxcgu",
                           "type": "FlexLayout",
                           "props": {
                             "direction": "column",
@@ -8334,7 +8499,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           },
                           "children": [
                             {
-                              "id": "9gzj9n8",
+                              "id": "174avfc",
                               "type": "FlexLayout",
                               "props": {
                                 "align": "center",
@@ -8343,7 +8508,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               },
                               "children": [
                                 {
-                                  "id": "1d6izkq",
+                                  "id": "1puefsm",
                                   "type": "Icon",
                                   "props": {
                                     "$name": "step.icon",
@@ -8355,7 +8520,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               ]
                             },
                             {
-                              "id": "ydhtye2",
+                              "id": "alizl1i",
                               "type": "Text",
                               "props": {
                                 "size": "overline",
@@ -8366,7 +8531,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               "children": []
                             },
                             {
-                              "id": "83yaekw",
+                              "id": "ojnof1g",
                               "type": "Heading",
                               "props": {
                                 "as": "h3",
@@ -8376,7 +8541,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               "children": []
                             },
                             {
-                              "id": "cswjouq",
+                              "id": "1m92032",
                               "type": "Text",
                               "props": {
                                 "size": "sm",
@@ -8476,8 +8641,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                   },
                   "children": [
                     {
-                      "id": "br90jwc",
-                      "type": "Repeat",
+                      "id": "n94ltd4",
+                      "type": "RepeatGrid",
                       "props": {
                         "item": "item",
                         "key": "item.title",
@@ -8487,7 +8652,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       },
                       "children": [
                         {
-                          "id": "bkge052",
+                          "id": "vlsk2cq",
                           "type": "FlexLayout",
                           "props": {
                             "direction": "column",
@@ -8496,7 +8661,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           },
                           "children": [
                             {
-                              "id": "b1ssf2k",
+                              "id": "1fknwug",
                               "type": "FlexLayout",
                               "props": {
                                 "direction": "row",
@@ -8506,7 +8671,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               },
                               "children": [
                                 {
-                                  "id": "15ioq02",
+                                  "id": "x5kcz46",
                                   "type": "Text",
                                   "props": {
                                     "size": "xs",
@@ -8517,7 +8682,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   "children": []
                                 },
                                 {
-                                  "id": "jk5auco",
+                                  "id": "zy22lzo",
                                   "type": "Heading",
                                   "props": {
                                     "as": "h3",
@@ -8529,7 +8694,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               ]
                             },
                             {
-                              "id": "1kyfhra",
+                              "id": "gh0b2sa",
                               "type": "Text",
                               "props": {
                                 "size": "md",
@@ -8621,8 +8786,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                   ]
                 },
                 {
-                  "id": "0liptq2",
-                  "type": "Repeat",
+                  "id": "11w0zqu",
+                  "type": "RepeatGrid",
                   "props": {
                     "item": "row",
                     "key": "row.title",
@@ -8632,7 +8797,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                   },
                   "children": [
                     {
-                      "id": "1jk6zxa",
+                      "id": "1y9sk4q",
                       "type": "GridLayout",
                       "props": {
                         "columns": "2",
@@ -8642,7 +8807,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       },
                       "children": [
                         {
-                          "id": "15e23cg",
+                          "id": "1ally6c",
                           "type": "FlexLayout",
                           "props": {
                             "direction": "column",
@@ -8651,7 +8816,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           },
                           "children": [
                             {
-                              "id": "bxbrvi2",
+                              "id": "f2r1yie",
                               "type": "Text",
                               "props": {
                                 "size": "overline",
@@ -8662,7 +8827,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               "children": []
                             },
                             {
-                              "id": "d9un4vg",
+                              "id": "1y7x88g",
                               "type": "Heading",
                               "props": {
                                 "as": "h3",
@@ -8672,7 +8837,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               "children": []
                             },
                             {
-                              "id": "pdr8x6m",
+                              "id": "1cn6k96",
                               "type": "Text",
                               "props": {
                                 "size": "lg",
@@ -8685,7 +8850,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           ]
                         },
                         {
-                          "id": "1xeodh0",
+                          "id": "1xkekx4",
                           "type": "Image",
                           "props": {
                             "$src": "row.image",
@@ -8780,6 +8945,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       "id": "st28rn8",
                       "type": "GridLayout",
                       "props": {
+                        "as": "nav",
+                        "aria-label": "Footer",
                         "columns": "auto",
                         "minWidth": "xs",
                         "maxColumns": "3",
@@ -8788,8 +8955,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       },
                       "children": [
                         {
-                          "id": "1dh8gta",
-                          "type": "Repeat",
+                          "id": "1ftgope",
+                          "type": "RepeatGrid",
                           "props": {
                             "item": "group",
                             "key": "group.title",
@@ -8799,7 +8966,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           },
                           "children": [
                             {
-                              "id": "16qufes",
+                              "id": "i4g9dj4",
                               "type": "FlexLayout",
                               "props": {
                                 "direction": "column",
@@ -8807,9 +8974,10 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               },
                               "children": [
                                 {
-                                  "id": "ija2a62",
+                                  "id": "1we75qm",
                                   "type": "Text",
                                   "props": {
+                                    "as": "h2",
                                     "size": "overline",
                                     "color": "muted",
                                     "$children": "{group.title}"
@@ -8817,16 +8985,17 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   "children": []
                                 },
                                 {
-                                  "id": "11qhnkw",
+                                  "id": "1stjv2k",
                                   "type": "FlexLayout",
                                   "props": {
+                                    "as": "ul",
                                     "direction": "column",
-                                    "gap": "3"
+                                    "gap": "2"
                                   },
                                   "children": [
                                     {
-                                      "id": "z3e3qde",
-                                      "type": "Repeat",
+                                      "id": "1hgjgnm",
+                                      "type": "RepeatGrid",
                                       "props": {
                                         "item": "link",
                                         "key": "link.label",
@@ -8834,15 +9003,25 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                       },
                                       "children": [
                                         {
-                                          "id": "1yhk8s0",
-                                          "type": "Text",
+                                          "id": "1179scy",
+                                          "type": "RawHTML",
                                           "props": {
-                                            "$href": "link.href",
-                                            "size": "sm",
-                                            "textType": "link",
-                                            "$children": "{link.label}"
+                                            "tag": "li"
                                           },
-                                          "children": []
+                                          "children": [
+                                            {
+                                              "id": "11u1180",
+                                              "type": "Text",
+                                              "props": {
+                                                "$href": "link.href",
+                                                "size": "sm",
+                                                "className": "inline-flex min-h-6 items-center",
+                                                "textType": "link",
+                                                "$children": "{link.label}"
+                                              },
+                                              "children": []
+                                            }
+                                          ]
                                         }
                                       ]
                                     }
@@ -8892,8 +9071,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       },
                       "children": [
                         {
-                          "id": "1yxtwa0",
-                          "type": "Repeat",
+                          "id": "1l2fhg4",
+                          "type": "RepeatGrid",
                           "props": {
                             "item": "item",
                             "key": "item.name",
@@ -8903,7 +9082,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           },
                           "children": [
                             {
-                              "id": "p4rqmzy",
+                              "id": "1du4hci",
                               "type": "Text",
                               "props": {
                                 "$href": "item.href",
@@ -8913,7 +9092,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               },
                               "children": [
                                 {
-                                  "id": "19mqiyc",
+                                  "id": "1kun9pc",
                                   "type": "Icon",
                                   "props": {
                                     "$name": "item.icon",
@@ -9000,8 +9179,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       },
                       "children": [
                         {
-                          "id": "1xl8qqy",
-                          "type": "Repeat",
+                          "id": "15homm6",
+                          "type": "RepeatGrid",
                           "props": {
                             "item": "item",
                             "key": "item.name",
@@ -9011,7 +9190,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           },
                           "children": [
                             {
-                              "id": "1a9jqv8",
+                              "id": "n6i2n1s",
                               "type": "Text",
                               "props": {
                                 "$href": "item.href",
@@ -9021,7 +9200,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               },
                               "children": [
                                 {
-                                  "id": "fdlej92",
+                                  "id": "vd6imzu",
                                   "type": "Icon",
                                   "props": {
                                     "$name": "item.icon",
@@ -9049,8 +9228,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                   },
                   "children": [
                     {
-                      "id": "1p3jnkc",
-                      "type": "Repeat",
+                      "id": "1su0eq0",
+                      "type": "RepeatGrid",
                       "props": {
                         "item": "link",
                         "key": "link.label",
@@ -9060,7 +9239,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       },
                       "children": [
                         {
-                          "id": "p7mmuhm",
+                          "id": "1il8rz2",
                           "type": "Text",
                           "props": {
                             "$href": "link.href",
@@ -9167,8 +9346,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                   },
                   "children": [
                     {
-                      "id": "14i37ly",
-                      "type": "Repeat",
+                      "id": "5v9a2gi",
+                      "type": "RepeatGrid",
                       "props": {
                         "item": "link",
                         "key": "link.label",
@@ -9178,7 +9357,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       },
                       "children": [
                         {
-                          "id": "19pqcik",
+                          "id": "1xtop0w",
                           "type": "Text",
                           "props": {
                             "$href": "link.href",
@@ -9203,8 +9382,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                   },
                   "children": [
                     {
-                      "id": "twbuid4",
-                      "type": "Repeat",
+                      "id": "gmd2ojo",
+                      "type": "RepeatGrid",
                       "props": {
                         "item": "item",
                         "key": "item.name",
@@ -9214,7 +9393,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       },
                       "children": [
                         {
-                          "id": "15sncl2",
+                          "id": "1kblq8a",
                           "type": "Text",
                           "props": {
                             "$href": "item.href",
@@ -9224,7 +9403,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           },
                           "children": [
                             {
-                              "id": "mescso8",
+                              "id": "qaokgk4",
                               "type": "Icon",
                               "props": {
                                 "$name": "item.icon",
@@ -9327,6 +9506,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                   "id": "14xjg7e",
                   "type": "GridLayout",
                   "props": {
+                    "as": "nav",
+                    "aria-label": "Footer",
                     "columns": "auto",
                     "minWidth": "xs",
                     "maxColumns": "5",
@@ -9335,8 +9516,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                   },
                   "children": [
                     {
-                      "id": "mnuq2hg",
-                      "type": "Repeat",
+                      "id": "avj8bmo",
+                      "type": "RepeatGrid",
                       "props": {
                         "item": "group",
                         "key": "group.title",
@@ -9346,7 +9527,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       },
                       "children": [
                         {
-                          "id": "1pa5fa2",
+                          "id": "0xslmu6",
                           "type": "FlexLayout",
                           "props": {
                             "direction": "column",
@@ -9354,9 +9535,10 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           },
                           "children": [
                             {
-                              "id": "oyh0n1c",
+                              "id": "1u3d04s",
                               "type": "Text",
                               "props": {
+                                "as": "h2",
                                 "size": "overline",
                                 "color": "muted",
                                 "$children": "{group.title}"
@@ -9364,16 +9546,17 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               "children": []
                             },
                             {
-                              "id": "1g6psva",
+                              "id": "r8a7mqy",
                               "type": "FlexLayout",
                               "props": {
+                                "as": "ul",
                                 "direction": "column",
-                                "gap": "3"
+                                "gap": "2"
                               },
                               "children": [
                                 {
-                                  "id": "hmf6wxc",
-                                  "type": "Repeat",
+                                  "id": "10o9yls",
+                                  "type": "RepeatGrid",
                                   "props": {
                                     "item": "link",
                                     "key": "link.label",
@@ -9381,15 +9564,25 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   },
                                   "children": [
                                     {
-                                      "id": "1qi8th2",
-                                      "type": "Text",
+                                      "id": "j59z3qg",
+                                      "type": "RawHTML",
                                       "props": {
-                                        "$href": "link.href",
-                                        "size": "sm",
-                                        "textType": "link",
-                                        "$children": "{link.label}"
+                                        "tag": "li"
                                       },
-                                      "children": []
+                                      "children": [
+                                        {
+                                          "id": "1qxucrq",
+                                          "type": "Text",
+                                          "props": {
+                                            "$href": "link.href",
+                                            "size": "sm",
+                                            "className": "inline-flex min-h-6 items-center",
+                                            "textType": "link",
+                                            "$children": "{link.label}"
+                                          },
+                                          "children": []
+                                        }
+                                      ]
                                     }
                                   ]
                                 }
@@ -9438,8 +9631,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           "children": []
                         },
                         {
-                          "id": "1ccrxz6",
-                          "type": "Repeat",
+                          "id": "wewjnxq",
+                          "type": "RepeatGrid",
                           "props": {
                             "item": "item",
                             "key": "item.label",
@@ -9449,7 +9642,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           },
                           "children": [
                             {
-                              "id": "guihtyw",
+                              "id": "w2uc9mk",
                               "type": "Text",
                               "props": {
                                 "$href": "item.href",
@@ -9647,29 +9840,30 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           ]
                         },
                         {
-                          "id": "18940n2",
-                          "type": "FlexLayout",
+                          "id": "1x143f4",
+                          "type": "RawHTML",
                           "props": {
-                            "direction": "column",
-                            "gap": "2",
-                            "className": "sm:flex-row md:w-[400px]"
+                            "tag": "form",
+                            "className": "flex flex-col gap-2 sm:flex-row md:w-[400px]"
                           },
                           "children": [
                             {
-                              "id": "szjcrv6",
+                              "id": "1ta5jc4",
                               "type": "TextField",
                               "props": {
                                 "type": "email",
                                 "placeholder": "you@example.com",
                                 "aria-label": "Email address",
+                                "autoComplete": "email",
                                 "className": "h-10 flex-1"
                               },
                               "children": []
                             },
                             {
-                              "id": "1iscrww",
+                              "id": "is1trni",
                               "type": "Button",
                               "props": {
+                                "type": "submit",
                                 "size": "md",
                                 "className": "w-full shrink-0 sm:w-auto",
                                 "children": "Subscribe"
@@ -9686,6 +9880,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                   "id": "92ueb2s",
                   "type": "GridLayout",
                   "props": {
+                    "as": "nav",
+                    "aria-label": "Footer",
                     "columns": "4",
                     "gap": "6",
                     "columns@tablet": "3",
@@ -9725,8 +9921,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       ]
                     },
                     {
-                      "id": "1sa7m70",
-                      "type": "Repeat",
+                      "id": "1yww9co",
+                      "type": "RepeatGrid",
                       "props": {
                         "item": "group",
                         "key": "group.title",
@@ -9736,7 +9932,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       },
                       "children": [
                         {
-                          "id": "17h5vhu",
+                          "id": "12z7tw6",
                           "type": "FlexLayout",
                           "props": {
                             "direction": "column",
@@ -9744,9 +9940,10 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           },
                           "children": [
                             {
-                              "id": "wa8nggo",
+                              "id": "1kj0fz8",
                               "type": "Text",
                               "props": {
+                                "as": "h2",
                                 "size": "overline",
                                 "color": "muted",
                                 "$children": "{group.title}"
@@ -9754,16 +9951,17 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               "children": []
                             },
                             {
-                              "id": "zzkabwu",
+                              "id": "1sqddwi",
                               "type": "FlexLayout",
                               "props": {
+                                "as": "ul",
                                 "direction": "column",
-                                "gap": "3"
+                                "gap": "2"
                               },
                               "children": [
                                 {
-                                  "id": "h2nnr1k",
-                                  "type": "Repeat",
+                                  "id": "9bb57t4",
+                                  "type": "RepeatGrid",
                                   "props": {
                                     "item": "link",
                                     "key": "link.label",
@@ -9771,15 +9969,25 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   },
                                   "children": [
                                     {
-                                      "id": "vud1j3y",
-                                      "type": "Text",
+                                      "id": "bivkpv4",
+                                      "type": "RawHTML",
                                       "props": {
-                                        "$href": "link.href",
-                                        "size": "sm",
-                                        "textType": "link",
-                                        "$children": "{link.label}"
+                                        "tag": "li"
                                       },
-                                      "children": []
+                                      "children": [
+                                        {
+                                          "id": "1844u5q",
+                                          "type": "Text",
+                                          "props": {
+                                            "$href": "link.href",
+                                            "size": "sm",
+                                            "className": "inline-flex min-h-6 items-center",
+                                            "textType": "link",
+                                            "$children": "{link.label}"
+                                          },
+                                          "children": []
+                                        }
+                                      ]
                                     }
                                   ]
                                 }
@@ -9828,8 +10036,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           "children": []
                         },
                         {
-                          "id": "1v07s88",
-                          "type": "Repeat",
+                          "id": "nll10pg",
+                          "type": "RepeatGrid",
                           "props": {
                             "item": "item",
                             "key": "item.label",
@@ -9839,7 +10047,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           },
                           "children": [
                             {
-                              "id": "57b1o4i",
+                              "id": "t3wv5uu",
                               "type": "Text",
                               "props": {
                                 "$href": "item.href",
@@ -9864,8 +10072,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       },
                       "children": [
                         {
-                          "id": "xt4cbjs",
-                          "type": "Repeat",
+                          "id": "pu84p50",
+                          "type": "RepeatGrid",
                           "props": {
                             "item": "item",
                             "key": "item.name",
@@ -9875,7 +10083,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           },
                           "children": [
                             {
-                              "id": "f7vd5mi",
+                              "id": "vzei2vi",
                               "type": "Text",
                               "props": {
                                 "$href": "item.href",
@@ -9885,7 +10093,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               },
                               "children": [
                                 {
-                                  "id": "39fi9vg",
+                                  "id": "1vc38x4",
                                   "type": "Icon",
                                   "props": {
                                     "$name": "item.icon",
@@ -9997,9 +10205,21 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       "type": "Button",
                       "props": {
                         "size": "lg",
-                        "children": "Start free"
+                        "asChild": "true"
                       },
-                      "children": []
+                      "children": [
+                        {
+                          "id": "x495g2y",
+                          "type": "Text",
+                          "props": {
+                            "children": "Start free",
+                            "textType": "link",
+                            "href": "/signup",
+                            "_tag": "a"
+                          },
+                          "children": []
+                        }
+                      ]
                     },
                     {
                       "id": "1tzzqdm",
@@ -10007,9 +10227,21 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       "props": {
                         "size": "lg",
                         "variant": "outline",
-                        "children": "See how it works"
+                        "asChild": "true"
                       },
-                      "children": []
+                      "children": [
+                        {
+                          "id": "m852aoc",
+                          "type": "Text",
+                          "props": {
+                            "children": "See how it works",
+                            "textType": "link",
+                            "href": "#how-it-works",
+                            "_tag": "a"
+                          },
+                          "children": []
+                        }
+                      ]
                     }
                   ]
                 },
@@ -10107,9 +10339,21 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       "type": "Button",
                       "props": {
                         "size": "lg",
-                        "children": "Create your free account"
+                        "asChild": "true"
                       },
-                      "children": []
+                      "children": [
+                        {
+                          "id": "1ils5pe",
+                          "type": "Text",
+                          "props": {
+                            "children": "Create your free account",
+                            "textType": "link",
+                            "href": "/signup",
+                            "_tag": "a"
+                          },
+                          "children": []
+                        }
+                      ]
                     },
                     {
                       "id": "ahy53nk",
@@ -10222,9 +10466,21 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           "type": "Button",
                           "props": {
                             "size": "lg",
-                            "children": "Start a household"
+                            "asChild": "true"
                           },
-                          "children": []
+                          "children": [
+                            {
+                              "id": "ax2t34w",
+                              "type": "Text",
+                              "props": {
+                                "children": "Start a household",
+                                "textType": "link",
+                                "href": "/signup",
+                                "_tag": "a"
+                              },
+                              "children": []
+                            }
+                          ]
                         },
                         {
                           "id": "14ayi20",
@@ -10232,9 +10488,21 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           "props": {
                             "size": "lg",
                             "variant": "ghost",
-                            "children": "Compare plans"
+                            "asChild": "true"
                           },
-                          "children": []
+                          "children": [
+                            {
+                              "id": "lyfwksq",
+                              "type": "Text",
+                              "props": {
+                                "children": "Compare plans",
+                                "textType": "link",
+                                "href": "/pricing",
+                                "_tag": "a"
+                              },
+                              "children": []
+                            }
+                          ]
                         }
                       ]
                     },
@@ -10247,8 +10515,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       },
                       "children": [
                         {
-                          "id": "0n7e5x6",
-                          "type": "Repeat",
+                          "id": "8tnk372",
+                          "type": "RepeatGrid",
                           "props": {
                             "item": "point",
                             "key": "point",
@@ -10258,7 +10526,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           },
                           "children": [
                             {
-                              "id": "1h06mzc",
+                              "id": "id3r0lg",
                               "type": "FlexLayout",
                               "props": {
                                 "direction": "row",
@@ -10267,7 +10535,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               },
                               "children": [
                                 {
-                                  "id": "ohf0q1q",
+                                  "id": "oybotaq",
                                   "type": "Icon",
                                   "props": {
                                     "name": "check",
@@ -10277,7 +10545,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   "children": []
                                 },
                                 {
-                                  "id": "1gwms6g",
+                                  "id": "1mj9tys",
                                   "type": "Text",
                                   "props": {
                                     "size": "sm",
@@ -10398,9 +10666,21 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       "type": "Button",
                       "props": {
                         "size": "lg",
-                        "children": "Start free"
+                        "asChild": "true"
                       },
-                      "children": []
+                      "children": [
+                        {
+                          "id": "1gxlnc8",
+                          "type": "Text",
+                          "props": {
+                            "children": "Start free",
+                            "textType": "link",
+                            "href": "/signup",
+                            "_tag": "a"
+                          },
+                          "children": []
+                        }
+                      ]
                     },
                     {
                       "id": "172hmcw",
@@ -10658,8 +10938,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                   },
                   "children": [
                     {
-                      "id": "6sr23ls",
-                      "type": "Repeat",
+                      "id": "1nhdy4c",
+                      "type": "RepeatGrid",
                       "props": {
                         "item": "kpi",
                         "key": "kpi.label",
@@ -10669,14 +10949,14 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       },
                       "children": [
                         {
-                          "id": "13jmrc0",
+                          "id": "1nmdqjg",
                           "type": "CardLayout",
                           "props": {
                             "padding": "lg"
                           },
                           "children": [
                             {
-                              "id": "1tc4iwe",
+                              "id": "1x34ahe",
                               "type": "FlexLayout",
                               "props": {
                                 "direction": "column",
@@ -10684,7 +10964,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               },
                               "children": [
                                 {
-                                  "id": "7k2819w",
+                                  "id": "bqit0ds",
                                   "type": "Text",
                                   "props": {
                                     "size": "sm",
@@ -10694,7 +10974,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   "children": []
                                 },
                                 {
-                                  "id": "h2zngnm",
+                                  "id": "1dijpja",
                                   "type": "Heading",
                                   "props": {
                                     "as": "p",
@@ -10706,7 +10986,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   "children": []
                                 },
                                 {
-                                  "id": "nk9rqpg",
+                                  "id": "16ir8uo",
                                   "type": "FlexLayout",
                                   "props": {
                                     "direction": "row",
@@ -10715,7 +10995,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   },
                                   "children": [
                                     {
-                                      "id": "fcfhhiu",
+                                      "id": "v3jfdoq",
                                       "type": "Icon",
                                       "props": {
                                         "$name": "kpi.icon",
@@ -10725,7 +11005,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                       "children": []
                                     },
                                     {
-                                      "id": "17hf8w4",
+                                      "id": "1dgu91c",
                                       "type": "Text",
                                       "props": {
                                         "size": "sm",
@@ -10736,7 +11016,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                       "children": []
                                     },
                                     {
-                                      "id": "1v3zdku",
+                                      "id": "136euwy",
                                       "type": "Text",
                                       "props": {
                                         "size": "sm",
@@ -10791,8 +11071,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
               },
               "children": [
                 {
-                  "id": "1vj2som",
-                  "type": "Repeat",
+                  "id": "v41dpoy",
+                  "type": "RepeatGrid",
                   "props": {
                     "item": "stat",
                     "key": "stat.label",
@@ -10802,7 +11082,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                   },
                   "children": [
                     {
-                      "id": "18oojzk",
+                      "id": "1e0wvb8",
                       "type": "FlexLayout",
                       "props": {
                         "direction": "column",
@@ -10811,7 +11091,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       },
                       "children": [
                         {
-                          "id": "1844tce",
+                          "id": "1gd3rca",
                           "type": "Heading",
                           "props": {
                             "as": "p",
@@ -10824,7 +11104,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           "children": []
                         },
                         {
-                          "id": "169ttkw",
+                          "id": "8xtle1g",
                           "type": "Text",
                           "props": {
                             "size": "sm",
@@ -10912,8 +11192,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                   },
                   "children": [
                     {
-                      "id": "1mwlh7e",
-                      "type": "Repeat",
+                      "id": "ss37mmu",
+                      "type": "RepeatGrid",
                       "props": {
                         "item": "card",
                         "key": "card.label",
@@ -10923,14 +11203,14 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       },
                       "children": [
                         {
-                          "id": "1achfle",
+                          "id": "199finy",
                           "type": "CardLayout",
                           "props": {
                             "padding": "lg"
                           },
                           "children": [
                             {
-                              "id": "1s3zkzw",
+                              "id": "13yxgcw",
                               "type": "FlexLayout",
                               "props": {
                                 "direction": "column",
@@ -10938,7 +11218,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               },
                               "children": [
                                 {
-                                  "id": "716ec1u",
+                                  "id": "zssmhim",
                                   "type": "FlexLayout",
                                   "props": {
                                     "direction": "column",
@@ -10946,7 +11226,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   },
                                   "children": [
                                     {
-                                      "id": "1sqemps",
+                                      "id": "hemewg4",
                                       "type": "Text",
                                       "props": {
                                         "size": "sm",
@@ -10956,7 +11236,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                       "children": []
                                     },
                                     {
-                                      "id": "e4whmza",
+                                      "id": "uow52aq",
                                       "type": "FlexLayout",
                                       "props": {
                                         "direction": "row",
@@ -10967,7 +11247,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                       },
                                       "children": [
                                         {
-                                          "id": "ho9w24o",
+                                          "id": "12zxhbw",
                                           "type": "Heading",
                                           "props": {
                                             "as": "p",
@@ -10978,7 +11258,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                           "children": []
                                         },
                                         {
-                                          "id": "1pmspky",
+                                          "id": "5q5qyge",
                                           "type": "FlexLayout",
                                           "props": {
                                             "direction": "row",
@@ -10989,7 +11269,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                           },
                                           "children": [
                                             {
-                                              "id": "1wy6n24",
+                                              "id": "pn9zrxc",
                                               "type": "Icon",
                                               "props": {
                                                 "$name": "card.icon",
@@ -10999,7 +11279,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                               "children": []
                                             },
                                             {
-                                              "id": "6m23jbu",
+                                              "id": "1v3r76e",
                                               "type": "Text",
                                               "props": {
                                                 "size": "sm",
@@ -11016,7 +11296,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   ]
                                 },
                                 {
-                                  "id": "1e3zy0m",
+                                  "id": "1roigsi",
                                   "type": "Sparkline",
                                   "props": {
                                     "type": "bar",
@@ -11117,8 +11397,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           "children": []
                         },
                         {
-                          "id": "18plyhk",
-                          "type": "Repeat",
+                          "id": "18hx8ic",
+                          "type": "RepeatGrid",
                           "props": {
                             "item": "link",
                             "key": "link.label",
@@ -11128,7 +11408,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           },
                           "children": [
                             {
-                              "id": "dcrxmee",
+                              "id": "trbf3qy",
                               "type": "Text",
                               "props": {
                                 "$href": "link.href",
@@ -11161,18 +11441,42 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           "props": {
                             "variant": "ghost",
                             "size": "sm",
-                            "children": "Sign in"
+                            "asChild": "true"
                           },
-                          "children": []
+                          "children": [
+                            {
+                              "id": "1wzfwgs",
+                              "type": "Text",
+                              "props": {
+                                "children": "Sign in",
+                                "textType": "link",
+                                "href": "/signin",
+                                "_tag": "a"
+                              },
+                              "children": []
+                            }
+                          ]
                         },
                         {
                           "id": "1yaadb8",
                           "type": "Button",
                           "props": {
                             "size": "sm",
-                            "children": "Start free"
+                            "asChild": "true"
                           },
-                          "children": []
+                          "children": [
+                            {
+                              "id": "1wq5qc6",
+                              "type": "Text",
+                              "props": {
+                                "children": "Start free",
+                                "textType": "link",
+                                "href": "/signup",
+                                "_tag": "a"
+                              },
+                              "children": []
+                            }
+                          ]
                         }
                       ]
                     },
@@ -11183,6 +11487,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                         "variant": "ghost",
                         "size": "md",
                         "aria-label": "Open menu",
+                        "aria-expanded": "false",
                         "className": "md:hidden"
                       },
                       "children": [
@@ -11226,8 +11531,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           },
                           "children": [
                             {
-                              "id": "1lc1zgs",
-                              "type": "Repeat",
+                              "id": "1tz5iig",
+                              "type": "RepeatGrid",
                               "props": {
                                 "item": "group",
                                 "key": "group.title",
@@ -11237,7 +11542,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               },
                               "children": [
                                 {
-                                  "id": "1kqq54e",
+                                  "id": "1y6azea",
                                   "type": "FlexLayout",
                                   "props": {
                                     "direction": "column",
@@ -11245,7 +11550,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   },
                                   "children": [
                                     {
-                                      "id": "10lozf4",
+                                      "id": "1ymnddo",
                                       "type": "Text",
                                       "props": {
                                         "size": "overline",
@@ -11256,7 +11561,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                       "children": []
                                     },
                                     {
-                                      "id": "9yyuaz6",
+                                      "id": "1mwdjfq",
                                       "type": "FlexLayout",
                                       "props": {
                                         "direction": "column",
@@ -11264,8 +11569,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                       },
                                       "children": [
                                         {
-                                          "id": "ngv7nxk",
-                                          "type": "Repeat",
+                                          "id": "fxqxvnc",
+                                          "type": "RepeatGrid",
                                           "props": {
                                             "item": "item",
                                             "key": "item.label",
@@ -11273,7 +11578,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                           },
                                           "children": [
                                             {
-                                              "id": "17le52a",
+                                              "id": "1huw9he",
                                               "type": "Text",
                                               "props": {
                                                 "$href": "item.href",
@@ -11283,7 +11588,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                               },
                                               "children": [
                                                 {
-                                                  "id": "1k8p9z8",
+                                                  "id": "9ueexis",
                                                   "type": "FlexLayout",
                                                   "props": {
                                                     "align": "center",
@@ -11292,7 +11597,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                                   },
                                                   "children": [
                                                     {
-                                                      "id": "ltu5r9m",
+                                                      "id": "hjqe3d6",
                                                       "type": "Icon",
                                                       "props": {
                                                         "$name": "item.icon",
@@ -11304,7 +11609,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                                   ]
                                                 },
                                                 {
-                                                  "id": "gc3m0by",
+                                                  "id": "1q6unke",
                                                   "type": "FlexLayout",
                                                   "props": {
                                                     "direction": "column",
@@ -11313,7 +11618,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                                   },
                                                   "children": [
                                                     {
-                                                      "id": "c25vlec",
+                                                      "id": "8y2kbus",
                                                       "type": "Text",
                                                       "props": {
                                                         "size": "sm",
@@ -11323,7 +11628,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                                       "children": []
                                                     },
                                                     {
-                                                      "id": "pesmylq",
+                                                      "id": "5pa0rfi",
                                                       "type": "Text",
                                                       "props": {
                                                         "size": "sm",
@@ -11657,8 +11962,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       },
                       "children": [
                         {
-                          "id": "42hqp5k",
-                          "type": "Repeat",
+                          "id": "1namzfo",
+                          "type": "RepeatGrid",
                           "props": {
                             "item": "budget",
                             "key": "budget.name",
@@ -11668,14 +11973,14 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           },
                           "children": [
                             {
-                              "id": "zk928u8",
+                              "id": "bstb24c",
                               "type": "CardLayout",
                               "props": {
                                 "padding": "lg"
                               },
                               "children": [
                                 {
-                                  "id": "1xj9uc2",
+                                  "id": "zw71znq",
                                   "type": "FlexLayout",
                                   "props": {
                                     "direction": "column",
@@ -11683,7 +11988,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   },
                                   "children": [
                                     {
-                                      "id": "1m3syl8",
+                                      "id": "1exw9rs",
                                       "type": "Text",
                                       "props": {
                                         "size": "sm",
@@ -11693,7 +11998,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                       "children": []
                                     },
                                     {
-                                      "id": "2ehdp3y",
+                                      "id": "1lqxt1u",
                                       "type": "FlexLayout",
                                       "props": {
                                         "direction": "row",
@@ -11702,7 +12007,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                       },
                                       "children": [
                                         {
-                                          "id": "16kikro",
+                                          "id": "dxnbx80",
                                           "type": "Heading",
                                           "props": {
                                             "as": "p",
@@ -11713,7 +12018,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                           "children": []
                                         },
                                         {
-                                          "id": "1ko5nta",
+                                          "id": "z5juhwi",
                                           "type": "Text",
                                           "props": {
                                             "size": "sm",
@@ -11726,7 +12031,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                       ]
                                     },
                                     {
-                                      "id": "15abucc",
+                                      "id": "1htdhko",
                                       "type": "Progress",
                                       "props": {
                                         "$value": "budget.percent"
@@ -11945,8 +12250,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       },
                       "children": [
                         {
-                          "id": "ee44wj8",
-                          "type": "Repeat",
+                          "id": "2zpgl6w",
+                          "type": "RepeatGrid",
                           "props": {
                             "item": "goal",
                             "key": "goal.name",
@@ -11956,14 +12261,14 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           },
                           "children": [
                             {
-                              "id": "1sltowk",
+                              "id": "d9hw4tk",
                               "type": "CardLayout",
                               "props": {
                                 "padding": "lg"
                               },
                               "children": [
                                 {
-                                  "id": "l4e9wbu",
+                                  "id": "1baexwm",
                                   "type": "FlexLayout",
                                   "props": {
                                     "direction": "column",
@@ -11971,7 +12276,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   },
                                   "children": [
                                     {
-                                      "id": "n57ugb4",
+                                      "id": "z9am9ms",
                                       "type": "Text",
                                       "props": {
                                         "size": "sm",
@@ -11981,7 +12286,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                       "children": []
                                     },
                                     {
-                                      "id": "10wa7oi",
+                                      "id": "1rvphce",
                                       "type": "Text",
                                       "props": {
                                         "size": "sm",
@@ -11992,7 +12297,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                       "children": []
                                     },
                                     {
-                                      "id": "d12h8r4",
+                                      "id": "daulcqs",
                                       "type": "Progress",
                                       "props": {
                                         "$value": "goal.percent"
@@ -12055,8 +12360,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                   },
                   "children": [
                     {
-                      "id": "w35n5hc",
-                      "type": "Repeat",
+                      "id": "19qinvw",
+                      "type": "RepeatGrid",
                       "props": {
                         "item": "item",
                         "key": "item.label",
@@ -12066,7 +12371,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       },
                       "children": [
                         {
-                          "id": "qwo18oa",
+                          "id": "ezksoi6",
                           "type": "IconButton",
                           "props": {
                             "variant": "ghost",
@@ -12077,7 +12382,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           },
                           "children": [
                             {
-                              "id": "1ogmigc",
+                              "id": "omcmaoo",
                               "type": "Icon",
                               "props": {
                                 "$name": "item.icon",
@@ -12097,7 +12402,11 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                   "type": "FlexLayout",
                   "props": {
                     "direction": "column",
-                    "className": "w-full shrink-0 bg-surface md:w-72"
+                    "resizable": "right",
+                    "minWidth": "224",
+                    "maxWidth": "420",
+                    "resizeHandle": "grip",
+                    "className": "w-full shrink-0 border-r border-hairline bg-surface md:w-72"
                   },
                   "children": [
                     {
@@ -12176,8 +12485,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       },
                       "children": [
                         {
-                          "id": "gc3jvfy",
-                          "type": "Repeat",
+                          "id": "o5l1ebm",
+                          "type": "RepeatGrid",
                           "props": {
                             "item": "group",
                             "key": "group.title",
@@ -12187,7 +12496,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           },
                           "children": [
                             {
-                              "id": "ijbycmc",
+                              "id": "1tyq84g",
                               "type": "FlexLayout",
                               "props": {
                                 "direction": "column",
@@ -12195,7 +12504,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               },
                               "children": [
                                 {
-                                  "id": "2ieupay",
+                                  "id": "uq9tcxa",
                                   "type": "Text",
                                   "props": {
                                     "size": "overline",
@@ -12206,8 +12515,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   "children": []
                                 },
                                 {
-                                  "id": "1bux9ts",
-                                  "type": "Repeat",
+                                  "id": "f99x8xs",
+                                  "type": "RepeatGrid",
                                   "props": {
                                     "item": "item",
                                     "key": "item.name",
@@ -12215,7 +12524,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   },
                                   "children": [
                                     {
-                                      "id": "l7oh4ea",
+                                      "id": "1en5b82",
                                       "type": "Text",
                                       "props": {
                                         "href": "/accounts",
@@ -12225,7 +12534,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                       },
                                       "children": [
                                         {
-                                          "id": "1iiq5y4",
+                                          "id": "1s4uhbg",
                                           "type": "FlexLayout",
                                           "props": {
                                             "direction": "column",
@@ -12233,7 +12542,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                           },
                                           "children": [
                                             {
-                                              "id": "15v9rla",
+                                              "id": "v3g8v9q",
                                               "type": "Text",
                                               "props": {
                                                 "size": "sm",
@@ -12244,7 +12553,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                               "children": []
                                             },
                                             {
-                                              "id": "adrxfdg",
+                                              "id": "1oe5cyc",
                                               "type": "Text",
                                               "props": {
                                                 "size": "xs",
@@ -12257,7 +12566,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                           ]
                                         },
                                         {
-                                          "id": "1dmc5q2",
+                                          "id": "m6ckabe",
                                           "type": "Text",
                                           "props": {
                                             "size": "sm",
@@ -12316,57 +12625,13 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                   "id": "i5c6mlm",
                   "type": "FlexLayout",
                   "props": {
-                    "role": "separator",
-                    "aria-orientation": "vertical",
-                    "aria-label": "Resize account list",
-                    "align": "center",
-                    "justify": "center",
-                    "className": "group relative w-3 shrink-0 cursor-col-resize max-md:hidden"
-                  },
-                  "children": [
-                    {
-                      "id": "k9eay6y",
-                      "type": "BoxLayout",
-                      "props": {
-                        "className": "absolute inset-y-0 left-1/2 w-px -translate-x-1/2 bg-hairline group-hover:bg-accent w-fit",
-                        "_autoHug": "true"
-                      },
-                      "children": []
-                    },
-                    {
-                      "id": "p8jc3z2",
-                      "type": "FlexLayout",
-                      "props": {
-                        "align": "center",
-                        "justify": "center",
-                        "className": "relative h-8 w-3 rounded-full border border-hairline bg-surface text-fg-muted"
-                      },
-                      "children": [
-                        {
-                          "id": "92sdg44",
-                          "type": "Icon",
-                          "props": {
-                            "name": "grip-vertical",
-                            "size": "xs",
-                            "color": "inherit"
-                          },
-                          "children": []
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "id": "1bktpfo",
-                  "type": "FlexLayout",
-                  "props": {
                     "direction": "column",
                     "gap": "6",
                     "className": "min-w-0 flex-1 overflow-y-auto p-6 max-md:hidden"
                   },
                   "children": [
                     {
-                      "id": "1w52jfy",
+                      "id": "ckxtli8",
                       "type": "FlexLayout",
                       "props": {
                         "direction": "column",
@@ -12374,9 +12639,10 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       },
                       "children": [
                         {
-                          "id": "tk38oj4",
+                          "id": "1djghla",
                           "type": "Text",
                           "props": {
+                            "as": "h1",
                             "size": "sm",
                             "color": "muted",
                             "children": "Cascade Federal Checking ••6021"
@@ -12384,10 +12650,10 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           "children": []
                         },
                         {
-                          "id": "v2wd3lm",
+                          "id": "112agfg",
                           "type": "Heading",
                           "props": {
-                            "as": "h1",
+                            "as": "p",
                             "size": "xl",
                             "className": "tabular-nums",
                             "children": "$4,812.36"
@@ -12395,7 +12661,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           "children": []
                         },
                         {
-                          "id": "nq8vog4",
+                          "id": "i6aypli",
                           "type": "Text",
                           "props": {
                             "size": "sm",
@@ -12407,13 +12673,13 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       ]
                     },
                     {
-                      "id": "e4h2hqe",
+                      "id": "1pb36ps",
                       "type": "Separator",
                       "props": {},
                       "children": []
                     },
                     {
-                      "id": "t4zy77m",
+                      "id": "2vkexrk",
                       "type": "FlexLayout",
                       "props": {
                         "direction": "column",
@@ -12613,6 +12879,9 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       "props": {
                         "direction": "column",
                         "gap": "6",
+                        "role": "region",
+                        "aria-label": "Content",
+                        "tabIndex": "0",
                         "className": "relative min-h-0 min-w-0 flex-1 overflow-y-auto p-6"
                       },
                       "children": [
@@ -12657,8 +12926,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           },
                           "children": [
                             {
-                              "id": "1bgfsjm",
-                              "type": "Repeat",
+                              "id": "f4qk5ou",
+                              "type": "RepeatGrid",
                               "props": {
                                 "item": "stat",
                                 "key": "stat.label",
@@ -12668,14 +12937,14 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               },
                               "children": [
                                 {
-                                  "id": "1h9qqc6",
+                                  "id": "12n7av6",
                                   "type": "CardLayout",
                                   "props": {
                                     "padding": "lg"
                                   },
                                   "children": [
                                     {
-                                      "id": "1wen5u8",
+                                      "id": "1eay8ro",
                                       "type": "FlexLayout",
                                       "props": {
                                         "direction": "column",
@@ -12683,7 +12952,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                       },
                                       "children": [
                                         {
-                                          "id": "1koguu2",
+                                          "id": "19zfvs6",
                                           "type": "Text",
                                           "props": {
                                             "size": "sm",
@@ -12693,7 +12962,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                           "children": []
                                         },
                                         {
-                                          "id": "wdyvr3w",
+                                          "id": "47jawls",
                                           "type": "Heading",
                                           "props": {
                                             "as": "p",
@@ -12704,7 +12973,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                           "children": []
                                         },
                                         {
-                                          "id": "umwkloy",
+                                          "id": "a49fqvi",
                                           "type": "Text",
                                           "props": {
                                             "size": "sm",
@@ -12779,8 +13048,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       "children": []
                     },
                     {
-                      "id": "1lyxvla",
-                      "type": "Repeat",
+                      "id": "spoeniy",
+                      "type": "RepeatGrid",
                       "props": {
                         "item": "txn",
                         "key": "txn.merchant",
@@ -12790,7 +13059,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       },
                       "children": [
                         {
-                          "id": "1jvqduo",
+                          "id": "ewrn32s",
                           "type": "FlexLayout",
                           "props": {
                             "direction": "row",
@@ -12801,7 +13070,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           },
                           "children": [
                             {
-                              "id": "sfhgcni",
+                              "id": "grrfjga",
                               "type": "FlexLayout",
                               "props": {
                                 "direction": "column",
@@ -12809,7 +13078,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               },
                               "children": [
                                 {
-                                  "id": "wgoyobo",
+                                  "id": "jwrpe7s",
                                   "type": "Text",
                                   "props": {
                                     "size": "sm",
@@ -12820,7 +13089,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   "children": []
                                 },
                                 {
-                                  "id": "dfgrtn2",
+                                  "id": "nx2rywq",
                                   "type": "Text",
                                   "props": {
                                     "size": "xs",
@@ -12832,7 +13101,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               ]
                             },
                             {
-                              "id": "79v7k8g",
+                              "id": "1syaryc",
                               "type": "Text",
                               "props": {
                                 "size": "sm",
@@ -12995,8 +13264,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               "children": []
                             },
                             {
-                              "id": "tr0eipw",
-                              "type": "Repeat",
+                              "id": "1tw846o",
+                              "type": "RepeatGrid",
                               "props": {
                                 "item": "row",
                                 "key": "row.label",
@@ -13006,7 +13275,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               },
                               "children": [
                                 {
-                                  "id": "xlpeoxu",
+                                  "id": "5b38ypi",
                                   "type": "FlexLayout",
                                   "props": {
                                     "direction": "row",
@@ -13015,7 +13284,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   },
                                   "children": [
                                     {
-                                      "id": "1ptr1cw",
+                                      "id": "rlzaxfg",
                                       "type": "Text",
                                       "props": {
                                         "size": "sm",
@@ -13026,7 +13295,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                       "children": []
                                     },
                                     {
-                                      "id": "u4d27oq",
+                                      "id": "14evtb2",
                                       "type": "Text",
                                       "props": {
                                         "size": "sm",
@@ -13448,8 +13717,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           },
                           "children": [
                             {
-                              "id": "1l4detm",
-                              "type": "Repeat",
+                              "id": "s76hfa6",
+                              "type": "RepeatGrid",
                               "props": {
                                 "item": "stat",
                                 "key": "stat.label",
@@ -13459,14 +13728,14 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               },
                               "children": [
                                 {
-                                  "id": "z1qst6q",
+                                  "id": "3odzhxi",
                                   "type": "CardLayout",
                                   "props": {
                                     "padding": "lg"
                                   },
                                   "children": [
                                     {
-                                      "id": "b9mc1zg",
+                                      "id": "121jzs8",
                                       "type": "FlexLayout",
                                       "props": {
                                         "direction": "column",
@@ -13474,7 +13743,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                       },
                                       "children": [
                                         {
-                                          "id": "1r4ilgm",
+                                          "id": "9jvjrsa",
                                           "type": "Text",
                                           "props": {
                                             "size": "sm",
@@ -13484,7 +13753,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                           "children": []
                                         },
                                         {
-                                          "id": "j68ed40",
+                                          "id": "ryddti4",
                                           "type": "Heading",
                                           "props": {
                                             "as": "p",
@@ -13495,7 +13764,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                           "children": []
                                         },
                                         {
-                                          "id": "19dyf6a",
+                                          "id": "nlxgewm",
                                           "type": "Text",
                                           "props": {
                                             "size": "sm",
@@ -13960,8 +14229,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               "children": []
                             },
                             {
-                              "id": "13e0ykm",
-                              "type": "Repeat",
+                              "id": "1ntai4i",
+                              "type": "RepeatGrid",
                               "props": {
                                 "item": "plan",
                                 "key": "plan.name",
@@ -13971,7 +14240,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               },
                               "children": [
                                 {
-                                  "id": "1es9r2o",
+                                  "id": "ys5cf5w",
                                   "type": "FlexLayout",
                                   "props": {
                                     "direction": "column",
@@ -13980,7 +14249,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   },
                                   "children": [
                                     {
-                                      "id": "wxef29i",
+                                      "id": "8tuok2a",
                                       "type": "FlexLayout",
                                       "props": {
                                         "direction": "row",
@@ -13990,7 +14259,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                       },
                                       "children": [
                                         {
-                                          "id": "1bvqg7k",
+                                          "id": "1yrvjus",
                                           "type": "Heading",
                                           "props": {
                                             "as": "h3",
@@ -14000,7 +14269,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                           "children": []
                                         },
                                         {
-                                          "id": "xuqbdb4",
+                                          "id": "1og20hg",
                                           "type": "Badge",
                                           "props": {
                                             "variant": "soft",
@@ -14015,7 +14284,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                       ]
                                     },
                                     {
-                                      "id": "1uc0hok",
+                                      "id": "1eaiohk",
                                       "type": "FlexLayout",
                                       "props": {
                                         "direction": "row",
@@ -14024,7 +14293,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                       },
                                       "children": [
                                         {
-                                          "id": "1avm0gy",
+                                          "id": "adkgcbi",
                                           "type": "Heading",
                                           "props": {
                                             "as": "p",
@@ -14035,7 +14304,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                           "children": []
                                         },
                                         {
-                                          "id": "1lis5sc",
+                                          "id": "1tawhps",
                                           "type": "Text",
                                           "props": {
                                             "size": "xs",
@@ -14047,14 +14316,26 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                       ]
                                     },
                                     {
-                                      "id": "1705af0",
+                                      "id": "79l1gu8",
                                       "type": "Button",
                                       "props": {
                                         "size": "sm",
                                         "$variant": "plan.featured ? \"solid\" : \"outline\"",
-                                        "$children": "{plan.cta}"
+                                        "asChild": "true"
                                       },
-                                      "children": []
+                                      "children": [
+                                        {
+                                          "id": "l5i6ebe",
+                                          "type": "Text",
+                                          "props": {
+                                            "textType": "link",
+                                            "href": "/signup",
+                                            "_tag": "a",
+                                            "$children": "{plan.cta}"
+                                          },
+                                          "children": []
+                                        }
+                                      ]
                                     }
                                   ]
                                 }
@@ -14063,8 +14344,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           ]
                         },
                         {
-                          "id": "j634svi",
-                          "type": "Repeat",
+                          "id": "jpeylai",
+                          "type": "RepeatGrid",
                           "props": {
                             "item": "group",
                             "key": "group.title",
@@ -14074,7 +14355,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           },
                           "children": [
                             {
-                              "id": "bfyhiv8",
+                              "id": "b15nbd4",
                               "type": "FlexLayout",
                               "props": {
                                 "direction": "column",
@@ -14082,7 +14363,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               },
                               "children": [
                                 {
-                                  "id": "d6c6jwy",
+                                  "id": "1pan9ce",
                                   "type": "Text",
                                   "props": {
                                     "size": "sm",
@@ -14093,8 +14374,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   "children": []
                                 },
                                 {
-                                  "id": "1v2bv6c",
-                                  "type": "Repeat",
+                                  "id": "1vas278",
+                                  "type": "RepeatGrid",
                                   "props": {
                                     "item": "row",
                                     "key": "row.feature",
@@ -14102,7 +14383,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   },
                                   "children": [
                                     {
-                                      "id": "hlyhsvs",
+                                      "id": "1rk07a0",
                                       "type": "GridLayout",
                                       "props": {
                                         "columns": "4",
@@ -14112,7 +14393,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                       },
                                       "children": [
                                         {
-                                          "id": "1i0bg12",
+                                          "id": "rf4dzqu",
                                           "type": "Text",
                                           "props": {
                                             "size": "sm",
@@ -14122,8 +14403,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                           "children": []
                                         },
                                         {
-                                          "id": "1ntow00",
-                                          "type": "Repeat",
+                                          "id": "miuoi4k",
+                                          "type": "RepeatGrid",
                                           "props": {
                                             "item": "value",
                                             "index": "i",
@@ -14132,7 +14413,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                           },
                                           "children": [
                                             {
-                                              "id": "434fh7q",
+                                              "id": "1bkr3k2",
                                               "type": "FlexLayout",
                                               "props": {
                                                 "direction": "row",
@@ -14141,7 +14422,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                               },
                                               "children": [
                                                 {
-                                                  "id": "iy4peck",
+                                                  "id": "1g22h2w",
                                                   "type": "Icon",
                                                   "props": {
                                                     "name": "check",
@@ -14153,7 +14434,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                                   "children": []
                                                 },
                                                 {
-                                                  "id": "nnopzoi",
+                                                  "id": "1kqkoi6",
                                                   "type": "Icon",
                                                   "props": {
                                                     "name": "minus",
@@ -14165,7 +14446,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                                   "children": []
                                                 },
                                                 {
-                                                  "id": "m3kwmxo",
+                                                  "id": "er8w0sw",
                                                   "type": "Text",
                                                   "props": {
                                                     "size": "sm",
@@ -14286,8 +14567,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       },
                       "children": [
                         {
-                          "id": "1ns64rm",
-                          "type": "Repeat",
+                          "id": "1h2eqzy",
+                          "type": "RepeatGrid",
                           "props": {
                             "item": "feature",
                             "key": "feature.label",
@@ -14297,7 +14578,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           },
                           "children": [
                             {
-                              "id": "h60pemk",
+                              "id": "1jxtpxc",
                               "type": "FlexLayout",
                               "props": {
                                 "direction": "row",
@@ -14306,7 +14587,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               },
                               "children": [
                                 {
-                                  "id": "1ou8va2",
+                                  "id": "1t8i76e",
                                   "type": "Icon",
                                   "props": {
                                     "$name": "feature.icon",
@@ -14317,7 +14598,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   "children": []
                                 },
                                 {
-                                  "id": "1dfsdys",
+                                  "id": "azl30qw",
                                   "type": "Text",
                                   "props": {
                                     "size": "sm",
@@ -14427,9 +14708,21 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               "props": {
                                 "size": "lg",
                                 "className": "w-full",
-                                "children": "Get Household"
+                                "asChild": "true"
                               },
-                              "children": []
+                              "children": [
+                                {
+                                  "id": "qdfdmtw",
+                                  "type": "Text",
+                                  "props": {
+                                    "children": "Get Household",
+                                    "textType": "link",
+                                    "href": "/signup",
+                                    "_tag": "a"
+                                  },
+                                  "children": []
+                                }
+                              ]
                             },
                             {
                               "id": "bxgtmf0",
@@ -14438,9 +14731,21 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                 "size": "lg",
                                 "variant": "ghost",
                                 "className": "w-full",
-                                "children": "Start a 14-day trial first"
+                                "asChild": "true"
                               },
-                              "children": []
+                              "children": [
+                                {
+                                  "id": "1fzy4ju",
+                                  "type": "Text",
+                                  "props": {
+                                    "children": "Start a 14-day trial first",
+                                    "textType": "link",
+                                    "href": "/signup?trial=1",
+                                    "_tag": "a"
+                                  },
+                                  "children": []
+                                }
+                              ]
                             }
                           ]
                         },
@@ -14574,8 +14879,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                   },
                   "children": [
                     {
-                      "id": "jb5fs2i",
-                      "type": "Repeat",
+                      "id": "bsnmu9y",
+                      "type": "RepeatGrid",
                       "props": {
                         "item": "tier",
                         "key": "tier.name",
@@ -14585,7 +14890,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       },
                       "children": [
                         {
-                          "id": "106w6lq",
+                          "id": "acm3whm",
                           "type": "CardLayout",
                           "props": {
                             "padding": "lg",
@@ -14593,7 +14898,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           },
                           "children": [
                             {
-                              "id": "1wtb6nc",
+                              "id": "g7u4onw",
                               "type": "FlexLayout",
                               "props": {
                                 "direction": "column",
@@ -14602,7 +14907,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               },
                               "children": [
                                 {
-                                  "id": "1dui6da",
+                                  "id": "12h87hm",
                                   "type": "FlexLayout",
                                   "props": {
                                     "direction": "column",
@@ -14610,7 +14915,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   },
                                   "children": [
                                     {
-                                      "id": "gvcuxmg",
+                                      "id": "s5gzin0",
                                       "type": "FlexLayout",
                                       "props": {
                                         "direction": "row",
@@ -14620,7 +14925,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                       },
                                       "children": [
                                         {
-                                          "id": "vzj9g1q",
+                                          "id": "rccwdsa",
                                           "type": "Heading",
                                           "props": {
                                             "as": "h3",
@@ -14630,7 +14935,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                           "children": []
                                         },
                                         {
-                                          "id": "9zyynse",
+                                          "id": "11xvjre",
                                           "type": "Badge",
                                           "props": {
                                             "variant": "soft",
@@ -14645,7 +14950,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                       ]
                                     },
                                     {
-                                      "id": "3gep7ke",
+                                      "id": "1plkgre",
                                       "type": "Text",
                                       "props": {
                                         "size": "sm",
@@ -14658,7 +14963,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   ]
                                 },
                                 {
-                                  "id": "1t5daak",
+                                  "id": "1b1fgyo",
                                   "type": "FlexLayout",
                                   "props": {
                                     "direction": "row",
@@ -14667,7 +14972,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   },
                                   "children": [
                                     {
-                                      "id": "1hs13ca",
+                                      "id": "oxeempi",
                                       "type": "Heading",
                                       "props": {
                                         "as": "p",
@@ -14678,7 +14983,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                       "children": []
                                     },
                                     {
-                                      "id": "o9a872k",
+                                      "id": "1sqccmo",
                                       "type": "Text",
                                       "props": {
                                         "size": "sm",
@@ -14690,13 +14995,13 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   ]
                                 },
                                 {
-                                  "id": "1op7xps",
+                                  "id": "1cdtww4",
                                   "type": "Separator",
                                   "props": {},
                                   "children": []
                                 },
                                 {
-                                  "id": "1c3myhk",
+                                  "id": "djtparw",
                                   "type": "FlexLayout",
                                   "props": {
                                     "direction": "column",
@@ -14704,8 +15009,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   },
                                   "children": [
                                     {
-                                      "id": "1y4k9vm",
-                                      "type": "Repeat",
+                                      "id": "n1gzrhm",
+                                      "type": "RepeatGrid",
                                       "props": {
                                         "item": "feature",
                                         "key": "feature",
@@ -14713,7 +15018,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                       },
                                       "children": [
                                         {
-                                          "id": "19jn5rg",
+                                          "id": "vjvbozo",
                                           "type": "FlexLayout",
                                           "props": {
                                             "direction": "row",
@@ -14722,7 +15027,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                           },
                                           "children": [
                                             {
-                                              "id": "1sm43zu",
+                                              "id": "13oq7vm",
                                               "type": "Icon",
                                               "props": {
                                                 "name": "check",
@@ -14733,7 +15038,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                               "children": []
                                             },
                                             {
-                                              "id": "svit96k",
+                                              "id": "oyoltv8",
                                               "type": "Text",
                                               "props": {
                                                 "size": "sm",
@@ -14749,15 +15054,27 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   ]
                                 },
                                 {
-                                  "id": "1mvyhu0",
+                                  "id": "zmilyr0",
                                   "type": "Button",
                                   "props": {
                                     "size": "lg",
                                     "$variant": "tier.featured ? \"solid\" : \"outline\"",
                                     "className": "mt-auto w-full",
-                                    "$children": "{tier.cta}"
+                                    "asChild": "true"
                                   },
-                                  "children": []
+                                  "children": [
+                                    {
+                                      "id": "168a95m",
+                                      "type": "Text",
+                                      "props": {
+                                        "textType": "link",
+                                        "href": "/signup",
+                                        "_tag": "a",
+                                        "$children": "{tier.cta}"
+                                      },
+                                      "children": []
+                                    }
+                                  ]
                                 }
                               ]
                             }
@@ -14920,8 +15237,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                   },
                   "children": [
                     {
-                      "id": "asv5e44",
-                      "type": "Repeat",
+                      "id": "17sw368",
+                      "type": "RepeatGrid",
                       "props": {
                         "item": "plan",
                         "key": "plan.name",
@@ -14931,7 +15248,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       },
                       "children": [
                         {
-                          "id": "l29fmms",
+                          "id": "1iutnlc",
                           "type": "CardLayout",
                           "props": {
                             "padding": "lg",
@@ -14939,7 +15256,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           },
                           "children": [
                             {
-                              "id": "1ukm2ie",
+                              "id": "1o01ayy",
                               "type": "FlexLayout",
                               "props": {
                                 "direction": "column",
@@ -14948,7 +15265,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               },
                               "children": [
                                 {
-                                  "id": "1wsti44",
+                                  "id": "1nsfusw",
                                   "type": "FlexLayout",
                                   "props": {
                                     "direction": "column",
@@ -14956,7 +15273,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   },
                                   "children": [
                                     {
-                                      "id": "15x3fsm",
+                                      "id": "1l9fq5m",
                                       "type": "Heading",
                                       "props": {
                                         "as": "h3",
@@ -14966,7 +15283,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                       "children": []
                                     },
                                     {
-                                      "id": "m4zlsj0",
+                                      "id": "1no8kmw",
                                       "type": "Text",
                                       "props": {
                                         "size": "sm",
@@ -14979,7 +15296,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   ]
                                 },
                                 {
-                                  "id": "1q6njoi",
+                                  "id": "k9h7oxy",
                                   "type": "FlexLayout",
                                   "props": {
                                     "direction": "column",
@@ -14987,7 +15304,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   },
                                   "children": [
                                     {
-                                      "id": "1hteq3c",
+                                      "id": "1b6chyc",
                                       "type": "FlexLayout",
                                       "props": {
                                         "direction": "row",
@@ -14996,7 +15313,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                       },
                                       "children": [
                                         {
-                                          "id": "1olsemi",
+                                          "id": "1ia816m",
                                           "type": "Heading",
                                           "props": {
                                             "as": "p",
@@ -15007,7 +15324,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                           "children": []
                                         },
                                         {
-                                          "id": "1argk88",
+                                          "id": "1ejke2c",
                                           "type": "Text",
                                           "props": {
                                             "size": "sm",
@@ -15019,7 +15336,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                       ]
                                     },
                                     {
-                                      "id": "1ug4k4i",
+                                      "id": "1usu0cm",
                                       "type": "Text",
                                       "props": {
                                         "size": "xs",
@@ -15032,13 +15349,13 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   ]
                                 },
                                 {
-                                  "id": "1wp0roa",
+                                  "id": "1w9xg6m",
                                   "type": "Separator",
                                   "props": {},
                                   "children": []
                                 },
                                 {
-                                  "id": "1jyklgy",
+                                  "id": "1rnyuxi",
                                   "type": "FlexLayout",
                                   "props": {
                                     "direction": "column",
@@ -15046,8 +15363,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   },
                                   "children": [
                                     {
-                                      "id": "1gw1hdk",
-                                      "type": "Repeat",
+                                      "id": "1lcu480",
+                                      "type": "RepeatGrid",
                                       "props": {
                                         "item": "feature",
                                         "key": "feature",
@@ -15055,7 +15372,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                       },
                                       "children": [
                                         {
-                                          "id": "1kup4v6",
+                                          "id": "1re674a",
                                           "type": "FlexLayout",
                                           "props": {
                                             "direction": "row",
@@ -15064,7 +15381,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                           },
                                           "children": [
                                             {
-                                              "id": "11flmis",
+                                              "id": "ujnarak",
                                               "type": "Icon",
                                               "props": {
                                                 "name": "check",
@@ -15075,7 +15392,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                               "children": []
                                             },
                                             {
-                                              "id": "1basw7m",
+                                              "id": "1f8wnzu",
                                               "type": "Text",
                                               "props": {
                                                 "size": "sm",
@@ -15091,15 +15408,27 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   ]
                                 },
                                 {
-                                  "id": "1uhmqnu",
+                                  "id": "4v1h8mm",
                                   "type": "Button",
                                   "props": {
                                     "size": "lg",
                                     "$variant": "plan.featured ? \"solid\" : \"outline\"",
                                     "className": "mt-auto w-full",
-                                    "$children": "{plan.cta}"
+                                    "asChild": "true"
                                   },
-                                  "children": []
+                                  "children": [
+                                    {
+                                      "id": "17d2qks",
+                                      "type": "Text",
+                                      "props": {
+                                        "textType": "link",
+                                        "href": "/signup",
+                                        "_tag": "a",
+                                        "$children": "{plan.cta}"
+                                      },
+                                      "children": []
+                                    }
+                                  ]
                                 }
                               ]
                             }
@@ -15398,8 +15727,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       ]
                     },
                     {
-                      "id": "10oq354",
-                      "type": "Repeat",
+                      "id": "58ak6r8",
+                      "type": "RepeatGrid",
                       "props": {
                         "item": "item",
                         "key": "item.name",
@@ -15409,14 +15738,14 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       },
                       "children": [
                         {
-                          "id": "sb3gxgk",
+                          "id": "1oanon4",
                           "type": "CardLayout",
                           "props": {
                             "padding": "lg"
                           },
                           "children": [
                             {
-                              "id": "15hjur6",
+                              "id": "14reqrq",
                               "type": "FlexLayout",
                               "props": {
                                 "direction": "column",
@@ -15426,7 +15755,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               },
                               "children": [
                                 {
-                                  "id": "1m84a7k",
+                                  "id": "qc11u0c",
                                   "type": "Text",
                                   "props": {
                                     "size": "md",
@@ -15436,7 +15765,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   "children": []
                                 },
                                 {
-                                  "id": "1e1a4se",
+                                  "id": "t9jjooi",
                                   "type": "FlexLayout",
                                   "props": {
                                     "direction": "row",
@@ -15445,17 +15774,16 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   },
                                   "children": [
                                     {
-                                      "id": "lrf1ihw",
+                                      "id": "1gbpwao",
                                       "type": "Avatar",
                                       "props": {
                                         "$src": "item.photo",
-                                        "$alt": "item.name",
                                         "size": "md"
                                       },
                                       "children": []
                                     },
                                     {
-                                      "id": "18im36q",
+                                      "id": "1a5b7li",
                                       "type": "FlexLayout",
                                       "props": {
                                         "direction": "column",
@@ -15465,7 +15793,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                       },
                                       "children": [
                                         {
-                                          "id": "14mff3c",
+                                          "id": "1ntlois",
                                           "type": "Text",
                                           "props": {
                                             "size": "sm",
@@ -15475,7 +15803,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                           "children": []
                                         },
                                         {
-                                          "id": "lldw44i",
+                                          "id": "p4903ty",
                                           "type": "Text",
                                           "props": {
                                             "size": "sm",
@@ -15553,8 +15881,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                   },
                   "children": [
                     {
-                      "id": "8h49qhk",
-                      "type": "Repeat",
+                      "id": "109tjcs",
+                      "type": "RepeatGrid",
                       "props": {
                         "item": "logo",
                         "key": "logo.name",
@@ -15564,7 +15892,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       },
                       "children": [
                         {
-                          "id": "appr5zu",
+                          "id": "amc7buu",
                           "type": "FlexLayout",
                           "props": {
                             "align": "center",
@@ -15573,7 +15901,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           },
                           "children": [
                             {
-                              "id": "18wcv0k",
+                              "id": "65w2smg",
                               "type": "Text",
                               "props": {
                                 "size": "lg",
@@ -15753,12 +16081,13 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   "props": {
                                     "direction": "row",
                                     "gap": "1",
+                                    "role": "img",
                                     "aria-label": "5 out of 5 stars"
                                   },
                                   "children": [
                                     {
-                                      "id": "axi4fbo",
-                                      "type": "Repeat",
+                                      "id": "1sb08nk",
+                                      "type": "RepeatGrid",
                                       "props": {
                                         "item": "star",
                                         "key": "star",
@@ -15767,7 +16096,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                       },
                                       "children": [
                                         {
-                                          "id": "ovecb2y",
+                                          "id": "1dtf62m",
                                           "type": "Icon",
                                           "props": {
                                             "name": "star",
@@ -15853,8 +16182,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       ]
                     },
                     {
-                      "id": "ylptts4",
-                      "type": "Repeat",
+                      "id": "q99aw2o",
+                      "type": "RepeatGrid",
                       "props": {
                         "item": "review",
                         "key": "review.name",
@@ -15864,14 +16193,14 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       },
                       "children": [
                         {
-                          "id": "1dm831g",
+                          "id": "1k8u740",
                           "type": "CardLayout",
                           "props": {
                             "padding": "lg"
                           },
                           "children": [
                             {
-                              "id": "1obx8ce",
+                              "id": "1cq2o82",
                               "type": "FlexLayout",
                               "props": {
                                 "direction": "column",
@@ -15881,7 +16210,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               },
                               "children": [
                                 {
-                                  "id": "148952c",
+                                  "id": "hejvcbk",
                                   "type": "FlexLayout",
                                   "props": {
                                     "direction": "column",
@@ -15889,17 +16218,18 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   },
                                   "children": [
                                     {
-                                      "id": "1t44ovy",
+                                      "id": "hb674qq",
                                       "type": "FlexLayout",
                                       "props": {
                                         "direction": "row",
                                         "gap": "1",
+                                        "role": "img",
                                         "$aria-label": "`${review.rating} out of 5 stars`"
                                       },
                                       "children": [
                                         {
-                                          "id": "1y3bc50",
-                                          "type": "Repeat",
+                                          "id": "7rowdys",
+                                          "type": "RepeatGrid",
                                           "props": {
                                             "item": "star",
                                             "key": "star",
@@ -15908,7 +16238,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                           },
                                           "children": [
                                             {
-                                              "id": "vr1rehe",
+                                              "id": "vxsj89e",
                                               "type": "Icon",
                                               "props": {
                                                 "name": "star",
@@ -15923,7 +16253,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                       ]
                                     },
                                     {
-                                      "id": "diec0po",
+                                      "id": "1xv01s8",
                                       "type": "Text",
                                       "props": {
                                         "size": "md",
@@ -15935,7 +16265,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   ]
                                 },
                                 {
-                                  "id": "4fezrqy",
+                                  "id": "kuzaczy",
                                   "type": "FlexLayout",
                                   "props": {
                                     "direction": "row",
@@ -15944,17 +16274,16 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   },
                                   "children": [
                                     {
-                                      "id": "1i2gl70",
+                                      "id": "ezu2120",
                                       "type": "Avatar",
                                       "props": {
                                         "$src": "review.photo",
-                                        "$alt": "review.name",
                                         "size": "md"
                                       },
                                       "children": []
                                     },
                                     {
-                                      "id": "1275aee",
+                                      "id": "vqz4k7u",
                                       "type": "FlexLayout",
                                       "props": {
                                         "direction": "column",
@@ -15964,7 +16293,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                       },
                                       "children": [
                                         {
-                                          "id": "1e9qay8",
+                                          "id": "xqvii98",
                                           "type": "Text",
                                           "props": {
                                             "size": "sm",
@@ -15974,7 +16303,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                           "children": []
                                         },
                                         {
-                                          "id": "1urzg0m",
+                                          "id": "4jnxwsq",
                                           "type": "Text",
                                           "props": {
                                             "size": "sm",

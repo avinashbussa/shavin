@@ -315,7 +315,8 @@ describe("parseShavinManifest — real project (this repo)", () => {
   });
 });
 
-describe("extractProjectContext", () => {
+// These scan this whole repo, which takes seconds on a busy machine or CI runner.
+describe("extractProjectContext", { timeout: 30_000 }, () => {
   it("returns an object with promptMarkdown for valid project", () => {
     const result = contextModule.extractProjectContext({
       targetDir: ROOT,

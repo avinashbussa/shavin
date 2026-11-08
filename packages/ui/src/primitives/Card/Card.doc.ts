@@ -8,7 +8,8 @@ export const docs: ComponentDoc = {
     "Padding presets: none, xs (8px), sm (16px), md (20px), lg (24px), xl (32px), 2xl (40px), 3xl (48px)",
     "Interactive mode with hover elevation and cursor-pointer",
     "Surface contrast scope via surface prop for media backgrounds",
-    "Background media: bgVideo, bgImage, bgOverlays (presets, hex, tokens, gradients via comma-separated shorthand), bgSize, bgVideoPaused"
+    "Background media: bgVideo, bgImage, bgOverlays (presets, hex, tokens, gradients via comma-separated shorthand), bgSize, bgVideoPaused",
+    "Fx backdrops (needs @shavin/fx registered): bgOverlays=\"fx:dither-waves, gradient-bottom\"; params only when changed: fx:fluid-silk(speed=1.2); quote text values: fx:type-tiles(text='Plan money')"
   ],
   accessibility: [
     "Renders as <div> by default; use polymorphic as prop for semantic elements"

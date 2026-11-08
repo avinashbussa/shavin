@@ -37,6 +37,47 @@ function stripExemptMarkedLines(code) {
     .join("\n");
 }
 
+/**
+ * Motion Timeline (Tier 3) correctness, string-level (see docs/architecture/motion-timelines-spec.md).
+ * Returns [{ rule, message, warn? }]. Catches the mistakes the runtime silently tolerates:
+ *  - a member whose timeline has no scope-root (orphan — nothing drives it),
+ *  - a root with no members (dead timeline),
+ *  - an element that is both a timeline member and carries its own data-motion-entry/-scroll (double-drive).
+ */
+export function checkMotionTimelines(code) {
+  const out = [];
+  const memberIds = [...code.matchAll(/data-motion-tl-member\s*=\s*["']([^"']+)["']/g)].map((m) => m[1]);
+  // `data-motion-tl=` only — the regex stops at `=`, so -member/-at/-effect/etc. never match here.
+  const rootIds = new Set([...code.matchAll(/data-motion-tl\s*=\s*["']([^"']+)["']/g)].map((m) => m[1]));
+  const memberIdSet = new Set(memberIds);
+
+  const orphans = [...new Set(memberIds.filter((id) => !rootIds.has(id)))];
+  if (orphans.length) {
+    out.push({
+      rule: "timeline-orphan-member",
+      message: `Timeline member(s) with no scope-root: ${orphans.map((i) => `"${i}"`).join(", ")}. Put data-motion-tl="${orphans[0]}" on the common ancestor that should play them.`,
+    });
+  }
+  const deadRoots = [...rootIds].filter((id) => !memberIdSet.has(id));
+  if (deadRoots.length) {
+    out.push({
+      rule: "timeline-no-members",
+      warn: true,
+      message: `Timeline root(s) with no members: ${deadRoots.map((i) => `"${i}"`).join(", ")}. Add data-motion-tl-member="${deadRoots[0]}" to the elements to sequence, or remove the timeline.`,
+    });
+  }
+  // Best-effort per-tag conflict (a timeline member must not also run its own entry/scroll).
+  const tags = code.match(/<[A-Za-z][^>]*>/gs) || [];
+  if (tags.some((t) => /data-motion-tl-member/.test(t) && /(data-motion-entry|data-motion-scroll)\b/.test(t))) {
+    out.push({
+      rule: "timeline-member-standalone",
+      warn: true,
+      message: "An element is a timeline member AND has its own data-motion-entry/-scroll. The timeline drives it — remove the standalone entry/scroll so it doesn't double-animate.",
+    });
+  }
+  return out;
+}
+
 export function validateCode(code) {
   const violations = [];
   code = stripExemptMarkedLines(code);
@@ -76,6 +117,8 @@ export function validateCode(code) {
 
   for (const w of findViewportShellPatterns(code)) violations.push(`Line ${w.line}: ${w.message}`);
 
+  for (const t of checkMotionTimelines(code)) violations.push(`${t.warn ? "Warning" : "Error"} (${t.rule}): ${t.message}`);
+
   return violations;
 }
 
@@ -108,6 +151,7 @@ export function validateCodeDense(code) {
     const fix = w.rule === "viewport-heading-size" ? "USE Heading size=4xl|5xl (fluid) or one fixed text-*" : "USE AppFrame + SidebarTrigger, shavin-frame-compact-only/-wide-only";
     issues.push(`responsive:${w.rule}@L${w.line} -> ${fix}`);
   }
+  for (const t of checkMotionTimelines(code)) issues.push(`${t.rule} -> ${t.message}`);
   return issues;
 }
 

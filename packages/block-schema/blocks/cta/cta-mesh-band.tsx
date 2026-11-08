@@ -13,8 +13,8 @@ export function CtaMeshBand() {
             </Text>
           </Flex>
           <Flex direction="row" justify="center" wrap="wrap" gap="3">
-            <Button size="lg">Start free</Button>
-            <Button size="lg" variant="outline">Talk to us</Button>
+            <Button size="lg" asChild><a href="/signup">Start free</a></Button>
+            <Button size="lg" variant="outline" asChild><a href="/contact">Talk to us</a></Button>
           </Flex>
         </Flex>
       </Container>

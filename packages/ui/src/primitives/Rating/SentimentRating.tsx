@@ -60,6 +60,11 @@ export function SentimentRating({ variant = "thumbs", value, defaultValue = null
 
   function onKeyDown(e: KeyboardEvent<HTMLDivElement>) {
     const at = Math.max(0, options.findIndex((o) => o.value === current));
+    if (e.key === "Home" || e.key === "End") {
+      e.preventDefault();
+      pick(e.key === "Home" ? 0 : options.length - 1);
+      return;
+    }
     const dir = e.key === "ArrowRight" || e.key === "ArrowDown" ? 1 : e.key === "ArrowLeft" || e.key === "ArrowUp" ? -1 : 0;
     if (dir) {
       e.preventDefault();

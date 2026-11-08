@@ -41,6 +41,7 @@ const ROLES = {
   "bg-elevated": "Floating-surface fill (Dialog, Menu, Popover, Select).",
   "hairline": "Default 1px border / divider color.",
   "hairline-strong": "Higher-contrast border for emphasis or nested edges.",
+  "border-control": "Boundary of form controls (inputs, checkboxes, radios, switches, slider thumbs): >=3:1 against surface and canvas (WCAG 1.4.11).",
   "fg": "Primary text / icon color (maximum contrast).",
   "fg-muted": "Secondary text — labels, descriptions, less prominent copy.",
   "fg-subtle": "Tertiary text — placeholders, disabled, metadata.",

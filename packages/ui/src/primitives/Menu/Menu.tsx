@@ -31,7 +31,7 @@ export function Menu({
           sideOffset={4}
           avoidCollisions
           collisionPadding={8}
-          className="animate-rise origin-[var(--radix-dropdown-menu-content-transform-origin)] z-[90] w-52 overflow-hidden rounded-[var(--radius-panel)] border border-hairline shadow-panel focus:outline-none"
+          className="animate-rise origin-[var(--radix-dropdown-menu-content-transform-origin)] z-[var(--z-floating)] w-52 overflow-hidden rounded-[var(--radius-panel)] border border-hairline shadow-panel focus:outline-none"
         >
           <div className="max-h-[calc(6.5*2.25rem)] overflow-y-auto py-1">
             {children}
@@ -48,6 +48,8 @@ export const MenuTrigger = forwardRef<HTMLButtonElement, ButtonHTMLAttributes<HT
       <button
         ref={ref}
         type="button"
+        // The default kebab icon has no text; name it unless the caller does.
+        aria-label={children ? undefined : "More options"}
         className={cn(
           "rounded-[var(--radius-lg)] p-2 text-fg-muted transition hover:bg-surface-hover hover:text-fg active:scale-[0.97]",
           className,
@@ -55,7 +57,7 @@ export const MenuTrigger = forwardRef<HTMLButtonElement, ButtonHTMLAttributes<HT
         {...props}
       >
         {children ?? (
-          <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor">
+          <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor" aria-hidden="true">
             <circle cx="5" cy="12" r="1.8" />
             <circle cx="12" cy="12" r="1.8" />
             <circle cx="19" cy="12" r="1.8" />
@@ -105,7 +107,7 @@ export const MenuSubTrigger = forwardRef<
       {...props}
     >
       {children}
-      <svg viewBox="0 0 24 24" fill="none" className="ml-auto h-3.5 w-3.5 text-fg-muted" stroke="currentColor" strokeWidth="2">
+      <svg viewBox="0 0 24 24" fill="none" className="ml-auto h-3.5 w-3.5 text-fg-muted" stroke="currentColor" strokeWidth="2" aria-hidden="true">
         <path d="m9 18 6-6-6-6" strokeLinecap="round" strokeLinejoin="round"/>
       </svg>
     </RadixMenu.SubTrigger>
@@ -124,7 +126,7 @@ export const MenuSubContent = forwardRef<
         sideOffset={2}
         alignOffset={-5}
         className={cn(
-          "z-50 min-w-[8rem] overflow-hidden rounded-[var(--radius-panel)] border border-hairline bg-surface shadow-panel animate-rise",
+          "z-[var(--z-floating)] min-w-[8rem] overflow-hidden rounded-[var(--radius-panel)] border border-hairline bg-surface shadow-panel animate-rise",
           className
         )}
         {...props}

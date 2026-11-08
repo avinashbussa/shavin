@@ -25,7 +25,7 @@
   --n-300: 212 212 216;
   --n-400: 161 161 170;
   --n-450: 137 137 146; /* dark-surface fg-subtle: >=4.5:1 on n-950..n-900 (WCAG AA) */
-  --n-500: 113 113 122;
+  --n-500: 110 110 119; /* light fg-subtle: >=4.5:1 on canvas n-100 (WCAG AA) */
   --n-600: 82 82 91;
   --n-700: 63 63 70;
   --n-800: 39 39 42;
@@ -41,14 +41,15 @@
   --bg-elevated: var(--n-0);
   --hairline: var(--n-200);
   --hairline-strong: var(--n-300);
+  --border-control: var(--n-450);
   --fg: var(--n-950);
   --fg-muted: var(--n-600);
   --fg-subtle: var(--n-500);
-  --success: 5 150 105; /* emerald-600 — positive / done */
+  --success: 4 119 83; /* emerald, darkened: >=4.5:1 as text, on 15% tints and under white */
   --success-fg: 255 255 255;
-  --warning: 217 119 6; /* amber-600 — caution / attention */
+  --warning: 156 86 4; /* amber, darkened: >=4.5:1 as text, on 15% tints and under white */
   --warning-fg: 255 255 255;
-  --danger: 192 57 43; /* crimson — destructive */
+  --danger: 186 55 42; /* crimson — destructive; >=4.5:1 on 15% tints */
   --danger-fg: 255 255 255;
 }
 
@@ -87,6 +88,10 @@
   --fg-tooltip: var(--n-0);
   --bg-overlay: var(--n-1000);
   --overlay-opacity: 0.4;
+  /* Menus, popovers, selects and tooltips sit above every modal layer (Dialog 80,
+     AlertDialog 85, Spotlight 100) so one opened from inside a modal stays visible
+     while it holds focus (WCAG 2.4.11). */
+  --z-floating: 110;
 
   /* --- internal code syntax tokens (calibrated to classic VSCode Light+ theme) --- */
   --code-keyword: 175 0 219;      /* #AF00DB — purple: const, import, function, return */
@@ -167,6 +172,11 @@
      (Sidebar, Spotlight, bottom sheets). Higher initial velocity than
      --ease-out, longer settle — conveys physical weight. */
   --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+  /* Motion-tab easings (element motion: states, entry, scroll). `standard` for
+     most state changes, `in` for exits, `overshoot` for a small playful pop. */
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-overshoot: cubic-bezier(0.34, 1.56, 0.64, 1);
 
   /* --- motion durations. Semantic utilities (.animate-*) and page-level
      presets both reference these. Zeroing them under reduced-motion (see
@@ -254,6 +264,7 @@
   --bg-elevated: var(--n-850);
   --hairline: var(--n-800);
   --hairline-strong: var(--n-700);
+  --border-control: var(--n-500);
   --fg: var(--n-200);
   --fg-muted: var(--n-400);
   --fg-subtle: var(--n-450);
@@ -263,8 +274,8 @@
   --success-fg: 10 10 12;
   --warning: 251 191 36; /* amber-400 — caution / attention */
   --warning-fg: 10 10 12;
-  --danger: 232 90 79; /* crimson (lighter for dark bg) */
-  --danger-fg: 255 255 255;
+  --danger: 235 113 104; /* crimson (lighter for dark bg) */
+  --danger-fg: 10 10 12;
   --bg-tooltip: var(--n-100);
   --fg-tooltip: var(--n-950);
   --bg-overlay: var(--n-1000);
@@ -338,7 +349,7 @@
   --accent-text: var(--accent-on-dark-text);
   --accent-subtle: rgb(var(--accent-on-dark) / 0.15);
   --accent-subtle-hover: rgb(var(--accent-on-dark) / 0.22);
-  --focus: var(--accent-on-dark);
+  --focus: var(--accent-on-dark-text);
 
   --bg-canvas: var(--n-950);
   --bg-surface: var(--n-900);
@@ -346,6 +357,7 @@
   --bg-elevated: var(--n-850);
   --hairline: var(--n-800);
   --hairline-strong: var(--n-700);
+  --border-control: var(--n-500);
   --fg: var(--n-200);
   --fg-muted: var(--n-400);
   --fg-subtle: var(--n-450);
@@ -353,8 +365,8 @@
   --success-fg: 10 10 12;
   --warning: 251 191 36;
   --warning-fg: 10 10 12;
-  --danger: 232 90 79;
-  --danger-fg: 255 255 255;
+  --danger: 235 113 104;
+  --danger-fg: 10 10 12;
   --bg-tooltip: var(--n-100);
   --fg-tooltip: var(--n-950);
   --bg-overlay: var(--n-1000);
@@ -388,14 +400,15 @@
   --bg-elevated: var(--n-0);
   --hairline: var(--n-200);
   --hairline-strong: var(--n-300);
+  --border-control: var(--n-450);
   --fg: var(--n-950);
   --fg-muted: var(--n-600);
-  --fg-subtle: var(--n-450);
-  --success: 5 150 105;
+  --fg-subtle: var(--n-500);
+  --success: 4 119 83;
   --success-fg: 255 255 255;
-  --warning: 217 119 6;
+  --warning: 156 86 4;
   --warning-fg: 255 255 255;
-  --danger: 192 57 43;
+  --danger: 186 55 42;
   --danger-fg: 255 255 255;
   --bg-tooltip: var(--n-1000);
   --fg-tooltip: var(--n-0);
@@ -430,14 +443,15 @@
   --bg-elevated: var(--n-0);
   --hairline: var(--n-200);
   --hairline-strong: var(--n-300);
+  --border-control: var(--n-450);
   --fg: var(--n-950);
   --fg-muted: var(--n-600);
   --fg-subtle: var(--n-500);
-  --success: 5 150 105;
+  --success: 4 119 83;
   --success-fg: 255 255 255;
-  --warning: 217 119 6;
+  --warning: 156 86 4;
   --warning-fg: 255 255 255;
-  --danger: 192 57 43;
+  --danger: 186 55 42;
   --danger-fg: 255 255 255;
   --bg-tooltip: var(--n-1000);
   --fg-tooltip: var(--n-0);
@@ -474,7 +488,7 @@
   --accent-text: var(--accent-on-light-text);
   --accent-subtle: rgb(var(--accent-on-light) / 0.12);
   --accent-subtle-hover: rgb(var(--accent-on-light) / 0.18);
-  --focus: var(--accent-on-light);
+  --focus: var(--accent-on-light-text);
 
   --bg-canvas: var(--n-950);
   --bg-surface: var(--n-900);
@@ -482,15 +496,16 @@
   --bg-elevated: var(--n-850);
   --hairline: var(--n-800);
   --hairline-strong: var(--n-700);
+  --border-control: var(--n-500);
   --fg: var(--n-200);
   --fg-muted: var(--n-400);
-  --fg-subtle: var(--n-500);
+  --fg-subtle: var(--n-450);
   --success: 52 211 153;
   --success-fg: 10 10 12;
   --warning: 251 191 36;
   --warning-fg: 10 10 12;
-  --danger: 232 90 79;
-  --danger-fg: 255 255 255;
+  --danger: 235 113 104;
+  --danger-fg: 10 10 12;
   --bg-tooltip: var(--n-100);
   --fg-tooltip: var(--n-950);
   --bg-overlay: var(--n-1000);
@@ -528,7 +543,7 @@
   --accent-text: var(--accent-on-dark-text);
   --accent-subtle: rgb(var(--accent-on-dark) / 0.15);
   --accent-subtle-hover: rgb(var(--accent-on-dark) / 0.22);
-  --focus: var(--accent-on-dark);
+  --focus: var(--accent-on-dark-text);
 
   --bg-canvas: var(--n-950);
   --bg-surface: var(--n-900);
@@ -536,6 +551,7 @@
   --bg-elevated: var(--n-850);
   --hairline: var(--n-800);
   --hairline-strong: var(--n-700);
+  --border-control: var(--n-500);
   --fg: var(--n-200);
   --fg-muted: var(--n-400);
   --fg-subtle: var(--n-450);
@@ -543,8 +559,8 @@
   --success-fg: 10 10 12;
   --warning: 251 191 36;
   --warning-fg: 10 10 12;
-  --danger: 232 90 79;
-  --danger-fg: 255 255 255;
+  --danger: 235 113 104;
+  --danger-fg: 10 10 12;
   --bg-tooltip: var(--n-100);
   --fg-tooltip: var(--n-950);
   --bg-overlay: var(--n-1000);
@@ -582,7 +598,7 @@
   --accent-text: var(--accent-on-light-text);
   --accent-subtle: rgb(var(--accent-on-light) / 0.12);
   --accent-subtle-hover: rgb(var(--accent-on-light) / 0.18);
-  --focus: var(--accent-on-light);
+  --focus: var(--accent-on-light-text);
 
   --bg-canvas: var(--n-100);
   --bg-surface: var(--n-0);
@@ -590,14 +606,15 @@
   --bg-elevated: var(--n-0);
   --hairline: var(--n-200);
   --hairline-strong: var(--n-300);
+  --border-control: var(--n-450);
   --fg: var(--n-950);
   --fg-muted: var(--n-600);
   --fg-subtle: var(--n-500);
-  --success: 5 150 105;
+  --success: 4 119 83;
   --success-fg: 255 255 255;
-  --warning: 217 119 6;
+  --warning: 156 86 4;
   --warning-fg: 255 255 255;
-  --danger: 192 57 43;
+  --danger: 186 55 42;
   --danger-fg: 255 255 255;
   --bg-tooltip: var(--n-1000);
   --fg-tooltip: var(--n-0);
@@ -661,10 +678,17 @@ body {
 [role="option"]:focus-visible {
   outline: none;
 }
-/* inputs: no focus ring/border highlight (per design preference) */
-:where(input, textarea):focus,
-:where(input, textarea):focus-visible {
-  outline: none;
+/* Text fields keep the focus ring (WCAG 2.4.7) but draw it over their own
+   border (offset -1px), so it reads as a 2px focus border, not a halo. */
+:where(input, textarea, select):focus-visible {
+  outline-offset: -1px;
+}
+/* Composite fields whose real <input>/<textarea> is bare inside a styled
+   wrapper (DatePicker, ColorPicker hex, CodeEditor): the wrapper draws the
+   ring. Only text-entry focus counts, so buttons inside keep their own ring. */
+.focus-ring-within:has(:is(input, textarea):focus-visible) {
+  outline: 2px solid rgb(var(--focus));
+  outline-offset: -1px;
 }
 /* ── AppFrame: container-driven app shell ────────────────────────────────────
    The frame measures its own width, not the window's, so it behaves the same on a
@@ -924,6 +948,109 @@ pre {
   animation: fade-rise-right var(--dur-instant) var(--ease-out) both;
 }
 
+/* =========================================================================
+   Motion tab — element entry / scroll reveals (see docs/architecture/motion-tab-spec.md).
+   Zero-setup: declared by data-motion-* attributes, driven by CSS scroll-driven
+   animations where supported. No JS and no wrapper for the common path; a self-init
+   runtime (4b) adds an IntersectionObserver fallback for browsers without
+   animation-timeline. Entry keyframes use the INDEPENDENT translate/scale/filter
+   properties (not `transform`) so they compose with Tailwind hover: transforms.
+   When animation-timeline is unsupported, no rule applies → content stays visible.
+   ========================================================================= */
+@keyframes motion-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes motion-fade-up { from { opacity: 0; translate: 0 var(--motion-dist); } to { opacity: 1; translate: 0 0; } }
+@keyframes motion-fade-down { from { opacity: 0; translate: 0 calc(var(--motion-dist) * -1); } to { opacity: 1; translate: 0 0; } }
+@keyframes motion-scale-in { from { opacity: 0; scale: 0.94; } to { opacity: 1; scale: 1; } }
+@keyframes motion-blur-in { from { opacity: 0; filter: blur(8px); } to { opacity: 1; filter: blur(0); } }
+@keyframes motion-mask-up { from { opacity: 0; translate: 0 var(--motion-dist); clip-path: inset(0 0 100% 0); } to { opacity: 1; translate: 0 0; clip-path: inset(0 0 0 0); } }
+@keyframes motion-parallax { from { translate: 0 calc(var(--motion-parallax, 40px) * -1); } to { translate: 0 var(--motion-parallax, 40px); } }
+
+/* Per-element knobs set from data-motion-* attribute values (discrete, token-bound). */
+[data-motion-entry] { --motion-name: motion-fade; --motion-dist: var(--dist-md); }
+[data-motion-entry="fade-up"] { --motion-name: motion-fade-up; }
+[data-motion-entry="fade-down"] { --motion-name: motion-fade-down; }
+[data-motion-entry="scale-in"] { --motion-name: motion-scale-in; }
+[data-motion-entry="blur-in"] { --motion-name: motion-blur-in; }
+[data-motion-entry="mask-up"] { --motion-name: motion-mask-up; }
+[data-motion-entry-dist="xs"] { --motion-dist: var(--dist-xs); }
+[data-motion-entry-dist="sm"] { --motion-dist: var(--dist-sm); }
+[data-motion-entry-dist="md"] { --motion-dist: var(--dist-md); }
+[data-motion-entry-dist="lg"] { --motion-dist: var(--dist-lg); }
+[data-motion-entry-dur="instant"] { --motion-dur: var(--dur-instant); }
+[data-motion-entry-dur="fast"] { --motion-dur: var(--dur-fast); }
+[data-motion-entry-dur="base"] { --motion-dur: var(--dur-base); }
+[data-motion-entry-dur="slow"] { --motion-dur: var(--dur-slow); }
+[data-motion-entry-dur="enter"] { --motion-dur: var(--dur-enter); }
+[data-motion-entry-ease="standard"] { --motion-ease: var(--ease-standard); }
+[data-motion-entry-ease="out"] { --motion-ease: var(--ease-out); }
+[data-motion-entry-ease="in"] { --motion-ease: var(--ease-in); }
+[data-motion-entry-ease="overshoot"] { --motion-ease: var(--ease-overshoot); }
+
+@supports (animation-timeline: view()) {
+  [data-motion-entry] {
+    /* shorthand first — it resets animation-timeline — then set the timeline. */
+    animation: var(--motion-name) var(--motion-dur, var(--dur-enter)) var(--motion-ease, var(--ease-out)) both;
+    animation-timeline: view();
+    animation-range: entry 5% cover 30%;
+  }
+  [data-motion-scroll="parallax"] {
+    animation: motion-parallax linear both;
+    animation-timeline: view();
+    animation-range: cover;
+  }
+}
+
+/* Fallback for browsers without scroll-driven animations (older Safari/Firefox): the self-init
+   runtime arms entries ([data-motion-armed] = hidden initial state) and reveals them on enter
+   ([data-motion-in]) via IntersectionObserver. Time-based, so entry delay (--motion-delay) applies. */
+@supports not (animation-timeline: view()) {
+  [data-motion-entry][data-motion-armed] {
+    opacity: 0;
+    transition:
+      opacity var(--motion-dur, var(--dur-enter)) var(--motion-ease, var(--ease-out)) var(--motion-delay, 0ms),
+      translate var(--motion-dur, var(--dur-enter)) var(--motion-ease, var(--ease-out)) var(--motion-delay, 0ms),
+      scale var(--motion-dur, var(--dur-enter)) var(--motion-ease, var(--ease-out)) var(--motion-delay, 0ms),
+      filter var(--motion-dur, var(--dur-enter)) var(--motion-ease, var(--ease-out)) var(--motion-delay, 0ms),
+      clip-path var(--motion-dur, var(--dur-enter)) var(--motion-ease, var(--ease-out)) var(--motion-delay, 0ms);
+  }
+  [data-motion-entry="fade-up"][data-motion-armed] { translate: 0 var(--motion-dist); }
+  [data-motion-entry="fade-down"][data-motion-armed] { translate: 0 calc(var(--motion-dist) * -1); }
+  [data-motion-entry="scale-in"][data-motion-armed] { scale: 0.94; }
+  [data-motion-entry="blur-in"][data-motion-armed] { filter: blur(8px); }
+  [data-motion-entry="mask-up"][data-motion-armed] { translate: 0 var(--motion-dist); clip-path: inset(0 0 100% 0); }
+  [data-motion-entry][data-motion-in] { opacity: 1; translate: 0 0; scale: 1; filter: blur(0); clip-path: inset(0 0 0 0); }
+}
+
+/* Sticky is pure CSS — no timeline needed. */
+[data-motion-scroll="sticky"] { position: sticky; top: var(--motion-sticky-top, 0px); }
+
+/* Reduced motion: no reveal animation (content shown in its final state). */
+@media (prefers-reduced-motion: reduce) {
+  [data-motion-entry], [data-motion-scroll="parallax"] { animation: none !important; }
+}
+
+/* Tier 3 timelines: a member is driven by a GSAP clock, which sets its hidden start state only once it
+   wires. Hide members up front to avoid a flash — but ONLY when the motion runtime booted (it adds
+   `.shavin-motion-js`) and motion is allowed. No JS / reduced-motion / paused canvas → members stay
+   visible (correct fallback). GSAP controls opacity inline from there, overriding this. */
+html.shavin-motion-js [data-motion-tl-member] { opacity: 0; }
+@media (prefers-reduced-motion: reduce) {
+  html.shavin-motion-js [data-motion-tl-member] { opacity: 1; }
+}
+
+/* Studio editing canvas sets [data-motion-paused] so nothing animates while designing;
+   dropping the scope (preview) lets motion play. */
+[data-motion-paused] [data-motion-entry],
+[data-motion-paused] [data-motion-scroll],
+[data-motion-paused] [data-motion-tl-member] {
+  animation: none !important;
+  opacity: 1 !important;
+  translate: none !important;
+  scale: none !important;
+  filter: none !important;
+  clip-path: none !important;
+}
+
 /* Indeterminate progress bar sliding animation (top bar / linear loader) */
 @keyframes progress-indeterminate {
   0% {
@@ -1141,3 +1268,55 @@ body {
 }
 
 
+
+/* ── Forced colors (Windows High Contrast) ─────────────────────────────────
+   The OS replaces backgrounds and colours with system colours, so any state
+   drawn only with a background fill (radio dot, switch track, checked box,
+   highlighted option, progress fill, active tab) would disappear. Give those
+   states a border, outline or system colour (WCAG 1.4.11 in high contrast). */
+@media (forced-colors: active) {
+  [role="switch"],
+  [role="radio"],
+  [role="checkbox"] {
+    border: 1px solid ButtonText;
+  }
+  [role="switch"] > span {
+    forced-color-adjust: none;
+    background: ButtonText;
+  }
+  [role="switch"][data-state="checked"],
+  [role="checkbox"][data-state="checked"],
+  [role="checkbox"][data-state="indeterminate"] {
+    forced-color-adjust: none;
+    background: Highlight;
+    color: HighlightText;
+    border-color: Highlight;
+  }
+  [role="switch"][data-state="checked"] > span {
+    background: HighlightText;
+  }
+  /* Radix radio indicator (the dot) only, not the content of segmented/card radios. */
+  [role="radio"][data-state="checked"] > span[data-state="checked"]:empty {
+    forced-color-adjust: none;
+    background: Highlight;
+  }
+  [role="option"][data-highlighted],
+  [role^="menuitem"][data-highlighted],
+  [role="option"][aria-selected="true"] {
+    outline: 2px solid Highlight;
+    outline-offset: -2px;
+  }
+  [role="tab"][data-state="active"],
+  [role="radio"][aria-checked="true"],
+  [aria-current]:not([aria-current="false"]) {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  [role="progressbar"] > * {
+    forced-color-adjust: none;
+    background: Highlight;
+  }
+  [role="slider"] {
+    outline: 1px solid ButtonText;
+  }
+}

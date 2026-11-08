@@ -18,7 +18,7 @@ export function CommerceBestsellers({ products = defaultProducts }) {
               <Heading as="h2" size="3xl" tracking="tight" className="max-w-[24ch] text-balance">The tools households reorder</Heading>
               <Text size="lg" color="muted" className="max-w-[52ch] text-pretty">The four planners and jars members buy again, rated by the households who use them every week.</Text>
             </Flex>
-            <Button variant="outline" iconRight={<Icon name="arrow-right" size="sm" />}>See everything</Button>
+            <Button variant="outline" iconRight={<Icon name="arrow-right" size="sm" />} asChild><a href="/products">See everything</a></Button>
           </Flex>
           <Grid columns="auto" minWidth="sm" maxColumns="4" gap="5">
             {products.map((product, i) => (

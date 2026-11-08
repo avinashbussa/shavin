@@ -31,6 +31,8 @@ export function SkeletonMimic({
   return (
     <div
       aria-hidden
+      // aria-hidden alone leaves the mimicked controls tabbable.
+      inert
       className={cn(
         "pointer-events-none select-none",
         "[&_*]:!animate-pulse [&_*]:!rounded-[var(--radius-lg)] [&_*]:!border-transparent [&_*]:!bg-fg/[0.08] [&_*]:!text-transparent [&_*]:!shadow-none",
