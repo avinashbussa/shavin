@@ -25,7 +25,7 @@ The three levers that create visual dominance are **size**, **weight**, and **su
 - Exactly **one** primary element per screen or logical view. Never two.
 - Primary element must be **at least 2× the font-size** of the nearest secondary element.
 - Never apply `font-bold` or `shadow-panel` to a tertiary element — it creates false primacy.
-- Color alone does not create hierarchy. `text-accent` on body-sized text is emphasis, not primary level.
+- Color alone does not create hierarchy. `text-brand-text` on body-sized text is emphasis, not primary level.
 
 ### Responsive Hierarchy
 
@@ -51,7 +51,7 @@ Ratio check: 36 / 18 = 2.0 — minimum maintained ✓
 | ------------------------------------------ | ------------ | ----------------------------------------- |
 | Large size (`text-5xl+`, full-width image) | Very high    | Must be the primary element               |
 | `shadow-panel` or `shadow-card`            | High         | Requires `p-5`+ inside the surface        |
-| `bg-accent` or high-saturation background  | High         | Max 1 accent-bg element per view          |
+| `bg-brand` or high-saturation background  | High         | Max 1 brand-bg element per view          |
 | `font-bold` + large size                   | High         | Only on primary / secondary elements      |
 | `border border-hairline`                   | Low-medium   | Adds containment weight; use deliberately |
 | `text-fg` vs `text-fg-muted`               | Low          | Dark text is heavier than muted           |
@@ -65,14 +65,14 @@ When a heavy element exists, it must be balanced by **increased surrounding whit
 Heavy card (shadow-panel):
   Needs: min p-5 internal, min gap-6 in surrounding grid
 
-Accent-background badge or callout:
+Brand-background badge or callout:
   Needs: py-1.5+ vertical padding, surrounded by text-fg-muted elements
 
 Large hero heading (text-6xl+):
   Needs: mb-4+ below it before the next element, pb-16+ section padding
 ```
 
-**The balance rule:** If you add a `shadow-*` class, increase `p-*` by one step. If you add `bg-accent`, surround with `text-fg-muted` elements and increase gap.
+**The balance rule:** If you add a `shadow-*` class, increase `p-*` by one step. If you add `bg-brand`, surround with `text-fg-muted` elements and increase gap.
 
 ---
 
@@ -127,7 +127,7 @@ Mobile:  CTA must be within 240px vertically of the h1 bottom edge.
 
 **3. Maximum 3 focal elements in any hero or primary view.**
 ```
-Focal element = anything with shadow-panel, bg-accent, text-5xl+, or a primary Button.
+Focal element = anything with shadow-panel, bg-brand, text-5xl+, or a primary Button.
 On mobile, reduce to 2 focal elements if possible.
 ```
 

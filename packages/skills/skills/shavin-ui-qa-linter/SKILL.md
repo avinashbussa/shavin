@@ -19,10 +19,10 @@ sections:
 
 - **Token-efficient usage:** This skill is ~3K tokens — small enough to load in full.
 > For the design rules being enforced (token compliance, radius, typography),
-> see `core-rules.md` (auto-injected by MCP).
+> see `core-rules.md` (not injected; read the file).
 
 - 💡 **MCP Routing:** Call `validate_code` for inline snippet checking, `get_guidelines` for AGENTS.md rules verification, `get_setup_instructions` for consumer wiring audits, and `get_tokens` for token verification. For an end-to-end audit with autofix and rollback safety, call `shavin_steer({ action: "audit" | "polish" | "anti-slop", code, filePath? })` instead of chaining the individual calls yourself — `polish` snapshots the pre-fix code to `.shavin/snapshots/` automatically. If a browser is connected via the Bridge daemon, `get_live_audit` / `trigger_live_rescan` / `wait_for_live_clean` give real DOM results instead of static analysis.
-- 💡 **No-MCP fallback:** Run `node bin/lint-tokens.mjs <path>` instead of `validate_code`/`shavin_steer(action:"audit")` — it implements the identical hex/rgb/literal-radius/raw-Tailwind-color checks deterministically, no MCP required (see `bin/lint-tokens.mjs`). Autofix and live-browser audit have no No-MCP equivalent — flag violations for manual fix instead.
+- 💡 **No-MCP fallback:** Run `npx shavin-lint-tokens <path>` instead of `validate_code`/`shavin_steer(action:"audit")` — it implements the identical hex/rgb/literal-radius/raw-Tailwind-color checks deterministically, no MCP required. Autofix and live-browser audit have no No-MCP equivalent — flag violations for manual fix instead.
 
 You are a **Design QA & Linter Agent** for the Shavin Design System.
 Your job is to systematically audit `@shavin/ui` (or a consuming app) for

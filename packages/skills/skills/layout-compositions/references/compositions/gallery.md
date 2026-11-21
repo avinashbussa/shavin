@@ -1,8 +1,8 @@
-# Gallery / showcase compositions (G1–G5)
+# Gallery / showcase compositions (G1–G6)
 
 Galleries show volume or range: many things, browsed rather than read. Decide first whether order matters (ranked, chronological) or not, because it decides between CSS columns, a grid, or a list.
 
-Contents: G1 Masonry · G2 Filterable Grid · G3 Marquee Rows · G4 Case Study Index · G5 People Grid
+Contents: G1 Masonry · G2 Filterable Grid · G3 Marquee Rows · G4 Case Study Index · G5 People Grid · G6 Product Grid
 
 ---
 
@@ -141,3 +141,32 @@ motion: tier0
 ```
 **Contract:** One photographic style. `alt` is the person's name (or empty if the name follows in text). Name and role always visible.
 **Watch:** Don't crop faces. Long titles wrap: reserve height. Decide "leadership only" vs "everyone" and stick to it.
+
+### G6 · Product Grid
+```yaml
+id: G6
+name: Product Grid
+family: gallery
+job: desire
+density: medium
+styles: [marketing, hybrid]
+treatments: [carded, flat, open]
+media: [photo]
+items: 4, 6, 8 or 12
+slots: [item-media, item-title, item-price, item-action, badge]
+motion: tier1
+```
+**Best for:** A shop or catalogue where each item is bought or opened: prints, ceramics, merch, courses, retreat dates.
+**Avoid when:** More than ~12 items that people filter (use G2), items without a photo (use F1), or a single product (use H3 or F3).
+**Grid:** `base` 2 · `md` 3 · `lg` 4. Each item is one `Card` with no inner padding on the image: `AspectRatio` 4:5 holding an `Image` with fixed `width`/`height`, then `Flex direction="column" gap="2"` with the name (`Text`, `text-fg`), the price (`Text`, `text-fg`, tabular figures) and one `Button`.
+```
+┌───────────────────────────────────────────────┐
+│ All products                                  │
+│ [ photo ]   [ photo ]   [ photo ]   [ photo ] │
+│ Name        Name        Name        Name      │
+│ $48         $52         $36         $60       │
+│ [ Add ]     [ Add ]     [ Add ]     [ Add ]   │
+└───────────────────────────────────────────────┘
+```
+**Contract:** Every `Image` has real alt text. The name is the link, with the whole card as its hit area, and the one `Button` stays separately focusable. At most one `Badge` per card, and only when true ("New", "Sold out"). The price carries its currency. A sold-out item uses `Button disabledReason="Sold out"`. A loading state of `Skeleton` cards with the same aspect ratio. An `EmptyState kind="empty"` when the list is empty.
+**Watch:** Keep the image ratio identical across cards or the rows go ragged. Never crop a product so its edge is lost. Do not fill the grid with placeholder photos of other brands' products. Price text must pass contrast on the card surface.

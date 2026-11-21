@@ -46,7 +46,9 @@ function validateCode(code) {
     violations.push(`Direct foundation variable references found: ${foundationVars.join(", ")}. Nothing outside global.css should reference --n-* directly.`);
   }
 
-  const rawRadius = code.match(/\brounded-(sm|md|lg|xl|2xl|3xl|full)\b/g) ?? [];
+  // Standalone copy: the shared engine is packages/mcp-server/src/tools/concentric-lint.mjs. rounded-full is
+  // legitimate (pills, avatars) and is not flagged here, matching the engine.
+  const rawRadius = code.match(/\brounded-(sm|md|lg|xl|2xl|3xl)\b/g) ?? [];
   const radiusInClasses = rawRadius.filter((m) => !/import|type|interface/.test(code));
   if (radiusInClasses.length > 0) {
     violations.push(
@@ -59,7 +61,7 @@ function validateCode(code) {
   ) ?? [];
   if (rawColors.length > 0) {
     violations.push(
-      `Raw Tailwind color scale utilities found: ${rawColors.join(", ")}. Use semantic utilities (bg-surface, text-fg, text-fg-muted, border-hairline, bg-accent, …) instead.`
+      `Raw Tailwind color scale utilities found: ${rawColors.join(", ")}. Use semantic utilities (bg-surface, text-fg, text-fg-muted, border-hairline, bg-brand, …) instead.`
     );
   }
 
@@ -96,10 +98,9 @@ function autofixCode(code) {
     return "var(--fg)";
   });
 
-  fixedCode = fixedCode.replace(/\brounded-(lg|xl|2xl|3xl)\b/g, (match) => {
-    fixesApplied.push(`Replaced literal ${match} with rounded-[var(--radius-panel)]`);
-    return "rounded-[var(--radius-panel)]";
-  });
+  // rounded-lg/xl/2xl/3xl are reported but not auto-fixed here: the right replacement depends on role
+  // (control -> --radius-lg, container -> --radius-panel, nested -> rounded-panel-pN), which only the
+  // engine in packages/mcp-server/src/tools/concentric-lint.mjs (validate_code / autofix_code) can judge.
 
   fixedCode = fixedCode.replace(/\brounded-(sm|md)\b/g, (match) => {
     fixesApplied.push(`Replaced literal ${match} with rounded-[var(--radius-lg)]`);

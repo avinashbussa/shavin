@@ -1,6 +1,6 @@
 # Proof compositions: stats and social proof (S1–S3, T1–T4)
 
-Proof exists to make a claim believable. It only works when the evidence is real, specific and attributable. Never invent numbers, quotes or logos: use clearly marked placeholders when real ones aren't available.
+Proof exists to make a claim believable. It only works when the evidence is specific and attributable. Use the user's real numbers, quotes and logos as given. Where none are supplied, write believable fictional ones of your own (invented people, companies, publications and institutions, round figures), never copied from a real site or brand. Do not label them on the page.
 
 Contents: S1 Stat Bar · S2 Large Number Grid · S3 Count-Up Row · T1 Single Large Quote · T2 Testimonial Cards · T3 Logo Grid · T4 Marquee Logo Strip
 
@@ -29,7 +29,7 @@ motion: tier1
 │ Primitives│   Blocks  │   Tools   │   Skills  │
 └───────────┴───────────┴───────────┴───────────┘
 ```
-**Contract:** Value ≤ 6 characters including unit or suffix; label ≤ 3 words. Every figure is true, current and sourced somewhere. Use `tabular-nums`.
+**Contract:** Value ≤ 6 characters including unit or suffix; label ≤ 3 words. Figures the user supplied are used as given; otherwise use plausible round placeholder figures. Use `tabular-nums`.
 **Watch:** The v1 pattern `divide-y md:divide-y-0 md:divide-x` gives the wrong dividers in a 2×2 (rows split, columns don't). In 2×2, set borders per cell. Count-up must not change cell width. Check hairline contrast in dark mode.
 
 ### S2 · Large Number + Description Grid

@@ -28,8 +28,8 @@ motion: tier1
 │ Brand   │ Product Pricing Docs │[Get started] │
 └─────────┴──────────────────────┴──────────────┘
 ```
-**Contract:** ≤ 7 top-level links. One primary action (a button) and at most one secondary (a text link). Brand links home. Current page carries `aria-current="page"`.
-**Watch:** A sticky bar needs `scroll-margin-top`/`scroll-padding-top` equal to its height or anchor targets hide under it. The mobile menu is a dialog: trap focus, close on Esc, restore focus to the toggle. Never put the only primary CTA inside the drawer. Backdrop blur needs an opaque fallback for contrast. A transparent-over-hero bar needs a scrim so links pass 4.5:1 on the media.
+**Contract:** ≤ 7 top-level links. One primary action (a button) and at most one secondary (a text link). Brand links home. Current page carries `aria-current="page"`. A top-level item that opens a panel is a `Button` inside a `Popover` (click or Enter opens it; `Popover` sets `aria-expanded` itself and Esc closes it and returns focus), never a link to `#` and never a `Menu`, whose menu role is for actions, not navigation. The panel holds plain `Link`s: ≤ 3 groups of ≤ 6 links and at most one featured card. Hover may also open it after about 120 ms, but click must always work.
+**Watch:** A sticky bar needs `scroll-margin-top`/`scroll-padding-top` equal to its height or anchor targets hide under it. Put a skip link ("Skip to content") before the header as the first focusable element. The mobile menu is a `Drawer` (below `lg` the mega panel does not exist): trap focus, close on Esc, restore focus to the toggle, the same links as a list with group names as headings. Never put the only primary CTA inside the drawer. Backdrop blur needs an opaque fallback for contrast. A transparent-over-hero bar needs a scrim so links pass 4.5:1 on the media.
 
 ### ST2 · Announcement Bar
 ```yaml

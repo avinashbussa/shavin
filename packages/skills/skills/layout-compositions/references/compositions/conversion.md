@@ -133,7 +133,7 @@ motion: tier1
 **Avoid when:** You need more than an email address (use C4). The same page already has a C1/C3 CTA banner right next to it (two asks compete — pick one).
 **Grid:** Full-width colored band. `base`: headline, sub, then input and button stacked full-width. `md`+: headline/sub left or centered, input + button inline in a single row (input flexes, button fixed width).
 ```
-┌────────────────────────────────────────────────┐
+┌─────────────────────────────────────────────────┐
 │ Headline                                        │
 │ Sub                                             │
 │           Email input            │   Submit     │

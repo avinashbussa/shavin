@@ -13,8 +13,8 @@
       "reason": "Bundles modular on-demand files (page-architecture.md, editorial-craft.md, style-recipes.md). Layout compositions moved to standalone layout-compositions skill. Loaded modularly on-demand per section."
     },
     "layout-compositions": {
-      "budget": 40000,
-      "reason": "52 compositions across 9 family files, plus selection-guide, treatments, foundations, page-recipes, metadata-schema, and shavin-ui adapter. No single task loads all family files — the workflow explicitly says to load only the family files for the IDs you use. SKILL.md itself is lightweight; the weight is in the reference files loaded on-demand."
+      "budget": 41000,
+      "reason": "57 compositions across 9 family files, plus selection-guide, treatments, foundations, page-recipes, metadata-schema, and shavin-ui adapter. No single task loads all family files — the workflow explicitly says to load only the family files for the IDs you use. SKILL.md itself is lightweight; the weight is in the reference files loaded on-demand."
     },
     "layout-motion": {
       "budget": 6000,
@@ -26,7 +26,7 @@
     }
   },
   "alwaysLoadedFiles": {
-    "core-rules.md": { "always": true, "note": "auto-injected by MCP get_skill on every call; also the No-MCP static fallback baseline — see core-rules.md §13 'No-MCP Fallback'" },
+    "core-rules.md": { "always": true, "note": "baseline rules file, read from .agents/skills (not injected by the MCP, not a skill name); also the No-MCP static fallback — see core-rules.md §13 'No-MCP Fallback'" },
     "visual-compositor/cognitive-layer.md": { "always": true },
     "visual-compositor/concentric-laws.md": { "always": true },
     "visual-compositor/spacing-core.md": { "always": true },
@@ -76,7 +76,7 @@
     "layout-choreography/references/shavin-timelines.md": { "trigger": "shavin timelines reference" }
   },
   "notes": [
-    "alwaysLoadedBudget covers core-rules.md + the 8 files visual-compositor/SKILL.md's own body table marks ALWAYS (measured: ~19K tokens as of this rebuild; 20000 leaves ~1K headroom). Motion-and-physics.md grew with duration/distance/stagger token documentation.",
+    "alwaysLoadedBudget covers core-rules.md + the 8 files visual-compositor/SKILL.md's own body table marks CORE (measured: ~19K tokens as of this rebuild; 20000 leaves ~1K headroom). Motion-and-physics.md grew with duration/distance/stagger token documentation.",
     "perSkillBudget is the default max tokens a single skill folder should contribute when fully loaded. Skills that legitimately bundle mutually-exclusive mode variants should add an entry to perSkillBudgetOverrides with a documented reason, rather than being silently over budget or inflating the global default for everyone else.",
     "perFileBudget flags any single file that's too heavy to load frequently.",
     "As of this rebuild these are enforced by build.mjs's warn() calls (visible in npm run check), not just printed. Run with --strict to treat them as hard failures.",

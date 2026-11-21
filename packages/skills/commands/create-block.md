@@ -9,13 +9,13 @@ $ARGUMENTS (Block Type & Intent: e.g., `hero-saas-creative`, `feature-bento`, `p
 
 ### 0. Read Project Context & Resolve Mode
 
-- 💡 **If `shavin-mcp` is connected:** Call `get_project_context()` to read the project's `SHAVIN.md` — it returns the configured accent, theme mode, radius, density, and (if present) the `## 3. Site & Mode Defaults` section. Use those values as the source of truth for all theme/mode decisions in this block.
-- 💡 **Otherwise (No-MCP):** Read `SHAVIN.md` directly (`view SHAVIN.md` or equivalent file read). Look for `## 2. Design System Configuration` and `## 3. Site & Mode Defaults`. If `SHAVIN.md` doesn't exist, fall back to the defaults in `.agents/skills/shavin-core/SHAVIN.template.md`.
-- **Mode resolution:** Resolve the visual mode (STRUCTURAL / MARKETING / EDITORIAL / HYBRID / DOCS) using the canonical dispatcher in `shavin-core/SKILL.md` §1a — do NOT hardcode a partial mode table here. The resolution order is: (1) explicit signal in `$ARGUMENTS`, (2) `SHAVIN.md`'s `Default Visual Mode`, (3) `visual-compositor/SKILL.md`'s Activation Modes table, (4) ask the user. Treat `get_skill_mode` as advisory only (it can't return DOCS or HYBRID).
+- 💡 **If `shavin-mcp` is connected:** Call `get_project_context()` to read the project's `SHAVIN.md` — it returns the configured brand, theme mode, radius, density, and (if present) the `## 3. Site & Mode Defaults` section. Use those values as the source of truth for all theme/mode decisions in this block.
+- 💡 **Otherwise (No-MCP):** Read `SHAVIN.md` directly (`view SHAVIN.md` or equivalent file read). Look for `## 2. Design System Configuration` and `## 3. Site & Mode Defaults`. If `SHAVIN.md` doesn't exist, treat `Site Type` and `Default Visual Mode` as `AUTO` (decide per request, see `SHAVIN.md` section 3).
+- **Mode resolution:** Resolve the visual mode (STRUCTURAL / MARKETING / EDITORIAL / HYBRID / DOCS) using the precedence in `visual-compositor/SKILL.md` (section Mode Precedence) — do NOT hardcode a partial mode table here. The resolution order is: (1) explicit signal in `$ARGUMENTS`, (2) `SHAVIN.md`'s `Default Visual Mode`, (3) `visual-compositor/SKILL.md`'s Activation Modes table, (4) ask the user. Treat `get_skill_mode` as advisory only (it can't return DOCS or HYBRID).
 
 ### 1. Skill Activation
 
-Activate skill modules based on the resolved mode — see `shavin-core/SKILL.md` §1a for the canonical skill dispatcher table. The key mappings:
+Activate skill modules based on the resolved mode — see the Activation Matrix in `AGENTS.md` for the skill dispatcher table. The key mappings:
 - **MARKETING / EDITORIAL / HYBRID**: Load `shavin-webpage/` (`page-architecture.md`, `editorial-craft.md`, `style-recipes.md`) + `layout-compositions/` for composition patterns + `visual-compositor/` files per the File Loading Guide.
 - **STRUCTURAL / DOCS**: Load `shavin-app/SKILL.md` + `visual-compositor/spacing-dense.md` (and `docs-mode.md` for DOCS).
 - **All modes**: Enforce `visual-compositor/typography-rules.md`, `interface-polish.md`, and `motion-and-physics.md`. For MARKETING/EDITORIAL/HYBRID modes, also load `page-motion-presets.md` and `composition-motion-map.md` for entrance preset recipes.
@@ -35,7 +35,7 @@ Activate skill modules based on the resolved mode — see `shavin-core/SKILL.md`
 ### 3. Spatial Hierarchy & Concentric Geometry
 
 - **Section wrapper**: `Section` has no padding by default — set `size="body"` (py-16 md:py-24) or `size="hero"` (py-24 md:py-32) for marketing showcases, or an explicit `py-16 md:py-24`. Full-bleed, zero horizontal padding on `<section>` (the `Container` is the gutter).
-- **Content wrapper**: `<Container size="lg" className="px-4 md:px-6">` (or `size="xl"` for split/dense grids).
+- **Content wrapper**: `<Container size="lg" className="px-4 md:px-6">` (`xl` is for the nav and footer only; split and dense grids stay in `lg`).
 - **Container Surfaces**: `rounded-[var(--radius-panel)] border border-hairline bg-surface`.
 - **Controls & Chips**: `rounded-[var(--radius-lg)]` (inputs, buttons, badges).
 - **Concentric Nesting Rule**: Inner radius must satisfy $R_{\text{inner}} = \max(\text{floor}, R_{\text{outer}} - P)$, floor = `min(radius-lg, radius-panel / 2)`. Use concentric utilities (`rounded-panel-p5`, `rounded-panel-p3`, `rounded-panel-inner`).
@@ -45,17 +45,17 @@ Activate skill modules based on the resolved mode — see `shavin-core/SKILL.md`
 - **Section Title**: `text-fg` with `font-semibold` or `font-display` and `tracking-tight`.
 - **Paired Subtitle**: `text-fg-subtle` (`color="subtle"`), never `text-fg-muted` (per `AGENTS.md` typography invariant).
 - **Metadata / Minor Captions**: `text-fg-muted` (timestamps, subtle counter labels).
-- **Action Buttons**: Primary `variant="solid"` (accent tone), Secondary `variant="outline"` or `variant="subtle"`.
-- **Zero Raw Color Literals**: No hex codes, no `rgb()`, no `--n-*` foundation variables. Only semantic tokens (`bg-surface`, `bg-canvas`, `text-fg`, `border-hairline`, `accent`).
+- **Action Buttons**: Primary `variant="solid"` (brand tone), Secondary `variant="outline"` or `variant="subtle"`.
+- **Zero Raw Color Literals**: No hex codes, no `rgb()`, no `--n-*` foundation variables. Only semantic tokens (`bg-surface`, `bg-canvas`, `text-fg`, `border-hairline`, `brand`).
 
 ### 5. Imagery & Media (Anti-Slop Invariant)
 
-**Follow the anti-slop invariant in `shavin-core/SKILL.md` §2 and `core-rules.md` §11 (AP-03).**
+**Follow the anti-slop invariant in `visual-compositor/anti-patterns.md` and `core-rules.md` §11 (AP-03).**
 
 - **NEVER** dump cliché literal stock (people typing on laptops, handshakes, generic office desks) or dense, tiny, unreadable UI screenshots into blocks or templates. They look cheap and break visual cohesion.
 - **PREFERRED hero / main media** (content on top, behind a scrim — set via layout bg props `bgImage` / `bgVideo` + `bgPoster` / `bgOverlays`):
-  1. **Curated photography** from Lummi (`assets.lummi.ai`), Unsplash, or user-supplied — usable anywhere, including as accents for visual balance.
-  2. **Mesh gradients** (`bgOverlays="mesh-lime"`, `mesh-night`, `mesh-mint`, `mesh-peach`, `mesh-accent`; append `-animated` for slow drift).
+  1. **Curated photography** from Lummi (`assets.lummi.ai`), Unsplash, or user-supplied — usable anywhere, including as highlights for visual balance.
+  2. **Mesh gradients** (`bgOverlays="mesh-lime"`, `mesh-night`, `mesh-mint`, `mesh-peach`, `mesh-brand`; append `-animated` for slow drift).
   3. **Animated backgrounds** (Pexels video via `bgVideo` with a `bgPoster` fallback).
 - **3D renders**: optional decorative graphics only — never focal hero/feature media.
 - **Product mockups rebuilt from Shavin primitives**: do NOT use as imagery unless highly confident of the result (rarely).
@@ -73,6 +73,7 @@ Activate skill modules based on the resolved mode — see `shavin-core/SKILL.md`
 
 - 💡 **If `shavin-mcp` is connected:** Validate the block with `validate_code({ code: "<ComponentSource>" })`. Must score 100% token purity with zero lint errors and correct concentric nesting.
 - 💡 **Otherwise (No-MCP):** Run `node bin/lint-tokens.mjs <file>` — it implements the same token purity regexes as `@shavin/mcp`'s `validate_code`, with `--fix` for autofixable cases (hex→token, literal radius→token).
-- Also run `npm run tokens:check` and `npm run typecheck` if working inside the monorepo.
+- Also run `npm run tokens:check` and `npm run typecheck` if working inside the Shavin repository.
+- Render the block at 375, 768 and 1280. No horizontal page scroll, nothing cut off by an `overflow-hidden` ancestor, button rows wrap, tables scroll inside their own region.
 
 To propose a block for the shared Shavin catalogue, open an issue with the block code; catalogue blocks are added by maintainers.

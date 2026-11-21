@@ -2,7 +2,7 @@
 
 Design-judgement skills for AI coding agents working with Shavin UI: the token rules, concentric geometry, typography, spacing, layout compositions, motion and the anti-slop catalogue that make agent output look designed instead of generated. Plain markdown, no runtime dependencies, and they work with or without the Shavin MCP server.
 
-- **Docs:** https://docs.shavin.cc/start/working-with-ai
+- **Docs:** https://docs.shavin.cc
 - **Requires:** Node 22+ (for the installer and linter)
 
 ## Install
@@ -24,9 +24,10 @@ npx @shavin/skills --target ./apps/web   # install into another project
 | `layout-compositions/` | 50+ page and section compositions across 9 families, with selection rules and page recipes |
 | `layout-motion/`, `layout-choreography/` | Restrained UI motion, and cinematic scroll-driven scenes |
 | `shavin-webpage/` | Marketing and landing pages |
-| `shavin-app/` | SaaS apps, dashboards, tables |
-| `shavin-ui-builder/`, `shavin-ui-qa-linter/` | Block building and design QA |
-| `shavin-core/` | Contributing to the Shavin monorepo itself |
+| `shavin-app/` | SaaS apps, dashboards, tables, forms, settings, auth, onboarding (six states) |
+| `shavin-studio/` | Only while a Studio session is connected, or when designing a block in isolation for approval (BlockNode trees, responsive overrides, hand-off) |
+
+The repo also has maintainer-only skills (`shavin-core/`, `shavin-ui-qa-linter/`, `dense-compression-protocol.md`, listed in `internal.json`). They are not part of this package and are never installed into a project.
 
 Slash commands: `/create-screen`, `/create-block`, `/create-primitive`, `/create-theme`, `/apply-theme`, `/audit-ui`, `/compose-page`, `/audit-layout`, `/add-composition`.
 
@@ -40,8 +41,7 @@ npx -p @shavin/skills shavin-lint-tokens "src/**/*.tsx"
 
 ## Maintainers
 
-Edit skills here in `packages/skills/`, never in `.agents/` (compiled output). `npm run skills:check` validates cross-references, frontmatter and token budgets; `npm run skills:build` deploys. Background on past fixes: [MAINTAINERS.md](./MAINTAINERS.md).
-
+Edit skills here in `packages/skills/`, never in `.agents/` (compiled output). `npm run skills:check` validates cross-references, frontmatter and token budgets; `npm run skills:build` deploys.
 ## Licence
 
 MIT © 2026 Avinash Bussa and Shavin contributors. See [LICENSE](./LICENSE).

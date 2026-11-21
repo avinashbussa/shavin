@@ -7,4 +7,4 @@ Everything comes from the `@shavin/ui` package root; you never need its internal
 | `node_modules/@shavin/ui/components.json` | Component manifest: props, variants, examples and guidance (`get_components`) |
 | `node_modules/@shavin/ui/tokens.json` | Semantic token dictionary (`get_tokens`) |
 | `.agents/skills/`, `.agents/commands/` | Installed agent skills and slash commands (`npx @shavin/skills`) |
-| `SHAVIN.md` | This project's design brief: site type, mode, accent, density, radius |
+| `SHAVIN.md` | This project's design brief: site type, mode, brand, density, radius |

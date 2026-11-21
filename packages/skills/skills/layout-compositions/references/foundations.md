@@ -62,7 +62,7 @@ Inside sections: grid gap 6 (24px) for card grids; 12 (48px) between text and me
 - No three consecutive sections with the same grid. Three F1s in a row is a template.
 - Adjacent sections must differ in at least one of: background, alignment, density, column count.
 - Alternate quiet and loud: after a dense section (F2, P2) put a low-density one (T1, C1).
-- Container tokens: content ≈ 1120–1280px, reading ≈ 68ch, wide breakout ≈ content + 10%.
+- Container tokens: body content = `Container size="lg"` (72rem, 1152px), reading ≈ 68ch (`sm`), wide breakout only for media (`full`). `xl` (88rem) is for the nav and footer: it never caps at 1280px.
 
 ## 4. Responsive
 
@@ -73,7 +73,7 @@ Inside sections: grid gap 6 (24px) for card grids; 12 (48px) between text and me
 - Tabs that don't fit become a scrollable tablist or an accordion.
 - Tables scroll inside a wrapper with a visible edge cue and a sticky first column.
 - Test widths: 360, 768, 1024, 1440 and one ultra-wide (container must cap).
-- Touch targets: aim for ≥ 44px; WCAG 2.2 AA minimum is 24px.
+- Touch: 44px automatic; AA min 24px; custom `hit-area`.
 - Safe areas: fixed/sticky bars respect `env(safe-area-inset-*)`.
 
 **Item-count orphans.** If the grid has N columns and the item count leaves a short last row, fix the content or the layout instead of accepting it: 4 items in 3 columns → 2×2; 5 → add one or use F2; 7 → 6 or 8.

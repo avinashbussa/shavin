@@ -3,14 +3,14 @@
 Automated recipe to configure theme tokens and mount the `ThemeProvider` in a consumer project.
 
 ## Input Argument
-$ARGUMENTS (Theme Configuration: e.g., `accentColor="grass" grayColor="zinc" radius="large" scaling="95%"` — optional; if omitted, reads from `SHAVIN.md`)
+$ARGUMENTS (Theme Configuration: e.g., `brandColor="monochrome" grayColor="zinc" radius="large" scaling="95%"` — optional; if omitted, reads from `SHAVIN.md`)
 
 ## Instructions
 
 ### 0. Read Project Context (Source of Truth for Theme Values)
 
-- 💡 **If `shavin-mcp` is connected:** Call `get_project_context()` — it reads `SHAVIN.md` and returns the project's current accent, gray color, theme mode, radius, scaling, and panel background. Use those values as the `ThemeProvider` props.
-- 💡 **Otherwise (No-MCP):** Read `SHAVIN.md` directly (`view SHAVIN.md` or equivalent file read). Look for the `## 2. Design System Configuration` section for the configured values. If `SHAVIN.md` doesn't exist, use the defaults from `.agents/skills/shavin-core/SHAVIN.template.md` (or the defaults below).
+- 💡 **If `shavin-mcp` is connected:** Call `get_project_context()` — it reads `SHAVIN.md` and returns the project's current brand, gray color, theme mode, radius, scaling, and panel background. Use those values as the `ThemeProvider` props.
+- 💡 **Otherwise (No-MCP):** Read `SHAVIN.md` directly (`view SHAVIN.md` or equivalent file read). Look for the `## 2. Design System Configuration` section for the configured values. If `SHAVIN.md` doesn't exist, use the `init` defaults (monochrome brand, zinc gray, medium radius, 95% scaling) (or the defaults below).
 - **If `$ARGUMENTS` provides explicit theme values, those override `SHAVIN.md`** — the user is intentionally changing the theme. Update `SHAVIN.md`'s `## 2. Design System Configuration` section to reflect the new values so future sessions don't revert.
 - **If `$ARGUMENTS` is empty and `SHAVIN.md` exists, use `SHAVIN.md`'s values — do NOT apply the template defaults below as if they were the project's intended configuration.**
 
@@ -27,7 +27,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" suppressHydrationWarning>
       <body className="min-h-screen bg-canvas text-fg">
         <ThemeProvider
-          accentColor="grass"
+          brandColor="monochrome"
           grayColor="zinc"
           radius="medium"
           scaling="95%"
@@ -40,12 +40,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   );
 }
 ```
+Vite: wrap the app in `src/main.tsx` instead: `<ThemeProvider brandColor="monochrome" …><App /></ThemeProvider>`.
+
 > **Note:** The values above are template defaults from `SHAVIN.template.md`. Replace them with the values from `SHAVIN.md`'s `## 2. Design System Configuration` (or `$ARGUMENTS` if provided). See Step 0.
 
 ### 3. Available Theme Presets
-- **Accent Colors**: `grass`, `ruby`, `amber`, `indigo`, `cyan`, `plum`, `crimson`, `sky`, `mint`, `orange`, `blue`, `violet`, `teal`, `lime`, `pink`, `yellow`.
+- **Brand Colors**: `monochrome` (the default), another named brand colour, or a hex (`#rrggbb`). Take the colour from the brief or `SHAVIN.md`; never invent one.
 - **Gray Colors**: `gray` (pure neutral), `zinc` (cool tech), `slate` (slate blue), `sand` (warm earth), `olive` (earth green).
-- **Radius Presets**: `none` (0px), `small` (subtle), `medium` (standard 12px panel / 8px control), `large` (curved), `full` (pill controls).
+- **Radius Presets**: `none` (0px), `small` (subtle), `medium` (standard 16px panel / 8px control), `large` (curved), `full` (pill controls).
 - **Scaling**: `90%`, `95%` (dense SaaS), `100%` (standard), `105%`, `110%`.
 - **Panel Background**: `solid` (opaque high performance) | `translucent` (glassmorphism blur).
 

@@ -1,8 +1,30 @@
 # Font Pairings by Mode
 
 > **Load priority:** Loaded when making font decisions. Use `get_skill_mode` to determine which mode's pairings to load.
-> **Token cost:** ~4K tokens.
+> **Token cost:** ~2.8K tokens.
 > **Mode-specific:** Each mode has different emotional register — fonts must match it.
+
+---
+
+## Defaults
+
+- The default pairing is `Rethink Sans` (display) + `Inter` (body), set by the default theme. It is the built-in fallback, not a design decision. For a new site or page, choose the theme from the brief as described under "Theme for a new site or page" below.
+- Do not use `Space Grotesk` as the display font unless asked: it is the most common AI default.
+
+---
+
+## Theme for a new site or page
+
+If `SHAVIN.md` still says `UNSET` for Primary Brand or Display / Body Font (or `.shavin/config.json` has `brandConfirmed: false`) and the user did not name colours or fonts, choose them from the brief before building:
+
+1. A brand colour: a preset name or a hex that fits the audience and mood. Do not default to `monochrome`.
+2. A display and body font pair from the pairings below, matched to the mode.
+3. A mode that fits the content: light for editorial and content-led pages, dark only where the product suits it.
+4. One sentence of reasoning (audience, mood).
+
+Apply them with `npx @shavin/cli brand --color <preset|#hex> --display-font <name> --body-font <name> --mode <dark-first|light-first|system>`. Without a shell, set the same values on `ThemeProvider` (`brandColor`, `displayFont`, `bodyFont`, `defaultTheme`) and in the `SHAVIN.md` and `.shavin/config.json` lines by hand.
+
+After the first page, tell the user in two sentences what you chose and why, and offer two alternatives. If they accept or do not answer, run `npx @shavin/cli brand --confirm`. If they pick another, run `brand` with the new values and `--confirm`. Ask once, never again once confirmed.
 
 ---
 
@@ -18,13 +40,13 @@ applyDisplayFontPreset("Fraunces"); // sets --font-display
 applyBodyFontPreset("Inter"); // sets --font-body
 ```
 
-In Next.js apps, load via `next/font/google` in `layout.tsx` and set CSS vars:
+Set fonts on the provider first; it loads them:
 
-```ts
-// layout.tsx
-const fraunces = Fraunces({ subsets: ["latin"], variable: "--font-display" });
-const inter = Inter({ subsets: ["latin"], variable: "--font-body" });
+```tsx
+<ThemeProvider displayFont="Fraunces" bodyFont="Inter">{children}</ThemeProvider>
 ```
+
+Fonts in the `ThemeProvider` presets load with that one prop. Any other Google font loads with `loadGoogleFont("Name")`; a font that is not on Google Fonts cannot be loaded this way. `next/font/google` in `layout.tsx` is the fallback only (see `core-rules.md` §5).
 
 ---
 
@@ -55,22 +77,23 @@ Rules:
 
 | Pairing Name              | Display                             | Body      | Personality                                              | Best for                                    |
 | ------------------------- | ----------------------------------- | --------- | -------------------------------------------------------- | ------------------------------------------- |
-| **Canonical** _(default)_ | `Fraunces` (serif)                  | `Inter`   | Warm authority — the serif adds craft to a modern system | SaaS homepages, design tools, product sites |
-| **Geometric Power**       | `Space Grotesk` (geometric sans)    | `Inter`   | Bold, technical, forward-looking                         | Dev tools, infra products, APIs             |
+| **Shavin default** _(default)_ | `Rethink Sans` (humanist grotesque) | `Inter` | Neutral, modern, credible | Most SaaS, product and marketing sites |
+| **Warm Authority**        | `Fraunces` (serif)                  | `Inter`   | Warm authority — the serif adds craft to a modern system | SaaS homepages, design tools, product sites |
+| **Geometric Power**       | `Host Grotesk` (grotesque sans)     | `Inter`   | Bold, technical, forward-looking                         | Dev tools, infra products, APIs             |
 | **Editorial Clean**       | `Outfit` (variable geometric)       | `DM Sans` | Friendly precision — rounded geometry, approachable      | Consumer SaaS, productivity, onboarding     |
 | **Classic Trust**         | `Playfair Display` (didone serif)   | `Inter`   | Legacy credibility — financial, legal, established       | Finance, enterprise, professional services  |
 | **Minimal Modern**        | `Inter` (as display at bold weight) | `Inter`   | Ultra-clean, system-native feel                          | Documentation portals, technical references |
 
 ```ts
-// Canonical MARKETING pairing (Fraunces + Inter)
+// Warm Authority (Fraunces + Inter): a serif-led brand
 applyDisplayFontPreset("Fraunces");
 applyBodyFontPreset("Inter");
 
 // Usage in JSX:
-<Heading as="h1" size="3xl" className="font-display font-bold tracking-tight">
+<Heading as="h1" size="3xl" weight="bold">
   Build with intention.
 </Heading>
-<Text size="md" className="font-body text-fg-muted">
+<Text size="md" color="subtle">
   Supporting description in Inter — legible, neutral, workmanlike.
 </Text>
 ```
@@ -83,19 +106,19 @@ applyBodyFontPreset("Inter");
 
 | Pairing Name                         | Display                 | Body      | Personality                                    | Best for                                 |
 | ------------------------------------ | ----------------------- | --------- | ---------------------------------------------- | ---------------------------------------- |
-| **Productivity Default** _(default)_ | `Inter`                 | `Inter`   | Invisible system — zero personality by design  | Dashboards, admin consoles, data grids   |
+| **Shavin default** _(default)_       | `Rethink Sans`          | `Inter`   | Neutral headings over a workhorse body         | Dashboards, admin consoles, data grids   |
+| **Invisible System**                 | `Inter`                 | `Inter`   | Zero personality by design                     | Maximum-density data grids               |
 | **Technical Precision**              | `JetBrains Mono` (mono) | `Inter`   | Code-adjacent — signals developer tools        | IDE UIs, log viewers, terminal emulators |
 | **Sharp Efficiency**                 | `Geist`                 | `Geist`   | Vercel's system — ultra-clean, strong numerals | Internal tools, metrics dashboards       |
 | **Warm Productivity**                | `Outfit`                | `DM Sans` | Slightly softer — less cold than Inter         | B2C apps, consumer productivity          |
 
 ```ts
-// Productivity Default (Inter + Inter)
+// Invisible System (Inter + Inter), for maximum density only
 applyDisplayFontPreset("Inter");
 applyBodyFontPreset("Inter");
 
-// For structural mode: display and body are the SAME FONT
-// Differentiation comes from size + weight only, not font family.
-// This is intentional — family contrast belongs to marketing, not apps.
+// Keep display and body the same font only for maximum density.
+// Otherwise the theme default (Rethink Sans + Inter) applies: contrast comes from size and weight.
 ```
 
 **Key rule for STRUCTURAL:** Never use a serif or expressive display font in an app UI. It destroys scan speed. A Fraunces heading inside a dashboard sidebar looks broken, not premium.
@@ -110,7 +133,7 @@ applyBodyFontPreset("Inter");
 | ------------------------------ | ----------------------------------------- | ------------------- | ---------------------------------------------------------- | ----------------------------------------------- |
 | **High Editorial** _(default)_ | `Fraunces` (variable optical, italic)     | `Inter`             | The contrast of old-world letterpress vs modern clean grid | Agency portfolios, brand launches, luxury       |
 | **Contrast Serif**             | `Playfair Display` (high-contrast didone) | `DM Mono`           | Dramatic hairlines + monospace body — cinematic tension    | Fashion, luxury goods, editorial photography    |
-| **New Wave**                   | `Cabinet Grotesk`                         | `Lora` (serif body) | Unexpectedly bold grotesque display + serif reading        | Creative studios, modern magazines              |
+| **New Wave**                   | `Funnel Display`                          | `Lora` (serif body) | Unexpectedly bold grotesque display + serif reading        | Creative studios, modern magazines              |
 | **Typographic Void**           | `Bebas Neue` (condensed all-caps)         | `Inter` (light)     | Maximum scale contrast — headline as image                 | Music, entertainment, sport, high-energy brands |
 | **Organic Luxury**             | `Cormorant Garamond` (thin elegant serif) | `DM Sans`           | Delicate, aristocratic, fashion-forward                    | Perfume, jewellery, haute couture, hotels       |
 | **Brutalist**                  | `Space Mono` (typewriter mono)            | `Space Mono`        | Anti-design design — intentionally raw                     | Art, experimental, tech-art, indie labels       |
@@ -126,17 +149,18 @@ applyBodyFontPreset("Inter");
 
 ```jsx
 // Editorial display heading — type as visual material
-<h1
-  className="font-display italic font-black leading-none tracking-tighter"
+<Heading
+  as="h1"
+  className="italic font-black leading-none tracking-tighter"
   style={{ fontSize: "clamp(4rem, 12vw, 12rem)" }}
 >
   Craft,<br />not code.
-</h1>
+</Heading>
 
 // Body remains Inter for legibility contrast
-<p className="font-body text-fg-muted text-lg leading-relaxed max-w-prose">
+<Text size="lg" color="subtle" className="leading-relaxed max-w-prose">
   Supporting text — the neutral counterweight to the expressive display.
-</p>
+</Text>
 ```
 
 **Editorial contrast ratios for type pairings:**
@@ -155,9 +179,9 @@ Display style: italic OR condensed OR all-caps (one axis of expression, not all 
 > The transition between sections is the only place where font family changes are acceptable within a single page.
 
 ```
-Hero section:    Fraunces (display) + Inter (body)  ← marketing pairing
-Product UI demo: Inter (display) + Inter (body)     ← structural pairing
-Footer/CTA:      Return to marketing pairing
+Hero section:    marketing pairing (default Rethink Sans + Inter; Fraunces + Inter for a serif brand)
+Product UI demo: structural pairing (default Rethink Sans + Inter)
+Footer/CTA:      Return to the marketing pairing
 ```
 
 Never switch font families mid-section. The boundary must be a deliberate section transition.
@@ -175,13 +199,13 @@ User said "fancy" / "expressive" / "awwwards" / "editorial"?
       Brutalist/raw?      → Space Mono + Space Mono
 
 User said "landing page" / "marketing site" / "SaaS homepage"?
-  → MARKETING mode → almost always Fraunces + Inter (canonical)
+  → MARKETING mode → Rethink Sans + Inter (the theme default); Fraunces + Inter for serif-led brands
       Finance/enterprise? → Playfair + Inter
-      Dev tools/APIs?     → Space Grotesk + Inter
+      Dev tools/APIs?     → Host Grotesk + Inter
       Minimal docs?       → Inter + Inter
 
 User said "dashboard" / "app" / "admin" / "tool"?
-  → STRUCTURAL mode → Inter + Inter (never deviate unless explicitly requested)
+  → STRUCTURAL mode → the theme default (Rethink Sans + Inter); Inter + Inter only for maximum density
 ```
 
 ---
@@ -195,5 +219,6 @@ User said "dashboard" / "app" / "admin" / "tool"?
 ✗ All-caps condensed body text (destroys readability at body size)
 ✗ Variable font with no axis control (WGHT/ITAL not specified = browser default = ugly)
 ✗ Loading more than 2 font families on a single page (HTTP cost + style noise)
+✗ Space Grotesk as the default display font (the most common AI default); use it only when asked
 ✗ Using font-family in raw className strings — always via --font-display / --font-body vars
 ```

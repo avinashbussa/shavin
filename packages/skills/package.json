@@ -3,8 +3,11 @@
   "version": "0.1.0",
   "description": "Agent skills and slash commands for @shavin/ui, installed into a project's .agents/ folder",
   "license": "MIT",
-  "author": "Avinash Bussa <avinashbussa1@gmail.com>",
-  "homepage": "https://docs.shavin.cc/start/working-with-ai",
+  "author": {
+    "name": "Avinash Bussa",
+    "url": "https://avinashbussa.com"
+  },
+  "homepage": "https://docs.shavin.cc",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/avinashbussa/shavin.git",
@@ -36,10 +39,16 @@
     "AGENTS.md",
     "bin",
     "skills",
+    "!skills/shavin-core",
+    "!skills/shavin-ui-qa-linter",
+    "!skills/dense-compression-protocol.md",
     "commands",
+    "cursor",
     "build.mjs",
+    "posix-path.mjs",
     "token-budget.json",
-    "README.md"
+    "README.md",
+    "CHANGELOG.md"
   ],
   "scripts": {
     "install-skills": "node bin/install.mjs",
@@ -47,6 +56,11 @@
     "check": "node build.mjs --dry-run --strict",
     "tokens": "node build.mjs --tokens",
     "lint": "node bin/lint-tokens.mjs"
+  },
+  "shavin": {
+    "compat": {
+      "@shavin/ui": ">=0.1.0 <0.2.0"
+    }
   },
   "publishConfig": {
     "access": "public"

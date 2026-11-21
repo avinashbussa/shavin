@@ -4,13 +4,17 @@
  * @shavin/skills — Skill & Command Installer
  *
  * Copies bundled skill and command .md files from this package into the user's
- * project at .agents/skills/ and .agents/commands/. Also optionally appends a Shavin
- * reference to an existing AGENTS.md (without overwriting it).
+ * project at .agents/skills/ and .agents/commands/ (Codex, Cursor and other tools that
+ * read .agents/), and at .claude/skills/ and .claude/commands/ (Claude Code, which reads
+ * only those folders). Writes .cursor/rules/shavin.mdc (an always-on Cursor rule). Also
+ * refreshes the Shavin block in AGENTS.md (without overwriting the rest of it).
  *
  * Usage:
  *   npx @shavin/skills                  # install skills & commands
  *   npx @shavin/skills --force          # overwrite existing files
  *   npx @shavin/skills --target ./apps/myapp  # install to a specific project
+ *   npx @shavin/skills --no-claude      # skip .claude/skills and .claude/commands
+ *   npx @shavin/skills --no-cursor      # skip .cursor/rules/shavin.mdc
  */
 
 import { existsSync, readFileSync, writeFileSync, mkdirSync, readdirSync, statSync } from "node:fs";
@@ -22,12 +26,15 @@ const __dirname = dirname(__filename);
 const PKG_ROOT = resolve(__dirname, "..");
 const SKILLS_SRC = resolve(PKG_ROOT, "skills");
 const COMMANDS_SRC = resolve(PKG_ROOT, "commands");
+const CURSOR_RULE_SRC = resolve(PKG_ROOT, "cursor", "shavin.mdc");
 
 // --- Parse args ---
 const args = process.argv.slice(2);
 const force = args.includes("--force") || args.includes("-f");
+const noClaude = args.includes("--no-claude");
+const noCursor = args.includes("--no-cursor");
 const targetIdx = args.indexOf("--target");
-const nonFlagArgs = args.filter((a) => !a.startsWith("-"));
+const nonFlagArgs = args.filter((a, i) => !a.startsWith("-") && !(targetIdx !== -1 && i === targetIdx + 1));
 const targetDir = targetIdx !== -1 && args[targetIdx + 1]
   ? resolve(args[targetIdx + 1])
   : nonFlagArgs.length > 0
@@ -35,7 +42,10 @@ const targetDir = targetIdx !== -1 && args[targetIdx + 1]
     : process.cwd();
 
 // --- Skills that are never installed into a project (none today) ---
-const INTERNAL_ONLY_SKILLS = new Set([]);
+// Maintainer-only skills (packages/skills/internal.json) are never installed into a project.
+const INTERNAL_ONLY_SKILLS = new Set(
+  (() => { try { return JSON.parse(readFileSync(resolve(PKG_ROOT, "internal.json"), "utf8")).maintainerOnly.map((e) => e.path); } catch { return []; } })(),
+);
 
 // --- Helpers ---
 function copyDir(src, dst) {
@@ -115,6 +125,33 @@ if (existsSync(COMMANDS_SRC)) {
   }
 }
 
+// --- Claude Code: .claude/skills/<name>/SKILL.md and .claude/commands/*.md ---
+// Claude Code reads only these folders (not .agents/). Same files, so the relative links between skills still work.
+let claudeSkills = 0, claudeCommands = 0;
+if (!noClaude) {
+  const claudeSkillsDir = resolve(targetDir, ".claude", "skills");
+  mkdirSync(claudeSkillsDir, { recursive: true });
+  claudeSkills = copyDir(SKILLS_SRC, claudeSkillsDir);
+  if (existsSync(COMMANDS_SRC)) {
+    const claudeCommandsDir = resolve(targetDir, ".claude", "commands");
+    mkdirSync(claudeCommandsDir, { recursive: true });
+    claudeCommands = copyDir(COMMANDS_SRC, claudeCommandsDir);
+  }
+  console.log("\x1b[32m%s\x1b[0m", `  ✓ Deployed ${claudeSkills} skill file(s) and ${claudeCommands} command(s) to .claude/ (Claude Code)`);
+}
+
+// --- Cursor: one always-on rule ---
+let cursorRule = false;
+if (!noCursor && existsSync(CURSOR_RULE_SRC)) {
+  const dst = resolve(targetDir, ".cursor", "rules", "shavin.mdc");
+  if (!existsSync(dst) || force) {
+    mkdirSync(dirname(dst), { recursive: true });
+    writeFileSync(dst, readFileSync(CURSOR_RULE_SRC, "utf8"), "utf8");
+    cursorRule = true;
+    console.log("\x1b[32m%s\x1b[0m", "  ✓ Wrote .cursor/rules/shavin.mdc (Cursor)");
+  }
+}
+
 // --- List deployed files ---
 function listFiles(dir, prefix = "") {
   if (!existsSync(dir)) return;
@@ -162,7 +199,7 @@ if (existsSync(pkgAgentsPath)) {
 }
 
 console.log("\x1b[32m%s\x1b[0m", "\n✨ @shavin/skills installation complete!\n");
-console.log("\x1b[36m%s\x1b[0m", "  • Skills ready: .agents/skills/");
+console.log("\x1b[36m%s\x1b[0m", `  • Skills ready: .agents/skills/${noClaude ? "" : " and .claude/skills/"}`);
 console.log("\x1b[36m%s\x1b[0m", `  • Slash commands ready: .agents/commands/ (${readdirSync(COMMANDS_SRC).filter((f) => f.endsWith(".md")).map((f) => "/" + f.slice(0, -3)).join(", ")})`);
 console.log("\x1b[36m%s\x1b[0m", "  • Primary brain: SHAVIN.md");
 console.log("\x1b[36m%s\x1b[0m", "  • Update anytime: npx @shavin/skills --force\n");
