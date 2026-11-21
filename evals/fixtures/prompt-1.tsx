@@ -16,14 +16,14 @@ export function ShippingSelector() {
           <Card padding="3" className="flex items-center justify-between">
             <Flex direction="row" align="center" gap="3">
               <Text weight="medium">Express</Text>
-              <Text size="sm" color="accent">$9.99</Text>
+              <Text size="sm" color="brand">$9.99</Text>
             </Flex>
             <Text size="sm" color="muted">2-3 days</Text>
           </Card>
           <Card padding="3" className="flex items-center justify-between">
             <Flex direction="row" align="center" gap="3">
               <Text weight="medium">Overnight</Text>
-              <Text size="sm" color="accent">$19.99</Text>
+              <Text size="sm" color="brand">$19.99</Text>
             </Flex>
             <Text size="sm" color="muted">Next day</Text>
           </Card>

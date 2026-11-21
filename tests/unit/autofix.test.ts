@@ -9,35 +9,26 @@ import { describe, it, expect } from "vitest";
 import { autofix } from "../../evals/src/autofix.mjs";
 
 // ── Radius Transformations ────────────────────────────────────────────
-describe("autofix: literal radius → token radius", () => {
-  it("converts rounded-sm → rounded-[var(--radius-xs)]", () => {
+describe("autofix: literal radius → token radius (role-aware)", () => {
+  it("converts rounded-sm → rounded-[var(--radius-lg)] (small radii are controls)", () => {
     const result = autofix(`<div className="rounded-sm" />`);
-    expect(result.fixedCode).toContain("rounded-[var(--radius-xs)]");
+    expect(result.fixedCode).toContain("rounded-[var(--radius-lg)]");
     expect(result.fixesApplied.some((f) => f.includes("rounded-sm"))).toBe(true);
   });
 
-  it("converts rounded-lg → token radius", () => {
-    const result = autofix(`<div className="rounded-lg" />`);
-    expect(result.fixedCode).not.toContain("rounded-lg");
-    expect(result.fixedCode).toContain("var(--radius-");
+  it("converts rounded-lg on a control → lg", () => {
+    const result = autofix(`<Button className="rounded-lg" />`);
+    expect(result.fixedCode).toContain("rounded-[var(--radius-lg)]");
   });
 
-  it("converts rounded-xl → token radius", () => {
-    const result = autofix(`<div className="rounded-xl" />`);
-    expect(result.fixedCode).not.toContain("rounded-xl");
-    expect(result.fixedCode).toContain("var(--radius-");
+  it("converts rounded-xl / 2xl on a container → panel", () => {
+    expect(autofix(`<Card className="rounded-xl" />`).fixedCode).toContain("rounded-[var(--radius-panel)]");
+    expect(autofix(`<Card className="rounded-2xl" />`).fixedCode).toContain("rounded-[var(--radius-panel)]");
   });
 
-  it("converts rounded-2xl → token radius", () => {
-    const result = autofix(`<div className="rounded-2xl" />`);
-    expect(result.fixedCode).not.toContain("rounded-2xl");
-    expect(result.fixedCode).toContain("var(--radius-");
-  });
-
-  it("converts multiple radius in same className", () => {
-    const result = autofix(`<div className="rounded-lg rounded-2xl" />`);
-    expect(result.fixedCode).not.toContain("rounded-lg");
-    expect(result.fixedCode).not.toContain("rounded-2xl");
+  it("converts multiple radius in the same className tag by tag", () => {
+    const result = autofix(`<Card className="rounded-2xl"><Button className="rounded-lg" /></Card>`);
+    expect(result.fixedCode).not.toMatch(/rounded-(lg|2xl)\b/);
   });
 });
 
@@ -56,8 +47,8 @@ describe("autofix: arbitrary pixel radius → token radius", () => {
 });
 
 describe("autofix: ad-hoc calc() radius → concentric utility", () => {
-  it("converts calc(panel - 5px) → rounded-panel-p5", () => {
-    const result = autofix(`<div className="rounded-[calc(var(--radius-panel) - 5px)]" />`);
+  it("converts calc(panel - 20px) → rounded-panel-p5 (px / 4)", () => {
+    const result = autofix(`<div className="rounded-[calc(var(--radius-panel) - 20px)]" />`);
     expect(result.fixedCode).toContain("rounded-panel-p5");
   });
 });
@@ -127,9 +118,9 @@ describe("autofix: raw Tailwind colors → semantic tokens", () => {
     expect(result.fixedCode).not.toContain("bg-slate-500");
   });
 
-  it("converts text-blue-600 → text-accent", () => {
+  it("converts text-blue-600 → text-brand-text", () => {
     const result = autofix(`<Text className="text-blue-600">text</Text>`);
-    expect(result.fixedCode).toContain("text-accent");
+    expect(result.fixedCode).toContain("text-brand-text");
     expect(result.fixedCode).not.toContain("text-blue-600");
   });
 
@@ -186,10 +177,10 @@ describe("autofix: multiple violations in one snippet", () => {
   it("fixes radius, colors, and prop names together", () => {
     const dirty = `
 import { Text, Icon } from "@shavin/ui";
-<div className="bg-slate-100 rounded-lg">
+<Card className="bg-slate-100 rounded-lg">
   <Text fontWeight="bold">✓ Check</Text>
   <Icon icon="star" />
-</div>
+</Card>
 `;
     const result = autofix(dirty);
     expect(result.fixesApplied.length).toBeGreaterThanOrEqual(3);
@@ -197,5 +188,20 @@ import { Text, Icon } from "@shavin/ui";
     expect(result.fixedCode).not.toContain("bg-slate-100");
     expect(result.fixedCode).not.toContain("fontWeight");
     expect(result.fixedCode).not.toContain('icon="star"');
+  });
+});
+
+describe("autofix: role-aware radius (shared with validate_code)", () => {
+  it("never maps a control to the panel radius", () => {
+    const result = autofix(`<Button className="rounded-xl" />`);
+    expect(result.fixedCode).toContain("rounded-[var(--radius-lg)]");
+    expect(result.fixedCode).not.toContain("radius-panel");
+  });
+  it("maps a container to the panel radius and leaves an ambiguous div alone", () => {
+    expect(autofix(`<Card className="rounded-xl" />`).fixedCode).toContain("rounded-[var(--radius-panel)]");
+    expect(autofix(`<div className="rounded-xl" />`).fixedCode).toContain("rounded-xl");
+  });
+  it("leaves an off-scale calc(panel - 5px) alone", () => {
+    expect(autofix(`<div className="rounded-[calc(var(--radius-panel) - 5px)]" />`).fixedCode).toContain("calc(var(--radius-panel) - 5px)");
   });
 });

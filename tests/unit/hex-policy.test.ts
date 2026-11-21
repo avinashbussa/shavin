@@ -23,7 +23,7 @@ const FLAG: [string, string, ("css" | "js")?][] = [
   ["standalone grey #999", `const c = "#999";`],
   ["standalone 6 digit", `const c = "#123456";`],
   ["standalone 8 digit", `const c = "#12345678";`],
-  ["standalone hex letters", `accent: "#bdee63",`],
+  ["standalone hex letters", `brand: "#bdee63",`],
   ["standalone in array", `const palette = ["#ef4444", "#22c55e"];`],
   ["standalone alpha suffix", `const c = "#142/50";`],
   ["gradient in string", `const g = "linear-gradient(90deg, #142 0%, #000 100%)";`],

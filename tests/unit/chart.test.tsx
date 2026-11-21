@@ -74,13 +74,13 @@ describe("BarChart", () => {
 
   it("grouped series use series tone and respect maxBarWidth", () => {
     const { container } = render(
-      <BarChart data={[{ label: "A", a: 10, b: 5 }]} series={[{ key: "a", name: "A", tone: "neutral" }, { key: "b", name: "B", tone: "accent" }]} maxBarWidth={20} />,
+      <BarChart data={[{ label: "A", a: 10, b: 5 }]} series={[{ key: "a", name: "A", tone: "neutral" }, { key: "b", name: "B", tone: "brand" }]} maxBarWidth={20} />,
     );
     const rects = bars(container);
     // Second series is patterned (WCAG 1.4.1); the pattern carries the series tone.
     const fill = rects[1].getAttribute("fill")!;
     expect(fill).toMatch(/^url\(#/);
-    expect(container.querySelector(`${fill.slice(4, -1).replace(/([^\w#-])/g, "\\$1")} rect`)?.getAttribute("fill")).toBe("rgb(var(--accent))");
+    expect(container.querySelector(`${fill.slice(4, -1).replace(/([^\w#-])/g, "\\$1")} rect`)?.getAttribute("fill")).toBe("rgb(var(--brand))");
     expect(Number(rects[0].getAttribute("width"))).toBeLessThanOrEqual(20);
   });
 
@@ -116,6 +116,6 @@ describe("Sparkline", () => {
 
   it("draws a line from plain numbers", () => {
     const { container } = render(<Sparkline data={[1, 3, 2, 5]} />);
-    expect(container.querySelector("path")?.getAttribute("stroke")).toBe("rgb(var(--accent))");
+    expect(container.querySelector("path")?.getAttribute("stroke")).toBe("rgb(var(--brand))");
   });
 });

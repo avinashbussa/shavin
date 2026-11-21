@@ -4,7 +4,7 @@ import { ThemeProvider, Container, Grid, Card, Flex, Heading, Text, Badge, Separ
 
 export function DashboardWithTheme() {
   return (
-    <ThemeProvider accentColor="grass" grayColor="gray" radius="large" panelBackground="solid" appearance="dark">
+    <ThemeProvider brandColor="grass" grayColor="gray" radius="large" panelBackground="solid" appearance="dark">
       <Container size="xl" className="py-8">
         <Flex direction="col" gap="6">
           <Flex direction="row" justify="between" align="center">

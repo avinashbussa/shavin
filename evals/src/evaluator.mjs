@@ -113,7 +113,7 @@ const PROP_NAME_ALIASES = {
 
 // Known invalid prop values for specific components
 const INVALID_PROP_VALUES = {
-  Button: { tone: ["neutral", "default", "normal", "ghost"] }, // tone only allows "accent", "danger"
+  Button: { tone: ["neutral", "default", "normal", "ghost"] }, // tone only allows "brand", "danger"
 };
 
 // Common unicode glyphs/emojis that AI agents use instead of <Icon>
@@ -190,7 +190,7 @@ export function evaluateCode(code, expectedComponents = []) {
   // ── 2. Radius & Spacing Math ─────────────────────────────────────
   const literalRadius = code.match(/\brounded-(sm|md|lg|xl|2xl|3xl)\b/g) ?? [];
   if (literalRadius.length > 0) {
-    violations.push(`Literal radius utilities found: ${literalRadius.join(", ")}`);
+    violations.push(`Literal radius utilities found: ${literalRadius.join(", ")}. Write rounded-[var(--radius-lg)] for a control or rounded-[var(--radius-panel)] for a container (rounded-panel-pN inside a padded panel).`);
     score -= Math.min(20, literalRadius.length * 5);
   }
 
@@ -201,8 +201,11 @@ export function evaluateCode(code, expectedComponents = []) {
     score -= Math.min(15, arbitraryRadius.length * 5);
   }
 
-  if (/calc\s*\(\s*var\s*\(\s*--radius-panel\s*\)\s*-\s*\d+px\s*\)/i.test(code)) {
-    violations.push("Ad-hoc pixel subtraction in radius calc found. Use concentric utilities like rounded-panel-p5.");
+  // calc(var(--radius-panel) - Npx) is how the library itself writes concentric radii; it is only ad hoc
+  // when N is not a padding step (4, 8, 12, 16, 20, 24, 32px) that has a rounded-panel-pN utility.
+  const offScaleCalc = [...code.matchAll(/calc\s*\(\s*var\s*\(\s*--radius-panel\s*\)\s*-\s*(\d+)px\s*\)/gi)].filter((m) => ![4, 8, 12, 16, 20, 24, 32].includes(Number(m[1])));
+  if (offScaleCalc.length > 0) {
+    violations.push(`Ad-hoc pixel subtraction in radius calc: calc(panel - ${offScaleCalc[0][1]}px) is not a padding step. Use rounded-panel-pN where N = padding / 4px (p1..p6, p8), or the explicit max(floor, ...) form.`);
     score -= 10;
   }
 

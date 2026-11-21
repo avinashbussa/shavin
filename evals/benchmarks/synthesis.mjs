@@ -1,6 +1,10 @@
 import { hasHexViolation } from "../../packages/block-schema/hex-policy.mjs";
 import { synthesizeLayout } from "../../packages/mcp-server/src/tools/synthesize.mjs";
 import { c, g, fmt, printBanner, printCard } from "../../packages/cli/src/ui.mjs";
+import { gradeBadge } from "../../scripts/lib/grade.mjs";
+
+// The benchmark gate exits below 95, so there is no neutral middle band: acceptable floor = threshold.
+const PASS_THRESHOLD = 95;
 
 const SYNTHESIS_CHALLENGES = [
   { id: "syn-1", prompt: "Minimalist SaaS Landing Page for AI Startup", category: "landing" },
@@ -79,13 +83,13 @@ export async function runSynthesisBenchmark() {
       { label: "Average Score:", value: `${c.bold}${c.success}${avgScore}/100${c.reset}` },
       { label: "Clean Passes:", value: `${c.bold}${c.fg}${passCount} / ${SYNTHESIS_CHALLENGES.length}${c.reset} (${Math.round((passCount / SYNTHESIS_CHALLENGES.length) * 100)}%)` },
       { label: "Challenges Tested:", value: `${c.bold}${c.fg}${SYNTHESIS_CHALLENGES.length} scenarios${c.reset}` },
-      { label: "Benchmark Grade:", value: `${fmt.pass("VERIFIED AAA")} ${fmt.badge("SYNTHESIS GOLD", c.success)}` },
+      { label: "Benchmark Grade:", value: gradeBadge(avgScore, { fmt, c }, { threshold: PASS_THRESHOLD, acceptable: PASS_THRESHOLD }) },
     ],
     footer: `${c.fgSubtle}All synthesized TSX layouts verify ThemeProvider injection, token purity, and block composition.${c.reset}`,
   });
 
-  if (avgScore < 95) {
-    console.error(`\n  ${c.error}${g.stepFail} Synthesis benchmark failed to meet minimum threshold of 95/100.${c.reset}\n`);
+  if (avgScore < PASS_THRESHOLD) {
+    console.error(`\n  ${c.error}${g.stepFail} Synthesis benchmark failed to meet minimum threshold of ${PASS_THRESHOLD}/100.${c.reset}\n`);
     process.exit(1);
   }
 }
