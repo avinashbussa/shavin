@@ -2,11 +2,11 @@ import type { ComponentDoc } from "../../authoring/types";
 
 export const docs: ComponentDoc = {
   name: "Checkbox",
-  description: "Boolean selection control built on Radix Checkbox primitive with control radius (--radius-lg) and custom checkmark indicator.",
+  description: "Turns an option on or off, with an optional label. It also has a mixed state for a parent of partly selected items.",
   features: [
     "Sizes: sm (16px) and md (20px)",
     "Supports optional label wrapper with click handling",
-    "Uses accent token fill when checked (data-state=checked)"
+    "Uses brand token fill when checked (data-state=checked)"
   ],
   accessibility: [
     "Built on native ARIA checkbox pattern (role='checkbox')",

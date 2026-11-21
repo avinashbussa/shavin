@@ -9,5 +9,5 @@
    ========================================================================= */
 
 @theme inline {
-  --color-brand-primary: var(--brand-primary);
+  /* (no brand colors defined yet — add hex values in brand-tokens.css) */
 }

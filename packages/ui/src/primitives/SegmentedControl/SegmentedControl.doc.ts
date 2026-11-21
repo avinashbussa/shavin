@@ -2,9 +2,9 @@ import type { ComponentDoc } from "../../authoring/types";
 
 export const docs: ComponentDoc = {
   name: "SegmentedControl",
-  description: "Exclusive single-select toggle group built on Radix ToggleGroup primitive supporting default, pill, subtle, expand, and icon variants, with an animated active indicator that slides between items.",
+  description: "Pick one option from a few, shown side by side with a highlight that slides to the selected one. Comes in default, pill, subtle, expand and icon styles.",
   features: [
-    "Variants: default (solid accent pill), pill (rounded-full surface capsule), subtle (muted accent-tint active fill), expand (animated label expand), icon (icon-only mode)",
+    "Variants: default (solid brand pill), pill (rounded-full surface capsule), subtle (muted brand-tint active fill), expand (animated label expand), icon (icon-only mode)",
     "Animated sliding active indicator (default / pill / subtle / icon) — the active fill glides between items; respects reduced-motion. The expand rail keeps its per-item label-reveal animation instead",
     "Sizes: sm (32px) and md (40px)",
     "Supports concentric inner item radius math: calc(var(--radius-lg) - 4px)"
@@ -30,7 +30,7 @@ export const docs: ComponentDoc = {
   examples: [
     {
       title: "Default",
-      description: "Accent active fill that slides between items.",
+      description: "Brand active fill that slides between items.",
       code: `function ViewSwitch() {
   const [v, setV] = useState("list");
   return (
@@ -44,7 +44,7 @@ export const docs: ComponentDoc = {
     },
     {
       title: "Subtle",
-      description: "Muted accent-tint active fill — for quiet inline switches like inspector/export controls (declare with variant=\"subtle\").",
+      description: "Muted brand-tint active fill — for quiet inline switches like inspector/export controls (declare with variant=\"subtle\").",
       code: `function FilterSwitch() {
   const [v, setV] = useState("recent");
   return (

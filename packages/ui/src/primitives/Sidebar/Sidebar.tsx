@@ -10,6 +10,7 @@ import React, {
   type HTMLAttributes,
 } from "react";
 import { cn } from "../../lib/cn";
+import { hitAreaClass, type HitArea } from "../../lib/hit-area";
 import { Tooltip } from "../Tooltip/Tooltip";
 import { Text } from "../Text/Text";
 import { Menu, PanelLeft, PanelRight } from "lucide-react";
@@ -59,7 +60,7 @@ export interface SidebarProps extends HTMLAttributes<HTMLElement> {
   maxWidth?: number;
   /** Remember the resized width in localStorage under this key. */
   persistKey?: string;
-  /** Resize handle colour on hover, focus and drag. Default "accent-subtle". */
+  /** Resize handle colour on hover, focus and drag. Default "brand-subtle". */
   resizeColor?: ResizeHandleColor;
   /** Custom sidebar content. */
   children?: ReactNode;
@@ -167,8 +168,12 @@ export function Sidebar({
 export function SidebarTrigger({
   className,
   onClick,
+  hitArea,
   ...props
-}: HTMLAttributes<HTMLButtonElement>) {
+}: HTMLAttributes<HTMLButtonElement> & {
+  /** Hit-area override (docs: "Target size"): "default" 24px floor and 44px on touch, "none", or "touch". */
+  hitArea?: HitArea;
+}) {
   const sidebar = useContext(SidebarContext);
   const frame = useAppFrame();
 
@@ -188,7 +193,8 @@ export function SidebarTrigger({
         aria-expanded={frame.open}
         aria-controls={frame.navId}
         className={cn(
-          "shavin-frame__trigger h-8 w-8 items-center justify-center rounded-[var(--radius-lg)] text-fg-muted transition hover:bg-surface-hover hover:text-fg active:scale-95 cursor-pointer shrink-0",
+          "hit-area-touch shavin-frame__trigger h-8 w-8 items-center justify-center rounded-[var(--radius-lg)] text-fg-muted transition hover:bg-surface-hover hover:text-fg active:scale-95 cursor-pointer shrink-0",
+          hitAreaClass(hitArea, "touch", "SidebarTrigger"),
           className
         )}
         {...props}
@@ -215,7 +221,8 @@ export function SidebarTrigger({
       aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
       aria-expanded={!collapsed}
       className={cn(
-        "flex h-8 w-8 items-center justify-center rounded-[var(--radius-lg)] border border-hairline bg-surface text-fg-muted hover:bg-surface-hover hover:text-fg transition cursor-pointer shrink-0",
+        "hit-area-touch flex h-8 w-8 items-center justify-center rounded-[var(--radius-lg)] border border-hairline bg-surface text-fg-muted hover:bg-surface-hover hover:text-fg transition cursor-pointer shrink-0",
+        hitAreaClass(hitArea, "touch", "SidebarTrigger"),
         className
       )}
       {...props}

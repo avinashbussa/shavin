@@ -1,9 +1,9 @@
-import type { ReactNode, HTMLAttributes, ElementType, Ref } from "react";
+import { createContext, useContext, type ReactNode, type HTMLAttributes, type ElementType, type Ref } from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "../../lib/cn";
-import { concentricContainerStyle, withConcentricStyle } from "../../lib/concentric";
+import { cardPaddingToScale, concentricContainerStyle, concentricRadius, withConcentricStyle } from "../../lib/concentric";
 import { Text } from "../Text";
-import { bgMediaLayer, type BgMediaProps } from "../../lib/media-overlays";
+import { bgMediaLayer, resolveBgReadability, type BgMediaProps } from "../../lib/media-overlays";
 import { surfaceClass, type Surface } from "../../lib/surface";
 import { withResizable, type ResizableProps } from "../Resizable";
 
@@ -41,6 +41,10 @@ const CARD_PADDING: Record<string, string> = {
   "3xl": "p-12",
 };
 
+/** The inner radius (a CSS expression) of the nearest Card above, so a Card inside a Card takes
+ *  that as its own outer radius instead of the full panel radius. */
+const CardRadiusContext = createContext<string | null>(null);
+
 function CardBase({
   className,
   padding,
@@ -59,16 +63,26 @@ function CardBase({
   children,
   ...props
 }: Omit<HTMLAttributes<HTMLDivElement>, "onResize"> & VariantProps<typeof cardVariants> & BgMediaProps & ResizableProps & { style?: React.CSSProperties; surface?: Surface; ref?: Ref<HTMLDivElement> }) {
-  const concentricStyle = concentricContainerStyle(padding as string, true);
+  // Concentric chain: a nested Card's outer radius is its parent Card's inner radius; its own inner
+  // radius (for concentric children and the next Card down) subtracts its padding, or with
+  // padding="none" equals its outer radius minus the 1px border.
+  const parentInner = useContext(CardRadiusContext);
+  const outer = parentInner ?? "var(--radius-panel)";
+  const inner = concentricRadius(cardPaddingToScale((padding as string) || "none"), { outer, border: true }) ?? outer;
+  const concentricStyle = {
+    ...concentricContainerStyle((padding as string) || "none", true, { outer, border: true }),
+    ...(parentInner ? { borderRadius: parentInner } : {}),
+  };
   const paddingClass = CARD_PADDING[(padding as string) || "none"] || "";
-  const { hasMedia, media, content } = bgMediaLayer({ bgVideo, bgImage, bgSize, bgOverlays, bgVideoPaused, bgPoster }, paddingClass);
+  const bg = resolveBgReadability({ surface, bgVideo, bgImage, bgOverlays });
+  const { hasMedia, media, content } = bgMediaLayer({ bgVideo, bgImage, bgSize, bgOverlays: bg.bgOverlays, bgVideoPaused, bgPoster }, paddingClass);
   return <div
-    data-surface={surface || undefined}
-    className={cn(hasMedia ? "relative overflow-hidden" : "", cardVariants({ padding: hasMedia ? "none" : padding, interactive }), surfaceClass(surface), className)}
-    style={withConcentricStyle(style, concentricStyle)} {...props}
+    data-surface={bg.surface || undefined}
+    className={cn(hasMedia ? "relative overflow-hidden" : "", cardVariants({ padding: hasMedia ? "none" : padding, interactive }), surfaceClass(bg.surface), className)}
+    style={withConcentricStyle(concentricStyle, style ?? {})} {...props}
   >
     {media}
-    {content(children)}
+    <CardRadiusContext.Provider value={inner}>{content(children)}</CardRadiusContext.Provider>
   </div>;
 }
 
@@ -144,21 +158,23 @@ export function StatCard({
   sub?: string;
   /** Colours the sub line: up = success, down = danger. */
   trend?: "up" | "down" | "flat";
+  /** Marks the card as needing attention: a warning dot before the label and "Needs attention" for screen readers. Never underlines the value (an underline reads as a link). */
   alert?: boolean;
   style?: React.CSSProperties;
 } & VariantProps<typeof statCardVariants> & HTMLAttributes<HTMLDivElement>) {
   const concentricStyle = concentricContainerStyle(padding as string, true);
   return (
     <div className={cn(statCardVariants({ padding }), className)} style={withConcentricStyle(style, concentricStyle)} {...props}>
-      <Text size="xs" color="muted">{label}</Text>
-      <Text
-        size="lg"
-        weight="semibold"
-        className={cn(
-          "mt-1 text-2xl font-semibold",
-          alert && "underline decoration-2 underline-offset-4",
+      <Text size="xs" color="muted" className={cn(alert && "inline-flex items-center gap-1.5")}>
+        {alert && (
+          <>
+            <span aria-hidden="true" className="size-1.5 shrink-0 rounded-full bg-warning" />
+            <span className="sr-only">Needs attention: </span>
+          </>
         )}
-      >
+        {label}
+      </Text>
+      <Text size="lg" weight="semibold" className="mt-1 text-2xl font-semibold">
         {value}
       </Text>
       {sub && <Text size="xs" color="subtle" className={cn("mt-0.5", trend === "up" && "text-success", trend === "down" && "text-danger")}>{sub}</Text>}

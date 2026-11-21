@@ -4,9 +4,10 @@ import { cva, type VariantProps } from "class-variance-authority";
 import * as RadixMenu from "@radix-ui/react-dropdown-menu";
 import { Sun, Moon, Desktop, Check } from "@phosphor-icons/react";
 import { cn } from "../../lib/cn";
+import { hitAreaClass, type HitArea } from "../../lib/hit-area";
 import { Switch } from "../Switch";
 
-import { applyAccentColor } from "../../lib/theme-presets";
+import { applyBrandColor } from "../../lib/theme-presets";
 
 export type ThemeMode = "light" | "dark" | "system";
 
@@ -67,7 +68,7 @@ export function useTheme(options: UseThemeOptions = {}) {
     }
     root.setAttribute("data-theme", resolved);
     root.style.colorScheme = resolved;
-    applyAccentColor();
+    applyBrandColor();
   }, []);
 
   useEffect(() => {
@@ -126,6 +127,8 @@ export interface ThemeScriptProps {
   defaultTheme?: ThemeMode;
   /** Adds the translucent-panels class before first paint (the provider's panelBackground). */
   translucentPanels?: boolean;
+  /** Sets data-focus-ring on <html> before first paint (the provider's focusRing). */
+  focusRing?: "subtle" | "default" | "strong";
 }
 
 /**
@@ -135,7 +138,9 @@ export function ThemeScript({
   storageKey = "shavin-theme",
   defaultTheme = "system",
   translucentPanels = false,
+  focusRing,
 }: ThemeScriptProps) {
+  const ring = focusRing === "subtle" || focusRing === "default" || focusRing === "strong" ? focusRing : undefined;
   const scriptContent = `
 (function() {
   try {
@@ -145,6 +150,7 @@ export function ThemeScript({
     var isDark = stored === 'dark' || (stored === 'system' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
     var root = document.documentElement;
     ${translucentPanels ? "root.classList.add('translucent-panels');" : ""}
+    ${ring ? `root.setAttribute('data-focus-ring', '${ring}');` : ""}
     if (isDark) {
       root.classList.add('dark');
       root.setAttribute('data-theme', 'dark');
@@ -161,8 +167,8 @@ export function ThemeScript({
   // The script only does its job in server-rendered HTML. When React creates it
   // in the browser (client-only apps such as Vite, or a client-side mount) it
   // never runs, and React 19 logs "Encountered a script tag". Marking it as a
-  // data block there keeps it inert and silent; ThemeProvider's effect applies
-  // the theme instead. suppressHydrationWarning covers the server/client
+  // data block there keeps it inert and silent; ThemeProvider's layout effect
+  // (resolveClientTheme) applies the theme instead. suppressHydrationWarning covers the server/client
   // difference in `type` during hydration.
   const isServer = typeof window === "undefined";
   return (
@@ -200,6 +206,11 @@ export interface ThemeSwitcherProps
     dark?: string;
     system?: string;
   };
+  /**
+   * Hit-area override (docs: "Target size"). "default": 24px floor, 44px on touch. "none": no hit area
+   * growth (dense toolbars; may go below 24px, yours to own). "touch": always 44px on a coarse pointer.
+   */
+  hitArea?: HitArea;
 }
 
 export const ThemeSwitcher = forwardRef<HTMLDivElement, ThemeSwitcherProps>(
@@ -211,6 +222,7 @@ export const ThemeSwitcher = forwardRef<HTMLDivElement, ThemeSwitcherProps>(
       defaultTheme = "system",
       showLabels = false,
       labels = { light: "Light", dark: "Dark", system: "System" },
+      hitArea,
       className,
       ...props
     },
@@ -243,6 +255,7 @@ export const ThemeSwitcher = forwardRef<HTMLDivElement, ThemeSwitcherProps>(
             checked={mounted ? resolvedTheme === "dark" : false}
             onCheckedChange={(checked) => setTheme(checked ? "dark" : "light")}
             aria-label="Toggle dark mode"
+            hitArea={hitArea}
           />
           <Moon size={iconSize} className="text-fg-muted shrink-0" aria-hidden />
         </div>
@@ -290,7 +303,8 @@ export const ThemeSwitcher = forwardRef<HTMLDivElement, ThemeSwitcherProps>(
                 data-mode={mode}
                 onClick={() => setTheme(mode)}
                 className={cn(
-                  "flex items-center justify-center rounded-[calc(var(--radius-lg)-2px)] font-medium transition cursor-pointer select-none",
+                  "hit-area-touch flex items-center justify-center rounded-[calc(var(--radius-lg)-2px)] font-medium transition cursor-pointer select-none",
+                  hitAreaClass(hitArea, "touch", "ThemeSwitcher"),
                   btnSizeCls,
                   isActive
                     ? "bg-surface-hover text-fg font-semibold shadow-1"
@@ -319,7 +333,8 @@ export const ThemeSwitcher = forwardRef<HTMLDivElement, ThemeSwitcherProps>(
               <button
                 type="button"
                 className={cn(
-                  "flex items-center justify-center rounded-[var(--radius-lg)] border border-hairline bg-surface text-fg hover:bg-surface-hover hover:text-fg transition shadow-1 cursor-pointer",
+                  "hit-area-touch flex items-center justify-center rounded-[var(--radius-lg)] border border-hairline bg-surface text-fg hover:bg-surface-hover hover:text-fg transition shadow-1 cursor-pointer",
+                  hitAreaClass(hitArea, "touch", "ThemeSwitcher"),
                   btnSizeCls
                 )}
                 aria-label={`Theme: ${mounted ? labels[theme] || theme : labels[defaultTheme] || defaultTheme}`}
@@ -351,7 +366,7 @@ export const ThemeSwitcher = forwardRef<HTMLDivElement, ThemeSwitcherProps>(
                       <RadixMenu.RadioItem
                         key={mode}
                         value={mode}
-                        className="flex w-full items-center justify-between px-2.5 py-1.5 text-xs text-fg rounded-[var(--radius-lg)] cursor-pointer outline-none hover:bg-surface-hover data-[highlighted]:bg-surface-hover transition"
+                        className="flex w-full items-center justify-between px-2.5 py-1.5 text-xs text-fg rounded-[var(--radius-lg)] cursor-pointer outline-none hover:bg-elevated-hover data-[highlighted]:bg-elevated-hover transition"
                       >
                         <div className="flex items-center gap-2">
                           <IconComp size={14} className="text-fg-muted shrink-0" aria-hidden />
@@ -383,7 +398,8 @@ export const ThemeSwitcher = forwardRef<HTMLDivElement, ThemeSwitcherProps>(
           type="button"
           onClick={toggleTheme}
           className={cn(
-            "flex items-center justify-center rounded-[var(--radius-lg)] text-fg-muted hover:text-fg hover:bg-surface-hover/60 transition cursor-pointer",
+            "hit-area-touch flex items-center justify-center rounded-[var(--radius-lg)] text-fg-muted hover:text-fg hover:bg-surface-hover/60 transition cursor-pointer",
+            hitAreaClass(hitArea, "touch", "ThemeSwitcher"),
             btnSizeCls
           )}
           aria-label={`Toggle theme (current: ${currentLabel})`}

@@ -2,7 +2,7 @@ import type { ComponentDoc } from "../../authoring/types";
 
 export const docs: ComponentDoc = {
   name: "Accordion",
-  description: "Collapsible disclosure panels built on Radix Accordion primitive with ChevronDown 180-degree rotation convention.",
+  description: "Sections that expand and collapse under a heading. Allow one open at a time or several, in default, outline or ghost styles.",
   features: [
     "Variants: default (divided list), outline, ghost",
     "Supports type='single' and type='multiple' modes",

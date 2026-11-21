@@ -3,13 +3,13 @@ import type { ComponentDoc } from "../../authoring/types";
 export const docs: ComponentDoc = {
   name: "PanelGroup",
   group: "layout",
-  description: "Resizable split panes that trade space with each other (code / preview / terminal). Import from \"@shavin/ui/panels\", not the root. Built on react-resizable-panels. For one element that resizes itself, use the resizable prop on Box, Flex or Card.",
+  description: "Side-by-side or stacked panes the user resizes by dragging the divider between them, such as code, preview and terminal. It can remember the layout. Import it from \"@shavin/ui/panels\", not the root. For one element that resizes itself, use the resizable prop on Box, Flex or Card.",
   features: [
     "PanelGroup, Panel and PanelHandle from \"@shavin/ui/panels\"",
     "orientation=\"horizontal\" (side by side) or \"vertical\" (stacked); groups nest",
     "Panel sizes in px (numbers) or %, rem, vh, vw (strings); minSize, maxSize, collapsible, collapsedSize",
     "persistKey remembers the layout in localStorage; pass storage for cookies or server sync",
-    "PanelHandle looks: line (hairline divider), grip (pill), invisible; color: accent-subtle (default), accent, neutral; while dragging the grip follows the pointer along the divider and re-centres on release",
+    "PanelHandle looks: line (hairline divider), grip (pill), invisible; color: brand-subtle (default), brand, neutral; while dragging the grip follows the pointer along the divider and re-centres on release",
     "usePanelRef / useGroupRef for collapse(), expand(), resize() and setLayout()"
   ],
   accessibility: [

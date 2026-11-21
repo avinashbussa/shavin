@@ -40,7 +40,7 @@ export const textVariants = cva("", {
       subtle: "text-fg-subtle",
       danger: "text-danger",
       link: "text-link",
-      accent: "text-accent-contrast",
+      brand: "text-brand-contrast",
     },
     truncate: {
       true: "line-clamp-3 overflow-hidden text-ellipsis",

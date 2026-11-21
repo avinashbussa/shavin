@@ -39,7 +39,7 @@ export interface ComponentDocProse {
   features?: string[];
   /** Special behavioral or architectural notes */
   notes?: string[];
-  /** WCAG 2.1 AAA accessibility highlights */
+  /** Accessibility highlights (WCAG 2.2 AA) */
   accessibility?: string[];
   /** Keyboard navigation shortcuts (e.g. 'Space/Enter to activate') */
   keyboard?: string;
@@ -47,6 +47,12 @@ export interface ComponentDocProse {
   usage?: {
     bestPractices?: BestPracticeDoc[];
   };
+  /**
+   * One-line composition notes shown to agents: sub-component nesting
+   * ("Table > TableHeader > TableRow > TableColumnHeaderCell"), provider and
+   * hook setup. Keep each line short; the MCP prints them verbatim.
+   */
+  structure?: string[];
   /** Interactive code examples */
   examples?: ExampleDoc[];
 }

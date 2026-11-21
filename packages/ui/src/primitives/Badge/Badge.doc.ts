@@ -2,9 +2,9 @@ import type { ComponentDoc } from "../../authoring/types";
 
 export const docs: ComponentDoc = {
   name: "Badge",
-  description: "Status indicator pill component supporting semantic color schemes and control radius (--radius-lg).",
+  description: "A small label for status or counts, in the neutral, brand, success, warning or danger colours.",
   features: [
-    "Colors: neutral, accent, success, warning, danger",
+    "Colors: neutral, brand, success, warning, danger",
     "Sizes: sm, md, lg",
     "Supports radius escape hatch (radius='none|small|medium|large|full|inherit')",
     "Defaults radius to inherit control radius (--radius-lg) per AGENTS.md rule"
@@ -28,7 +28,7 @@ export const docs: ComponentDoc = {
   examples: [
     {
       title: "Success Status Badge",
-      code: '<Badge color="success">Active</Badge>'
+      code: '<Badge tone="success">Active</Badge>'
     }
   ]
 };

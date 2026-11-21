@@ -1,7 +1,8 @@
 "use client";
-import { type ComponentPropsWithoutRef, type ElementType, type ReactNode } from "react";
+import { createContext, useContext, type ComponentPropsWithoutRef, type ElementType, type ReactNode } from "react";
 import * as TabsPrimitive from "@radix-ui/react-tabs";
 import { cn } from "../../lib/cn";
+import { hitAreaClass, type HitArea } from "../../lib/hit-area";
 import { useSlidingIndicator } from "../../lib/useSlidingIndicator";
 
 export type TabVariant = "line" | "segmented" | "pills" | "button" | "pill";
@@ -51,7 +52,7 @@ function IndicatorList({
           <span
             ref={indicatorRef}
             aria-hidden="true"
-            className={cn("pointer-events-none absolute z-0 bg-accent", horizontal ? "bottom-0 h-0.5" : "left-0 w-0.5", transition, hidden)}
+            className={cn("pointer-events-none absolute z-0 bg-brand-text", horizontal ? "bottom-0 h-0.5" : "left-0 w-0.5", transition, hidden)}
             style={indStyle}
           />
         ) : variant === "pills" || variant === "pill" ? (
@@ -65,7 +66,7 @@ function IndicatorList({
           <span
             ref={indicatorRef}
             aria-hidden="true"
-            className={cn("pointer-events-none absolute z-0 rounded-[calc(var(--radius-panel)-2px)] bg-accent", size === "sm" ? "top-0.5 bottom-0.5" : "top-1 bottom-1", transition, hidden)}
+            className={cn("pointer-events-none absolute z-0 rounded-panel-p1 bg-brand-solid", size === "sm" ? "top-0.5 bottom-0.5" : "top-1 bottom-1", transition, hidden)}
             style={indStyle}
           />
         )
@@ -108,6 +109,11 @@ export interface TabsProps {
   className?: string;
   /** Names the tab list (states) or the `<nav>` landmark (navigation). */
   "aria-label"?: string;
+  /**
+   * Hit-area override (docs: "Target size"). "default": 24px floor, 44px on touch. "none": no hit area
+   * growth (dense toolbars; may go below 24px, yours to own). "touch": always 44px on a coarse pointer.
+   */
+  hitArea?: HitArea;
 }
 
 function listClass(variant: TabVariant, o: TabOrientation, size: "sm" | "md" = "md") {
@@ -137,7 +143,11 @@ function listClass(variant: TabVariant, o: TabOrientation, size: "sm" | "md" = "
     : cn("flex border-b border-hairline", size === "sm" ? "gap-0.5" : "gap-1");
 }
 
-function triggerClass(variant: TabVariant, o: TabOrientation, size: "sm" | "md" = "md") {
+function triggerClass(variant: TabVariant, o: TabOrientation, size: "sm" | "md" = "md", hitArea?: HitArea) {
+  return cn("hit-area-touch", hitAreaClass(hitArea, "touch", "Tabs"), triggerVariantClass(variant, o, size));
+}
+
+function triggerVariantClass(variant: TabVariant, o: TabOrientation, size: "sm" | "md" = "md") {
   const isSm = size === "sm";
   if (variant === "button") {
     return cn(
@@ -155,7 +165,7 @@ function triggerClass(variant: TabVariant, o: TabOrientation, size: "sm" | "md" 
   if (variant === "segmented") {
     // Background comes from the sliding indicator; the trigger only toggles text.
     return cn(
-      "relative z-10 rounded-[calc(var(--radius-panel)-2px)] text-fg-muted transition hover:text-fg active:scale-[0.97] data-[state=active]:text-accent-fg",
+      "relative z-10 rounded-panel-p1 text-fg-muted transition hover:text-fg active:scale-[0.97] data-[state=active]:text-brand-fg",
       isSm ? "px-2.5 py-1 text-xs font-medium" : "px-3 py-1.5 text-sm font-medium"
     );
   }
@@ -180,6 +190,7 @@ export function Tabs({
   linkComponent: LinkComponent = "a",
   children,
   className,
+  hitArea,
   "aria-label": ariaLabel,
 }: TabsProps) {
   const resolvedItems = items ?? tabs ?? [];
@@ -199,7 +210,8 @@ export function Tabs({
               target={item.external ? "_blank" : undefined}
               rel={item.external ? "noopener noreferrer" : undefined}
               className={cn(
-                "inline-flex items-center gap-1.5 font-medium transition cursor-pointer whitespace-nowrap",
+                "hit-area-touch inline-flex items-center gap-1.5 font-medium transition cursor-pointer whitespace-nowrap",
+                hitAreaClass(hitArea, "touch", "Tabs"),
                 variant === "button"
                   ? cn(
                       "rounded-[var(--radius-lg)]",
@@ -218,10 +230,10 @@ export function Tabs({
                     )
                   : variant === "segmented"
                   ? cn(
-                      "rounded-[calc(var(--radius-panel)-2px)]",
+                      "rounded-panel-p1",
                       size === "sm" ? "px-2.5 py-1 text-xs" : "px-3 py-1.5 text-sm",
                       isActive
-                        ? "bg-accent text-accent-fg"
+                        ? "bg-brand-solid text-brand-fg"
                         : "text-fg-muted hover:bg-surface-hover hover:text-fg"
                     )
                   : cn(
@@ -229,7 +241,7 @@ export function Tabs({
                         ? cn("-ml-px border-l-2", size === "sm" ? "px-2.5 py-1.5 text-xs" : "px-3 py-2 text-sm")
                         : cn("-mb-px border-b-2", size === "sm" ? "px-2.5 py-1.5 text-xs" : "px-3 py-2.5 text-sm"),
                       isActive
-                        ? "border-accent text-fg font-medium"
+                        ? "border-brand-text text-fg font-medium"
                         : "border-transparent text-fg-muted hover:text-fg"
                     )
               )}
@@ -279,7 +291,7 @@ export function Tabs({
               disabled={t.disabled}
               // Used as a filter with no panels here: don't point at panels that don't exist.
               {...(hasPanels ? {} : { "aria-controls": undefined })}
-              className={cn("inline-flex items-center justify-center gap-1.5", triggerClass(variant, orientation, size))}
+              className={cn("inline-flex items-center justify-center gap-1.5", triggerClass(variant, orientation, size, hitArea))}
             >
               {t.icon && <span className="[&_svg]:h-4 [&_svg]:w-4">{t.icon}</span>}
               {t.label}
@@ -307,23 +319,31 @@ export function Tabs({
   );
 }
 
+/** The list's variant and orientation, so triggers inside a `TabsList` match it without repeating the props. */
+const TabsListContext = createContext<{ variant: TabVariant; orientation: TabOrientation; hitArea?: HitArea } | null>(null);
+
 export function TabsList({
   children,
   className,
   variant = "line",
   orientation = "horizontal",
+  hitArea,
   "aria-label": ariaLabel,
 }: {
   children: ReactNode;
   className?: string;
   variant?: TabVariant;
   orientation?: TabOrientation;
+  /** Hit-area override for every trigger in this list. See Tabs. */
+  hitArea?: HitArea;
   "aria-label"?: string;
 }) {
   return (
-    <IndicatorList variant={variant} orientation={orientation} className={className} aria-label={ariaLabel}>
-      {children}
-    </IndicatorList>
+    <TabsListContext.Provider value={{ variant, orientation, hitArea }}>
+      <IndicatorList variant={variant} orientation={orientation} className={className} aria-label={ariaLabel}>
+        {children}
+      </IndicatorList>
+    </TabsListContext.Provider>
   );
 }
 
@@ -333,8 +353,9 @@ export function TabsTrigger({
   value,
   children,
   className,
-  variant = "line",
-  orientation = "horizontal",
+  variant: variantProp,
+  orientation: orientationProp,
+  hitArea: hitAreaProp,
   disabled,
   ...props
 }: Omit<ComponentPropsWithoutRef<typeof TabsPrimitive.Trigger>, "value" | "children" | "className" | "disabled"> & {
@@ -343,14 +364,20 @@ export function TabsTrigger({
   className?: string;
   variant?: TabVariant;
   orientation?: TabOrientation;
+  /** Hit-area override for this trigger; defaults to the list's. See Tabs. */
+  hitArea?: HitArea;
   disabled?: boolean;
 }) {
+  const list = useContext(TabsListContext);
+  const variant = variantProp ?? list?.variant ?? "line";
+  const orientation = orientationProp ?? list?.orientation ?? "horizontal";
+  const hitArea = hitAreaProp ?? list?.hitArea;
   return (
     <TabsPrimitive.Trigger
       {...props}
       value={value}
       disabled={disabled}
-      className={cn(triggerClass(variant, orientation), className)}
+      className={cn(triggerClass(variant, orientation, "md", hitArea), className)}
     >
       {children}
     </TabsPrimitive.Trigger>

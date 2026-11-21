@@ -3,6 +3,7 @@
 import React, { useState, useMemo, useRef, useEffect, useId, type InputHTMLAttributes } from "react";
 import { Popover, PopoverTrigger, PopoverContent, PopoverAnchor } from "../Popover";
 import { cn } from "../../lib/cn";
+import { hitAreaClass, type HitArea } from "../../lib/hit-area";
 import { announce } from "../../lib/announce";
 
 export interface ComboboxProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "onChange" | "size"> {
@@ -14,11 +15,17 @@ export interface ComboboxProps extends Omit<InputHTMLAttributes<HTMLInputElement
   options: string[];
   /** Optional formatter function for option labels. */
   prettyOptionLabel?: (val: string) => string;
-  /** Size variant: "sm" (28px height, matching Select sm) or "md" (32px height). Default "md". */
+  /** Size variant: "sm" (32px height) or "md" (40px height), matching Select sm and md. Default "md". */
   size?: "sm" | "md";
   /** Preview the hovered option in the field as you move over the list. Default true;
    *  set false for a plain select that only applies on click. */
   hoverPreview?: boolean;
+  /**
+   * Hit-area override (docs: "Target size"). "default": 24px floor, 44px on touch. "none": no hit area
+   * growth (dense toolbars; may go below 24px, yours to own). "touch": always 44px on a coarse pointer.
+   * Native input: the field itself grows (min-height), there is no invisible area.
+   */
+  hitArea?: HitArea;
 }
 
 export function Combobox({
@@ -28,6 +35,7 @@ export function Combobox({
   prettyOptionLabel,
   size = "md",
   hoverPreview = true,
+  hitArea,
   className,
   placeholder = "Select or type...",
   disabled,
@@ -149,7 +157,9 @@ export function Combobox({
             disabled={disabled}
             autoComplete="off"
             className={cn(
-              "w-full rounded-[var(--radius-lg)] border border-border-control bg-surface disabled:opacity-40",
+              // Native <input>: no hit-area pseudo-element, so it grows under a coarse pointer (`hit-area-input`).
+              "hit-area-input w-full rounded-[var(--radius-lg)] border border-border-control bg-surface disabled:opacity-40",
+              hitAreaClass(hitArea, "input", "Combobox"),
               size === "sm" ? "h-8 pl-2.5 pr-7 text-xs" : "h-10 pl-3 pr-8 text-base md:text-sm",
               className
             )}
@@ -220,7 +230,7 @@ export function Combobox({
                 onMouseEnter={() => hoverPreview && setHoveredOption(opt)}
                 onMouseLeave={() => hoverPreview && setHoveredOption(null)}
                 onClick={() => commit(opt)}
-                className="flex w-full cursor-pointer items-center justify-between rounded-[var(--radius-lg)] px-2.5 py-1.5 text-left text-xs text-fg hover:bg-surface-hover data-[highlighted]:bg-surface-hover data-[current]:font-medium"
+                className="flex w-full cursor-pointer items-center justify-between rounded-[var(--radius-lg)] px-2.5 py-1.5 text-left text-xs text-fg hover:bg-elevated-hover data-[highlighted]:bg-elevated-hover data-[current]:font-medium"
               >
                 {labelOf(opt)}
               </div>

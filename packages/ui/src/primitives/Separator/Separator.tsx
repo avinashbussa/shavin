@@ -22,8 +22,8 @@ export const separatorVariants = cva("shrink-0 transition-colors", {
       subtle: "bg-fg-subtle/30",
       muted: "bg-fg-muted/40",
       default: "bg-fg",
-      accent: "bg-accent",
-      contrast: "bg-accent-contrast",
+      brand: "bg-brand",
+      contrast: "bg-brand-contrast",
       danger: "bg-danger",
       inherit: "bg-current",
     },
@@ -41,7 +41,7 @@ export type SeparatorColorToken =
   | "subtle"
   | "muted"
   | "default"
-  | "accent"
+  | "brand"
   | "contrast"
   | "danger"
   | "inherit";
@@ -62,7 +62,7 @@ const COLOR_TOKENS = new Set([
   "subtle",
   "muted",
   "default",
-  "accent",
+  "brand",
   "contrast",
   "danger",
   "inherit",

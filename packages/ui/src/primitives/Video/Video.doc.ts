@@ -2,7 +2,7 @@ import type { ComponentDoc } from "../../authoring/types";
 
 export const docs: ComponentDoc = {
   name: "Video",
-  description: "Video primitive with poster image support, aspect-ratio preservation, object-fit scaling, and graceful placeholder fallback when src is missing.",
+  description: "Plays a video at a set ratio and fit, with a poster image and a placeholder when the source is missing. By default it plays muted on a loop, unless the user prefers reduced motion, with a pause button.",
   features: [
     "Supports radius escape hatch (radius='none|small|medium|large|full|inherit|concentric')",
     "Defaults to panel radius --radius-panel per AGENTS.md rules",

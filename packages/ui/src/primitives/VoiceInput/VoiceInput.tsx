@@ -86,7 +86,7 @@ export function VoiceInput({
           return (
             <span
               key={i}
-              className={cn("w-[3px] rounded-full bg-accent transition-[height] duration-100", level === undefined && "animate-pulse-dot")}
+              className={cn("w-[3px] rounded-full bg-brand transition-[height] duration-100", level === undefined && "animate-pulse-dot")}
               style={{ height: `${Math.round(12 + 88 * l * shape)}%`, animationDelay: level === undefined ? `${i * 40}ms` : undefined }}
             />
           );

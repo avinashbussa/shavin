@@ -1,0 +1,149 @@
+/* Element defaults: body type and colour, the focus ring, selection and scrollbars.
+   Kept apart from the tokens so Tailwind v4 projects can load them in the base layer:
+     @import "@shavin/ui/tokens.css";
+     @import "@shavin/ui/base.css" layer(base);
+   There, utilities (yours or another library's, such as shadcn/ui's outline-none) win over
+   these rules. styles.css still includes this file unlayered, for Tailwind v3. */
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background: rgb(var(--bg-canvas));
+  color: rgb(var(--fg));
+  font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-feature-settings: "ss01", "cv01";
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+*:focus-visible {
+  outline: var(--focus-width, 1px) solid rgb(var(--focus));
+  outline-offset: var(--focus-offset, 2px);
+  /* No fixed border-radius — the outline follows the element's OWN radius, so a
+     pill stays pill-focused and a square stays square-focused (theme/override
+     aware). */
+}
+
+/* Menu-like rows show their state with the highlighted background, not an outline
+   (the outline is clipped by the panel and reads as stray bars). */
+[role^="menuitem"]:focus-visible,
+[role="option"]:focus-visible {
+  outline: none;
+}
+
+/* Text fields keep the focus ring (WCAG 2.4.7) but draw it over their own
+   border (offset -1px), so it reads as a focus border, not a halo. */
+:where(input, textarea, select):focus-visible {
+  outline-offset: var(--focus-offset-inset, -1px);
+}
+
+::selection {
+  background: rgb(var(--brand) / 0.2);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(var(--hairline)) transparent;
+}
+
+/* Custom scrollbars for code pre containers to look dull and secondary */
+pre::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+}
+pre::-webkit-scrollbar-track {
+  background: transparent;
+}
+pre::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.3); /* Slate-400 at 30% opacity */
+  border-radius: 9999px;
+}
+pre::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.5);
+}
+pre {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.3) transparent;
+}
+
+/* Target size (WCAG 2.2 AA 2.5.8: 24x24 CSS px minimum; 44x44 is AAA and not claimed).
+   Public tokens (override in your own CSS, on :root or any subtree):
+     --tap-min        24px  the floor at every pointer
+     --tap-min-touch  44px  what primary controls grow to under a coarse pointer
+   <ThemeProvider touchTargets="compact"> sets data-touch-targets="compact" on <html> (ScopedThemeProvider:
+   on its container); there --tap-min-touch falls back to --tap-min, so coarse pointers do not grow.
+   The nearest provider wins, so a compact island inside a comfortable app works. */
+:root {
+  --tap-min: 24px;
+  --tap-min-touch: 44px;
+}
+[data-touch-targets="comfortable"] {
+  --tap-min-touch: 44px;
+}
+[data-touch-targets="compact"] {
+  --tap-min-touch: var(--tap-min, 24px);
+}
+
+/* Public utilities. `hit-area` guarantees a --tap-min hit area at every pointer; `hit-area-touch`
+   also grows to --tap-min-touch under a coarse pointer (unless the provider is compact);
+   `hit-area-force` on top of `hit-area-touch` grows to at least 44px under a coarse pointer even in
+   compact; `hit-area-input` gives a native <input>/<select> a --tap-min-touch min-height under a coarse
+   pointer; `hit-area-none` removes all of it (dense toolbars and tables: below 24px is then yours to own).
+   The area is an invisible ::after centred on the control, so the visual size, layout and focus ring do
+   not change; it is sized max(100%, floor), so a control that is already large enough is untouched.
+   RESERVED: these utilities own the element's ::after. If your own styles need ::after on the same
+   element, add `hit-area-none` (or hitArea="none" on a Shavin component) and size the control yourself.
+   Rules:
+   - Not for native <input>/<textarea>/<select> (no pseudo-elements): use `hit-area-input`.
+   - Not for text links inside running text (the WCAG inline exception).
+   - An ancestor with overflow other than visible clips the extension; keep room or use
+     `overflow-visible` at coarse (see SegmentedControl).
+   - Neighbours closer than the extension overlap: the later sibling wins in the overlap.
+   Zero specificity (:where), so a utility such as `absolute`, `fixed` or `sticky` on the element wins. */
+:where(.hit-area, .hit-area-touch) {
+  position: relative;
+  /* Set on every utility element, so a hit-area nested in a hit-area-touch does not inherit its 44px. */
+  --hit-min: var(--tap-min, 24px);
+}
+:where(.hit-area, .hit-area-touch)::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: max(100%, var(--hit-min));
+  height: max(100%, var(--hit-min));
+  transform: translate(-50%, -50%);
+}
+@media (pointer: coarse) {
+  :where(.hit-area-touch) {
+    --hit-min: max(var(--tap-min, 24px), var(--tap-min-touch, 44px));
+  }
+  :where(.hit-area-touch.hit-area-force) {
+    --hit-min: max(var(--tap-min-touch, 44px), 44px);
+  }
+  :where(.hit-area-input) {
+    min-height: var(--tap-min-touch, 44px);
+  }
+  :where(.hit-area-input.hit-area-force) {
+    min-height: max(var(--tap-min-touch, 44px), 44px);
+  }
+}
+/* Opt out. Same (zero) specificity as the rules above and later in the file, so it wins over them, yet any
+   ::after styling of your own (higher specificity) still wins over it: nothing of ours is left on the element. */
+:where(.hit-area-none)::after {
+  position: revert;
+  top: revert;
+  left: revert;
+  width: revert;
+  height: revert;
+  transform: revert;
+  content: revert;
+}
+:where(.hit-area-none) {
+  min-height: revert;
+}

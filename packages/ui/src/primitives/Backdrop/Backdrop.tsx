@@ -17,7 +17,7 @@ export type BackdropRenderer = ComponentType<{ className?: string; params?: Reco
 
 const registry = new Map<string, BackdropRenderer>();
 
-/** Adds or replaces a backdrop variant. @shavin/fx uses this to install its Pro variants. */
+/** Adds or replaces a backdrop variant. @shavin/fx (`npm i @shavin/fx`, free to use under its own licence) uses this to install its effect variants. */
 export function registerBackdrop(name: string, renderer: BackdropRenderer) {
   registry.set(name, renderer);
 }
@@ -39,8 +39,8 @@ const dots = (): CSSProperties => ({
 function Mesh() {
   return (
     <>
-      <div className="absolute -left-1/4 -top-1/4 h-3/4 w-3/4 rounded-full bg-accent opacity-25 blur-3xl" />
-      <div className="absolute -bottom-1/3 -right-1/4 h-3/4 w-3/4 rounded-full bg-accent opacity-20 blur-3xl" />
+      <div className="absolute -left-1/4 -top-1/4 h-3/4 w-3/4 rounded-full bg-brand opacity-25 blur-3xl" />
+      <div className="absolute -bottom-1/3 -right-1/4 h-3/4 w-3/4 rounded-full bg-brand opacity-20 blur-3xl" />
       <div className="absolute left-1/3 top-1/3 h-1/2 w-1/2 rounded-full bg-fg opacity-[0.07] blur-3xl" />
     </>
   );
@@ -49,8 +49,8 @@ function Mesh() {
 function Aurora() {
   return (
     <>
-      <div className="absolute -inset-x-1/4 top-0 h-2/3 -skew-y-12 bg-gradient-to-r from-transparent via-accent to-transparent opacity-20 blur-3xl" />
-      <div className="absolute -inset-x-1/4 bottom-0 h-1/2 skew-y-12 bg-gradient-to-r from-accent via-transparent to-accent opacity-15 blur-3xl" />
+      <div className="absolute -inset-x-1/4 top-0 h-2/3 -skew-y-12 bg-gradient-to-r from-transparent via-brand to-transparent opacity-20 blur-3xl" />
+      <div className="absolute -inset-x-1/4 bottom-0 h-1/2 skew-y-12 bg-gradient-to-r from-brand via-transparent to-brand opacity-15 blur-3xl" />
     </>
   );
 }

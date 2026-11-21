@@ -3,8 +3,8 @@ import type { ComponentDoc } from "../../authoring/types";
 export const docs: ComponentDoc = {
   name: "Blockquote",
   group: "typography",
-  description: "A quoted passage set off with an accent rule, for testimonials and cited text.",
-  features: ["Accent left rule, muted text, optional cite URL"],
+  description: "A quoted passage set off with a brand rule, for testimonials and cited text.",
+  features: ["Brand left rule, muted text, optional cite URL"],
   accessibility: ["Renders a native <blockquote>; pass cite for the source URL and name the source in visible text"],
   usage: {
     bestPractices: [

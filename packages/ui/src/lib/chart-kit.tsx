@@ -3,7 +3,7 @@ import { useEffect, useRef, useState, type KeyboardEvent, type RefObject, type S
 import { CONCENTRIC_FLOOR } from "./concentric";
 
 /** Semantic colour tone for a series or datum (resolved to theme tokens). */
-export type ChartTone = "accent" | "success" | "danger" | "warning" | "neutral";
+export type ChartTone = "brand" | "success" | "danger" | "warning" | "neutral";
 /** Y-axis / tooltip value format. */
 export type ChartYFormat = "number" | "compact" | "currency" | "percent";
 /** Bar corner radius token. `floor` = concentric floor min(radius-lg, radius-panel / 2). */
@@ -91,7 +91,7 @@ export interface SeriesSpec {
 }
 
 const TONES: Record<string, string> = {
-  accent: "rgb(var(--accent))",
+  brand: "rgb(var(--brand))",
   success: "rgb(var(--success))",
   danger: "rgb(var(--danger))",
   warning: "rgb(var(--warning))",
@@ -100,11 +100,11 @@ const TONES: Record<string, string> = {
 
 /** Categorical palette when a series has no tone. Built only from theme tokens. */
 export const SERIES_PALETTE = [
-  "rgb(var(--accent))",
+  "rgb(var(--brand))",
   "rgb(var(--success))",
   "rgb(var(--warning))",
   "rgb(var(--fg-muted) / 0.7)",
-  "rgb(var(--accent) / 0.5)",
+  "rgb(var(--brand) / 0.5)",
   "rgb(var(--danger))",
 ];
 

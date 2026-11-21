@@ -68,8 +68,8 @@ export function Progress({
       aria-label={ariaLabel ?? label ?? "Loading progress"}
       className={cn(progressVariants({ variant, size }), isTopBar ? "h-0.5" : "", !hasRightValue && className)}
     >
-      <div className="h-full w-full rounded-[var(--radius-lg)] bg-accent/20 overflow-hidden relative">
-        <div className="h-full w-full bg-accent animate-progress-indeterminate rounded-[var(--radius-lg)]" />
+      <div className="h-full w-full rounded-[var(--radius-lg)] bg-brand/20 overflow-hidden relative">
+        <div className="h-full w-full bg-brand-solid animate-progress-indeterminate rounded-[var(--radius-lg)]" />
       </div>
     </div>
   ) : (
@@ -79,7 +79,7 @@ export function Progress({
       className={cn(progressVariants({ variant, size }), isTopBar ? "h-0.5" : "", !hasRightValue && className)}
     >
       <RadixProgress.Indicator
-        className="h-full rounded-[var(--radius-lg)] bg-accent transition-transform duration-300 ease-out"
+        className="h-full rounded-[var(--radius-lg)] bg-brand-solid transition-transform duration-300 ease-out"
         style={{ transform: `translateX(-${100 - (value ?? 0)}%)` }}
       />
     </RadixProgress.Root>

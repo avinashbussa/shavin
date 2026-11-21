@@ -7,19 +7,11 @@
 export { cn } from "./lib/cn";
 export {
   concentricContainerStyle,
-  concentricCompoundStyle,
+  concentricRadius,
+  paddingScaleFromClassName,
   concentricBoundaryResetStyle,
   withConcentricStyle,
   cardPaddingToScale,
 } from "./lib/concentric";
 export { surfaceClass, type Surface } from "./lib/surface";
-export {
-  isLocalhost,
-  getWebsiteUrl,
-  getStudioUrl,
-  getDocsUrl,
-  getCommunityUrl,
-  getKitsUrl,
-  getAssetsUrl,
-} from "./lib/urls";
 export { SHAVIN_META, type ShavinMeta, type ShavinMcpTool } from "./lib/meta";

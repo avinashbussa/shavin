@@ -2,7 +2,7 @@ import type { ComponentDoc } from "../../authoring/types";
 
 export const docs: ComponentDoc = {
   name: "ColorPicker",
-  description: "Color picker control supporting preset swatches, native HTML5 eyedropper pipette, and direct hex or RGB string input.",
+  description: "Pick a colour from preset swatches or a colour area, or type a hex or RGB value. It can sit inline or open in a popover, and offers an eyedropper where the browser supports one.",
   features: [
     "Variants: default (panel popup with swatches grid/scroll) and field (compact field with leading swatch and trailing pipette)",
     "Supports grid vs scroll swatch layouts",
@@ -28,7 +28,7 @@ export const docs: ComponentDoc = {
   },
   examples: [
     {
-      title: "Accent Color Swatch Picker",
+      title: "Brand Color Swatch Picker",
       // ds-lint-disable-next-line no-hex — example hex value
       code: '<ColorPicker value="#46a758" onChange={() => {}} variant="default" swatchLayout="grid" />'
     }

@@ -3,13 +3,13 @@ import type { ComponentDoc } from "../../authoring/types";
 export const docs: ComponentDoc = {
   name: "Card",
   group: "layout",
-  description: "Surface card primitive with padding presets (none to 3xl), interactive hover state, and background media props. Ideal for media-rich product cards and feature tiles.",
+  description: "A panel that groups related content, with padding presets, an optional hover state and an optional background image or video.",
   features: [
     "Padding presets: none, xs (8px), sm (16px), md (20px), lg (24px), xl (32px), 2xl (40px), 3xl (48px)",
     "Interactive mode with hover elevation and cursor-pointer",
-    "Surface contrast scope via surface prop for media backgrounds",
+    "Surface contrast scope via surface prop for media backgrounds. With a photo, video or fx backdrop and no surface it defaults to dark-always plus a dark scrim (dark-30, fx dark-50); meshes and custom gradients need an explicit surface (dark-always or light-always)",
     "Background media: bgVideo, bgImage, bgOverlays (presets, hex, tokens, gradients via comma-separated shorthand), bgSize, bgVideoPaused",
-    "Fx backdrops (needs @shavin/fx registered): bgOverlays=\"fx:dither-waves, gradient-bottom\"; params only when changed: fx:fluid-silk(speed=1.2); quote text values: fx:type-tiles(text='Plan money')"
+    "Fx backdrops (needs `npm i @shavin/fx`, free to use under its own licence, and `registerFxBackdrops()`): bgOverlays=\"fx:dither-waves, gradient-bottom\"; params only when changed: fx:fluid-silk(speed=1.2); quote text values: fx:type-tiles(text='Plan money')"
   ],
   accessibility: [
     "Renders as <div> by default; use polymorphic as prop for semantic elements"
@@ -38,8 +38,8 @@ export const docs: ComponentDoc = {
     },
     {
       title: "Custom Gradient + Token Overlay",
-      description: "Custom hex solid + linear gradient + accent token — no JSON needed",
-      code: '<Card padding="lg" bgImage="https://..." bgOverlays="#1a1a2e/30, linear(180deg, #000/0%, #000/100%)/60, (accent)/10" className="h-[260px] flex flex-col justify-end"><Heading size="md">Custom</Heading></Card>'
+      description: "Custom hex solid + linear gradient + brand token — no JSON needed",
+      code: '<Card padding="lg" bgImage="https://..." bgOverlays="#1a1a2e/30, linear(180deg, #000/0%, #000/100%)/60, (brand)/10" className="h-[260px] flex flex-col justify-end"><Heading size="md">Custom</Heading></Card>'
     }
   ]
 };

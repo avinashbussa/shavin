@@ -15,7 +15,7 @@ const preset = {
   theme: {
     extend: {
       fontFamily: {
-        display: ["var(--font-display)", '"Space Grotesk"', "sans-serif"],
+        display: ["var(--font-display)", '"Rethink Sans"', "sans-serif"],
         subheading: ["var(--font-subheading, var(--font-body))", "ui-sans-serif", "system-ui", "sans-serif"],
         sans: ["var(--font-body)", "ui-sans-serif", "system-ui", "sans-serif"],
       },
@@ -25,19 +25,22 @@ const preset = {
         surface: tok("bg-surface"),
         "surface-hover": tok("bg-surface-hover"),
         elevated: tok("bg-elevated"),
+        "elevated-hover": tok("bg-elevated-hover"),
         hairline: tok("hairline"),
         "hairline-strong": tok("hairline-strong"),
         "border-control": tok("border-control"),
         fg: tok("fg"),
         "fg-muted": tok("fg-muted"),
         "fg-subtle": tok("fg-subtle"),
-        accent: tok("accent"),
-        "accent-hover": tok("accent-hover"),
-        "accent-fg": tok("accent-fg"),
-        "accent-contrast": tok("accent-contrast"),
-        "accent-text": tok("accent-text"),
-        "accent-subtle": "rgb(var(--accent) / 0.12)",
-        "accent-subtle-hover": "rgb(var(--accent) / 0.18)",
+        brand: tok("brand"),
+        "brand-hover": tok("brand-hover"),
+        "brand-solid": tok("brand-solid"),
+        "brand-solid-hover": tok("brand-solid-hover"),
+        "brand-fg": tok("brand-fg"),
+        "brand-contrast": tok("brand-contrast"),
+        "brand-text": tok("brand-text"),
+        "brand-subtle": "rgb(var(--brand) / 0.12)",
+        "brand-subtle-hover": "rgb(var(--brand) / 0.18)",
         success: tok("success"),
         "success-fg": tok("success-fg"),
         warning: tok("warning"),
@@ -94,6 +97,9 @@ const preset = {
         "panel-p5": "max(min(var(--radius-lg), calc(var(--radius-panel) / 2)), calc(var(--radius-panel) - 1.25rem))",
         "panel-p6": "max(min(var(--radius-lg), calc(var(--radius-panel) / 2)), calc(var(--radius-panel) - 1.5rem))",
         "panel-p8": "max(min(var(--radius-lg), calc(var(--radius-panel) / 2)), calc(var(--radius-panel) - 2rem))",
+        // One step inside a control track (SegmentedControl thumb and items, track padding p-0.5/p-1):
+        // R_inner = max(radius-lg / 2, radius-lg - 0.25rem). Pill at the "full" preset, 0 at "none".
+        "control-inner": "max(calc(var(--radius-lg) / 2), calc(var(--radius-lg) - 0.25rem))",
       },
       // Motion foundation tokens — semantic animation utilities (.animate-*)
       // in global.css bundle these with durations & keyframes. Expose them here

@@ -5,7 +5,7 @@ export const docs: ComponentDoc = {
   description:
     "Collect and show ratings. Rating is a star rating (read only average or input, half stars). NpsScale is the 0 to 10 Net Promoter question with band colours. SentimentRating is one-tap feedback as thumbs or five faces. RatingSummary is the average with a 5 to 1 breakdown, optionally filterable.",
   features: [
-    "Rating: max, precision full or half, fractional display (4.6 fills 60% of the fifth star), readOnly, showValue, count, tone accent | warning | success, sizes sm | md | lg",
+    "Rating: max, precision full or half, fractional display (4.6 fills 60% of the fifth star), readOnly, showValue, count, tone brand | warning | success, sizes sm | md | lg",
     "NpsScale: 0 to 10, detractor / passive / promoter colours, lowLabel and highLabel, and calculateNps(scores) for the score",
     "SentimentRating: variant thumbs (1 up, -1 down) or faces (1 to 5)",
     "RatingSummary: counts per star level (1 star first), derived average and total, optional onSelect to filter reviews",

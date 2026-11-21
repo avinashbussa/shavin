@@ -15,6 +15,7 @@ import {
 import * as RadixSlider from "@radix-ui/react-slider";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "../../lib/cn";
+import { hitAreaClass, type HitArea } from "../../lib/hit-area";
 
 export const trackRadiusVariants = cva("relative h-1.5 grow overflow-hidden bg-surface-hover/80 border border-hairline/60", {
   variants: {
@@ -31,7 +32,7 @@ export const trackRadiusVariants = cva("relative h-1.5 grow overflow-hidden bg-s
   defaultVariants: { radius: "inherit" },
 });
 
-export const rangeRadiusVariants = cva("absolute h-full bg-accent", {
+export const rangeRadiusVariants = cva("absolute h-full bg-brand-solid", {
   variants: {
     radius: {
       none: "rounded-none",
@@ -47,7 +48,7 @@ export const rangeRadiusVariants = cva("absolute h-full bg-accent", {
 });
 
 export const thumbRadiusVariants = cva(
-  "block h-4 w-4 border border-border-control bg-surface shadow-card transition-all duration-150 hover:border-accent hover:scale-105 cursor-pointer active:scale-95",
+  "hit-area-touch block h-4 w-4 border border-border-control bg-surface shadow-card transition-all duration-150 hover:border-brand-text hover:scale-105 cursor-pointer active:scale-95",
   {
     variants: {
       radius: {
@@ -87,8 +88,8 @@ export interface CapsuleSliderProps {
   className?: string;
   /** Whether the slider is disabled. */
   disabled?: boolean;
-  /** Active fill color style: "accent" (uses active theme accent token) or "mono" (inverting monochrome). Default "accent". */
-  color?: "accent" | "mono";
+  /** Active fill color style: "brand" (uses active theme brand token) or "mono" (inverting monochrome). Default "brand". */
+  color?: "brand" | "mono";
   /** Whether to show subtle tick marks on hover. Default true when steps count is between 3 and 30. */
   showStops?: boolean;
   /** Explicit array of stop values (e.g. [0, 25, 50, 75, 100]) or "auto" for auto-calculated stops based on step. */
@@ -106,7 +107,7 @@ export function CapsuleSlider({
   onValueChange,
   className,
   disabled = false,
-  color = "accent",
+  color = "brand",
   showStops,
   marks,
   "aria-label": ariaLabel,
@@ -307,8 +308,8 @@ export function CapsuleSlider({
       <div
         className={cn(
           "absolute inset-0 pointer-events-none",
-          color === "accent"
-            ? "bg-accent text-accent-fg"
+          color === "brand"
+            ? "bg-brand-solid text-brand-fg"
             : "bg-fg text-canvas",
           isDragging ? "transition-none" : "transition-[clip-path] duration-150 ease-out"
         )}
@@ -322,7 +323,7 @@ export function CapsuleSlider({
           <span
             className={cn(
               "shrink-0 ml-2 tabular-nums",
-              color === "accent" ? "text-accent-fg/90" : "text-canvas/90"
+              color === "brand" ? "text-brand-fg/90" : "text-canvas/90"
             )}
           >
             {displayVal}
@@ -333,7 +334,7 @@ export function CapsuleSlider({
         <span
           className={cn(
             "absolute top-1/2 -translate-y-1/2 h-3.5 w-[2px] rounded-full pointer-events-none",
-            color === "accent" ? "bg-accent-fg/90" : "bg-canvas/90",
+            color === "brand" ? "bg-brand-fg/90" : "bg-canvas/90",
             isDragging
               ? percent <= 0.5 ? "opacity-0" : "opacity-100 transition-none"
               : percent <= 0.5 ? "opacity-0" : "opacity-0 group-hover:opacity-100 transition-opacity duration-150"
@@ -364,10 +365,15 @@ export interface SliderProps
   label?: ReactNode;
   /** Formatter function for displaying formatted value string in capsule mode (e.g. (v) => `${v}px`). */
   formatValue?: (val: number) => string;
-  /** Fill color style in capsule mode: "accent" (active theme accent) or "mono" (monochrome inverting). Default "accent". */
-  color?: "accent" | "mono";
+  /** Fill color style in capsule mode: "brand" (active theme brand) or "mono" (monochrome inverting). Default "brand". */
+  color?: "brand" | "mono";
   /** Whether to show subtle stop ticks on hover in capsule mode. Default true for discrete steps (3–30). */
   showStops?: boolean;
+  /**
+   * Hit-area override for the thumbs (default variant) (docs: "Target size"). "default": 24px floor, 44px on touch. "none": no hit area
+   * growth (dense toolbars; may go below 24px, yours to own). "touch": always 44px on a coarse pointer.
+   */
+  hitArea?: HitArea;
 }
 
 export const Slider = forwardRef<
@@ -388,6 +394,7 @@ export const Slider = forwardRef<
     formatValue,
     color,
     showStops,
+    hitArea,
     onValueChange,
     disabled,
     ...props
@@ -493,7 +500,7 @@ export const Slider = forwardRef<
       {Array.from({ length: thumbCount }).map((_, i) => (
         <RadixSlider.Thumb
           key={i}
-          className={thumbRadiusVariants({ radius })}
+          className={cn(thumbRadiusVariants({ radius }), hitAreaClass(hitArea, "touch", "Slider"))}
           aria-label={thumbName(i)}
           aria-labelledby={ariaLabelledBy}
         />

@@ -2,7 +2,7 @@ import type { ComponentDoc } from "../../authoring/types";
 
 export const docs: ComponentDoc = {
   name: "Row",
-  description: "Flexible interactive row primitive with leading slot, middle title, trailing actions, active state, and drag handle icon.",
+  description: "A clickable line in a list or menu, with an icon or control at the start, a label, and actions at the end. It has an active state, and a drag handle is available for reorderable lists.",
   features: [
     "Polymorphic tag: as='button' (default for click row) or as='div' (when row contains nested sub-buttons)",
     "Slots: leading (icon, avatar, check) and trailing (badge, chevron, action button)",

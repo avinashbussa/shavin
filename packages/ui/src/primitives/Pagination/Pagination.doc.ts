@@ -2,7 +2,7 @@ import type { ComponentDoc } from "../../authoring/types";
 
 export const docs: ComponentDoc = {
   name: "Pagination",
-  description: "Page navigation control across data tables, lists, and editorial documentation supporting numeric pages, simple compact status, and article card variants.",
+  description: "Moves between pages of a table, list or document. Shows page numbers, a compact previous and next with \"Page 2 of 10\", or cards linking to the previous and next article.",
   features: [
     "Variants: numeric (numbered pagination bar), simple ('Page X of Y'), cards (editorial Next/Previous cards)",
     "Sizes: sm, md, lg",

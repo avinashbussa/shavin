@@ -8,7 +8,7 @@ export const docs: ComponentDoc = {
   features: [
     "Desktop, tablet and mobile widths; children read the current one from DeviceContext",
     "Code view of the block source with copy, plus a copyable `npx @shavin/cli add` command",
-    "Open in Studio link built from builderKey (or builderUrl)",
+    "Open in Studio link built from studioKey (or studioUrl; the old builderKey and builderUrl still work)",
     "MiniBlockPreview and MiniPreviewFrame: scaled thumbnails for galleries, with an error boundary (SafeMiniPreview)",
   ],
   notes: [

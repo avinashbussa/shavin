@@ -7,7 +7,7 @@ export const docs: ComponentDoc = {
     "Variants: 'default' (connected nodes), 'cards' (responsive multi-step wizard grid), 'pills' (compact inline)",
     "Orientations: horizontal and vertical layout with connecting progress line",
     "Interactive navigation: onStepClick callback with customizable clickable policy ('completed' | 'all')",
-    "Step states: complete (check icon + accent), current (accent indicator), upcoming (subtle number)",
+    "Step states: complete (check icon + brand), current (brand indicator), upcoming (subtle number)",
     "Sizes: sm (28px circle) and md (36px circle)",
     "Custom step icons and descriptive subheadings"
   ],

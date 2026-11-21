@@ -40,7 +40,7 @@ export function FunnelChart({ steps, orientation = "horizontal", centered = fals
                 {showDropOff && prev !== null && <span className="text-xs text-danger">−{pct(1 - prev)}</span>}
               </div>
               <div className="flex items-end" style={{ height }}>
-                <div className="w-full rounded-t-[var(--radius-lg)] bg-accent" style={{ height: `${Math.max(share * 100, 2)}%`, opacity: 1 - i * Math.min(0.12, 0.6 / steps.length) }} />
+                <div className="w-full rounded-t-[var(--radius-lg)] bg-brand" style={{ height: `${Math.max(share * 100, 2)}%`, opacity: 1 - i * Math.min(0.12, 0.6 / steps.length) }} />
               </div>
               <div className="min-w-0 border-t border-hairline pt-2">
                 <div className="truncate text-xs text-fg-muted" title={s.name}>{s.name}</div>
@@ -68,7 +68,7 @@ export function FunnelChart({ steps, orientation = "horizontal", centered = fals
               </span>
             </div>
             <div className={cn("h-8 overflow-hidden rounded-[var(--radius-lg)] bg-fg/[0.06]", centered && "flex justify-center")}>
-              <div className="h-full rounded-[var(--radius-lg)] bg-accent" style={{ width: `${Math.max(share * 100, 1.5)}%`, opacity: 1 - i * Math.min(0.12, 0.6 / steps.length) }} />
+              <div className="h-full rounded-[var(--radius-lg)] bg-brand" style={{ width: `${Math.max(share * 100, 1.5)}%`, opacity: 1 - i * Math.min(0.12, 0.6 / steps.length) }} />
             </div>
           </div>
         );

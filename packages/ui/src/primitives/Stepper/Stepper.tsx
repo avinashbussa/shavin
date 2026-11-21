@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import { cn } from "../../lib/cn";
+import { hitAreaClass, type HitArea } from "../../lib/hit-area";
 import { Text } from "../Text";
 
 export type StepState = "complete" | "current" | "upcoming";
@@ -18,8 +19,8 @@ function indicatorClass(state: StepState, size: StepSize, isClickable: boolean) 
   return cn(
     "flex shrink-0 items-center justify-center rounded-full border-2 font-medium transition select-none",
     size === "sm" ? "h-7 w-7 text-xs" : "h-9 w-9 text-sm",
-    state === "complete" && "border-accent bg-accent text-accent-fg",
-    state === "current" && "border-accent bg-surface text-accent font-bold",
+    state === "complete" && "border-brand-solid bg-brand-solid text-brand-fg",
+    state === "current" && "border-brand-text bg-surface text-brand-text font-bold",
     state === "upcoming" && "border-hairline bg-surface text-fg-subtle",
     isClickable && "group-hover:scale-105 transition-transform",
   );
@@ -86,6 +87,8 @@ export interface StepperProps {
   /** Which steps can be clicked: "completed" (default when onStepClick is set), "all", or false. @default "completed" */
   clickable?: boolean | "completed" | "all";
   className?: string;
+  /** Hit-area override for the clickable step chips (pills variant). See docs: "Target size". */
+  hitArea?: HitArea;
 }
 
 export function Stepper({
@@ -96,6 +99,7 @@ export function Stepper({
   size = "md",
   onStepClick,
   clickable,
+  hitArea,
   className,
 }: StepperProps) {
   const isClickableRule =
@@ -163,7 +167,7 @@ export function Stepper({
                       "flex shrink-0 items-center justify-center rounded-full font-bold transition",
                       size === "sm" ? "h-6 w-6 text-xs" : "h-7 w-7 text-xs",
                       isCurrent
-                        ? "bg-accent text-accent-fg"
+                        ? "bg-brand-solid text-brand-fg"
                         : isComplete
                         ? "bg-fg text-surface"
                         : "border border-hairline bg-surface text-fg-subtle"
@@ -215,9 +219,10 @@ export function Stepper({
                   disabled={!clickableStep}
                   aria-current={isCurrent ? "step" : undefined}
                   className={cn(
-                    "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium transition",
+                    "hit-area-touch inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium transition",
+                    hitAreaClass(hitArea, "touch", "Stepper"),
                     isCurrent
-                      ? "bg-accent text-accent-fg font-semibold shadow-1"
+                      ? "bg-brand-solid text-brand-fg font-semibold shadow-1"
                       : isComplete
                       ? "bg-surface border border-hairline text-fg hover:border-hairline-strong cursor-pointer"
                       : "bg-surface/50 border border-hairline text-fg-subtle opacity-60 cursor-not-allowed"
@@ -264,7 +269,7 @@ export function Stepper({
                     <span
                       className={cn(
                         "my-1 w-0.5 flex-1 transition-colors",
-                        i < current ? "bg-accent" : "bg-hairline"
+                        i < current ? "bg-brand-solid" : "bg-hairline"
                       )}
                     />
                   )}
@@ -286,7 +291,7 @@ export function Stepper({
                   <button
                     type="button"
                     onClick={() => handleStepClick(i, step)}
-                    className="group w-full rounded-[var(--radius-md)] text-left"
+                    className="group w-full rounded-[var(--radius-lg)] text-left"
                   >
                     {content}
                   </button>
@@ -334,7 +339,7 @@ export function Stepper({
                 <button
                   type="button"
                   onClick={() => handleStepClick(i, step)}
-                  className="group rounded-[var(--radius-md)] cursor-pointer"
+                  className="group rounded-[var(--radius-lg)] cursor-pointer"
                 >
                   {content}
                 </button>
@@ -346,7 +351,7 @@ export function Stepper({
                   className={cn(
                     "mx-2 h-0.5 flex-1 rounded-full transition-colors",
                     connectorMt,
-                    i < current ? "bg-accent" : "bg-hairline"
+                    i < current ? "bg-brand-solid" : "bg-hairline"
                   )}
                 />
               )}

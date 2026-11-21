@@ -4,7 +4,7 @@ import { cva } from "class-variance-authority";
 import { cn } from "../../lib/cn";
 
 const cell = cva(
-  "flex flex-1 items-center justify-center border font-medium tabular-nums transition-colors duration-150 first:rounded-l-[var(--radius-lg)] last:rounded-r-[var(--radius-lg)] -ml-px first:ml-0 focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-accent",
+  "flex flex-1 items-center justify-center border font-medium tabular-nums transition-colors duration-150 first:rounded-l-[var(--radius-lg)] last:rounded-r-[var(--radius-lg)] -ml-px first:ml-0 focus-visible:z-10",
   {
     variants: {
       size: { sm: "h-8 min-w-7 text-xs", md: "h-10 min-w-8 text-sm", lg: "h-12 min-w-9 text-base" },

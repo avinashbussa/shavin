@@ -28,8 +28,7 @@
  * ├─────────────────┼───────────┼─────────┼────────────────────────────────┤
  * │ Yes (bg/border) │ Yes       │ Any     │ SET: max(floor, R_outer − P)   │
  * │ Yes (bg/border) │ No        │ Any     │ RESET: 0px (sharp = reference) │
- * │ No (transparent)│ —         │ Yes     │ COMPOUND: max(floor, inherited − P)
- * │ No (transparent)│ —         │ No      │ PASS THROUGH (CSS inheritance) │
+ * │ No (transparent)│ —         │ Any     │ PASS THROUGH (CSS inheritance) │
  * └─────────────────┴───────────┴─────────┴────────────────────────────────┘
  *
  * "Visible Boundary" = element has a background color or border that creates
@@ -48,10 +47,15 @@
  *   Flex: has visible boundary (bg) but NO radius → RESET to 0px
  *   Image reads 0px (sharp, matching Flex's sharp corners) ✓
  *
- * Card [r=32, bg, p-5] > Flex [no bg, no r, p-3] > Image [concentric]
- *   Card SETs: inner = max(floor, 32−20) = 12px
- *   Flex: transparent, has padding → COMPOUND: max(floor, 12−12) = floor
- *   Image reads 0px (padding ate the remaining radius) ✓
+ * Card [r=16, p-5] > Card [p-4] > Image [concentric]
+ *   Outer Card SETs: inner = max(floor, 16−20) = floor (8px at medium)
+ *   Inner Card reads its outer radius from the parent (CardContext): 8px,
+ *   and SETs: inner = max(floor, 8−16) = floor
+ *   Image reads the floor ✓ (no CSS cycle: the maths is a string built in JS)
+ *
+ * A transparent element with padding does NOT compound in CSS: a custom
+ * property cannot subtract from its own inherited value (that is a cycle and
+ * resolves to nothing). Put the padding on the visible container instead.
  *
  * FALLBACK: When no ancestor sets the variable, `:root` defines
  * --radius-panel-inner = var(--radius-panel) (no subtraction). The
@@ -64,7 +68,9 @@
  * When Studio's tree renderer encounters a node with:
  *  - bgColor or border prop + radius prop → apply concentricContainerStyle()
  *  - bgColor or border prop but NO radius  → apply data-concentric-reset
- *  - padding prop, no bgColor/border        → apply concentricCompoundStyle()
+ *  - padding prop, no bgColor/border        → pass through (a custom property
+ *    cannot subtract from its own inherited value without a CSS cycle; nest a
+ *    Card instead, which computes its radius from its parent's in JS)
  *  - neither                                → do nothing (pass through)
  *
  * The CSS rule [data-concentric-reset] in global.css handles the reset case
@@ -130,34 +136,87 @@ export function cardPaddingToScale(padding?: string | null): string | null {
  */
 export const CONCENTRIC_FLOOR = "min(var(--radius-lg), calc(var(--radius-panel) / 2))";
 
+/** Options for {@link concentricContainerStyle} and {@link concentricRadius}. */
+export interface ConcentricOptions {
+  /** The container's own outer radius as a CSS expression. Default `var(--radius-panel)`. A nested
+   *  Card passes its parent's inner radius so the chain stays concentric. */
+  outer?: string;
+  /** The container draws a 1px border. With no padding the child sits inside that border, so its
+   *  radius is `outer − 1px` (never below 0). */
+  border?: boolean;
+}
+
+/**
+ * The concentric inner radius as a CSS expression: `max(<floor>, calc(<outer> − <pad>))`, or, with
+ * no padding, the outer radius itself (minus the 1px border when there is one). Pure string maths:
+ * no custom property reads its own value, so there is no CSS cycle.
+ *
+ * @param paddingScale Tailwind padding token ("0", "1", "3", "4", "5", ...). Unknown tokens → null.
+ */
+export function concentricRadius(paddingScale: string | null | undefined, opts: ConcentricOptions = {}): string | null {
+  const outer = opts.outer ?? "var(--radius-panel)";
+  const scale = paddingScale ?? "0";
+  if (scale === "0") return opts.border ? `max(0px, calc(${outer} - 1px))` : outer;
+  const rem = PADDING_REM[scale];
+  if (!rem) return null;
+  return `max(${CONCENTRIC_FLOOR}, calc(${outer} - ${rem}))`;
+}
+
 /**
  * Rule 1 — SET: Computes the CSS style for a VISIBLE BOUNDARY element that
  * HAS radius (bg/border + rounded). This is the primary visual reference.
  *
  * `--radius-panel-inner = max(<floor>, calc(var(--radius-panel) - <pad>rem))`
  * (see CONCENTRIC_FLOOR — never square unless the theme radius is 0).
+ * With no padding (Card `padding="none"`), the inner radius is the outer one
+ * (minus the border), so flush children follow the container's own corners
+ * instead of inheriting a value from some ancestor.
  *
  * The container is the new visual reference — the nearest visible boundary
  * with radius wins. Descendants with `radius="concentric"` read this value.
  *
- * @param paddingScale Tailwind padding token ("3", "4", "5", "6", "8", etc.) or Card padding variant
- * @param isCardPadding When true, `paddingScale` is treated as a Card variant ("sm", "md", etc.)
- * @returns CSSProperties with `--radius-panel-inner` set, or empty object if no padding
+ * @param paddingScale Tailwind padding token ("0", "3", "4", "5", "6", "8", etc.) or Card padding variant
+ * @param isCardPadding When true, `paddingScale` is treated as a Card variant ("none", "sm", "md", etc.)
+ * @param opts Outer radius and border (see {@link ConcentricOptions})
+ * @returns CSSProperties with `--radius-panel-inner` set, or an empty object for an unknown token
  */
 export function concentricContainerStyle(
   paddingScale?: string | null,
   isCardPadding?: boolean,
+  opts: ConcentricOptions = {},
 ): CSSProperties {
   const scale = isCardPadding
-    ? cardPaddingToScale(paddingScale)
-    : paddingScale;
-  if (!scale || scale === "0") return {};
-  const rem = PADDING_REM[scale];
-  if (!rem) return {};
+    ? cardPaddingToScale(paddingScale ?? "none")
+    : paddingScale ?? "0";
+  const value = concentricRadius(scale, opts);
+  if (!value) return {};
+  return { "--radius-panel-inner": value } as CSSProperties;
+}
 
-  return {
-    "--radius-panel-inner": `max(${CONCENTRIC_FLOOR}, calc(var(--radius-panel) - ${rem}))`,
-  } as CSSProperties;
+/**
+ * The padding a container really has, read from its className, as a Tailwind scale token. The
+ * translucent Box/Flex/Grid/Section take their padding from className (there is no padding prop),
+ * so the concentric inner radius must come from there, not from a guess. Only unprefixed
+ * utilities count (`p-6`, `px-4 py-8`); responsive or state variants (`md:p-8`) are ignored. The
+ * corner gap is the smaller of the horizontal and vertical padding.
+ *
+ * @returns the token ("0", "4", "6", ...) or "0" when no padding utility is present.
+ */
+export function paddingScaleFromClassName(className?: string | null): string {
+  if (!className) return "0";
+  let all: string | undefined;
+  let x: string | undefined;
+  let y: string | undefined;
+  for (const cls of className.split(/\s+/)) {
+    const m = /^p([xy]?)-(\d+(?:\.5)?)$/.exec(cls);
+    if (!m || !PADDING_REM[m[2]]) continue;
+    if (m[1] === "x") x = m[2];
+    else if (m[1] === "y") y = m[2];
+    else all = m[2];
+  }
+  const h = Number(x ?? all ?? 0);
+  const v = Number(y ?? all ?? 0);
+  return String(Math.min(h, v));
 }
 
 /**
@@ -168,51 +227,18 @@ export function concentricContainerStyle(
  *
  * `--radius-panel-inner = 0px`
  *
- * This prevents the optical disaster of 32px > 0px > 20px where a sharp
- * intermediate container breaks the concentric illusion.
+ * It is used by Studio tree intelligence (bg-without-radius on arbitrary
+ * nodes), the CSS rule `[data-concentric-reset]` in global.css for raw
+ * elements, and any component that has a bg but deliberately no radius.
  *
- * For Shavin primitives, this is rarely needed because `translucent=true`
- * always includes radius. It's primarily used by:
- * - Studio tree intelligence (detects bg-without-radius on arbitrary nodes)
- * - The CSS rule `[data-concentric-reset]` in global.css for raw elements
- * - Any component that explicitly has bg but deliberately no radius
- *
- * @param paddingScale Optional padding — included for compound subtraction,
- *   but since base is 0px the result is always 0px. Kept for API symmetry.
+ * @param _paddingScale Ignored (R_outer = 0, so the result is 0px). Kept for API symmetry.
  * @returns CSSProperties with `--radius-panel-inner` set to 0px
  */
 export function concentricBoundaryResetStyle(
   _paddingScale?: string | null,
 ): CSSProperties {
-  // R_outer = 0 (sharp), so R_inner = max(0, 0 - P) = 0 regardless of padding.
-  // We set 0px explicitly — the visual reference is "sharp corners."
   return {
     "--radius-panel-inner": "0px",
-  } as CSSProperties;
-}
-
-/**
- * Rule 3 — COMPOUND: Computes the CSS style for a TRANSPARENT element (no
- * visible boundary) that has padding. It subtracts its padding from the
- * inherited `--radius-panel-inner` without becoming a new visual reference.
- *
- * `--radius-panel-inner = max(<floor>, calc(var(--radius-panel-inner) - <pad>rem))`
- *
- * This compounds the gap — if Card sets inner=12px and a transparent Flex
- * has p-3 (12px), the Flex's children see max(floor, 12−12) = floor.
- *
- * @param paddingScale Tailwind padding token ("3", "4", "5", etc.)
- * @returns CSSProperties with `--radius-panel-inner` set, or empty object
- */
-export function concentricCompoundStyle(
-  paddingScale?: string | null,
-): CSSProperties {
-  if (!paddingScale || paddingScale === "0") return {};
-  const rem = PADDING_REM[paddingScale];
-  if (!rem) return {};
-
-  return {
-    "--radius-panel-inner": `max(${CONCENTRIC_FLOOR}, calc(var(--radius-panel-inner) - ${rem}))`,
   } as CSSProperties;
 }
 

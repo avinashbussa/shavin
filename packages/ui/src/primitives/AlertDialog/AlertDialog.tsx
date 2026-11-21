@@ -75,7 +75,7 @@ export function AlertDialog({
     danger: "bg-danger/10 text-danger",
     warning: "bg-warning/15 text-warning",
     success: "bg-success/15 text-success",
-    info: "bg-accent/10 text-accent",
+    info: "bg-brand/10 text-brand-text",
     default: "bg-surface-hover text-fg",
   };
 
@@ -83,8 +83,8 @@ export function AlertDialog({
     danger: "bg-danger text-danger-fg",
     warning: "bg-warning text-warning-fg hover:opacity-90",
     success: "bg-success text-success-fg hover:opacity-90",
-    info: "bg-accent text-accent-fg",
-    default: "bg-accent text-accent-fg",
+    info: "bg-brand-solid text-brand-fg",
+    default: "bg-brand-solid text-brand-fg",
   };
 
   const returnFocus = useReturnFocus(open);
@@ -119,7 +119,7 @@ export function AlertDialog({
                       resolvedIntent === "danger" ? "bg-danger/10 text-danger border-danger/20" :
                       resolvedIntent === "warning" ? "bg-warning/15 text-warning border-warning/20" :
                       resolvedIntent === "success" ? "bg-success/15 text-success border-success/20" :
-                      "bg-accent/10 text-accent border-accent/20"
+                      "bg-brand/10 text-brand-text border-brand/20"
                     )}>
                       {badgeText}
                     </span>
@@ -167,7 +167,7 @@ export function AlertDialog({
               </AlertDialogPrimitive.Cancel>
               <AlertDialogPrimitive.Action asChild>
                 <Button
-                  tone={resolvedIntent === "danger" ? "danger" : "accent"}
+                  tone={resolvedIntent === "danger" ? "danger" : "brand"}
                   className={cn(
                     confirmButtonClass,
                     "font-semibold",

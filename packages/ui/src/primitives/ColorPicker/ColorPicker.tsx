@@ -4,7 +4,7 @@ import { Pipette, ChevronsUpDown } from "lucide-react";
 import { cva, type VariantProps } from "class-variance-authority";
 import * as PopoverPrimitive from "@radix-ui/react-popover";
 import { cn } from "../../lib/cn";
-import { ACCENT_PRESETS } from "../../lib/theme-presets";
+import { BRAND_PRESETS } from "../../lib/theme-presets";
 
 export const colorPickerVariants = cva(
   "flex flex-col gap-3 rounded-[var(--radius-panel)] border border-hairline bg-surface p-3 shadow-card",
@@ -39,7 +39,7 @@ export interface ColorPickerProps
   variant?: "popover" | "canvas" | "swatches" | "field" | "default";
   /** Optional custom trigger element when using popover mode. */
   trigger?: React.ReactNode;
-  /** Preset swatch spectrum. Defaults to Shavin UI's 24 accent swatches. */
+  /** Preset swatch spectrum. Defaults to Shavin UI's 24 brand swatches. */
   presets?: ColorPickerSwatch[];
   /** Layout of preset swatches: multi-row grid or single-row horizontal scroll bar. Default "grid". */
   swatchLayout?: "grid" | "scroll";
@@ -358,7 +358,7 @@ export function CanvasColorPickerPopup({
             {/* Subtle Indicator Thumb */}
             <div
               // The real range input is invisible; its focus shows on the thumb.
-              className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-2 h-4 rounded-full border-2 border-white shadow-[0_0_2px_rgba(0,0,0,0.8)] pointer-events-none z-10 peer-focus-visible:ring-2 peer-focus-visible:ring-fg peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-surface"
+              className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-2 h-4 rounded-full border-2 border-white shadow-[0_0_2px_rgba(0,0,0,0.8)] pointer-events-none z-10 peer-focus-visible:ring-[length:var(--focus-width)] peer-focus-visible:ring-fg peer-focus-visible:ring-offset-[length:var(--focus-offset)] peer-focus-visible:ring-offset-surface"
               style={{
                 left: `${(hue / 360) * 100}%`,
               }}
@@ -377,7 +377,7 @@ export function CanvasColorPickerPopup({
       {/* Bottom row: (Single HEX Input OR 3 Dedicated RGB Inputs) + Right-end Up-Down Arrow Button */}
       <div className="flex items-center gap-1.5">
         {formatMode === "HEX" ? (
-          <div className="flex-1 flex items-center h-7 rounded-[var(--radius-lg)] border border-hairline bg-surface-hover/40 px-2.5 focus-within:border-accent focus-ring-within">
+          <div className="flex-1 flex items-center h-7 rounded-[var(--radius-lg)] border border-hairline bg-surface-hover/40 px-2.5 focus-within:border-brand-text focus-ring-within">
             <input
               type="text"
               value={cleanValue.toUpperCase()}
@@ -389,12 +389,12 @@ export function CanvasColorPickerPopup({
                 else onChange(`#${val}`);
               }}
               aria-label="Hex color string"
-              className="w-full bg-transparent font-mono text-xs text-fg outline-none"
+              className="-my-1 w-full bg-transparent py-1 font-mono text-xs text-fg outline-none"
             />
           </div>
         ) : (
           <div className="flex-1 flex items-center gap-1">
-            <div className="flex-1 flex items-center h-7 bg-surface-hover/40 rounded-[var(--radius-lg)] border border-hairline px-1.5 focus-within:border-accent focus-ring-within">
+            <div className="flex-1 flex items-center h-7 bg-surface-hover/40 rounded-[var(--radius-lg)] border border-hairline px-1.5 focus-within:border-brand-text focus-ring-within">
               <span className="text-[9px] text-fg-muted mr-1 font-mono select-none">R</span>
               <input
                 type="number"
@@ -409,7 +409,7 @@ export function CanvasColorPickerPopup({
                 className="w-full bg-transparent font-mono text-[11px] text-right text-fg outline-none p-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               />
             </div>
-            <div className="flex-1 flex items-center h-7 bg-surface-hover/40 rounded-[var(--radius-lg)] border border-hairline px-1.5 focus-within:border-accent focus-ring-within">
+            <div className="flex-1 flex items-center h-7 bg-surface-hover/40 rounded-[var(--radius-lg)] border border-hairline px-1.5 focus-within:border-brand-text focus-ring-within">
               <span className="text-[9px] text-fg-muted mr-1 font-mono select-none">G</span>
               <input
                 type="number"
@@ -424,7 +424,7 @@ export function CanvasColorPickerPopup({
                 className="w-full bg-transparent font-mono text-[11px] text-right text-fg outline-none p-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               />
             </div>
-            <div className="flex-1 flex items-center h-7 bg-surface-hover/40 rounded-[var(--radius-lg)] border border-hairline px-1.5 focus-within:border-accent focus-ring-within">
+            <div className="flex-1 flex items-center h-7 bg-surface-hover/40 rounded-[var(--radius-lg)] border border-hairline px-1.5 focus-within:border-brand-text focus-ring-within">
               <span className="text-[9px] text-fg-muted mr-1 font-mono select-none">B</span>
               <input
                 type="number"
@@ -508,7 +508,7 @@ export function ColorPicker({
   onChange,
   variant = "popover",
   trigger,
-  presets = ACCENT_PRESETS,
+  presets = BRAND_PRESETS,
   swatchLayout = "grid",
   maxSwatches,
   colorMode = "hex",
@@ -554,7 +554,7 @@ export function ColorPicker({
       <div
         data-color-picker="true"
         className={cn(
-          "relative flex items-center rounded-[var(--radius-lg)] border border-hairline bg-surface px-2 py-1.5 transition focus-within:border-accent focus-ring-within shadow-1",
+          "relative flex items-center rounded-[var(--radius-lg)] border border-hairline bg-surface px-2 py-1.5 transition focus-within:border-brand-text focus-ring-within shadow-1",
           className
         )}
         {...props}
@@ -613,7 +613,7 @@ export function ColorPicker({
             }
           }}
           aria-label={colorMode === "rgb" ? "RGB color string" : "Hex color string"}
-          className="w-full border-none bg-transparent p-0 font-mono text-xs text-fg outline-none"
+          className="-my-1 w-full border-none bg-transparent px-0 py-1 font-mono text-xs text-fg outline-none"
         />
 
         <PopoverPrimitive.Root>
@@ -751,7 +751,7 @@ export function ColorPicker({
 
             <div
               className={cn(
-                "flex items-center gap-1.5 rounded-[var(--radius-lg)] border border-hairline bg-surface py-1 pl-1.5 pr-1.5 transition focus-within:border-accent focus-ring-within",
+                "flex items-center gap-1.5 rounded-[var(--radius-lg)] border border-hairline bg-surface py-1 pl-1.5 pr-1.5 transition focus-within:border-brand-text focus-ring-within",
                 colorMode === "rgb" ? "w-32" : "w-24"
               )}
             >
@@ -809,7 +809,7 @@ export function ColorPicker({
                   }
                 }}
                 aria-label={colorMode === "rgb" ? "RGB color string" : "Hex color string"}
-                className="w-full border-none bg-transparent p-0 font-mono text-xs text-fg outline-none"
+                className="-my-1 w-full border-none bg-transparent px-0 py-1 font-mono text-xs text-fg outline-none"
               />
             </div>
           </div>

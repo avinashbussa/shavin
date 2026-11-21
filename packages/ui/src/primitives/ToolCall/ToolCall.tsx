@@ -10,9 +10,9 @@ import { Ban, Check, Clock, ShieldQuestion, Wrench, X } from "lucide-react";
 export type ToolCallStatus = "pending" | "running" | "needs-approval" | "done" | "error" | "denied";
 export type ToolApprovalScope = "once" | "always";
 
-const META: Record<ToolCallStatus, { label: string; tone: "neutral" | "accent" | "success" | "warning" | "danger" }> = {
+const META: Record<ToolCallStatus, { label: string; tone: "neutral" | "brand" | "success" | "warning" | "danger" }> = {
   pending: { label: "Queued", tone: "neutral" },
-  running: { label: "Running", tone: "accent" },
+  running: { label: "Running", tone: "brand" },
   "needs-approval": { label: "Needs approval", tone: "warning" },
   done: { label: "Done", tone: "success" },
   error: { label: "Failed", tone: "danger" },

@@ -10,6 +10,7 @@ import {
   type ReactNode,
 } from "react";
 import { cn } from "../../lib/cn";
+import { hitAreaClass, type HitArea } from "../../lib/hit-area";
 import { announce } from "../../lib/announce";
 
 export interface SortableProps<T> {
@@ -166,8 +167,8 @@ export function Sortable<T>({
               className={cn(
                 "cursor-grab rounded-[var(--radius-lg)] transition active:cursor-grabbing",
                 drag === i && "opacity-40",
-                over === i && drag !== i && "ring-2 ring-accent",
-                grabbed && "ring-2 ring-accent shadow-panel",
+                over === i && drag !== i && "ring-2 ring-brand-text",
+                grabbed && "ring-2 ring-brand-text shadow-panel",
               )}
             >
               <SortableItemContext.Provider
@@ -192,10 +193,15 @@ export function Sortable<T>({
 
 export interface SortableHandleProps {
   className?: string;
+  /**
+   * Hit-area override (docs: "Target size"). "default": 24px floor (this control stays at 24px on touch). "none": no hit area
+   * growth (dense toolbars; may go below 24px, yours to own). "touch": always 44px on a coarse pointer.
+   */
+  hitArea?: HitArea;
 }
 
 /** Grip for a Sortable item: a drag affordance for the pointer and the keyboard control for reordering. */
-export function SortableHandle({ className }: SortableHandleProps) {
+export function SortableHandle({ className, hitArea }: SortableHandleProps) {
   const ctx = useContext(SortableItemContext);
   const icon = (
     <svg
@@ -225,7 +231,7 @@ export function SortableHandle({ className }: SortableHandleProps) {
         // A pointer click picks up or drops too, so a single tap works with the keys.
         if (e.detail > 0) ctx.onHandleClick();
       }}
-      className={cn("-m-1 flex shrink-0 items-center justify-center rounded-[var(--radius-lg)] p-1", className)}
+      className={cn("hit-area -m-1 flex shrink-0 items-center justify-center rounded-[var(--radius-lg)] p-1", hitAreaClass(hitArea, "floor", "SortableHandle"), className)}
     >
       {icon}
     </button>

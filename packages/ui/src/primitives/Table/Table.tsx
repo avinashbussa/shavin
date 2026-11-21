@@ -1,11 +1,27 @@
+"use client";
 import type { HTMLAttributes, TdHTMLAttributes, ThHTMLAttributes } from "react";
 import { cn } from "../../lib/cn";
+import { useScrollEdges } from "../../lib/scroll-edges";
 
-export interface TableProps extends HTMLAttributes<HTMLTableElement> {}
+export interface TableProps extends HTMLAttributes<HTMLTableElement> {
+  /** Accessible name of the scrolling region, announced once the table is wider than its container. Defaults to the table's own `aria-label` or "Scrollable table". */
+  scrollLabel?: string;
+}
 
-export function Table({ className, children, ...props }: TableProps) {
+/**
+ * A table that never clips. It scrolls sideways inside its own container when it is wider than the space it is given,
+ * fades the edge that still has content (so cut-off values read as "scroll for more"), and becomes keyboard focusable
+ * only while it scrolls. Keep the first column short, and do not wrap a Table in `overflow-hidden`.
+ */
+export function Table({ className, children, scrollLabel, ...props }: TableProps) {
+  const { ref, scrollable, fadeStyle } = useScrollEdges<HTMLDivElement>();
   return (
-    <div className="w-full overflow-x-auto">
+    <div
+      ref={ref}
+      className="w-full overflow-x-auto"
+      style={fadeStyle}
+      {...(scrollable ? { tabIndex: 0, role: "region", "aria-label": scrollLabel ?? props["aria-label"] ?? "Scrollable table" } : {})}
+    >
       <table className={cn("w-full text-sm", className)} {...props}>
         {children}
       </table>

@@ -12,7 +12,7 @@ export const docs: ComponentDoc = {
   ],
   accessibility: [
     "Pick `as` for the document outline (one h1 per page, no skipped levels) and `size` for the look; the two are independent",
-    "Text colour is text-fg, which meets WCAG AAA contrast on every surface token",
+    "Text colour is text-fg, which meets WCAG 2.2 AA contrast (4.5:1) on every surface token",
   ],
   usage: {
     bestPractices: [

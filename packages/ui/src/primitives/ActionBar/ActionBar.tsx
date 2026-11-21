@@ -22,20 +22,17 @@ export interface ActionBarProps {
   groups: ActionBarGroup[];
   /** Callback fired when an action option is selected (groupKey, value). */
   onAction?: (groupKey: string, value: string) => void;
-  /** @deprecated use onAction instead */
-  onInsert?: (groupKey: string, value: string) => void;
   /** Optional custom CSS class name. */
   className?: string;
   /** Accessible toolbar label string. Default 'Action Bar'. */
   ariaLabel?: string;
 }
 
-export function ActionBar({ groups, onAction, onInsert, className, ariaLabel = "Action Bar" }: ActionBarProps) {
+export function ActionBar({ groups, onAction, className, ariaLabel = "Action Bar" }: ActionBarProps) {
   const [openKey, setOpenKey] = useState<string | null>(null);
 
   const handleAction = (groupKey: string, value: string) => {
-    if (onAction) onAction(groupKey, value);
-    if (onInsert) onInsert(groupKey, value);
+    onAction?.(groupKey, value);
   };
 
   return (

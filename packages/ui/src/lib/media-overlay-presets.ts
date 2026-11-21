@@ -2,7 +2,7 @@
  * Canonical overlay-preset style table — pure data, no JSX.
  *
  * Lives in its own .ts module so non-JSX consumers (notably
- * @shavin/block-renderer's parser, which folds serialized overlays
+ * parsers that fold serialized overlays
  * back into bg* props) can import it via the `@shavin/ui/lib/*` subpath.
  * `media-overlays.tsx` re-exports this — the public API is unchanged.
  */
@@ -23,15 +23,15 @@ export const OVERLAY_PRESET_STYLES: Record<string, { background?: string; backgr
   "scrim-left": { background: "linear-gradient(to right, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0.5) 45%, rgba(0,0,0,0) 85%)" },
   // Dissolves media into the page canvas — theme-aware, for photos that bleed into the next section.
   "fade-canvas": { background: "linear-gradient(to bottom, rgb(var(--bg-canvas) / 0) 35%, rgb(var(--bg-canvas) / 0.85) 80%, rgb(var(--bg-canvas)) 100%)" },
-  // Mesh backdrops. mesh-accent follows the theme accent; the others are fixed pastel palettes
+  // Mesh backdrops. mesh-brand follows the theme brand; the others are fixed pastel palettes
   // (Lummi-style atmosphere) that read well under both light and dark copy with a scrim.
-  "mesh-accent": { background: "radial-gradient(at 12% 18%, rgb(var(--accent) / 0.16) 0px, transparent 55%), radial-gradient(at 88% 12%, rgb(var(--accent) / 0.08) 0px, transparent 50%), radial-gradient(at 70% 92%, rgb(var(--accent) / 0.12) 0px, transparent 55%), rgb(var(--bg-canvas))" },
+  "mesh-brand": { background: "radial-gradient(at 12% 18%, rgb(var(--brand) / 0.16) 0px, transparent 55%), radial-gradient(at 88% 12%, rgb(var(--brand) / 0.08) 0px, transparent 50%), radial-gradient(at 70% 92%, rgb(var(--brand) / 0.12) 0px, transparent 55%), rgb(var(--bg-canvas))" },
   "mesh-mint": { background: "radial-gradient(at 10% 10%, rgba(167,243,208,0.7) 0px, transparent 55%), radial-gradient(at 90% 20%, rgba(186,230,253,0.7) 0px, transparent 50%), radial-gradient(at 50% 90%, rgba(254,240,138,0.55) 0px, transparent 55%), rgb(248 250 252)" },
-  // Wave meshes — wide elliptical washes (no hard blobs), tuned from apps/website gradients.css.
+  // Wave meshes — wide elliptical washes (no hard blobs), tuned by eye on real hero backgrounds.
   "mesh-dawn": { background: "radial-gradient(ellipse 70% 55% at 88% 8%, hsla(13, 100%, 88%, 0.75) 0%, transparent 70%), radial-gradient(ellipse 85% 60% at 62% 40%, hsla(323, 100%, 90%, 0.7) 0%, transparent 72%), radial-gradient(ellipse 90% 65% at 30% 92%, hsla(268, 100%, 90%, 0.75) 0%, transparent 70%), radial-gradient(ellipse 60% 50% at 5% 20%, hsla(190, 90%, 92%, 0.6) 0%, transparent 70%), rgb(253 251 255)" },
   "mesh-night": { background: "radial-gradient(ellipse 80% 60% at 15% 85%, hsla(257, 91%, 30%, 0.55) 0%, transparent 70%), radial-gradient(ellipse 70% 55% at 85% 15%, hsla(227, 98%, 55%, 0.45) 0%, transparent 70%), radial-gradient(ellipse 60% 50% at 100% 60%, hsla(166, 71%, 60%, 0.18) 0%, transparent 70%), radial-gradient(ellipse 90% 70% at 40% 105%, hsla(212, 100%, 50%, 0.3) 0%, transparent 70%), rgb(6 7 14)" },
   "mesh-lime": { background: "radial-gradient(ellipse 75% 55% at 18% 0%, hsla(82, 85%, 55%, 0.22) 0%, transparent 70%), radial-gradient(ellipse 70% 60% at 92% 30%, hsla(165, 70%, 45%, 0.2) 0%, transparent 70%), radial-gradient(ellipse 95% 65% at 50% 110%, hsla(140, 60%, 30%, 0.35) 0%, transparent 72%), radial-gradient(ellipse 50% 40% at 70% 70%, hsla(82, 85%, 60%, 0.08) 0%, transparent 70%), rgb(8 10 9)" },
-  // Ported 1:1 from the Shavin website (apps/website/src/app/gradients.css .the-glade-festival-rose / -rose-vibrant).
+  // Ported 1:1 from the Shavin website's rose gradients.
   "mesh-rose": { background: "radial-gradient(circle at 93% 93%, hsla(0, 0%, 0%, 1) 14.5%, transparent 72%), radial-gradient(circle at 26% 9%, hsla(0, 0%, 0%, 1) 0%, transparent 45%), radial-gradient(circle at 15% 79%, hsla(325, 80%, 65%, 0.16) 3%, transparent 35%), radial-gradient(circle at 40% 104%, hsla(14, 85%, 65%, 0.14) 4%, transparent 50%), radial-gradient(circle at 0% 60%, hsla(268, 75%, 68%, 0.16) 2%, transparent 38%), radial-gradient(circle at 92% 37%, hsla(330, 70%, 55%, 0.12) 3%, transparent 35%), radial-gradient(circle at 101% 16%, hsla(18, 90%, 68%, 0.10) 13%, transparent 40%), radial-gradient(circle at 90% 13%, hsla(280, 80%, 68%, 0.14) 1%, transparent 35%), radial-gradient(circle at 104% 56%, hsla(340, 85%, 68%, 0.12) 4%, transparent 25%), radial-gradient(circle at 97% 19%, hsla(260, 65%, 50%, 0.10) 18%, transparent 35%), hsla(0, 0%, 0%, 1)" },
   "mesh-rose-vibrant": { background: "radial-gradient(circle at 93% 93%, hsla(320, 0%, 0%, 1) 14.5%, transparent 72%), radial-gradient(circle at 26% 9%, hsla(320, 0%, 0%, 1) 0%, transparent 45%), radial-gradient(circle at 15% 79%, hsla(323, 90%, 36%, 0.45) 3%, transparent 35%), radial-gradient(circle at 40% 104%, hsla(13, 95%, 52%, 0.42) 4%, transparent 50%), radial-gradient(circle at 0% 60%, hsla(268, 75%, 38%, 0.65) 2%, transparent 38%), radial-gradient(circle at 92% 37%, hsla(335, 78%, 28%, 0.75) 3%, transparent 35%), radial-gradient(circle at 101% 16%, hsla(18, 92%, 58%, 0.28) 13%, transparent 40%), radial-gradient(circle at 90% 13%, hsla(285, 88%, 52%, 0.55) 1%, transparent 35%), radial-gradient(circle at 104% 56%, hsla(340, 85%, 58%, 0.38) 4%, transparent 25%), radial-gradient(circle at 97% 19%, hsla(260, 70%, 25%, 0.35) 18%, transparent 35%), hsla(320, 10%, 2%, 1)" },
   "mesh-peach": { background: "radial-gradient(at 15% 20%, rgba(254,205,211,0.8) 0px, transparent 55%), radial-gradient(at 85% 15%, rgba(253,230,138,0.6) 0px, transparent 50%), radial-gradient(at 60% 95%, rgba(221,214,254,0.75) 0px, transparent 55%), rgb(255 251 245)" },
@@ -68,7 +68,7 @@ export interface ShorthandLayer {
 const FX_TOKEN_RE = /^fx:([A-Za-z0-9][\w-]*)(?:\s*\(([\s\S]*)\))?$/;
 const FX_BARE_VALUE_RE = /^[\w.#%+-]+$/;
 
-/** Parse fx params: `speed=1.2 color=accent text='Plan money'` (spaces or commas between pairs). */
+/** Parse fx params: `speed=1.2 color=brand text='Plan money'` (spaces or commas between pairs). */
 function parseFxParams(raw: string): Record<string, string> | null {
   const out: Record<string, string> = {};
   let i = 0;
@@ -110,24 +110,24 @@ function printFxParamValue(v: string): string {
 //   Preset:    "dark-50"  or  "scrim/90"
 //              → known preset at 100% or /opacity
 //
-//   Solid:     "#ff5733/50"  or  "#000/80"  or  "(accent)/30"  or  "(fg)/60"
+//   Solid:     "#ff5733/50"  or  "#000/80"  or  "(brand)/30"  or  "(fg)/60"
 //              → hex or (token) with optional /opacity (default 100)
 //
 //   Gradient:  "linear(45deg, #000/0%, #000/100%)"  or
-//              "linear(90deg, (accent)/0%, (fg)/100%)/80"
-//              "radial((accent)/0%, (accent)/100%)/60"
-//              "radial(at 20% 30%, (accent)/0%, #000/0%)" — off-centre radial
+//              "linear(90deg, (brand)/0%, (fg)/100%)/80"
+//              "radial((brand)/0%, (brand)/100%)/60"
+//              "radial(at 20% 30%, (brand)/0%, #000/0%)" — off-centre radial
 //              "linear(180deg, (canvas)/57%, (canvas)/96%/80)" — a stop's own opacity
 //              goes after its offset
 //
-//   Mesh:      "mesh-accent" | "mesh-lime" | "mesh-night" | "mesh-dawn" | "mesh-rose" | "mesh-rose-vibrant" | "mesh-mint" | "mesh-peach"
+//   Mesh:      "mesh-brand" | "mesh-lime" | "mesh-night" | "mesh-dawn" | "mesh-rose" | "mesh-rose-vibrant" | "mesh-mint" | "mesh-peach"
 //              append "-animated" for a slow drift ("mesh-lime-animated")
 //              → type(angle, stops) with optional /opacity at the end
 //              → each stop: color-or-token/offset%, optionally /opacity after it
 //
-//   Fx:        "fx:dither-waves"  or  "fx:dither-waves(speed=1.2 color=accent)/80"
+//   Fx:        "fx:dither-waves"  or  "fx:dither-waves(speed=1.2 color=brand)/80"
 //              "fx:type-tiles(text='Plan money')"
-//              → a registered Backdrop variant (e.g. from @shavin/fx); params are
+//              → a registered Backdrop variant (e.g. from @shavin/fx, `npm i @shavin/fx`, free to use under its own licence); params are
 //                key=value pairs, quote values with spaces or symbols in '…'
 //
 // JSON array of OverlayLayer[] remains as fallback for Studio's internal use
@@ -174,7 +174,7 @@ function parseShorthandToken(token: string, index: number): ShorthandLayer | nul
     return { id, type: "solid", color: core, opacity, visible: true };
   }
 
-  // 3. Solid token color (e.g. "(accent)", "(fg)", "(bg-surface)")
+  // 3. Solid token color (e.g. "(brand)", "(fg)", "(bg-surface)")
   const tokenMatch = core.match(/^\((.+)\)$/);
   if (tokenMatch) {
     return { id, type: "solid", token: tokenMatch[1].trim(), opacity, visible: true };
@@ -265,7 +265,7 @@ function splitTrailingOpacity(token: string): { core: string; opacity: number } 
 }
 
 /**
- * Parse gradient stops: "#000/0%, #000/100%" or "(accent)/0%, (fg)/100%"
+ * Parse gradient stops: "#000/0%, #000/100%" or "(brand)/0%, (fg)/100%"
  * Each stop: color-or-token/offset%, with an optional /opacity after the offset
  */
 function parseGradientStops(stopsStr: string): Array<{ color: string; offset: number; opacity: number; token?: string }> {
@@ -332,9 +332,9 @@ function splitByCommaRespectingParens(str: string): string[] {
 /**
  * Parse shorthand overlay syntax:
  *   "dark-30, scrim/90"                          — presets
- *   "#000/80, (accent)/30"                       — solid colors
+ *   "#000/80, (brand)/30"                       — solid colors
  *   "linear(45deg, #000/0%, #000/100%)/80"       — gradient
- *   "dark-20, radial(accent/0%, accent/100%)/60" — mixed
+ *   "dark-20, radial(brand/0%, brand/100%)/60" — mixed
  *
  * Returns [] if any token is unparseable (caller falls back to JSON).
  */

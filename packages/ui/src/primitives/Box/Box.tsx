@@ -1,8 +1,8 @@
 import type { HTMLAttributes, ElementType, Ref } from "react";
 import { cn } from "../../lib/cn";
-import { concentricContainerStyle, withConcentricStyle } from "../../lib/concentric";
+import { concentricContainerStyle, paddingScaleFromClassName, withConcentricStyle } from "../../lib/concentric";
 import { surfaceClass, type Surface } from "../../lib/surface";
-import { bgMediaLayer, type BgMediaProps } from "../../lib/media-overlays";
+import { bgMediaLayer, resolveBgReadability, type BgMediaProps } from "../../lib/media-overlays";
 import { withResizable, type ResizableProps } from "../Resizable";
 
 export interface BoxProps extends Omit<HTMLAttributes<HTMLElement>, "onResize">, BgMediaProps, ResizableProps {
@@ -34,17 +34,19 @@ function BoxBase({
   ...props
 }: BoxProps) {
   const concentricStyle = translucent
-    ? concentricContainerStyle("4")
+    ? // Padding comes from className (p-6, px-4 py-8): the real value, not a guess.
+      concentricContainerStyle(paddingScaleFromClassName(className), false, { border: true })
     : {};
-  const { hasMedia, media, content } = bgMediaLayer({ bgVideo, bgImage, bgSize, bgOverlays, bgVideoPaused, bgPoster });
+  const bg = resolveBgReadability({ surface, bgVideo, bgImage, bgOverlays });
+  const { hasMedia, media, content } = bgMediaLayer({ bgVideo, bgImage, bgSize, bgOverlays: bg.bgOverlays, bgVideoPaused, bgPoster });
   return (
     <Tag
       data-panel={translucent || undefined}
-      data-surface={surface || undefined}
+      data-surface={bg.surface || undefined}
       className={cn(
         hasMedia && "relative overflow-hidden",
         translucent && "rounded-[var(--radius-panel)] border border-hairline shadow-panel",
-        surfaceClass(surface),
+        surfaceClass(bg.surface),
         className
       )}
       style={withConcentricStyle(style, concentricStyle)}

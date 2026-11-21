@@ -1,6 +1,7 @@
 "use client";
 import React, { useId, useState } from "react";
 import { cn } from "../../lib/cn";
+import { hitAreaClass, type HitArea } from "../../lib/hit-area";
 import { ChevronRight } from "lucide-react";
 import { Murmur } from "../Murmur/Murmur";
 
@@ -18,6 +19,11 @@ export interface ReasoningProps extends Omit<React.HTMLAttributes<HTMLDivElement
   /** Controlled open state. */
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
+  /**
+   * Hit-area override (docs: "Target size"). "default": 24px floor (this control stays at 24px on touch). "none": no hit area
+   * growth (dense toolbars; may go below 24px, yours to own). "touch": always 44px on a coarse pointer.
+   */
+  hitArea?: HitArea;
 }
 
 /** Collapsible "Thinking…" / "Thought for 4s" disclosure for a model's reasoning. */
@@ -29,6 +35,7 @@ export function Reasoning({
   defaultOpen,
   open: openProp,
   onOpenChange,
+  hitArea,
   className,
   ...props
 }: ReasoningProps) {
@@ -49,7 +56,7 @@ export function Reasoning({
         onClick={toggle}
         aria-expanded={open}
         aria-controls={id}
-        className="group inline-flex w-fit items-center gap-1.5 rounded-[var(--radius-lg)] px-1 py-0.5 text-xs font-medium text-fg-muted transition-colors hover:text-fg"
+        className={cn("hit-area group inline-flex w-fit items-center gap-1.5 rounded-[var(--radius-lg)] px-1 py-0.5 text-xs font-medium text-fg-muted transition-colors hover:text-fg", hitAreaClass(hitArea, "floor", "Reasoning"))}
       >
         {thinking && <Murmur state="thinking" size={22} label="" />}
         <span>{text}</span>

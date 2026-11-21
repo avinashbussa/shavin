@@ -9,7 +9,7 @@ export const docs: ComponentDoc = {
     "minWidth / maxWidth / minHeight / maxHeight bounds, snap grid, lockAspectRatio",
     "persistKey remembers the size in localStorage; double-click or Enter resets it",
     "Handle looks: line (line on hover), grip (always-visible pill), invisible",
-    "resizeColor: accent-subtle (default, softer accent), accent or neutral (monochrome)",
+    "resizeColor: brand-subtle (default, softer brand), brand or neutral (monochrome)",
     "While dragging, the grip slides along the edge with the pointer (clear of rounded corners) and re-centres on release",
     "Radius-aware: edge lines stop where rounded corners begin; corner handles sit on the curve",
     "Works inside scaled canvases; an overlay stops iframes swallowing the drag",

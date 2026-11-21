@@ -2,7 +2,7 @@ import type { ComponentDoc } from "../../authoring/types";
 
 export const docs: ComponentDoc = {
   name: "TimePicker",
-  description: "Time selection primitive supporting interval dropdown (TimePicker), segmented inputs (TimePickerInput), and analog clock face popover (TimePickerClock).",
+  description: "Choose a time from a list at set intervals, by typing hours and minutes, or on a clock face in a popover.",
   features: [
     "Components: TimePicker, TimePickerInput, TimePickerClock",
     "Configurable minute interval step (15, 30, 60 minutes)",

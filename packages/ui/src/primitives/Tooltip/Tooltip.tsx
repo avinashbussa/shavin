@@ -2,6 +2,7 @@
 import type { ReactElement, ReactNode } from "react";
 import * as TooltipPrimitive from "@radix-ui/react-tooltip";
 import { cn } from "../../lib/cn";
+import { usePortalContainer } from "../../lib/portal-container";
 
 const TONE_CLASSES = {
   auto: "border border-transparent bg-tooltip text-tooltip-fg",
@@ -31,6 +32,10 @@ export interface TooltipProps {
   tone?: "auto" | "dark" | "light";
   /** Optional custom CSS class name. */
   className?: string;
+  /** Controlled open state (optional). */
+  open?: boolean;
+  /** Called when the tooltip wants to open or close (hover, focus, Escape, outside press). */
+  onOpenChange?: (open: boolean) => void;
 }
 
 export function Tooltip({
@@ -40,12 +45,15 @@ export function Tooltip({
   delayDuration = 300,
   tone = "auto",
   className,
+  open,
+  onOpenChange,
 }: TooltipProps) {
+  const portalContainer = usePortalContainer();
   return (
     <TooltipPrimitive.Provider delayDuration={delayDuration} skipDelayDuration={300}>
-      <TooltipPrimitive.Root>
+      <TooltipPrimitive.Root open={open} onOpenChange={onOpenChange}>
         <TooltipPrimitive.Trigger asChild>{children}</TooltipPrimitive.Trigger>
-        <TooltipPrimitive.Portal>
+        <TooltipPrimitive.Portal container={portalContainer}>
           <TooltipPrimitive.Content
             data-panel={tone === "auto" ? true : undefined}
             side={side}

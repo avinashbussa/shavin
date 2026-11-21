@@ -13,7 +13,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        "brand-primary": "rgb(var(--brand-primary) / <alpha-value>)"
+        /* (no brand colors defined yet — add hex values in brand-tokens.css) */
       },
     },
   },

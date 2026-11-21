@@ -12,7 +12,8 @@ export const docs: ComponentDoc = {
   accessibility: [
     "Uses native <input> element supporting standard browser form handling and focus states",
     "Associates label with input for screen reader announcements",
-    "Applies aria-invalid automatically when invalid=true"
+    "Applies aria-invalid automatically when invalid=true or errorMessage is set",
+    "errorMessage shows with an icon and is announced once (polite) when it first appears; announceError={false} turns that off (FormErrorSummary silences it after a failed submit)"
   ],
   keyboard: "Standard input typing, Tab to move focus, Escape/Enter in forms",
   usage: {
@@ -27,6 +28,9 @@ export const docs: ComponentDoc = {
       }
     ]
   },
+  structure: [
+    "type=\"otp\" makes it a code-entry input; length, separator, separatorIndex, onComplete and slotClassName apply only then.",
+  ],
   examples: [
     {
       title: "Standard Text Input",

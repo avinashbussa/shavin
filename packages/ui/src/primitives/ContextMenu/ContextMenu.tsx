@@ -3,6 +3,7 @@ import type { ReactNode, ComponentProps } from "react";
 import * as ContextMenuPrimitive from "@radix-ui/react-context-menu";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "../../lib/cn";
+import { usePortalContainer } from "../../lib/portal-container";
 
 export interface ContextMenuProps {
   /** Target trigger element — right-clicking anywhere inside opens context menu. */
@@ -18,10 +19,11 @@ export function ContextMenu({
   children,
   className,
 }: ContextMenuProps) {
+  const portalContainer = usePortalContainer();
   return (
     <ContextMenuPrimitive.Root>
       <ContextMenuPrimitive.Trigger asChild>{trigger}</ContextMenuPrimitive.Trigger>
-      <ContextMenuPrimitive.Portal>
+      <ContextMenuPrimitive.Portal container={portalContainer}>
         <ContextMenuPrimitive.Content
           data-panel
           avoidCollisions
@@ -39,7 +41,7 @@ export function ContextMenu({
 }
 
 export const contextMenuItemVariants = cva(
-  "flex items-center w-full cursor-pointer px-2.5 h-7 text-left text-xs rounded-[var(--radius-md)] outline-none hover:bg-surface-hover data-[highlighted]:bg-surface-hover transition-colors",
+  "flex items-center w-full cursor-pointer px-2.5 h-7 text-left text-xs rounded-panel-p1 outline-none hover:bg-elevated-hover data-[highlighted]:bg-elevated-hover transition-colors",
   {
     variants: {
       variant: {

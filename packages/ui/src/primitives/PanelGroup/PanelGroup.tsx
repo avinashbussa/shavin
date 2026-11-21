@@ -134,6 +134,8 @@ export function PanelGroup({
       defaultLayout={defaultLayout}
       groupRef={setGroupRef as Ref<GroupImperativeHandle | null>}
       elementRef={setGroupEl}
+      // Divider hit area: 24px for a mouse (WCAG 2.5.8), 44px for touch. Callers can override.
+      resizeTargetMinimumSize={{ coarse: 44, fine: 24 }}
       onPointerMove={(e) => {
         slideGrips(e.currentTarget, e.clientX, e.clientY);
         onPointerMove?.(e);
@@ -170,15 +172,15 @@ export const panelHandleVariants = cva(
       },
       // Hover, focus and drag colours of the divider and the grip.
       color: {
-        accent:
-          "data-[separator=hover]:bg-accent data-[separator=active]:bg-accent data-[separator=focus]:bg-accent data-[separator=hover]:before:bg-accent data-[separator=active]:before:bg-accent data-[separator=focus]:before:bg-accent",
-        "accent-subtle":
-          "data-[separator=hover]:bg-accent/40 data-[separator=active]:bg-accent/60 data-[separator=focus]:bg-accent/60 data-[separator=hover]:before:bg-accent/40 data-[separator=active]:before:bg-accent/60 data-[separator=focus]:before:bg-accent/60",
+        brand:
+          "data-[separator=hover]:bg-brand data-[separator=active]:bg-brand data-[separator=focus]:bg-brand data-[separator=hover]:before:bg-brand data-[separator=active]:before:bg-brand data-[separator=focus]:before:bg-brand",
+        "brand-subtle":
+          "data-[separator=hover]:bg-brand/40 data-[separator=active]:bg-brand/60 data-[separator=focus]:bg-brand/60 data-[separator=hover]:before:bg-brand/40 data-[separator=active]:before:bg-brand/60 data-[separator=focus]:before:bg-brand/60",
         neutral:
           "data-[separator=hover]:bg-fg-subtle data-[separator=active]:bg-fg-muted data-[separator=focus]:bg-fg-muted data-[separator=hover]:before:bg-fg-subtle data-[separator=active]:before:bg-fg-muted data-[separator=focus]:before:bg-fg-muted",
       },
     },
-    defaultVariants: { variant: "line", color: "accent-subtle" },
+    defaultVariants: { variant: "line", color: "brand-subtle" },
   }
 );
 

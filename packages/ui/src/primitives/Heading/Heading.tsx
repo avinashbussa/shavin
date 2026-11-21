@@ -6,9 +6,11 @@ import { cn } from "../../lib/cn";
 // falls back to the small viewport when there is none. Each size reaches its floor near
 // 400px and its ceiling near 900px of container width. Written as literal classes so
 // Tailwind's scanner finds them; underscores become the spaces clamp() requires.
-const FLUID_XL = "text-[clamp(1.5rem,1.2rem_+_1.2cqi,1.875rem)]";
-const FLUID_2XL = "text-[clamp(1.875rem,1.575rem_+_1.2cqi,2.25rem)]";
-const FLUID_3XL = "text-[clamp(2.25rem,1.65rem_+_2.4cqi,3rem)]";
+// text-[clamp()] sets font-size only, so each fluid size also sets its own line-height. Without
+// it the heading inherits the parent's (often a fixed 20px from text-sm) and wrapped lines overlap.
+const FLUID_XL = "text-[clamp(1.5rem,1.2rem_+_1.2cqi,1.875rem)] leading-[1.25]";
+const FLUID_2XL = "text-[clamp(1.875rem,1.575rem_+_1.2cqi,2.25rem)] leading-[1.2]";
+const FLUID_3XL = "text-[clamp(2.25rem,1.65rem_+_2.4cqi,3rem)] leading-[1.12]";
 const FLUID_4XL = "text-[clamp(2.25rem,1.05rem_+_4.8cqi,3.75rem)]";
 const FLUID_5XL = "text-[clamp(2.25rem,0.96rem_+_5.14cqi,4.5rem)]";
 

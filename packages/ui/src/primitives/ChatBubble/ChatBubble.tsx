@@ -12,7 +12,7 @@ export const bubbleVariants = cva("w-fit max-w-[85%] px-3 py-2 text-sm leading-r
   variants: {
     variant: {
       incoming: "bg-surface-hover text-fg rounded-[var(--radius-panel)] rounded-tl-[0.25rem]",
-      outgoing: "bg-accent text-accent-fg rounded-[var(--radius-panel)] rounded-tr-[0.25rem]",
+      outgoing: "bg-brand-solid text-brand-fg rounded-[var(--radius-panel)] rounded-tr-[0.25rem]",
       system: "mx-auto max-w-full bg-transparent px-3 py-1 text-center text-xs text-fg-subtle",
     },
   },
@@ -121,7 +121,7 @@ export function ChatBubble({
         </span>
       ))}
       {children}
-      {status === "streaming" && <span aria-hidden className="inline-block h-4 w-1.5 animate-pulse-dot rounded-[var(--radius-sm)] bg-accent" />}
+      {status === "streaming" && <span aria-hidden className="inline-block h-4 w-1.5 animate-pulse-dot rounded-[var(--radius-sm)] bg-brand" />}
     </>
   );
 

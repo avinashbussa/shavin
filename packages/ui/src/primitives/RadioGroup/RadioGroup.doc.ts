@@ -2,7 +2,7 @@ import type { ComponentDoc } from "../../authoring/types";
 
 export const docs: ComponentDoc = {
   name: "RadioGroup",
-  description: "Single-choice radio selection group built on Radix RadioGroup primitive supporting radio buttons and selectable card grid layouts.",
+  description: "Pick one option from a small set, shown as radio buttons or as selectable cards.",
   features: [
     "Variants: default (standard radio buttons) and cards (selectable card grid)",
     "Supports radius escape hatch (radius='none|small|medium|large|full|inherit')",

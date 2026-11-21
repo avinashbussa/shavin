@@ -25,9 +25,9 @@ import { Backdrop } from "../primitives/Backdrop/Backdrop";
 import { OVERLAY_PRESET_KEYS, OVERLAY_PRESET_STYLES, parseOverlayShorthand as parseShorthandBase, overlayLayersToShorthand as layersToShorthandBase } from "./media-overlay-presets";
 
 // Internal preset styles moved to ./media-overlay-presets (pure .ts module —
-// shared with the @shavin/block-renderer parser). Re-exported for backwards
+// shared with block parsers). Re-exported for backwards
 // compatibility within this file's consumers.
-export { OVERLAY_PRESET_KEYS };
+export { OVERLAY_PRESET_KEYS, OVERLAY_PRESET_STYLES };
 
 const PRESET_INLINE_STYLES = OVERLAY_PRESET_STYLES;
 
@@ -140,6 +140,47 @@ export function bgMediaLayer<P extends BgMediaProps>(
   };
 }
 
+/** Append a preset layer to `bgOverlays`, which is either the comma shorthand or a JSON array of layers. */
+function withScrim(bgOverlays: string | undefined, preset: string): string {
+  const v = (bgOverlays ?? "").trim();
+  if (v.startsWith("[")) {
+    try {
+      const arr = JSON.parse(v) as unknown[];
+      arr.push({ id: "readability-scrim", type: "preset", presetKey: preset, opacity: 100, visible: true });
+      return JSON.stringify(arr);
+    } catch {
+      /* not valid JSON: fall through to the shorthand append */
+    }
+  }
+  return v ? `${v}, ${preset}` : preset;
+}
+
+/**
+ * Readable text by default over background media.
+ *
+ * A layout with a photo, video or `fx:` backdrop and no explicit `surface` would otherwise keep the theme's
+ * text colour, which is unreadable on most media. When `surface` is not set, this returns `dark-always`
+ * (light text) and, unless the overlays already hold a dark enough scrim, appends one: `dark-30` for photos
+ * and video, `dark-50` for fx, which are brighter and busier. An explicit `surface` always wins and is never
+ * second-guessed, and a light tint (`light-*`) in the overlays means the author chose dark text, so nothing
+ * is changed. Meshes and custom gradients are left alone: their tone depends on the page theme, so the
+ * author picks the `surface` (validate_code flags a missing one).
+ */
+export function resolveBgReadability<S extends string | undefined>(
+  props: BgMediaProps & { surface?: S },
+): { surface: S | "dark-always" | undefined; bgOverlays: string | undefined } {
+  if (props.surface !== undefined) return { surface: props.surface, bgOverlays: props.bgOverlays };
+  const layers = parseOverlayLayers({ bgOverlays: props.bgOverlays ?? "" } as unknown as Record<string, string>).filter((l) => l.visible);
+  const fx = layers.some((l) => l.type === "fx");
+  const photo = Boolean(props.bgImage || props.bgVideo);
+  if (!fx && !photo) return { surface: undefined, bgOverlays: props.bgOverlays };
+  const preset = layers.filter((l) => l.type === "preset" && l.presetKey).map((l) => l.presetKey as string);
+  if (preset.some((k) => /^light-\d+$/.test(k))) return { surface: undefined, bgOverlays: props.bgOverlays };
+  const need = fx ? 50 : 30;
+  const dark = preset.some((k) => k === "scrim" || k === "scrim-left" || (/^dark-(\d+)$/.test(k) && Number(k.slice(5)) >= need));
+  return { surface: "dark-always", bgOverlays: dark ? props.bgOverlays : withScrim(props.bgOverlays, `dark-${need}`) };
+}
+
 export function hexToRgb(hex: string): { r: number; g: number; b: number; a: number } {
   let c = (hex || "").replace(/^#/, "");
   if (!c) return { r: 0, g: 0, b: 0, a: 1 };
@@ -167,7 +208,7 @@ export function tokenNameToCssColor(token?: string, fallbackHex?: string, alpha 
     if (t === "fg (text)" || t === "fg" || t === "text") return `rgb(var(--fg) / ${a})`;
     if (t === "fg muted" || t.includes("fg-muted")) return `rgb(var(--fg-muted) / ${a})`;
     if (t === "fg subtle" || t.includes("fg-subtle")) return `rgb(var(--fg-subtle) / ${a})`;
-    if (t === "accent" || t.includes("accent")) return `rgb(var(--accent) / ${a})`;
+    if (t === "brand" || t.includes("brand")) return `rgb(var(--brand) / ${a})`;
     if (t === "danger") return `rgb(var(--danger) / ${a})`;
     if (t === "success") return `rgb(var(--success) / ${a})`;
     if (t === "warning") return `rgb(var(--warning) / ${a})`;
@@ -193,7 +234,7 @@ export function tokenNameToCssVar(token?: string): string | null {
   if (t === "fg (text)" || t === "fg" || t === "text") return "var(--fg)";
   if (t === "fg muted" || t.includes("fg-muted")) return "var(--fg-muted)";
   if (t === "fg subtle" || t.includes("fg-subtle")) return "var(--fg-subtle)";
-  if (t === "accent" || t.includes("accent")) return "var(--accent)";
+  if (t === "brand" || t.includes("brand")) return "var(--brand)";
   if (t === "danger") return "var(--danger)";
   if (t === "success") return "var(--success)";
   if (t === "warning") return "var(--warning)";
@@ -209,16 +250,16 @@ export function getOverlayThumbnailStyle(layer: OverlayLayer): React.CSSProperti
   if (layer.type === "preset" && layer.presetKey) {
     return getPresetThumbnailStyle(layer.presetKey);
   }
-  // fx backdrops can't render a live canvas in a tiny swatch — show an accent wash.
+  // fx backdrops can't render a live canvas in a tiny swatch — show a brand wash.
   if (layer.type === "fx") {
-    return { background: "conic-gradient(from 200deg at 50% 50%, rgb(var(--accent) / 0.5), rgb(var(--accent) / 0.1), rgb(var(--accent) / 0.5))" };
+    return { background: "conic-gradient(from 200deg at 50% 50%, rgb(var(--brand) / 0.5), rgb(var(--brand) / 0.1), rgb(var(--brand) / 0.5))" };
   }
   return getOverlayLayerStyle(layer) || { backgroundColor: layer.color || "#000000" };
 }
 
 // Re-export shorthand parse/serialize from the pure-data presets module.
 // media-overlay-presets.ts holds the canonical implementations (no JSX) so
-// @shavin/block-renderer can import them via @shavin/ui/lib/media-overlay-presets.
+// block parsers can import them via @shavin/ui/lib/media-overlay-presets.
 export const parseOverlayShorthand = parseShorthandBase;
 export const overlayLayersToShorthand = layersToShorthandBase;
 
@@ -393,7 +434,7 @@ export const renderBgMedia = (props: Record<string, string>) => {
 export function renderOverlayLayers(layers: OverlayLayer[]): React.ReactNode[] {
   return layers.map((l, idx) => {
     if (l.type === "fx") {
-      // WebGL/canvas effect (@shavin/fx) via the Backdrop registry; falls back to
+      // WebGL/canvas effect (@shavin/fx: `npm i @shavin/fx`, free to use under its own licence) via the Backdrop registry; falls back to
       // the built-in "mesh" backdrop when the fx key isn't registered.
       return (
         <Backdrop

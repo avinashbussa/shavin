@@ -2,7 +2,7 @@ import type { ComponentDoc } from "../../authoring/types";
 
 export const docs: ComponentDoc = {
   name: "Tabs",
-  description: "Tabbed navigation and in-page state container built on Radix Tabs primitive supporting line, segmented, pills, and button variants.",
+  description: "Switch between panels on a page, or between routes. Comes in line, segmented, pills and button styles.",
   features: [
     "Modes: as='states' (in-page panels) and as='navigation' (URL routing links)",
     "Variants: line (default active underline), segmented, pills (rounded-full), button",
@@ -35,7 +35,7 @@ export const docs: ComponentDoc = {
     },
     {
       title: "Segmented",
-      description: "Enclosed control; the accent pill glides between tabs (variant=\"segmented\").",
+      description: "Enclosed control; the brand pill glides between tabs (variant=\"segmented\").",
       code: '<Tabs variant="segmented" items={[{ label: "Day", content: "Day view" }, { label: "Week", content: "Week view" }, { label: "Month", content: "Month view" }]} />'
     },
     {

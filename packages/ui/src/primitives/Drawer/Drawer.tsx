@@ -4,6 +4,7 @@ import * as RadixDialog from "@radix-ui/react-dialog";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "../../lib/cn";
 import { CloseButton } from "../Dialog/Dialog";
+import { usePortalContainer } from "../../lib/portal-container";
 
 /**
  * Drawer — edge-mounted overlay panel built on Radix Dialog.
@@ -60,10 +61,16 @@ const drawerPanelVariants = cva(
 );
 
 export interface DrawerProps extends VariantProps<typeof drawerPanelVariants> {
-  /** Whether the drawer is open. */
-  open: boolean;
-  /** Callback fired when drawer requests to close (Escape, backdrop click, close button). */
-  onClose: () => void;
+  /** Controlled open state. Leave it out for an uncontrolled drawer (see `trigger` and `defaultOpen`). */
+  open?: boolean;
+  /** Initial open state when uncontrolled. Default: closed when `trigger` is set, otherwise open. */
+  defaultOpen?: boolean;
+  /** Element that opens the drawer, e.g. `<IconButton aria-label="Open menu">…</IconButton>`. Makes the drawer work without state, so it can be used in blocks. */
+  trigger?: ReactNode;
+  /** Called whenever the drawer asks to open or close (trigger, Escape, backdrop, close button). */
+  onOpenChange?: (open: boolean) => void;
+  /** Callback fired when drawer requests to close (Escape, backdrop click, close button). Required when controlled; optional otherwise. */
+  onClose?: () => void;
   /** Drawer header title (string or custom content like a logo). */
   title: ReactNode;
   /** Optional subtitle line below title. */
@@ -92,6 +99,9 @@ export interface DrawerProps extends VariantProps<typeof drawerPanelVariants> {
 
 export function Drawer({
   open: controlledOpen,
+  defaultOpen,
+  trigger,
+  onOpenChange,
   onClose,
   title,
   subtitle,
@@ -106,7 +116,7 @@ export function Drawer({
   headerClassName,
   modal = true,
 }: DrawerProps) {
-  const [internalOpen, setInternalOpen] = useState(true);
+  const [internalOpen, setInternalOpen] = useState(defaultOpen ?? !trigger);
   const isControlled = controlledOpen !== undefined;
   const isOpen = isControlled ? controlledOpen : internalOpen;
 
@@ -116,7 +126,7 @@ export function Drawer({
       // set data-state="closed", and Presence keeps content mounted while
       // the CSS exit animation runs. The parent must NOT unmount the Drawer
       // here — just set open=false. Radix unmounts portal content after anim.
-      onClose();
+      onClose?.();
     } else {
       // Uncontrolled: flip internal state. Radix triggers exit animation.
       // onAnimationEnd fires onClose() after the animation completes so
@@ -124,6 +134,7 @@ export function Drawer({
       setInternalOpen(false);
     }
   }, [isControlled, onClose]);
+  const portalContainer = usePortalContainer();
 
   // Enter animation class — plays on mount via plain CSS class.
   // Exit animation is driven by [data-state="closed"].animate-drawer-exit
@@ -139,9 +150,15 @@ export function Drawer({
       // The close button still works because it calls onClose() directly
       // (not through onOpenChange).
       if (!next && !dismissible) return;
-      if (!next) close();
+      onOpenChange?.(next);
+      if (next) {
+        if (!isControlled) setInternalOpen(true);
+        return;
+      }
+      close();
     }} modal={modal}>
-      <RadixDialog.Portal>
+      {trigger && <RadixDialog.Trigger asChild>{trigger}</RadixDialog.Trigger>}
+      <RadixDialog.Portal container={portalContainer}>
         {modal ? (
           <RadixDialog.Overlay
             className={cn(
@@ -190,7 +207,7 @@ export function Drawer({
             // so the parent can unmount the component.
             // For controlled mode: onClose was already called in close(),
             // and the parent set open=false — Radix handles unmounting.
-            if (!isOpen && !isControlled && e.target === e.currentTarget) onClose();
+            if (!isOpen && !isControlled && e.target === e.currentTarget) onClose?.();
           }}
         >
           {/* Header */}

@@ -3,6 +3,7 @@ import React, { createContext, useContext, type ComponentPropsWithoutRef, type R
 import * as RadixRadioGroup from "@radix-ui/react-radio-group";
 import { cva } from "class-variance-authority";
 import { cn } from "../../lib/cn";
+import { hitAreaClass, type HitArea } from "../../lib/hit-area";
 
 export type RadiusPreset = "none" | "small" | "medium" | "large" | "full" | "inherit" | "concentric";
 
@@ -10,6 +11,7 @@ interface RadioGroupContextValue {
   variant: "default" | "cards";
   radius: RadiusPreset;
   disabled?: boolean;
+  hitArea?: HitArea;
 }
 
 const RadioGroupContext = createContext<RadioGroupContextValue>({
@@ -18,7 +20,7 @@ const RadioGroupContext = createContext<RadioGroupContextValue>({
 });
 
 export const ringRadiusVariants = cva(
-  "flex h-5 w-5 shrink-0 items-center justify-center border border-border-control bg-surface transition data-[state=checked]:border-accent disabled:cursor-not-allowed disabled:opacity-50",
+  "hit-area-touch flex h-5 w-5 shrink-0 items-center justify-center border border-border-control bg-surface transition data-[state=checked]:border-brand-text disabled:cursor-not-allowed disabled:opacity-50",
   {
     variants: {
       radius: {
@@ -35,7 +37,7 @@ export const ringRadiusVariants = cva(
   }
 );
 
-export const dotRadiusVariants = cva("h-2.5 w-2.5 bg-accent", {
+export const dotRadiusVariants = cva("h-2.5 w-2.5 bg-brand-solid", {
   variants: {
     radius: {
       none: "rounded-none",
@@ -51,7 +53,7 @@ export const dotRadiusVariants = cva("h-2.5 w-2.5 bg-accent", {
 });
 
 export const cardRadiusVariants = cva(
-  "flex items-center gap-3 border p-3 text-sm text-fg transition border-hairline data-[state=checked]:border-accent data-[state=checked]:bg-accent/5",
+  "flex items-center gap-3 border p-3 text-sm text-fg transition border-hairline data-[state=checked]:border-brand-text data-[state=checked]:bg-brand/5",
   {
     variants: {
       radius: {
@@ -73,18 +75,24 @@ export interface RadioGroupProps extends ComponentPropsWithoutRef<typeof RadixRa
   variant?: "default" | "cards";
   /** Radius style for radio items or card containers. Default "inherit". */
   radius?: RadiusPreset;
+  /**
+   * Hit-area override (docs: "Target size"). "default": 24px floor, 44px on touch. "none": no hit area
+   * growth (dense toolbars; may go below 24px, yours to own). "touch": always 44px on a coarse pointer.
+   */
+  hitArea?: HitArea;
 }
 
 export function RadioGroup({
   variant = "default",
   radius = "inherit",
+  hitArea,
   disabled,
   className,
   children,
   ...props
 }: RadioGroupProps) {
   return (
-    <RadioGroupContext.Provider value={{ variant, radius, disabled }}>
+    <RadioGroupContext.Provider value={{ variant, radius, disabled, hitArea }}>
       <RadixRadioGroup.Root
         className={cn(
           variant === "cards" ? "grid gap-2 sm:grid-cols-2" : "flex flex-col gap-2",
@@ -112,6 +120,8 @@ export interface RadioProps {
   radius?: RadiusPreset;
   /** Variant override for this specific item. */
   variant?: "default" | "cards";
+  /** Hit-area override for this item; defaults to the group's. See RadioGroup. */
+  hitArea?: HitArea;
   /** Custom wrapper class name. */
   className?: string;
   /** Custom children element to render inside card or label. */
@@ -127,6 +137,7 @@ export function Radio({
   disabled: itemDisabled,
   radius: itemRadius,
   variant: itemVariant,
+  hitArea: itemHitArea,
   className,
   children,
   "aria-label": ariaLabel,
@@ -135,6 +146,7 @@ export function Radio({
   const effectiveVariant = itemVariant ?? ctx.variant;
   const effectiveRadius = itemRadius ?? ctx.radius;
   const isDisabled = itemDisabled ?? ctx.disabled;
+  const hitArea = itemHitArea ?? ctx.hitArea;
 
   if (effectiveVariant === "cards") {
     return (
@@ -145,7 +157,7 @@ export function Radio({
         className={cn(
           cardRadiusVariants({ radius: effectiveRadius }),
           "w-full text-left",
-          isDisabled ? "cursor-not-allowed opacity-50" : "cursor-pointer hover:bg-surface-hover data-[state=checked]:hover:bg-accent/5",
+          isDisabled ? "cursor-not-allowed opacity-50" : "cursor-pointer hover:bg-surface-hover data-[state=checked]:hover:bg-brand/5",
           className
         )}
       >
@@ -161,7 +173,7 @@ export function Radio({
 
   return (
     <label className={cn("flex items-center gap-2 select-none", isDisabled ? "cursor-not-allowed" : "cursor-pointer", className)}>
-      <RadixRadioGroup.Item value={value} disabled={isDisabled} aria-label={ariaLabel} className={ringRadiusVariants({ radius: effectiveRadius })}>
+      <RadixRadioGroup.Item value={value} disabled={isDisabled} aria-label={ariaLabel} className={cn(ringRadiusVariants({ radius: effectiveRadius }), hitAreaClass(hitArea, "touch", "Radio"))}>
         <RadixRadioGroup.Indicator className={dotRadiusVariants({ radius: effectiveRadius })} />
       </RadixRadioGroup.Item>
       {children || (

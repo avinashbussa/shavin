@@ -2,7 +2,7 @@ import type { ComponentDoc } from "../../authoring/types";
 
 export const docs: ComponentDoc = {
   name: "HoverCard",
-  description: "Hover-triggered preview card panel built on Radix HoverCard primitive with open/close intent delays and collision detection.",
+  description: "A preview panel that opens when the user hovers over a link or name, after a short delay. It stays on screen near edges.",
   features: [
     "Components: HoverCard, HoverCardTrigger, HoverCardContent",
     "Uses panel radius --radius-panel per AGENTS.md rule section 5",
@@ -29,7 +29,7 @@ export const docs: ComponentDoc = {
   examples: [
     {
       title: "User Profile Preview Card",
-      code: '<HoverCard><HoverCardTrigger asChild><a href="#">@alex</a></HoverCardTrigger><HoverCardContent><div>Alex Morgan</div></HoverCardContent></HoverCard>'
+      code: '<HoverCard><HoverCardTrigger asChild><a href="#" className="py-1">@alex</a></HoverCardTrigger><HoverCardContent><div>Alex Morgan</div></HoverCardContent></HoverCard>'
     }
   ]
 };

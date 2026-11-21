@@ -51,15 +51,15 @@ export function BottomNav({
             className={cn(
               "relative flex flex-1 flex-col items-center justify-center gap-1 py-1.5 text-[11px] font-medium transition cursor-pointer select-none",
               isActive
-                ? "text-accent font-semibold"
+                ? "text-brand-text font-semibold"
                 : "text-fg-muted hover:text-fg"
             )}
           >
             {item.icon && (
-              <span className={cn("relative flex h-5 w-5 items-center justify-center shrink-0", isActive ? "text-accent" : "text-fg-subtle")}>
+              <span className={cn("relative flex h-5 w-5 items-center justify-center shrink-0", isActive ? "text-brand-text" : "text-fg-subtle")}>
                 <span aria-hidden="true" className="contents">{item.icon}</span>
                 {item.badge !== undefined && (
-                  <span className="absolute -top-1 -right-2.5 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-accent px-1 text-[9px] font-bold text-accent-fg">
+                  <span className="absolute -top-1 -right-2.5 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-brand-solid px-1 text-[9px] font-bold text-brand-fg">
                     {item.badge}
                   </span>
                 )}
@@ -67,7 +67,7 @@ export function BottomNav({
             )}
             <span className="truncate max-w-[72px] text-center">{item.label}</span>
             {isActive && (
-              <span aria-hidden="true" className="absolute bottom-0 h-0.5 w-6 rounded-full bg-accent" />
+              <span aria-hidden="true" className="absolute bottom-0 h-0.5 w-6 rounded-full bg-brand-solid" />
             )}
           </a>
         );

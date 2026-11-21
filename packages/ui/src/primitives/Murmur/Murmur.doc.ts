@@ -6,7 +6,7 @@ export const docs: ComponentDoc = {
   features: [
     "States: idle, thinking, working, listening (level-reactive), searching, composing, weaving, connecting, and the loaders orbiting (ring) and looping (infinity). Add your own with registerMurmurState",
     "size, speed, dots and dotSize props tune the sphere; dotSize scales every dot (default 0.4)",
-    "Canvas, no dependencies. Colour follows the text colour, accent by default",
+    "Canvas, no dependencies. Colour follows the text colour, brand by default",
     "Pauses off screen and stops animating under prefers-reduced-motion",
     "Used by ChatBubble (submitted), Reasoning, ToolCall and VoiceInput"
   ],

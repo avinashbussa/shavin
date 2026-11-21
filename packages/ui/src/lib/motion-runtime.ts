@@ -2,7 +2,8 @@
 /**
  * Self-initializing motion runtime (see docs/architecture/motion-tab-spec.md, §5).
  *
- * Zero-setup: imported for its side effect by the @shavin/ui barrel — there is NO component to mount.
+ * Zero-setup: `ThemeProvider` starts it on mount (and it boots when this module loads in a browser); no
+ * extra component to mount. Call `initMotionRuntime()` yourself in an app without a ThemeProvider.
  * It only does the parts CSS can't:
  *   - an IntersectionObserver reveal FALLBACK for browsers without `animation-timeline: view()`
  *     (modern browsers use the pure-CSS scroll-driven path and this stays idle),
@@ -21,7 +22,26 @@ let booted = false;
  * scrub/pin become no-ops and GSAP is never loaded. GSAP is an OPTIONAL peer dependency; if it is not
  * installed the loader fails gracefully and scrub/pin simply don't run.
  */
-export const motionConfig = { gsap: true };
+export const motionConfig: MotionConfig = { gsap: true };
+
+/** What a GSAP loader resolves to. `ScrollTrigger` and `SplitText` are registered when present. */
+export interface GsapModules {
+  gsap: typeof import("gsap").gsap;
+  ScrollTrigger?: object;
+  SplitText?: object | null;
+}
+
+export interface MotionConfig {
+  /** Kill switch: `false` disables scroll scrub/pin and GSAP is never loaded. */
+  gsap: boolean;
+  /**
+   * Supply GSAP yourself instead of letting the runtime import it: `motionConfig.loadGsap = async () =>
+   * ({ gsap: (await import("gsap")).gsap, ScrollTrigger: (await import("gsap/ScrollTrigger")).ScrollTrigger })`.
+   * Set it before the first scroll animation runs. Useful when your bundler inlines dynamic imports
+   * (esbuild without code splitting): mark `gsap` external there and the default loader fails quietly.
+   */
+  loadGsap?: () => Promise<GsapModules>;
+}
 
 type SplitTextCtor = new (target: Element, vars: { type: string }) => { words: Element[]; chars: Element[]; lines: Element[] };
 let gsapLoader: Promise<{ gsap: typeof import("gsap").gsap; SplitText: SplitTextCtor | null } | null> | null = null;
@@ -29,14 +49,12 @@ function loadGsap() {
   if (gsapLoader) return gsapLoader;
   gsapLoader = (async () => {
     try {
-      const gsapMod = await import("gsap");
-      const gsap = gsapMod.gsap ?? (gsapMod as unknown as { default: typeof gsapMod.gsap }).default;
-      const { ScrollTrigger } = await import("gsap/ScrollTrigger");
-      gsap.registerPlugin(ScrollTrigger);
-      // SplitText (free since gsap 3.13) powers split-text timeline lanes; optional — skip if absent.
-      let SplitText: SplitTextCtor | null = null;
-      try { const m = await import("gsap/SplitText"); SplitText = (m as unknown as { SplitText: SplitTextCtor }).SplitText; if (SplitText) gsap.registerPlugin(SplitText as unknown as object); } catch { SplitText = null; }
-      return { gsap, SplitText };
+      // The default loader lives in its own module so the gsap imports sit behind one lazy edge.
+      const mods = motionConfig.loadGsap ? await motionConfig.loadGsap() : await import("./motion-gsap").then((m) => m.loadDefaultGsap());
+      const { gsap, ScrollTrigger, SplitText } = mods;
+      if (ScrollTrigger) gsap.registerPlugin(ScrollTrigger);
+      if (SplitText) gsap.registerPlugin(SplitText);
+      return { gsap, SplitText: (SplitText ?? null) as SplitTextCtor | null };
     } catch {
       return null; // gsap not installed / not enabled → graceful no-op
     }

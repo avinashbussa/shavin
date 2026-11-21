@@ -11,6 +11,10 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { c, g, fmt, printBanner, printCard, printStage, formatDuration, runTask } from "../../scripts/lib/term-ui.mjs";
+import { gradeBadge } from "../../scripts/lib/grade.mjs";
+
+// runTask exits the process on any failed step, so reaching the summary means every step passed.
+const BUILD_SCORE = 100;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -28,7 +32,7 @@ async function main() {
   printStage(1, "Tokens & Component Catalog", "Generate design token scales and component manifest");
 
   await runTask({
-    prefix: "[1/4]",
+    prefix: "[1/3]",
     name: "Design Tokens",
     desc: "Generate tokens.json & CSS variable scales",
     cmd: "node scripts/gen-tokens.mjs",
@@ -37,7 +41,7 @@ async function main() {
   });
 
   await runTask({
-    prefix: "[2/4]",
+    prefix: "[2/3]",
     name: "Component Manifest",
     desc: "Scan and build components.json catalog",
     cmd: "node scripts/gen-manifest.mjs",
@@ -48,19 +52,11 @@ async function main() {
   printStage(2, "Primitive Compilation", "Bundle primitives, server entries & style presets via tsup");
 
   await runTask({
-    prefix: "[3/4]",
+    prefix: "[3/3]",
     name: "Compile Primitives",
     desc: "Bundle ESM modules & type definitions",
-    cmd: "rm -rf dist && npx tsup",
-    cwd: PKG_DIR,
-    verbose: VERBOSE,
-  });
-
-  await runTask({
-    prefix: "[4/4]",
-    name: "Sync Brand Assets",
-    desc: "Copy brand favicon & assets into dist/",
-    cmd: "cp -r ../../assets dist/ 2>/dev/null || true",
+    // Node one-liners instead of rm/cp: runTask spawns cmd.exe on Windows.
+    cmd: `node -e "require('fs').rmSync('dist',{recursive:true,force:true})" && npx tsup && node scripts/rewrite-specifiers.mjs`,
     cwd: PKG_DIR,
     verbose: VERBOSE,
   });
@@ -84,7 +80,7 @@ async function main() {
       { label: "Server Bundle:", value: `${c.fg}dist/server.js (${c.fgSubtle}no 'use client'${c.reset})` },
       { label: "Styles & Themes:", value: `${c.fg}dist/styles/global.css, theme-v4.css${c.reset}` },
       { label: "Total Duration:", value: `${c.bold}${c.fg}${formatDuration(totalTime)}${c.reset}` },
-      { label: "Quality Grade:", value: `${fmt.pass("VERIFIED AAA")} ${fmt.badge("PRODUCTION READY", c.success)}` },
+      { label: "Quality Grade:", value: `${gradeBadge(BUILD_SCORE, { fmt, c }, undefined, "PRODUCTION READY")}` },
     ],
     footer: `${c.fgSubtle}All design tokens, CSS presets and primitives are ready for production consumption.${c.reset}`,
   });

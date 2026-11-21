@@ -36,7 +36,7 @@ export interface MurmurProps extends Omit<React.HTMLAttributes<HTMLSpanElement>,
 
 /**
  * A living dot-sphere that shows what an AI is doing. Colour follows the text colour
- * (accent by default), motion pauses off screen and stops under prefers-reduced-motion.
+ * (brand by default), motion pauses off screen and stops under prefers-reduced-motion.
  */
 export function Murmur({ state = "thinking", size = 24, level = 0, speed = 1, dots, dotSize = 0.4, label, className, style, ...props }: MurmurProps) {
   const canvas = useRef<HTMLCanvasElement>(null);
@@ -111,7 +111,7 @@ export function Murmur({ state = "thinking", size = 24, level = 0, speed = 1, do
       role={name ? "img" : undefined}
       aria-label={name || undefined}
       aria-hidden={name ? undefined : true}
-      className={cn("inline-flex shrink-0 align-middle text-accent-contrast", className)}
+      className={cn("inline-flex shrink-0 align-middle text-brand-contrast", className)}
       style={{ width: size, height: size, ...style }}
       {...props}
     >

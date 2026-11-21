@@ -3,16 +3,16 @@ import type { ComponentDoc } from "../../authoring/types";
 export const docs: ComponentDoc = {
   name: "Section",
   group: "layout",
-  description: "Semantic full-bleed band primitive. No padding by default (size=\"none\") — opt into vertical rhythm with a size preset or a py-* className. Padding presets (1-4), responsive role sizes (compact/strip/body/hero) and background media props. Ideal for full-bleed hero bands with bgVideo or bgImage.",
+  description: "A full-width band of the page, such as a hero or a content block. It has no padding unless you choose a size, and it can carry a background image or video.",
   features: [
     "No padding by default (size=\"none\") — a bare <Section> is a flat full-bleed band; choose rhythm explicitly",
     "Padding presets: 1 (py-6), 2 (py-10), 3 (py-16), 4 (py-24)",
     "Role sizes (responsive): compact (py-8 md:py-12, dashboards), strip (py-10 md:py-14, logo walls/stat bars), body (py-16 md:py-24, most sections), hero (py-24 md:py-32, heroes/closing CTAs)",
     "Polymorphic tag support via as prop",
-    "Surface contrast scope via surface prop for media backgrounds",
+    "Surface contrast scope via surface prop for media backgrounds. With a photo, video or fx backdrop and no surface it defaults to dark-always plus a dark scrim (dark-30, fx dark-50); meshes and custom gradients need an explicit surface (dark-always or light-always)",
     "Background media: bgVideo, bgImage, bgOverlays (presets, hex, tokens, gradients via comma-separated shorthand), bgSize, bgVideoPaused, bgPoster (video poster + reduced-motion fallback)",
-    "Mesh backdrops: bgOverlays=\"mesh-lime\" | mesh-mint | mesh-peach | mesh-accent (append -animated for a slow drift); directional scrim-left and theme-aware fade-canvas; off-centre radial(at 20% 30%, ...)",
-    "Fx backdrops (needs @shavin/fx registered): bgOverlays=\"fx:dither-waves, gradient-bottom\"; params only when changed: fx:fluid-silk(speed=1.2 color=accent); quote text values: fx:type-tiles(text='Plan money')",
+    "Mesh backdrops: bgOverlays=\"mesh-lime\" | mesh-mint | mesh-peach | mesh-brand (append -animated for a slow drift); directional scrim-left and theme-aware fade-canvas; off-centre radial(at 20% 30%, ...)",
+    "Fx backdrops (needs `npm i @shavin/fx`, free to use under its own licence, and `registerFxBackdrops()`): bgOverlays=\"fx:dither-waves, gradient-bottom\"; params only when changed: fx:fluid-silk(speed=1.2 color=brand); quote text values: fx:type-tiles(text='Plan money')",
   ],
   accessibility: [
     "Supports semantic HTML tags via polymorphic as prop",
@@ -55,8 +55,8 @@ export const docs: ComponentDoc = {
     },
     {
       title: "Custom Solid + Gradient + Token Overlays",
-      description: "Hex solid + accent token + linear gradient — all in shorthand, no JSON",
-      code: '<Section size="3" bgImage="https://..." bgOverlays="#1a1a2e/40, (accent)/20, linear(180deg, #000/0%, #000/100%)/60" surface="dark-always"><Container size="md"><Heading size="2xl">Custom Overlays</Heading></Container></Section>'
+      description: "Hex solid + brand token + linear gradient — all in shorthand, no JSON",
+      code: '<Section size="3" bgImage="https://..." bgOverlays="#1a1a2e/40, (brand)/20, linear(180deg, #000/0%, #000/100%)/60" surface="dark-always"><Container size="md"><Heading size="2xl">Custom Overlays</Heading></Container></Section>'
     }
   ]
 };
