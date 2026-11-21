@@ -41,7 +41,7 @@ Consumers import from the package root (`import { Button } from "@shavin/ui"`), 
 | `packages/ui/src/lib/docs-routes.ts` (docs link per component) | `scripts/gen-manifest.mjs` | `npm run manifest:gen` |
 | `tokens.json` | `scripts/gen-tokens.mjs` from `global.css` | `npm run tokens:gen` |
 | OKLCH style files | `scripts/gen-oklch.mjs` | part of `npm run tokens:gen` |
-| `packages/block-schema/src/generated/*` | the block build | built upstream; see [Block schema](./block-schema.md) |
+| `packages/block-schema/src/generated/*` | the block build | built by the maintainers; see [Block schema](./block-schema.md) |
 | `AGENTS.md`, `CLAUDE.md`, `packages/skills/AGENTS.md`, `packages/cli/src/templates/AGENTS.md`, `SHAVIN.md`, `packages/cli/src/templates/SHAVIN.md` | `scripts/gen-agents.mjs` from `packages/skills/agents/`, the CLI's `CLAUDE.md` template and `shavin-core/SHAVIN.template.md` | `npm run agents:gen` |
 | `.agents/` in a consumer project | `@shavin/skills` installer | `npx @shavin/skills` |
 

@@ -2,8 +2,8 @@
 
 ## Two tiers
 
-1. **Foundation values** (`--n-50` … `--n-950`, accent scales) live only in `packages/ui/src/styles/global.css` and `global-oklch.css`.
-2. **Semantic tokens** (`--bg-canvas`, `--bg-surface`, `--fg`, `--fg-muted`, `--hairline`, `--accent`, `--accent-fg`, `--accent-contrast` …) map onto them per theme. Components use only semantic tokens, through Tailwind utilities such as `bg-surface` and `text-fg-muted`.
+1. **Foundation values** (`--n-50` … `--n-950`, brand scales) live only in `packages/ui/src/styles/global.css` and `global-oklch.css`.
+2. **Semantic tokens** (`--bg-canvas`, `--bg-surface`, `--fg`, `--fg-muted`, `--hairline`, `--brand`, `--brand-fg`, `--brand-contrast` …) map onto them per theme. Components use only semantic tokens, through Tailwind utilities such as `bg-surface` and `text-fg-muted`.
 
 `npm run lint` (token and class lint) rejects hex, `rgb()`, raw Tailwind colours and `--n-*` outside the style files.
 
@@ -24,7 +24,7 @@ In the v4 theme files, never map a token to itself inside `@theme inline` (for e
 
 ## Theme presets
 
-`ThemeProvider` and `ThemeScript` apply accent, gray, radius and scaling presets from `src/lib/theme-presets.ts`. Theme variables are rendered on the server so the first paint is already themed. New presets go in that file, and need a test in `tests/unit/`.
+`ThemeProvider` and `ThemeScript` apply brand, gray, radius and scaling presets from `src/lib/theme-presets.ts`. Theme variables are rendered on the server so the first paint is already themed. New presets go in that file, and need a test in `tests/unit/`.
 
 ## Brand tokens
 

@@ -15,7 +15,7 @@ packages/block-schema/
 - **Types and schemas:** fixes and additions, with a test in `tests/unit/`.
 - **Existing open blocks:** bug fixes that follow the design rules (semantic tokens, `Grid columns="auto"` for card rows, `AppFrame` for app shells).
 
-New blocks are authored upstream for now; block contributions will open through Shavin Community later. If you have an idea for a block, open an issue.
+New blocks are authored by the maintainers for now; block contributions will open through Shavin Community later. If you have an idea for a block, open an issue.
 
 ## Rules for block code
 

@@ -55,4 +55,4 @@ Copy `Button.doc.ts` as a template.
 5. Tests in `tests/unit/`: it renders, passes axe, and its contract cases hold.
 6. `npm run verify` and `npm test` pass.
 
-Maintainers wire the docs-site page and other upstream surfaces after merge.
+Maintainers add the docs-site page and other surfaces after merge.
