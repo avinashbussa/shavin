@@ -11,7 +11,7 @@ older `0.x` versions are not patched. Upgrade to the newest release before repor
 
 Report privately through GitHub Security Advisories:
 [https://github.com/avinashbussa/shavin/security/advisories/new](https://github.com/avinashbussa/shavin/security/advisories/new).
-If that is unavailable, email avinashbussa1@gmail.com.
+If that is unavailable, email hello@shavin.cc.
 
 Please include a description, affected package and version, and steps to reproduce.
-We aim to acknowledge within 72 hours and to agree a disclosure timeline with you.
+The maintainers aim to acknowledge within 72 hours and to agree a disclosure timeline with you.

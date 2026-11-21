@@ -1,9 +1,9 @@
 {
   "generated": "by scripts/gen-manifest.mjs -- do not edit by hand (run: npm run manifest:gen)",
   "docs": "AGENTS.md -- 'When to reach for Radix' + shape-override notes carry the when-to-use rationale",
-  "count": 170,
-  "primitiveCount": 91,
-  "internalCount": 2,
+  "count": 175,
+  "primitiveCount": 94,
+  "internalCount": 3,
   "components": [
     {
       "name": "Accordion",
@@ -95,7 +95,7 @@
         "AccordionItem",
         "AccordionTrigger"
       ],
-      "description": "Collapsible disclosure panels built on Radix Accordion primitive with ChevronDown 180-degree rotation convention.",
+      "description": "Sections that expand and collapse under a heading. Allow one open at a time or several, in default, outline or ghost styles.",
       "bestPractices": [
         {
           "guidance": true,
@@ -113,7 +113,7 @@
         }
       ],
       "docsDense": {
-        "description": "Collapsible disclosure panels built on Radix Accordion primitive with ChevronDown 180-degree rotation convention.",
+        "description": "Sections that expand and collapse under heading. Allow one open at time or several, in default, outline or ghost styles.",
         "bestPractices": [
           {
             "guidance": true,
@@ -283,12 +283,6 @@
           "doc": "Callback fired when an action option is selected (groupKey, value)."
         },
         {
-          "name": "onInsert",
-          "type": "(groupKey: string, value: string) => void",
-          "required": false,
-          "doc": "@deprecated use onAction instead"
-        },
-        {
           "name": "className",
           "type": "string",
           "required": false,
@@ -452,7 +446,7 @@
       "exports": [
         "AlertDialog"
       ],
-      "description": "Explicit destructive confirmation dialog requiring intentional user action. Built on Radix AlertDialog primitive without outside-click dismissal.",
+      "description": "Asks the user to confirm an important or destructive action before it happens. Clicking outside doesn't close it, and it comes in danger, warning, success and info tones.",
       "bestPractices": [
         {
           "guidance": true,
@@ -470,7 +464,7 @@
         }
       ],
       "docsDense": {
-        "description": "Explicit destructive confirmation dialog requiring intentional user action. Built on Radix AlertDialog primitive without outside-click dismissal.",
+        "description": "Asks user to confirm important or destructive action before it happens. Clicking outside doesn't close it, and it comes in danger, warning, success and info tones.",
         "bestPractices": [
           {
             "guidance": true,
@@ -542,7 +536,8 @@
         "iconSlots": []
       },
       "exports": [
-        "AppFrame"
+        "AppFrame",
+        "useAppFrame"
       ],
       "description": "Application shell: a Sidebar plus a main column. The frame measures its own width, so the same markup works on a phone, in a narrow window and in a Studio device preview. When it runs out of room the Sidebar becomes a slide-in drawer, written once, with no breakpoint classes, hamburger state or second copy of the navigation.",
       "bestPractices": [
@@ -635,7 +630,7 @@
       "exports": [
         "AspectRatio"
       ],
-      "description": "Ratio layout wrapper primitive built on Radix AspectRatio for reserving media element proportions.",
+      "description": "Keeps its content at a fixed width-to-height ratio, such as 16:9, so images and video hold their space while they load.",
       "bestPractices": [
         {
           "guidance": true,
@@ -653,7 +648,7 @@
         }
       ],
       "docsDense": {
-        "description": "Ratio layout wrapper primitive built on Radix AspectRatio for reserving media element proportions.",
+        "description": "Keeps its content at fixed width-to-height ratio, such as 16:9, so images and video hold their space while they load.",
         "bestPractices": [
           {
             "guidance": true,
@@ -755,7 +750,7 @@
       "exports": [
         "Avatar"
       ],
-      "description": "User avatar image with automatic initial-letter fallback built on Radix Avatar primitive.",
+      "description": "A picture of a person or team. Without an image it shows initials, an icon or a default person icon, in a neutral or coloured fill.",
       "bestPractices": [
         {
           "guidance": true,
@@ -773,11 +768,11 @@
         },
         {
           "title": "Icon avatar with a colour fill (projects, workspaces)",
-          "code": "<Flex gap=\"3\"><Avatar radius=\"medium\" color=\"accent\" variant=\"solid\" fallbackIcon={<Icon name=\"globe\" size=\"sm\" color=\"inherit\" />} /><Avatar radius=\"medium\" color=\"success\" fallbackIcon={<Icon name=\"smartphone\" size=\"sm\" color=\"inherit\" />} /><Avatar radius=\"medium\" color=\"warning\" fallback=\"DS\" /></Flex>"
+          "code": "<Flex gap=\"3\"><Avatar radius=\"medium\" color=\"brand\" variant=\"solid\" fallbackIcon={<Icon name=\"globe\" size=\"sm\" color=\"inherit\" />} /><Avatar radius=\"medium\" color=\"success\" fallbackIcon={<Icon name=\"smartphone\" size=\"sm\" color=\"inherit\" />} /><Avatar radius=\"medium\" color=\"warning\" fallback=\"DS\" /></Flex>"
         }
       ],
       "docsDense": {
-        "description": "User avatar image with automatic initial-letter fallback built on Radix Avatar primitive.",
+        "description": "picture of person or team. Without image it shows initials, icon or default person icon, in neutral or coloured fill.",
         "bestPractices": [
           {
             "guidance": true,
@@ -901,7 +896,7 @@
         ],
         "tone": [
           "neutral",
-          "accent",
+          "brand",
           "success",
           "warning",
           "danger"
@@ -930,9 +925,9 @@
       "props": [
         {
           "name": "color",
-          "type": "\"neutral\" | \"accent\" | \"success\" | \"warning\" | \"danger\"",
+          "type": "\"neutral\" | \"brand\" | \"success\" | \"warning\" | \"danger\"",
           "required": false,
-          "doc": "Backward compatible color prop. Maps to tone."
+          "doc": "@deprecated Backward compatible alias of `tone`. Use `tone`."
         },
         {
           "name": "icon",
@@ -955,7 +950,7 @@
       "exports": [
         "Badge"
       ],
-      "description": "Status indicator pill component supporting semantic color schemes and control radius (--radius-lg).",
+      "description": "A small label for status or counts, in the neutral, brand, success, warning or danger colours.",
       "bestPractices": [
         {
           "guidance": true,
@@ -969,11 +964,11 @@
       "examples": [
         {
           "title": "Success Status Badge",
-          "code": "<Badge color=\"success\">Active</Badge>"
+          "code": "<Badge tone=\"success\">Active</Badge>"
         }
       ],
       "docsDense": {
-        "description": "Status indicator pill component supporting semantic color schemes and control radius (--radius-lg).",
+        "description": "small label for status or counts, in neutral, brand, success, warning or danger colours.",
         "bestPractices": [
           {
             "guidance": true,
@@ -1231,16 +1226,28 @@
           "doc": "Layout mode for canvas composition"
         },
         {
+          "name": "studioKey",
+          "type": "string",
+          "required": false,
+          "doc": "Optional template key to link to Shavin Studio"
+        },
+        {
+          "name": "studioUrl",
+          "type": "string",
+          "required": false,
+          "doc": "Optional direct URL override for the Open in Studio link"
+        },
+        {
           "name": "builderKey",
           "type": "string",
           "required": false,
-          "doc": "Optional builder template key to link to Shavin Studio"
+          "doc": "@deprecated Renamed to `studioKey`; still accepted."
         },
         {
           "name": "builderUrl",
           "type": "string",
           "required": false,
-          "doc": "Optional direct URL override for Studio/Builder"
+          "doc": "@deprecated Renamed to `studioUrl`; still accepted."
         },
         {
           "name": "children",
@@ -1338,7 +1345,7 @@
       "exports": [
         "Blockquote"
       ],
-      "description": "A quoted passage set off with an accent rule, for testimonials and cited text.",
+      "description": "A quoted passage set off with a brand rule, for testimonials and cited text.",
       "bestPractices": [
         {
           "guidance": true,
@@ -1356,7 +1363,7 @@
         }
       ],
       "docsDense": {
-        "description": "quoted passage set off with accent rule, for testimonials and cited text.",
+        "description": "quoted passage set off with brand rule, for testimonials and cited text.",
         "bestPractices": [
           {
             "guidance": true,
@@ -1477,7 +1484,7 @@
           "name": "bgOverlays",
           "type": "string",
           "required": false,
-          "doc": "Comma-separated shorthand for overlay layers. Supports presets (\"dark-50\"), solid colors (#hex or (token)), gradients (linear/radial), and fx backdrops (\"fx:dither-waves\", \"fx:fluid-silk(speed=1.2)\"; needs @shavin/fx registered, else falls back to mesh). JSON array of OverlayLayer[] as fallback for advanced cases. Layers composite top-to-bottom."
+          "doc": "Comma-separated shorthand for overlay layers. Supports presets (\"dark-50\"), solid colors (#hex or (token)), gradients (linear/radial), and fx backdrops (\"fx:dither-waves\", \"fx:fluid-silk(speed=1.2)\"; needs `npm i @shavin/fx` (free to use under its own licence) and `registerFxBackdrops()`, else falls back to mesh). JSON array of OverlayLayer[] as fallback for advanced cases. Layers composite top-to-bottom."
         },
         {
           "name": "bgVideoPaused",
@@ -1557,15 +1564,15 @@
           "name": "resizeHandle",
           "type": "ResizeHandleVariant",
           "required": false,
-          "doc": "Handle look: \"line\" (accent line on hover), \"grip\" (always-visible pill) or \"invisible\". Default \"line\".",
+          "doc": "Handle look: \"line\" (brand line on hover), \"grip\" (always-visible pill) or \"invisible\". Default \"line\".",
           "default": "line"
         },
         {
           "name": "resizeColor",
           "type": "ResizeHandleColor",
           "required": false,
-          "doc": "Handle colour on hover, focus and drag: \"accent\", \"accent-subtle\" (softer accent) or \"neutral\" (monochrome). Default \"accent-subtle\".",
-          "default": "accent-subtle"
+          "doc": "Handle colour on hover, focus and drag: \"brand\", \"brand-subtle\" (softer brand) or \"neutral\" (monochrome). Default \"brand-subtle\".",
+          "default": "brand-subtle"
         },
         {
           "name": "as",
@@ -1605,7 +1612,7 @@
       "exports": [
         "Box"
       ],
-      "description": "Generic div-based container primitive with translucent panel support and background media props. Useful for media-backed panels and callout boxes.",
+      "description": "A plain container for anything that needs a wrapper. It can render as any HTML tag, become a translucent panel, carry a background image or video, and be resized by the user.",
       "bestPractices": [
         {
           "guidance": true,
@@ -1639,7 +1646,7 @@
         }
       ],
       "docsDense": {
-        "description": "Generic div-based container primitive with translucent panel support and background media props. Useful for media-backed panels and callout boxes.",
+        "description": "plain container for anything that needs wrapper. It can render as any HTML tag, become translucent panel, carry background image or video, and be resized by user.",
         "bestPractices": [
           {
             "guidance": true,
@@ -1739,7 +1746,7 @@
           "ghost"
         ],
         "tone": [
-          "accent",
+          "brand",
           "danger"
         ],
         "size": [
@@ -1750,7 +1757,7 @@
       },
       "defaultVariants": {
         "variant": "solid",
-        "tone": "accent",
+        "tone": "brand",
         "size": "md"
       },
       "props": [
@@ -1778,6 +1785,30 @@
           "type": "ReactNode",
           "required": false,
           "doc": "Icon rendered after the label."
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "required": false,
+          "doc": "Pending state while a request runs: a Spinner replaces `iconLeft` (or covers the label when there is no icon), the width does not change, `aria-busy`, clicks are ignored, the button stays focusable and shows the progress cursor. Not dimmed: it is busy, not unavailable."
+        },
+        {
+          "name": "loadingLabel",
+          "type": "string",
+          "required": false,
+          "doc": "Optional text shown and announced (polite) while `loading`, e.g. \"Saving…\"."
+        },
+        {
+          "name": "disabledReason",
+          "type": "string",
+          "required": false,
+          "doc": "Why the action is unavailable (\"Upgrade to Pro to export\"). Renders the button `aria-disabled` (not `disabled`) so it stays focusable and hoverable, with the reason in a Tooltip on hover and keyboard focus, on tap for touch, and as its accessible description. Clicks do nothing. Takes precedence over `disabled`."
+        },
+        {
+          "name": "hitArea",
+          "type": "HitArea",
+          "required": false,
+          "doc": "Hit-area override (docs: \"Target size\"). \"default\": 24px floor, 44px on touch. \"none\": no hit area growth (dense toolbars; may go below 24px, yours to own). \"touch\": always 44px on a coarse pointer."
         }
       ],
       "builderMeta": {
@@ -1796,29 +1827,49 @@
       "bestPractices": [
         {
           "guidance": true,
-          "description": "Use variant='solid' tone='accent' for primary action in a container or form."
+          "description": "Use variant='solid' tone='brand' for primary action in a container or form."
         },
         {
           "guidance": true,
           "description": "Use variant='ghost' or variant='soft' for secondary/toolbar actions to preserve visual hierarchy."
         },
         {
+          "guidance": true,
+          "description": "Disable a submit only while its request runs (loading), not while the form is incomplete."
+        },
+        {
+          "guidance": true,
+          "description": "Use disabledReason for actions blocked by permission or plan ('Upgrade to Pro to export'); print long reasons as text next to the button too."
+        },
+        {
           "guidance": false,
-          "description": "Do not place two solid accent buttons adjacent to each other in the same action bar."
+          "description": "Do not use plain disabled without saying why: use disabledReason, or a hint next to it."
+        },
+        {
+          "guidance": false,
+          "description": "Do not place two solid brand buttons adjacent to each other in the same action bar."
         }
       ],
       "examples": [
         {
-          "title": "Primary Solid Accent",
-          "code": "<Button variant=\"solid\" tone=\"accent\">Save Changes</Button>"
+          "title": "Primary Solid Brand",
+          "code": "<Button variant=\"solid\" tone=\"brand\">Save Changes</Button>"
         },
         {
           "title": "Soft Secondary Action",
-          "code": "<Button variant=\"soft\" tone=\"accent\">View Details</Button>"
+          "code": "<Button variant=\"soft\" tone=\"brand\">View Details</Button>"
         },
         {
           "title": "Destructive Action",
           "code": "<Button variant=\"solid\" tone=\"danger\">Delete Account</Button>"
+        },
+        {
+          "title": "Loading",
+          "code": "<Button loading loadingLabel=\"Saving…\">Save changes</Button>"
+        },
+        {
+          "title": "Disabled with a reason",
+          "code": "<Button variant=\"outline\" disabledReason=\"Upgrade to Pro to export\">Export CSV</Button>"
         }
       ],
       "docsDense": {
@@ -1826,15 +1877,27 @@
         "bestPractices": [
           {
             "guidance": true,
-            "description": "Use variant='solid' tone='accent' for primary action in container or form."
+            "description": "Use variant='solid' tone='brand' for primary action in container or form."
           },
           {
             "guidance": true,
             "description": "Use variant='ghost' or variant='soft' for secondary/toolbar actions to preserve visual hierarchy."
           },
           {
+            "guidance": true,
+            "description": "Disable submit only while its request runs (loading), not while form is incomplete."
+          },
+          {
+            "guidance": true,
+            "description": "Use disabledReason for actions blocked by permission or plan ('Upgrade to Pro to export'); print long reasons as text next to button too."
+          },
+          {
             "guidance": false,
-            "description": "Do not place two solid accent buttons adjacent to each other in same action bar."
+            "description": "Do not use plain disabled without saying why: use disabledReason, or hint next to it."
+          },
+          {
+            "guidance": false,
+            "description": "Do not place two solid brand buttons adjacent to each other in same action bar."
           }
         ]
       }
@@ -1968,7 +2031,7 @@
         "CalendarEventChip",
         "CalendarView"
       ],
-      "description": "Full-featured schedule and event calendar primitive supporting full month grid and 1-day, 2-day, or 3-day time columns.",
+      "description": "A schedule that shows events on a month grid or in one, two or three day columns with hours. Users can switch views and click days or events.",
       "bestPractices": [
         {
           "guidance": true,
@@ -1986,7 +2049,7 @@
         }
       ],
       "docsDense": {
-        "description": "Full-featured schedule and event calendar primitive supporting full month grid and 1-day, 2-day, or 3-day time columns.",
+        "description": "schedule that shows events on month grid or in one, two or three day columns with hours. Users can switch views and click days or events.",
         "bestPractices": [
           {
             "guidance": true,
@@ -2180,7 +2243,7 @@
       "variants": {
         "color": [
           "neutral",
-          "accent",
+          "brand",
           "success",
           "warning",
           "danger"
@@ -2208,6 +2271,13 @@
           "type": "React.ReactNode",
           "required": false,
           "doc": "Custom icon node override."
+        },
+        {
+          "name": "role",
+          "type": "React.AriaRole",
+          "required": false,
+          "doc": "ARIA role. Default `alert` for `color=\"danger\"` and `status` for the other colours. Pass `role=\"note\"` for a static notice that is on the page from the first load.",
+          "default": "`alert`"
         }
       ],
       "builderMeta": {
@@ -2378,10 +2448,10 @@
         },
         {
           "name": "color",
-          "type": "\"accent\" | \"mono\"",
+          "type": "\"brand\" | \"mono\"",
           "required": false,
-          "doc": "Active fill color style: \"accent\" (uses active theme accent token) or \"mono\" (inverting monochrome). Default \"accent\".",
-          "default": "accent"
+          "doc": "Active fill color style: \"brand\" (uses active theme brand token) or \"mono\" (inverting monochrome). Default \"brand\".",
+          "default": "brand"
         },
         {
           "name": "showStops",
@@ -2437,7 +2507,7 @@
         ]
       },
       "defaultVariants": {
-        "padding": "sm",
+        "padding": "none",
         "interactive": "false"
       },
       "props": [
@@ -2464,7 +2534,7 @@
           "name": "bgOverlays",
           "type": "string",
           "required": false,
-          "doc": "Comma-separated shorthand for overlay layers. Supports presets (\"dark-50\"), solid colors (#hex or (token)), gradients (linear/radial), and fx backdrops (\"fx:dither-waves\", \"fx:fluid-silk(speed=1.2)\"; needs @shavin/fx registered, else falls back to mesh). JSON array of OverlayLayer[] as fallback for advanced cases. Layers composite top-to-bottom."
+          "doc": "Comma-separated shorthand for overlay layers. Supports presets (\"dark-50\"), solid colors (#hex or (token)), gradients (linear/radial), and fx backdrops (\"fx:dither-waves\", \"fx:fluid-silk(speed=1.2)\"; needs `npm i @shavin/fx` (free to use under its own licence) and `registerFxBackdrops()`, else falls back to mesh). JSON array of OverlayLayer[] as fallback for advanced cases. Layers composite top-to-bottom."
         },
         {
           "name": "bgVideoPaused",
@@ -2544,15 +2614,15 @@
           "name": "resizeHandle",
           "type": "ResizeHandleVariant",
           "required": false,
-          "doc": "Handle look: \"line\" (accent line on hover), \"grip\" (always-visible pill) or \"invisible\". Default \"line\".",
+          "doc": "Handle look: \"line\" (brand line on hover), \"grip\" (always-visible pill) or \"invisible\". Default \"line\".",
           "default": "line"
         },
         {
           "name": "resizeColor",
           "type": "ResizeHandleColor",
           "required": false,
-          "doc": "Handle colour on hover, focus and drag: \"accent\", \"accent-subtle\" (softer accent) or \"neutral\" (monochrome). Default \"accent-subtle\".",
-          "default": "accent-subtle"
+          "doc": "Handle colour on hover, focus and drag: \"brand\", \"brand-subtle\" (softer brand) or \"neutral\" (monochrome). Default \"brand-subtle\".",
+          "default": "brand-subtle"
         }
       ],
       "builderMeta": {
@@ -2571,7 +2641,7 @@
         "CardRow",
         "StatCard"
       ],
-      "description": "Surface card primitive with padding presets (none to 3xl), interactive hover state, and background media props. Ideal for media-rich product cards and feature tiles.",
+      "description": "A panel that groups related content, with padding presets, an optional hover state and an optional background image or video.",
       "bestPractices": [
         {
           "guidance": true,
@@ -2601,11 +2671,11 @@
         },
         {
           "title": "Custom Gradient + Token Overlay",
-          "code": "<Card padding=\"lg\" bgImage=\"https://...\" bgOverlays=\"#1a1a2e/30, linear(180deg, #000/0%, #000/100%)/60, (accent)/10\" className=\"h-[260px] flex flex-col justify-end\"><Heading size=\"md\">Custom</Heading></Card>"
+          "code": "<Card padding=\"lg\" bgImage=\"https://...\" bgOverlays=\"#1a1a2e/30, linear(180deg, #000/0%, #000/100%)/60, (brand)/10\" className=\"h-[260px] flex flex-col justify-end\"><Heading size=\"md\">Custom</Heading></Card>"
         }
       ],
       "docsDense": {
-        "description": "Surface card primitive with padding presets (none to 3xl), interactive hover state, and background media props. Ideal for media-rich product cards and feature tiles.",
+        "description": "panel that groups related content, with padding presets, optional hover state and optional background image or video.",
         "bestPractices": [
           {
             "guidance": true,
@@ -2807,9 +2877,10 @@
         "CarouselItem",
         "CarouselNext",
         "CarouselPrevious",
-        "CarouselTrack"
+        "CarouselTrack",
+        "useCarousel"
       ],
-      "description": "A responsive, accessible slider and scroll-track carousel supporting container alignment, edge gradient fades, and pagination.",
+      "description": "A horizontal row of items users scroll through, either several cards at a time or one slide per view. Comes with previous and next buttons, dots, faded edges and optional autoplay.",
       "bestPractices": [
         {
           "guidance": true,
@@ -2835,7 +2906,7 @@
         }
       ],
       "docsDense": {
-        "description": "responsive, accessible slider and scroll-track carousel supporting container alignment, edge gradient fades, and pagination.",
+        "description": "horizontal row of items users scroll through, either several cards at time or one slide per view. Comes with previous and next buttons, dots, faded edges and optional autoplay.",
         "bestPractices": [
           {
             "guidance": true,
@@ -2883,7 +2954,8 @@
         "CarouselItem",
         "CarouselNext",
         "CarouselPrevious",
-        "CarouselTrack"
+        "CarouselTrack",
+        "useCarousel"
       ],
       "partOf": "Carousel",
       "inheritsDomProps": true
@@ -2922,7 +2994,8 @@
         "CarouselItem",
         "CarouselNext",
         "CarouselPrevious",
-        "CarouselTrack"
+        "CarouselTrack",
+        "useCarousel"
       ],
       "partOf": "Carousel"
     },
@@ -2960,7 +3033,8 @@
         "CarouselItem",
         "CarouselNext",
         "CarouselPrevious",
-        "CarouselTrack"
+        "CarouselTrack",
+        "useCarousel"
       ],
       "partOf": "Carousel"
     },
@@ -2991,7 +3065,8 @@
         "CarouselItem",
         "CarouselNext",
         "CarouselPrevious",
-        "CarouselTrack"
+        "CarouselTrack",
+        "useCarousel"
       ],
       "partOf": "Carousel",
       "inheritsDomProps": true
@@ -3023,7 +3098,8 @@
         "CarouselItem",
         "CarouselNext",
         "CarouselPrevious",
-        "CarouselTrack"
+        "CarouselTrack",
+        "useCarousel"
       ],
       "partOf": "Carousel",
       "inheritsDomProps": true
@@ -3063,7 +3139,8 @@
         "CarouselItem",
         "CarouselNext",
         "CarouselPrevious",
-        "CarouselTrack"
+        "CarouselTrack",
+        "useCarousel"
       ],
       "partOf": "Carousel"
     },
@@ -3271,6 +3348,12 @@
           "type": "string",
           "required": false,
           "doc": "Optional label text placed adjacent to checkbox."
+        },
+        {
+          "name": "hitArea",
+          "type": "HitArea",
+          "required": false,
+          "doc": "Hit-area override (docs: \"Target size\"). \"default\": 24px floor, 44px on touch. \"none\": no hit area growth (dense toolbars; may go below 24px, yours to own). \"touch\": always 44px on a coarse pointer."
         }
       ],
       "builderMeta": {
@@ -3283,7 +3366,7 @@
       "exports": [
         "Checkbox"
       ],
-      "description": "Boolean selection control built on Radix Checkbox primitive with control radius (--radius-lg) and custom checkmark indicator.",
+      "description": "Turns an option on or off, with an optional label. It also has a mixed state for a parent of partly selected items.",
       "bestPractices": [
         {
           "guidance": true,
@@ -3301,7 +3384,7 @@
         }
       ],
       "docsDense": {
-        "description": "Boolean selection control built on Radix Checkbox primitive with control radius (--radius-lg) and custom checkmark indicator.",
+        "description": "Turns option on or off, with optional label. It also has mixed state for parent of partly selected items.",
         "bestPractices": [
           {
             "guidance": true,
@@ -3791,6 +3874,12 @@
           "type": "string",
           "required": false,
           "doc": "Optional title displayed in the collapsible footer bar (alias for description)."
+        },
+        {
+          "name": "hitArea",
+          "type": "HitArea",
+          "required": false,
+          "doc": "Hit-area override for the Copy and View-code buttons (docs: \"Target size\")."
         }
       ],
       "builderMeta": {
@@ -4063,7 +4152,7 @@
           "name": "presets",
           "type": "ColorPickerSwatch[]",
           "required": false,
-          "doc": "Preset swatch spectrum. Defaults to Shavin UI's 24 accent swatches."
+          "doc": "Preset swatch spectrum. Defaults to Shavin UI's 24 brand swatches."
         },
         {
           "name": "swatchLayout",
@@ -4120,7 +4209,7 @@
         "ColorPicker",
         "ColorPickerPopover"
       ],
-      "description": "Color picker control supporting preset swatches, native HTML5 eyedropper pipette, and direct hex or RGB string input.",
+      "description": "Pick a colour from preset swatches or a colour area, or type a hex or RGB value. It can sit inline or open in a popover, and offers an eyedropper where the browser supports one.",
       "bestPractices": [
         {
           "guidance": true,
@@ -4133,12 +4222,12 @@
       ],
       "examples": [
         {
-          "title": "Accent Color Swatch Picker",
+          "title": "Brand Color Swatch Picker",
           "code": "<ColorPicker value=\"#46a758\" onChange={() => {}} variant=\"default\" swatchLayout=\"grid\" />"
         }
       ],
       "docsDense": {
-        "description": "Color picker control supporting preset swatches, native HTML5 eyedropper pipette, and direct hex or RGB string input.",
+        "description": "Pick colour from preset swatches or colour area, or type hex or RGB value. It can sit inline or open in popover, and offers eyedropper where browser one.",
         "bestPractices": [
           {
             "guidance": true,
@@ -4248,7 +4337,7 @@
           "name": "size",
           "type": "\"sm\" | \"md\"",
           "required": false,
-          "doc": "Size variant: \"sm\" (28px height, matching Select sm) or \"md\" (32px height). Default \"md\".",
+          "doc": "Size variant: \"sm\" (32px height) or \"md\" (40px height), matching Select sm and md. Default \"md\".",
           "default": "md"
         },
         {
@@ -4257,6 +4346,12 @@
           "required": false,
           "doc": "Preview the hovered option in the field as you move over the list. Default true; set false for a plain select that only applies on click.",
           "default": "true;"
+        },
+        {
+          "name": "hitArea",
+          "type": "HitArea",
+          "required": false,
+          "doc": "Hit-area override (docs: \"Target size\"). \"default\": 24px floor, 44px on touch. \"none\": no hit area growth (dense toolbars; may go below 24px, yours to own). \"touch\": always 44px on a coarse pointer. Native input: the field itself grows (min-height), there is no invisible area."
         }
       ],
       "builderMeta": {
@@ -4347,7 +4442,7 @@
           "name": "bgOverlays",
           "type": "string",
           "required": false,
-          "doc": "Comma-separated shorthand for overlay layers. Supports presets (\"dark-50\"), solid colors (#hex or (token)), gradients (linear/radial), and fx backdrops (\"fx:dither-waves\", \"fx:fluid-silk(speed=1.2)\"; needs @shavin/fx registered, else falls back to mesh). JSON array of OverlayLayer[] as fallback for advanced cases. Layers composite top-to-bottom."
+          "doc": "Comma-separated shorthand for overlay layers. Supports presets (\"dark-50\"), solid colors (#hex or (token)), gradients (linear/radial), and fx backdrops (\"fx:dither-waves\", \"fx:fluid-silk(speed=1.2)\"; needs `npm i @shavin/fx` (free to use under its own licence) and `registerFxBackdrops()`, else falls back to mesh). JSON array of OverlayLayer[] as fallback for advanced cases. Layers composite top-to-bottom."
         },
         {
           "name": "bgVideoPaused",
@@ -4396,6 +4491,10 @@
         },
         {
           "guidance": true,
+          "description": "Use size=\"lg\" for every body section of a page so all content shares one centred column with margins at 1280 and 1440; keep xl for the nav and footer and full for media."
+        },
+        {
+          "guidance": true,
           "description": "Use bgImage with dark-50 overlay + surface=dark for centered hero content over media."
         },
         {
@@ -4418,7 +4517,7 @@
         },
         {
           "title": "Custom Gradient + Token Overlay",
-          "code": "<Container size=\"md\" bgVideo=\"https://...\" bgOverlays=\"linear(180deg, #000/0%, #000/100%)/70, (accent)/15\" surface=\"dark-always\"><Heading size=\"2xl\">Gradient + Accent</Heading><Button>Get Started</Button></Container>"
+          "code": "<Container size=\"md\" bgVideo=\"https://...\" bgOverlays=\"linear(180deg, #000/0%, #000/100%)/70, (brand)/15\" surface=\"dark-always\"><Heading size=\"2xl\">Gradient + Brand</Heading><Button>Get Started</Button></Container>"
         }
       ],
       "docsDense": {
@@ -4427,6 +4526,10 @@
           {
             "guidance": true,
             "description": "Use Container inside Section to constrain content width within full-bleed sections."
+          },
+          {
+            "guidance": true,
+            "description": "Use size=\"lg\" for every body section of page so all content shares one centred column with margins at 1280 and 1440; keep xl for nav and footer and full for media."
           },
           {
             "guidance": true,
@@ -4489,7 +4592,7 @@
         "ContextMenu",
         "ContextMenuItem"
       ],
-      "description": "Right-click context action menu built on Radix ContextMenu primitive with data-panel surface styling.",
+      "description": "A menu of actions that opens when the user right-clicks the area it wraps. Items can be marked as dangerous.",
       "bestPractices": [
         {
           "guidance": true,
@@ -4507,7 +4610,7 @@
         }
       ],
       "docsDense": {
-        "description": "Right-click context action menu built on Radix ContextMenu primitive with data-panel surface styling.",
+        "description": "menu of actions that opens when user right-clicks area it wraps. Items can be marked as dangerous.",
         "bestPractices": [
           {
             "guidance": true,
@@ -4623,7 +4726,7 @@
         "DataList",
         "DataListItem"
       ],
-      "description": "Semantic key-value definition list primitive built on HTML <dl>, <dt>, and <dd> elements.",
+      "description": "Shows labelled values, such as the fields of a record, as a list of label and value pairs. Labels sit above the values or beside them.",
       "bestPractices": [
         {
           "guidance": true,
@@ -4641,7 +4744,7 @@
         }
       ],
       "docsDense": {
-        "description": "Semantic key-value definition list primitive built on HTML <dl>, <dt>, and <dd> elements.",
+        "description": "Shows labelled values, such as fields of record, as list of label and value pairs. Labels sit above values or beside them.",
         "bestPractices": [
           {
             "guidance": true,
@@ -4859,12 +4962,6 @@
           "type": "ReactNode",
           "required": false,
           "doc": "Supporting line under the title (also its accessible description)."
-        },
-        {
-          "name": "subtitle",
-          "type": "ReactNode",
-          "required": false,
-          "doc": "@deprecated Use `description`."
         },
         {
           "name": "open",
@@ -5169,14 +5266,32 @@
         {
           "name": "open",
           "type": "boolean",
-          "required": true,
-          "doc": "Whether the drawer is open."
+          "required": false,
+          "doc": "Controlled open state. Leave it out for an uncontrolled drawer (see `trigger` and `defaultOpen`)."
+        },
+        {
+          "name": "defaultOpen",
+          "type": "boolean",
+          "required": false,
+          "doc": "Initial open state when uncontrolled. Default: closed when `trigger` is set, otherwise open."
+        },
+        {
+          "name": "trigger",
+          "type": "ReactNode",
+          "required": false,
+          "doc": "Element that opens the drawer, e.g. `<IconButton aria-label=\"Open menu\">…</IconButton>`. Makes the drawer work without state, so it can be used in blocks."
+        },
+        {
+          "name": "onOpenChange",
+          "type": "(open: boolean) => void",
+          "required": false,
+          "doc": "Called whenever the drawer asks to open or close (trigger, Escape, backdrop, close button)."
         },
         {
           "name": "onClose",
           "type": "() => void",
-          "required": true,
-          "doc": "Callback fired when drawer requests to close (Escape, backdrop click, close button)."
+          "required": false,
+          "doc": "Callback fired when drawer requests to close (Escape, backdrop click, close button). Required when controlled; optional otherwise."
         },
         {
           "name": "title",
@@ -5268,7 +5383,7 @@
       "exports": [
         "Drawer"
       ],
-      "description": "Edge-mounted overlay panel that slides in from left or right. Built on Radix Dialog with focus trapping, scroll lock, backdrop dismiss, and directional slide-in/slide-out animations. Use for temporary contextual panels — unlike Sidebar (in-flow layout), Drawer overlays content and dismisses on outside click.",
+      "description": "A panel that slides in over the page from the left or right edge, with a title, body and footer. Use it for temporary tasks; unlike Sidebar, it covers the content and closes on a click outside.",
       "bestPractices": [
         {
           "guidance": true,
@@ -5285,12 +5400,16 @@
           "code": "<Drawer side=\"right\" title=\"Filters\" onClose={() => {}} dismissible>Filter controls here</Drawer>"
         },
         {
+          "title": "Trigger-opened menu drawer (no state)",
+          "code": "<Drawer side=\"left\" size=\"sm\" title=\"Menu\" trigger={<IconButton aria-label=\"Open menu\"><Icon name=\"menu\" /></IconButton>}><Text>Links here</Text></Drawer>"
+        },
+        {
           "title": "Fixed left drawer with footer",
-          "code": "<Drawer side=\"left\" variant=\"fixed\" title=\"Inspector\" onClose={() => {}} footer={<Button tone=\"accent\">Apply</Button>}><Text>Panel content</Text></Drawer>"
+          "code": "<Drawer side=\"left\" variant=\"fixed\" title=\"Inspector\" onClose={() => {}} footer={<Button tone=\"brand\">Apply</Button>}><Text>Panel content</Text></Drawer>"
         }
       ],
       "docsDense": {
-        "description": "Edge-mounted overlay panel that slides in from left or right. Built on Radix Dialog with focus trapping, scroll lock, backdrop dismiss, and directional slide-in/slide-out animations. Use for temporary contextual panels — unlike Sidebar (in-flow layout), Drawer overlays content and dismisses on outside click.",
+        "description": "panel that slides in over page from left or right edge, with title, body and footer. Use it for temporary tasks; unlike Sidebar, it covers content and closes on click outside.",
         "bestPractices": [
           {
             "guidance": true,
@@ -5412,6 +5531,12 @@
           "type": "boolean",
           "required": false,
           "doc": "Marks the field required."
+        },
+        {
+          "name": "hitArea",
+          "type": "HitArea",
+          "required": false,
+          "doc": "id(s) of hint or error text describing the field. */ \"aria-describedby\"?: string; /** Hit-area override (docs: \"Target size\"). \"default\": 24px floor, 44px on touch. \"none\": no hit area growth (dense toolbars; may go below 24px, yours to own). \"touch\": always 44px on a coarse pointer."
         }
       ],
       "builderMeta": {
@@ -5426,7 +5551,7 @@
       "exports": [
         "Dropdown"
       ],
-      "description": "Simple select dropdown supporting both custom styled popup panel and native HTML <select> mobile rendering.",
+      "description": "A simple control for picking one value from a short list. It uses a styled popup, or the browser's own select menu.",
       "bestPractices": [
         {
           "guidance": true,
@@ -5448,7 +5573,7 @@
         }
       ],
       "docsDense": {
-        "description": "Simple select dropdown supporting both custom styled popup panel and native HTML <select> mobile rendering.",
+        "description": "simple control for picking one value from short list. It uses styled popup, or browser's own select menu.",
         "bestPractices": [
           {
             "guidance": true,
@@ -5553,6 +5678,180 @@
           {
             "guidance": false,
             "description": "Do not make whole paragraphs bold or italic; it removes emphasis."
+          }
+        ]
+      }
+    },
+    {
+      "name": "EmptyState",
+      "group": "components",
+      "docsPath": "/components/empty-state",
+      "file": "packages/ui/src/primitives/EmptyState/EmptyState.tsx",
+      "kind": "plain",
+      "radix": null,
+      "radiusOverride": false,
+      "variants": {
+        "layout": [
+          "centered",
+          "inline"
+        ],
+        "size": [
+          "sm",
+          "md",
+          "lg"
+        ],
+        "variant": [
+          "plain",
+          "bordered"
+        ]
+      },
+      "defaultVariants": {
+        "layout": "centered",
+        "size": "md",
+        "variant": "plain"
+      },
+      "props": [
+        {
+          "name": "kind",
+          "type": "EmptyStateKind",
+          "required": false,
+          "doc": "The situation: sets the default icon only (copy always comes from you). first-time = never created one; empty = had items, none now; no-results = a filter or search matched nothing; success = a flow finished (a result screen).",
+          "default": "icon"
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "required": true,
+          "doc": "Specific title: \"No invoices yet\", never \"No data\" or \"Nothing here\"."
+        },
+        {
+          "name": "description",
+          "type": "ReactNode",
+          "required": false,
+          "doc": "One sentence, at most 25 words: what is missing and how to add it."
+        },
+        {
+          "name": "icon",
+          "type": "ReactNode",
+          "required": false,
+          "doc": "Icon override (use `<Icon name>`). Default per kind: inbox, folder-open, search-x, circle-check.",
+          "default": "per"
+        },
+        {
+          "name": "illustration",
+          "type": "ReactNode",
+          "required": false,
+          "doc": "Monochrome illustration; replaces the icon. Rendered aria-hidden."
+        },
+        {
+          "name": "action",
+          "type": "ReactNode",
+          "required": false,
+          "doc": "The one primary action that fixes the emptiness (a Button)."
+        },
+        {
+          "name": "secondaryAction",
+          "type": "ReactNode",
+          "required": false,
+          "doc": "A second, quieter action (a ghost Button or Link)."
+        },
+        {
+          "name": "titleAs",
+          "type": "\"h2\" | \"h3\" | \"h4\" | \"h5\" | \"h6\" | \"p\"",
+          "required": false,
+          "doc": "Heading element, independent of size. Default h3.",
+          "default": "h3"
+        },
+        {
+          "name": "announce",
+          "type": "boolean",
+          "required": false,
+          "doc": "Announce the title (polite) once on mount, for an empty state that replaces content after the user acts. Default true for no-results, false otherwise.",
+          "default": "true"
+        },
+        {
+          "name": "focusOnMount",
+          "type": "boolean",
+          "required": false,
+          "doc": "Move focus to the title on mount. Recommended for kind=\"success\" result screens."
+        }
+      ],
+      "builderMeta": {
+        "label": "Empty State",
+        "isLayout": false,
+        "hasChildren": true,
+        "accepts": [
+          "*"
+        ],
+        "iconSlots": [
+          "icon"
+        ]
+      },
+      "exports": [
+        "EmptyState"
+      ],
+      "description": "The one component for 'nothing is shown here yet': first-time, empty, no-results and success result screens. Icon, specific title, one-sentence description and the action that fixes the emptiness.",
+      "bestPractices": [
+        {
+          "guidance": true,
+          "description": "Give one primary action that fixes the emptiness: 'Create your first project', 'Clear filters'."
+        },
+        {
+          "guidance": true,
+          "description": "Use no-results (clear the filter) separately from empty (create one): they have different fixes."
+        },
+        {
+          "guidance": false,
+          "description": "Do not write 'Nothing here' or 'No data': say what is missing and how to add it."
+        },
+        {
+          "guidance": false,
+          "description": "Do not wrap it in a Card or add badges: it sits on the surface it replaces (use variant='bordered' for a visible region)."
+        }
+      ],
+      "examples": [
+        {
+          "title": "First-time",
+          "code": "<EmptyState\n  kind=\"first-time\"\n  title=\"No orders yet\"\n  description=\"Orders appear here as customers check out. Share your shop link to get the first one.\"\n  action={<Button iconLeft={<Icon name=\"link\" size=\"sm\" />}>Copy shop link</Button>}\n/>"
+        },
+        {
+          "title": "No results",
+          "code": "<EmptyState\n  kind=\"no-results\"\n  title=\"No orders match these filters\"\n  description=\"Status: Refunded. Try another status or clear the filters.\"\n  action={<Button variant=\"outline\">Clear filters</Button>}\n/>"
+        },
+        {
+          "title": "Empty, bordered region",
+          "code": "<EmptyState\n  kind=\"empty\"\n  variant=\"bordered\"\n  size=\"sm\"\n  title=\"No files in this folder\"\n  description=\"Drop files here or upload them from your computer.\"\n  action={<Button variant=\"outline\" size=\"sm\">Upload files</Button>}\n/>"
+        },
+        {
+          "title": "Success result screen",
+          "code": "<EmptyState\n  kind=\"success\"\n  size=\"lg\"\n  focusOnMount\n  title=\"Your workspace is ready\"\n  description=\"We set up three sample projects so you can look around.\"\n  action={<Button>Open workspace</Button>}\n/>"
+        },
+        {
+          "title": "Inline",
+          "code": "<EmptyState layout=\"inline\" size=\"sm\" kind=\"empty\" title=\"No comments yet\" description=\"Start the discussion.\" action={<Button size=\"sm\" variant=\"ghost\">Add comment</Button>} />"
+        }
+      ],
+      "structure": [
+        "States: first-time → kind='first-time', empty → kind='empty', no filter match → kind='no-results', finished flow → kind='success'"
+      ],
+      "docsDense": {
+        "description": "one component for 'nothing is shown here yet': first-time, empty, no-results and success result screens. Icon, specific title, one-sentence description and action that fixes emptiness.",
+        "bestPractices": [
+          {
+            "guidance": true,
+            "description": "Give one primary action that fixes emptiness: 'Create your first project', 'Clear filters'."
+          },
+          {
+            "guidance": true,
+            "description": "Use no-results (clear filter) separately from empty (create one): they have different fixes."
+          },
+          {
+            "guidance": false,
+            "description": "Do not write 'Nothing here' or 'No data': say what is missing and how to add it."
+          },
+          {
+            "guidance": false,
+            "description": "Do not wrap it in Card or add badges: it sits on surface it replaces (use variant='bordered' for visible region)."
           }
         ]
       }
@@ -5736,7 +6035,7 @@
           "name": "bgOverlays",
           "type": "string",
           "required": false,
-          "doc": "Comma-separated shorthand for overlay layers. Supports presets (\"dark-50\"), solid colors (#hex or (token)), gradients (linear/radial), and fx backdrops (\"fx:dither-waves\", \"fx:fluid-silk(speed=1.2)\"; needs @shavin/fx registered, else falls back to mesh). JSON array of OverlayLayer[] as fallback for advanced cases. Layers composite top-to-bottom."
+          "doc": "Comma-separated shorthand for overlay layers. Supports presets (\"dark-50\"), solid colors (#hex or (token)), gradients (linear/radial), and fx backdrops (\"fx:dither-waves\", \"fx:fluid-silk(speed=1.2)\"; needs `npm i @shavin/fx` (free to use under its own licence) and `registerFxBackdrops()`, else falls back to mesh). JSON array of OverlayLayer[] as fallback for advanced cases. Layers composite top-to-bottom."
         },
         {
           "name": "bgVideoPaused",
@@ -5816,15 +6115,15 @@
           "name": "resizeHandle",
           "type": "ResizeHandleVariant",
           "required": false,
-          "doc": "Handle look: \"line\" (accent line on hover), \"grip\" (always-visible pill) or \"invisible\". Default \"line\".",
+          "doc": "Handle look: \"line\" (brand line on hover), \"grip\" (always-visible pill) or \"invisible\". Default \"line\".",
           "default": "line"
         },
         {
           "name": "resizeColor",
           "type": "ResizeHandleColor",
           "required": false,
-          "doc": "Handle colour on hover, focus and drag: \"accent\", \"accent-subtle\" (softer accent) or \"neutral\" (monochrome). Default \"accent-subtle\".",
-          "default": "accent-subtle"
+          "doc": "Handle colour on hover, focus and drag: \"brand\", \"brand-subtle\" (softer brand) or \"neutral\" (monochrome). Default \"brand-subtle\".",
+          "default": "brand-subtle"
         },
         {
           "name": "as",
@@ -5864,7 +6163,7 @@
       "exports": [
         "Flex"
       ],
-      "description": "Flexbox container primitive supporting token gap scale, direction, alignment, justification, polymorphic tag rendering, and background media props (bgVideo, bgImage, bgOverlays, bgSize, bgVideoPaused).",
+      "description": "Lays children out in a row or column with consistent gaps, alignment and wrapping. It can render as any HTML tag, carry a background image or video, and be resized by the user.",
       "bestPractices": [
         {
           "guidance": true,
@@ -5894,11 +6193,11 @@
         },
         {
           "title": "Custom Gradient + Token Overlay",
-          "code": "<Flex direction=\"column\" align=\"center\" justify=\"center\" bgVideo=\"https://...\" bgOverlays=\"linear(180deg, #000/0%, #000/100%)/70, (accent)/15\" surface=\"dark-always\"><Heading size=\"2xl\">Gradient + Accent</Heading><Button>Watch</Button></Flex>"
+          "code": "<Flex direction=\"column\" align=\"center\" justify=\"center\" bgVideo=\"https://...\" bgOverlays=\"linear(180deg, #000/0%, #000/100%)/70, (brand)/15\" surface=\"dark-always\"><Heading size=\"2xl\">Gradient + Brand</Heading><Button>Watch</Button></Flex>"
         }
       ],
       "docsDense": {
-        "description": "Flexbox container primitive supporting token gap scale, direction, alignment, justification, polymorphic tag rendering, and background media props (bgVideo, bgImage, bgOverlays, bgSize, bgVideoPaused).",
+        "description": "Lays children out in row or column with consistent gaps, alignment and wrapping. It can render as any HTML tag, carry background image or video, and be resized by user.",
         "bestPractices": [
           {
             "guidance": true,
@@ -5911,6 +6210,266 @@
           {
             "guidance": true,
             "description": "Use bgVideo / bgImage props for media backgrounds instead of hand-crafting <video> or <img> children with absolute positioning."
+          }
+        ]
+      }
+    },
+    {
+      "name": "FormErrorSummary",
+      "group": "components",
+      "docsPath": "/components/form-error-summary",
+      "file": "packages/ui/src/primitives/FormErrorSummary/FormErrorSummary.tsx",
+      "kind": "plain",
+      "radix": null,
+      "radiusOverride": false,
+      "variants": {},
+      "defaultVariants": {},
+      "props": [
+        {
+          "name": "errors",
+          "type": "FormErrorSummaryItem[]",
+          "required": true,
+          "doc": "One entry per invalid field; each becomes a link that focuses that field."
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "required": false,
+          "doc": "Heading. Default \"Fix 1 field to continue\" / \"Fix N fields to continue\".",
+          "default": "Fix"
+        },
+        {
+          "name": "focusOnMount",
+          "type": "boolean",
+          "required": false,
+          "doc": "Move focus to the heading when the summary appears after a failed submit (WCAG 3.3.1). Default true.",
+          "default": "true"
+        },
+        {
+          "name": "titleAs",
+          "type": "\"h2\" | \"h3\" | \"h4\"",
+          "required": false,
+          "doc": "Heading element. Default h2.",
+          "default": "h2"
+        }
+      ],
+      "builderMeta": {
+        "label": "Form Error Summary",
+        "isLayout": false,
+        "hasChildren": true,
+        "accepts": [
+          "*"
+        ],
+        "iconSlots": []
+      },
+      "exports": [
+        "FormErrorSummary"
+      ],
+      "description": "Submit-time error list for forms of three or more fields (WCAG 3.3.1). A danger Callout whose heading takes focus after a failed submit, with a link per invalid field that focuses it.",
+      "bestPractices": [
+        {
+          "guidance": true,
+          "description": "Keep the field-level error on every invalid field; the summary does not replace them."
+        },
+        {
+          "guidance": true,
+          "description": "Put it at the top of the form and give every field an id it can link to."
+        },
+        {
+          "guidance": false,
+          "description": "Do not use it for a server or network failure: use Callout color='danger' with a Retry Button."
+        }
+      ],
+      "examples": [
+        {
+          "title": "After a failed submit",
+          "code": "<FormErrorSummary\n  errors={[\n    { id: \"email\", message: \"Enter an email like name@company.com\" },\n    { id: \"tz\", message: \"Choose a time zone\" },\n  ]}\n/>"
+        }
+      ],
+      "structure": [
+        "<form noValidate>{errors.length > 0 && <FormErrorSummary errors={errors} />} …fields with the same ids… <Button type=\"submit\" loading={saving}>Save</Button></form>"
+      ],
+      "docsDense": {
+        "description": "Submit-time error list for forms of three or more fields (WCAG 3.3.1). danger Callout whose heading takes focus after failed submit, with link per invalid field that focuses it.",
+        "bestPractices": [
+          {
+            "guidance": true,
+            "description": "Keep field-level error on every invalid field; summary does not replace them."
+          },
+          {
+            "guidance": true,
+            "description": "Put it at top of form and give every field id it can link to."
+          },
+          {
+            "guidance": false,
+            "description": "Do not use it for server or network failure: use Callout color='danger' with Retry Button."
+          }
+        ]
+      }
+    },
+    {
+      "name": "FormField",
+      "group": "components",
+      "docsPath": "/components/form-field",
+      "file": "packages/ui/src/primitives/FormField/FormField.tsx",
+      "kind": "plain",
+      "radix": null,
+      "radiusOverride": false,
+      "variants": {
+        "orientation": [
+          "vertical",
+          "horizontal"
+        ]
+      },
+      "defaultVariants": {
+        "orientation": "vertical"
+      },
+      "props": [
+        {
+          "name": "label",
+          "type": "string",
+          "required": false,
+          "doc": "Visible label. Omit it for a single Checkbox or Switch that has its own `label`. Never use a placeholder as the label."
+        },
+        {
+          "name": "hint",
+          "type": "string",
+          "required": false,
+          "doc": "Helper text below the control. Give the reason here when the field is disabled."
+        },
+        {
+          "name": "error",
+          "type": "string",
+          "required": false,
+          "doc": "Error message: marks the control invalid (aria-invalid), replaces the hint, icon + text."
+        },
+        {
+          "name": "status",
+          "type": "\"default\" | \"success\"",
+          "required": false,
+          "doc": "`success` shows a check icon and the hint in the success colour (\"Email verified\"). Use sparingly."
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "required": false,
+          "doc": "Default true (false for a single Checkbox or Switch, where required means \"must be on\"). Optional fields (false) show \"Optional\" after the label; required ones get no asterisk.",
+          "default": "true"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "required": false,
+          "doc": "Passes `disabled` to the control (and the fieldset for a group). Say why in `hint`."
+        },
+        {
+          "name": "readOnly",
+          "type": "boolean",
+          "required": false,
+          "doc": "Only for TextArea (and TextField): focusable, selectable, submitted; shows a lock icon by the label."
+        },
+        {
+          "name": "announceError",
+          "type": "boolean",
+          "required": false,
+          "doc": "Announce `error` (polite) once when it first appears. Default true.",
+          "default": "true"
+        },
+        {
+          "name": "size",
+          "type": "\"sm\" | \"md\" | \"lg\"",
+          "required": false,
+          "doc": "One size for every field in a row; passed to Select and Combobox, ignored by the others."
+        },
+        {
+          "name": "id",
+          "type": "string",
+          "required": false,
+          "doc": "id for the control (default generated). Links the label and the FormErrorSummary item.",
+          "default": "generated)"
+        },
+        {
+          "name": "children",
+          "type": "ReactElement",
+          "required": true,
+          "doc": "Exactly one Shavin control: TextArea, Select, Combobox, DatePicker, TimePicker, Checkbox, Switch, RadioGroup or CheckboxGroup."
+        }
+      ],
+      "builderMeta": {
+        "label": "Form Field",
+        "isLayout": false,
+        "hasChildren": true,
+        "accepts": [
+          "*"
+        ],
+        "iconSlots": []
+      },
+      "exports": [
+        "FormField"
+      ],
+      "description": "Label, hint and error for any Shavin control that has none of its own: TextArea, Select, Combobox, DatePicker, TimePicker, Checkbox, Switch, RadioGroup, CheckboxGroup. TextField already has label/hint/errorMessage: use it alone.",
+      "bestPractices": [
+        {
+          "guidance": true,
+          "description": "Validate on blur the first time, then on change; on submit show FormErrorSummary and keep each field's error."
+        },
+        {
+          "guidance": true,
+          "description": "Put the reason for a disabled field in its hint ('Available on the Pro plan')."
+        },
+        {
+          "guidance": false,
+          "description": "Do not wrap a TextField in FormField: TextField has label, hint and errorMessage."
+        },
+        {
+          "guidance": false,
+          "description": "Do not set a FormField label around a Checkbox or Switch that has its own label: it is named twice."
+        }
+      ],
+      "examples": [
+        {
+          "title": "TextArea with hint",
+          "code": "<FormField label=\"Bio\" hint=\"Shown on your public profile.\" required={false}>\n  <TextArea rows={4} maxLength={280} />\n</FormField>"
+        },
+        {
+          "title": "Select with error",
+          "code": "<FormField label=\"Time zone\" error=\"Choose a time zone.\">\n  <Select options={[{ value: \"utc\", label: \"UTC\" }, { value: \"ist\", label: \"India (IST)\" }]} />\n</FormField>"
+        },
+        {
+          "title": "Disabled with reason",
+          "code": "<FormField label=\"Custom domain\" hint=\"Available on the Pro plan.\" disabled>\n  <Select options={[{ value: \"none\", label: \"None\" }]} />\n</FormField>"
+        },
+        {
+          "title": "Settings row",
+          "code": "<FormField label=\"Weekly summary\" orientation=\"horizontal\" hint=\"Sent on Mondays.\">\n  <Switch aria-label=\"Weekly summary\" />\n</FormField>"
+        },
+        {
+          "title": "Radio group",
+          "code": "<FormField label=\"Plan\" hint=\"You can change this later.\">\n  <RadioGroup defaultValue=\"free\">\n    <Radio value=\"free\" label=\"Free\" />\n    <Radio value=\"pro\" label=\"Pro\" />\n  </RadioGroup>\n</FormField>"
+        }
+      ],
+      "structure": [
+        "<FormField label hint error><TextArea /></FormField> — exactly one control child",
+        "Single Checkbox/Switch: <FormField hint error><Switch label=\"…\" /></FormField> (label on the control)"
+      ],
+      "docsDense": {
+        "description": "Label, hint and error for any Shavin control that has none of its own: TextArea, Select, Combobox, DatePicker, TimePicker, Checkbox, Switch, RadioGroup, CheckboxGroup. TextField already has label/hint/errorMessage: use it alone.",
+        "bestPractices": [
+          {
+            "guidance": true,
+            "description": "Validate on blur first time, then on change; on submit show FormErrorSummary and keep each field's error."
+          },
+          {
+            "guidance": true,
+            "description": "Put reason for disabled field in its hint ('Available on Pro plan')."
+          },
+          {
+            "guidance": false,
+            "description": "Do not wrap TextField in FormField: TextField has label, hint and errorMessage."
+          },
+          {
+            "guidance": false,
+            "description": "Do not set FormField label around Checkbox or Switch that has its own label: it is named twice."
           }
         ]
       }
@@ -6101,7 +6660,7 @@
           "name": "bgOverlays",
           "type": "string",
           "required": false,
-          "doc": "Comma-separated shorthand for overlay layers. Supports presets (\"dark-50\"), solid colors (#hex or (token)), gradients (linear/radial), and fx backdrops (\"fx:dither-waves\", \"fx:fluid-silk(speed=1.2)\"; needs @shavin/fx registered, else falls back to mesh). JSON array of OverlayLayer[] as fallback for advanced cases. Layers composite top-to-bottom."
+          "doc": "Comma-separated shorthand for overlay layers. Supports presets (\"dark-50\"), solid colors (#hex or (token)), gradients (linear/radial), and fx backdrops (\"fx:dither-waves\", \"fx:fluid-silk(speed=1.2)\"; needs `npm i @shavin/fx` (free to use under its own licence) and `registerFxBackdrops()`, else falls back to mesh). JSON array of OverlayLayer[] as fallback for advanced cases. Layers composite top-to-bottom."
         },
         {
           "name": "bgVideoPaused",
@@ -6142,7 +6701,7 @@
       "exports": [
         "Grid"
       ],
-      "description": "CSS Grid container primitive supporting column/row counts, token gap scale, cross-axis alignment, and background media props (bgVideo, bgImage, bgOverlays, bgSize, bgVideoPaused).",
+      "description": "Lays children out in columns. Set a count, or let it fit as many as the space allows. It can carry a background image or video.",
       "bestPractices": [
         {
           "guidance": true,
@@ -6192,11 +6751,11 @@
         },
         {
           "title": "Custom Gradient + Token Overlay",
-          "code": "<Grid columns=\"2\" gap=\"3\" bgImage=\"https://...\" bgOverlays=\"linear(180deg, #1a1a2e/0%, #1a1a2e/100%)/60, (accent)/15\" surface=\"dark-always\"><Text>Custom</Text></Grid>"
+          "code": "<Grid columns=\"2\" gap=\"3\" bgImage=\"https://...\" bgOverlays=\"linear(180deg, #1a1a2e/0%, #1a1a2e/100%)/60, (brand)/15\" surface=\"dark-always\"><Text>Custom</Text></Grid>"
         }
       ],
       "docsDense": {
-        "description": "CSS Grid container primitive supporting column/row counts, token gap scale, cross-axis alignment, and background media props (bgVideo, bgImage, bgOverlays, bgSize, bgVideoPaused).",
+        "description": "Lays children out in columns. Set count, or let it fit as many as space . It can carry background image or video.",
         "bestPractices": [
           {
             "guidance": true,
@@ -6405,7 +6964,7 @@
         },
         {
           "name": "tone",
-          "type": "\"accent\" | \"success\" | \"warning\" | \"danger\"",
+          "type": "\"brand\" | \"success\" | \"warning\" | \"danger\"",
           "required": false,
           "doc": "Colour of the filled cells (a theme tone)."
         },
@@ -6562,7 +7121,7 @@
         "HoverCardContent",
         "HoverCardTrigger"
       ],
-      "description": "Hover-triggered preview card panel built on Radix HoverCard primitive with open/close intent delays and collision detection.",
+      "description": "A preview panel that opens when the user hovers over a link or name, after a short delay. It stays on screen near edges.",
       "bestPractices": [
         {
           "guidance": true,
@@ -6576,11 +7135,11 @@
       "examples": [
         {
           "title": "User Profile Preview Card",
-          "code": "<HoverCard><HoverCardTrigger asChild><a href=\"#\">@alex</a></HoverCardTrigger><HoverCardContent><div>Alex Morgan</div></HoverCardContent></HoverCard>"
+          "code": "<HoverCard><HoverCardTrigger asChild><a href=\"#\" className=\"py-1\">@alex</a></HoverCardTrigger><HoverCardContent><div>Alex Morgan</div></HoverCardContent></HoverCard>"
         }
       ],
       "docsDense": {
-        "description": "Hover-triggered preview card panel built on Radix HoverCard primitive with open/close intent delays and collision detection.",
+        "description": "preview panel that opens when user hovers over link or name, after short delay. It stays on screen near edges.",
         "bestPractices": [
           {
             "guidance": true,
@@ -6781,7 +7340,7 @@
           "default",
           "subtle",
           "muted",
-          "accent",
+          "brand",
           "contrast",
           "success",
           "warning",
@@ -6816,7 +7375,7 @@
           "name": "color",
           "type": "IconColorToken | (string & {})",
           "required": false,
-          "doc": "Semantic color token or custom hex/CSS color string. Defaults to \"inherit\" (currentColor), so an icon always takes the colour of its parent (buttons, tabs, chips, filled accent surfaces)."
+          "doc": "Semantic color token or custom hex/CSS color string. Defaults to \"inherit\" (currentColor), so an icon always takes the colour of its parent (buttons, tabs, chips, filled brand surfaces)."
         },
         {
           "name": "strokeWidth",
@@ -6872,7 +7431,7 @@
         },
         {
           "guidance": true,
-          "description": "Pass semantic color tokens (e.g. color='accent' or color='muted') to ensure dark mode parity."
+          "description": "Pass semantic color tokens (e.g. color='brand' or color='muted') to ensure dark mode parity."
         },
         {
           "guidance": false,
@@ -6882,7 +7441,7 @@
       "examples": [
         {
           "title": "Name String Rendering",
-          "code": "<Icon name=\"Sparkles\" size=\"lg\" color=\"accent\" />"
+          "code": "<Icon name=\"Sparkles\" size=\"lg\" color=\"brand\" />"
         },
         {
           "title": "Direct Component Passing",
@@ -6902,7 +7461,7 @@
           },
           {
             "guidance": true,
-            "description": "Pass semantic color tokens (e.g. color='accent' or color='muted') to ensure dark mode parity."
+            "description": "Pass semantic color tokens (e.g. color='brand' or color='muted') to ensure dark mode parity."
           },
           {
             "guidance": false,
@@ -6915,7 +7474,7 @@
       "name": "ICON_REGISTRY",
       "group": "components",
       "docsPath": "/components/icon-picker",
-      "file": "packages/ui/src/primitives/IconPicker/IconPicker.tsx",
+      "file": "packages/ui/src/primitives/IconPicker/registry.tsx",
       "kind": "radix",
       "radix": "@radix-ui/react-icons",
       "radiusOverride": false,
@@ -6931,10 +7490,7 @@
         ],
         "iconSlots": []
       },
-      "exports": [
-        "ICON_REGISTRY",
-        "IconPicker"
-      ],
+      "exports": [],
       "partOf": "IconPicker"
     },
     {
@@ -6953,7 +7509,7 @@
           "ghost"
         ],
         "tone": [
-          "accent",
+          "brand",
           "danger"
         ],
         "size": [
@@ -6964,15 +7520,33 @@
       },
       "defaultVariants": {
         "variant": "solid",
-        "tone": "accent",
+        "tone": "brand",
         "size": "md"
       },
       "props": [
         {
-          "name": "children",
-          "type": "ReactNode",
-          "required": true,
-          "doc": ""
+          "name": "loading",
+          "type": "boolean",
+          "required": false,
+          "doc": "Mandatory ARIA accessible label string for screen reader name computation. */ \"aria-label\": string; children: ReactNode; /** Pending state: a Spinner replaces the icon, `aria-busy`, clicks ignored, stays focusable, progress cursor."
+        },
+        {
+          "name": "loadingLabel",
+          "type": "string",
+          "required": false,
+          "doc": "Optional text announced (polite) when `loading` starts."
+        },
+        {
+          "name": "disabledReason",
+          "type": "string",
+          "required": false,
+          "doc": "Why the action is unavailable. Renders `aria-disabled` (focusable) with the reason in a Tooltip on hover, focus and tap, and as the accessible description. Takes precedence over `disabled`."
+        },
+        {
+          "name": "hitArea",
+          "type": "HitArea",
+          "required": false,
+          "doc": "Hit-area override (docs: \"Target size\"). \"default\": 24px floor, 44px on touch. \"none\": no hit area growth (dense toolbars; may go below 24px, yours to own). \"touch\": always 44px on a coarse pointer."
         }
       ],
       "builderMeta": {
@@ -6985,7 +7559,7 @@
       "exports": [
         "IconButton"
       ],
-      "description": "Square icon-only action button primitive enforcing mandatory aria-label prop and control radius (--radius-lg).",
+      "description": "A square button that shows only an icon. It needs a label for screen readers, and comes in solid, soft, outline and ghost styles.",
       "bestPractices": [
         {
           "guidance": true,
@@ -6998,12 +7572,16 @@
       ],
       "examples": [
         {
+          "title": "Disabled with a reason",
+          "code": "<IconButton aria-label=\"Delete project\" variant=\"ghost\" tone=\"danger\" disabledReason=\"Only owners can delete projects\"><Icon name=\"trash-2\" /></IconButton>"
+        },
+        {
           "title": "Settings Icon Button",
           "code": "<IconButton aria-label=\"Open settings\" variant=\"ghost\"><Settings className=\"h-5 w-5\" /></IconButton>"
         }
       ],
       "docsDense": {
-        "description": "Square icon-only action button primitive enforcing mandatory aria-label prop and control radius (--radius-lg).",
+        "description": "square button that shows only icon. It needs label for screen readers, and comes in solid, soft, outline and ghost styles.",
         "bestPractices": [
           {
             "guidance": true,
@@ -7021,8 +7599,8 @@
       "group": "components",
       "docsPath": "/components/icon-picker",
       "file": "packages/ui/src/primitives/IconPicker/IconPicker.tsx",
-      "kind": "radix",
-      "radix": "@radix-ui/react-icons",
+      "kind": "plain",
+      "radix": null,
       "radiusOverride": false,
       "variants": {},
       "defaultVariants": {},
@@ -7090,10 +7668,9 @@
         "iconSlots": []
       },
       "exports": [
-        "ICON_REGISTRY",
         "IconPicker"
       ],
-      "description": "Searchable icon selection popover grid supporting Lucide icons for builder, form customizers, and toolbar triggers.",
+      "description": "Choose an icon from a searchable grid in a popover, with tabs for the Lucide, Phosphor, Radix and Material icon sets.",
       "bestPractices": [
         {
           "guidance": true,
@@ -7123,7 +7700,7 @@
         }
       ],
       "docsDense": {
-        "description": "Searchable icon selection popover grid supporting Lucide icons for builder, form customizers, and toolbar triggers.",
+        "description": "Choose icon from searchable grid in popover, with tabs for Lucide, Phosphor, Radix and Material icon sets.",
         "bestPractices": [
           {
             "guidance": true,
@@ -7211,7 +7788,7 @@
       "exports": [
         "Image"
       ],
-      "description": "Image primitive with automatic broken-link placeholder fallback, aspect-ratio preservation, object-fit scaling, and overlay layers (scrim / gradient / solid / fx) composited on top.",
+      "description": "Shows an image at a set ratio and fit, with a placeholder when the source is missing or fails to load. Overlays such as a scrim or gradient can sit on top.",
       "bestPractices": [
         {
           "guidance": true,
@@ -7233,7 +7810,7 @@
         }
       ],
       "docsDense": {
-        "description": "Image primitive with automatic broken-link placeholder fallback, aspect-ratio preservation, object-fit scaling, and overlay layers (scrim / gradient / solid / fx) composited on top.",
+        "description": "Shows image at set ratio and fit, with placeholder when source is missing or fails to load. Overlays such as scrim or gradient can sit on top.",
         "bestPractices": [
           {
             "guidance": true,
@@ -7602,7 +8179,7 @@
         ],
         "color": [
           "default",
-          "accent"
+          "brand"
         ]
       },
       "defaultVariants": {
@@ -7615,6 +8192,19 @@
           "type": "\"xs\" | \"sm\" | \"md\" | \"lg\"",
           "required": false,
           "doc": ""
+        },
+        {
+          "name": "standalone",
+          "type": "boolean",
+          "required": false,
+          "doc": "The link stands on its own (navigation, footer, table of contents, a list item that is only a link) rather than sitting in a sentence. Gives it a hit area of at least 24x24 (WCAG 2.5.8) without changing its layout. Links inside running text are exempt from the rule: leave this off. Defaults to true when `underline=\"none\"` (a link with no underline is not running text, and every navigation and footer link is written that way), otherwise false. Pass `standalone={false}` to opt out."
+        },
+        {
+          "name": "hitArea",
+          "type": "HitArea",
+          "required": false,
+          "doc": "Hit-area override for a `standalone` link: \"none\" removes it, \"touch\" grows to 44px on a coarse pointer. Default 24px floor.",
+          "default": "24"
         }
       ],
       "builderMeta": {
@@ -7636,14 +8226,22 @@
           "description": "Use underline=\"always\" for links inside paragraphs so they are recognisable without colour."
         },
         {
+          "guidance": true,
+          "description": "Add standalone to links that stand on their own: nav, footer and table-of-contents links."
+        },
+        {
           "guidance": false,
           "description": "Do not use Link for actions that do not navigate; use Button with variant=\"ghost\"."
         }
       ],
       "examples": [
         {
-          "title": "Inline and accent links",
-          "code": "<Text>\n  Read the <Link href=\"#\" underline=\"always\">billing guide</Link> or{\" \"}\n  <Link href=\"#\" color=\"accent\">contact support</Link>.\n</Text>"
+          "title": "Inline and brand links",
+          "code": "<Text>\n  Read the <Link href=\"#\" underline=\"always\">billing guide</Link> or{\" \"}\n  <Link href=\"#\" color=\"brand\">contact support</Link>.\n</Text>"
+        },
+        {
+          "title": "Stand-alone links",
+          "code": "<Flex direction=\"column\" gap=\"1\">\n  <Link href=\"#\" standalone>Pricing</Link>\n  <Link href=\"#\" standalone>Changelog</Link>\n</Flex>"
         }
       ],
       "docsDense": {
@@ -7652,6 +8250,10 @@
           {
             "guidance": true,
             "description": "Use underline=\"always\" for links inside paragraphs so they are recognisable without colour."
+          },
+          {
+            "guidance": true,
+            "description": "Add standalone to links that stand on their own: nav, footer and table-of-contents links."
           },
           {
             "guidance": false,
@@ -7703,7 +8305,7 @@
         "List",
         "ListItem"
       ],
-      "description": "Semantic typography prose list component supporting bulleted, numbered, alpha, and roman numeral markers.",
+      "description": "A bulleted or numbered list for body text. Numbers can also be letters or roman numerals.",
       "bestPractices": [
         {
           "guidance": true,
@@ -7721,7 +8323,7 @@
         }
       ],
       "docsDense": {
-        "description": "Semantic typography prose list component supporting bulleted, numbered, alpha, and roman numeral markers.",
+        "description": "bulleted or numbered list for body text. Numbers can also be letters or roman numerals.",
         "bestPractices": [
           {
             "guidance": true,
@@ -7823,7 +8425,7 @@
         "MenuSubTrigger",
         "MenuTrigger"
       ],
-      "description": "Floating action dropdown menu built on Radix DropdownMenu primitive with full keyboard navigation and nested sub-menu support.",
+      "description": "A list of actions that opens from a button, with keyboard navigation and nested submenus.",
       "bestPractices": [
         {
           "guidance": true,
@@ -7841,7 +8443,7 @@
         }
       ],
       "docsDense": {
-        "description": "Floating action dropdown menu built on Radix DropdownMenu primitive with full keyboard navigation and nested sub-menu support.",
+        "description": "list of actions that opens from button, with keyboard navigation and nested submenus.",
         "bestPractices": [
           {
             "guidance": true,
@@ -8349,10 +8951,7 @@
         ],
         "iconSlots": []
       },
-      "exports": [
-        "MotionPauseButton",
-        "VideoPauseToggle"
-      ],
+      "exports": [],
       "partOf": "Video"
     },
     {
@@ -8671,7 +9270,7 @@
       "exports": [
         "Pagination"
       ],
-      "description": "Page navigation control across data tables, lists, and editorial documentation supporting numeric pages, simple compact status, and article card variants.",
+      "description": "Moves between pages of a table, list or document. Shows page numbers, a compact previous and next with \"Page 2 of 10\", or cards linking to the previous and next article.",
       "bestPractices": [
         {
           "guidance": true,
@@ -8689,7 +9288,7 @@
         }
       ],
       "docsDense": {
-        "description": "Page navigation control across data tables, lists, and editorial documentation supporting numeric pages, simple compact status, and article card variants.",
+        "description": "Moves between pages of table, list or document. Shows page numbers, compact previous and next with \"Page 2 of 10\", or cards linking to previous and next article.",
         "bestPractices": [
           {
             "guidance": true,
@@ -8753,14 +9352,14 @@
           "invisible"
         ],
         "color": [
-          "accent",
-          "accent-subtle",
+          "brand",
+          "brand-subtle",
           "neutral"
         ]
       },
       "defaultVariants": {
         "variant": "line",
-        "color": "accent-subtle"
+        "color": "brand-subtle"
       },
       "props": [
         {
@@ -8798,7 +9397,7 @@
         "PanelGroup",
         "PanelHandle"
       ],
-      "description": "Resizable split panes that trade space with each other (code / preview / terminal). Import from \"@shavin/ui/panels\", not the root. Built on react-resizable-panels. For one element that resizes itself, use the resizable prop on Box, Flex or Card.",
+      "description": "Side-by-side or stacked panes the user resizes by dragging the divider between them, such as code, preview and terminal. It can remember the layout. Import it from \"@shavin/ui/panels\", not the root. For one element that resizes itself, use the resizable prop on Box, Flex or Card.",
       "bestPractices": [
         {
           "guidance": true,
@@ -8832,7 +9431,7 @@
         }
       ],
       "docsDense": {
-        "description": "Resizable split panes that trade space with each other (code / preview / terminal). Import from \"@shavin/ui/panels\", not root. Built on react-resizable-panels. For one element that resizes itself, use resizable prop on Box, Flex or Card.",
+        "description": "Side-by-side or stacked panes user resizes by dragging divider between them, such as code, preview and terminal. It can remember layout. Import it from \"@shavin/ui/panels\", not root. For one element that resizes itself, use resizable prop on Box, Flex or Card.",
         "bestPractices": [
           {
             "guidance": true,
@@ -8873,19 +9472,19 @@
           "invisible"
         ],
         "color": [
-          "accent",
-          "accent-subtle",
+          "brand",
+          "brand-subtle",
           "neutral"
         ]
       },
       "defaultVariants": {
         "variant": "line",
-        "color": "accent-subtle"
+        "color": "brand-subtle"
       },
       "props": [
         {
           "name": "color",
-          "type": "\"accent\" | \"accent-subtle\" | \"neutral\" | null",
+          "type": "\"brand\" | \"brand-subtle\" | \"neutral\" | null",
           "required": false,
           "doc": ""
         },
@@ -8994,7 +9593,7 @@
         "PopoverContent",
         "PopoverTrigger"
       ],
-      "description": "Click-triggered floating panel built on Radix Popover primitive with collision detection and focus trapping.",
+      "description": "A panel that opens when the user clicks a trigger, for short forms or extra detail. It stays on screen near edges and closes on Escape or a click outside.",
       "bestPractices": [
         {
           "guidance": true,
@@ -9012,7 +9611,7 @@
         }
       ],
       "docsDense": {
-        "description": "Click-triggered floating panel built on Radix Popover primitive with collision detection and focus trapping.",
+        "description": "panel that opens when user clicks trigger, for short forms or extra detail. It stays on screen near edges and closes on Escape or click outside.",
         "bestPractices": [
           {
             "guidance": true,
@@ -9332,7 +9931,7 @@
       "exports": [
         "Progress"
       ],
-      "description": "Loading and task progress bar built on Radix Progress primitive supporting determinate percentages and indeterminate loading states.",
+      "description": "A bar that shows how far a task has got, or a moving bar when the end isn't known. It can show a label and the percentage, or run as a thin bar across the top of the page.",
       "bestPractices": [
         {
           "guidance": true,
@@ -9350,7 +9949,7 @@
         }
       ],
       "docsDense": {
-        "description": "Loading and task progress bar built on Radix Progress primitive supporting determinate percentages and indeterminate loading states.",
+        "description": "bar that shows how far task has got, or moving bar when end isn't known. It can show label and percentage, or run as thin bar across top of page.",
         "bestPractices": [
           {
             "guidance": true,
@@ -9451,6 +10050,12 @@
           "doc": "Variant override for this specific item."
         },
         {
+          "name": "hitArea",
+          "type": "HitArea",
+          "required": false,
+          "doc": "Hit-area override for this item; defaults to the group's. See RadioGroup."
+        },
+        {
           "name": "className",
           "type": "string",
           "required": false,
@@ -9514,6 +10119,12 @@
           "required": false,
           "doc": "Radius style for radio items or card containers. Default \"inherit\".",
           "default": "inherit"
+        },
+        {
+          "name": "hitArea",
+          "type": "HitArea",
+          "required": false,
+          "doc": "Hit-area override (docs: \"Target size\"). \"default\": 24px floor, 44px on touch. \"none\": no hit area growth (dense toolbars; may go below 24px, yours to own). \"touch\": always 44px on a coarse pointer."
         }
       ],
       "builderMeta": {
@@ -9529,7 +10140,7 @@
         "Radio",
         "RadioGroup"
       ],
-      "description": "Single-choice radio selection group built on Radix RadioGroup primitive supporting radio buttons and selectable card grid layouts.",
+      "description": "Pick one option from a small set, shown as radio buttons or as selectable cards.",
       "bestPractices": [
         {
           "guidance": true,
@@ -9547,7 +10158,7 @@
         }
       ],
       "docsDense": {
-        "description": "Single-choice radio selection group built on Radix RadioGroup primitive supporting radio buttons and selectable card grid layouts.",
+        "description": "Pick one option from small set, shown as radio buttons or as selectable cards.",
         "bestPractices": [
           {
             "guidance": true,
@@ -9570,7 +10181,7 @@
       "radiusOverride": false,
       "variants": {
         "tone": [
-          "accent",
+          "brand",
           "warning",
           "success"
         ],
@@ -9581,7 +10192,7 @@
         ]
       },
       "defaultVariants": {
-        "tone": "accent",
+        "tone": "brand",
         "size": "md"
       },
       "props": [
@@ -9834,6 +10445,12 @@
           "type": "(open: boolean) => void",
           "required": false,
           "doc": ""
+        },
+        {
+          "name": "hitArea",
+          "type": "HitArea",
+          "required": false,
+          "doc": "Hit-area override (docs: \"Target size\"). \"default\": 24px floor (this control stays at 24px on touch). \"none\": no hit area growth (dense toolbars; may go below 24px, yours to own). \"touch\": always 44px on a coarse pointer."
         }
       ],
       "builderMeta": {
@@ -9904,14 +10521,14 @@
           "invisible"
         ],
         "color": [
-          "accent",
-          "accent-subtle",
+          "brand",
+          "brand-subtle",
           "neutral"
         ]
       },
       "defaultVariants": {
         "variant": "line",
-        "color": "accent-subtle"
+        "color": "brand-subtle"
       },
       "props": [
         {
@@ -10028,7 +10645,7 @@
       "props": [
         {
           "name": "color",
-          "type": "\"accent\" | \"accent-subtle\" | \"neutral\"",
+          "type": "\"brand\" | \"brand-subtle\" | \"neutral\"",
           "required": false,
           "doc": ""
         },
@@ -10129,7 +10746,7 @@
         "Row",
         "RowDragHandle"
       ],
-      "description": "Flexible interactive row primitive with leading slot, middle title, trailing actions, active state, and drag handle icon.",
+      "description": "A clickable line in a list or menu, with an icon or control at the start, a label, and actions at the end. It has an active state, and a drag handle is available for reorderable lists.",
       "bestPractices": [
         {
           "guidance": true,
@@ -10147,7 +10764,7 @@
         }
       ],
       "docsDense": {
-        "description": "Flexible interactive row primitive with leading slot, middle title, trailing actions, active state, and drag handle icon.",
+        "description": "clickable line in list or menu, with icon or control at start, label, and actions at end. It has active state, and drag handle is available for reorderable lists.",
         "bestPractices": [
           {
             "guidance": true,
@@ -10247,10 +10864,10 @@
           "doc": "Explicit appearance mode: \"dark\" | \"light\" | \"inherit\". Defaults to \"inherit\"."
         },
         {
-          "name": "accentColor",
+          "name": "brandColor",
           "type": "string",
           "required": false,
-          "doc": "One of the 24 named accents (e.g. \"Grass\", \"Ruby\", \"Monochrome\") or raw hex \"#rrggbb\"."
+          "doc": "One of the 24 named brand colours (e.g. \"Monochrome\") or raw hex \"#rrggbb\"."
         },
         {
           "name": "grayColor",
@@ -10289,10 +10906,30 @@
           "doc": "Panel background: \"solid\" | \"translucent\"."
         },
         {
+          "name": "focusRing",
+          "type": "\"subtle\" | \"default\" | \"strong\"",
+          "required": false,
+          "doc": "Focus ring weight inside this subtree: \"subtle\" | \"default\" | \"strong\". Unset inherits the parent (ThemeProvider or an outer ScopedThemeProvider)."
+        },
+        {
           "name": "colorSpace",
           "type": "ColorSpace",
           "required": false,
           "doc": "Color space: \"rgb\" | \"oklch\". Defaults to \"rgb\"."
+        },
+        {
+          "name": "touchTargets",
+          "type": "\"comfortable\" | \"compact\"",
+          "required": false,
+          "doc": "Target size policy for this subtree: \"comfortable\" grows primary controls to 44px under a coarse pointer, \"compact\" does not (the 24px WCAG 2.5.8 floor stays). Sets `data-touch-targets` on the container. **Unset means inherit, not \"comfortable\".** Without this prop the island writes no attribute and keeps the policy of its nearest parent: a compact `ThemeProvider` keeps an unset island compact, and the root default is comfortable only when nothing above says otherwise. Pass `\"comfortable\"` explicitly to override a compact parent. Content portaled out of the container (menus, popovers, dialogs) follows `<html>`, not this value.",
+          "default": "is"
+        },
+        {
+          "name": "brandSolid",
+          "type": "BrandSolidMode",
+          "required": false,
+          "doc": "How solid brand fills are chosen in this scope: \"accessible\" | \"exact\" | \"perceptual\". Unset inherits the ThemeProvider above (default \"accessible\").",
+          "default": "accessible"
         },
         {
           "name": "className",
@@ -10369,7 +11006,7 @@
       "exports": [
         "ScrollArea"
       ],
-      "description": "Custom styled scrollbar viewport primitive built on Radix ScrollArea supporting vertical and horizontal scrolling.",
+      "description": "A scrolling region with slim, styled scrollbars in place of the browser's own. It scrolls both ways and can be scrolled with the keyboard.",
       "bestPractices": [
         {
           "guidance": true,
@@ -10387,7 +11024,7 @@
         }
       ],
       "docsDense": {
-        "description": "Custom styled scrollbar viewport primitive built on Radix ScrollArea supporting vertical and horizontal scrolling.",
+        "description": "scrolling region with slim, styled scrollbars in place of browser's own. It scrolls both ways and can be scrolled with keyboard.",
         "bestPractices": [
           {
             "guidance": true,
@@ -10448,7 +11085,7 @@
           "name": "bgOverlays",
           "type": "string",
           "required": false,
-          "doc": "Comma-separated shorthand for overlay layers. Supports presets (\"dark-50\"), solid colors (#hex or (token)), gradients (linear/radial), and fx backdrops (\"fx:dither-waves\", \"fx:fluid-silk(speed=1.2)\"; needs @shavin/fx registered, else falls back to mesh). JSON array of OverlayLayer[] as fallback for advanced cases. Layers composite top-to-bottom."
+          "doc": "Comma-separated shorthand for overlay layers. Supports presets (\"dark-50\"), solid colors (#hex or (token)), gradients (linear/radial), and fx backdrops (\"fx:dither-waves\", \"fx:fluid-silk(speed=1.2)\"; needs `npm i @shavin/fx` (free to use under its own licence) and `registerFxBackdrops()`, else falls back to mesh). JSON array of OverlayLayer[] as fallback for advanced cases. Layers composite top-to-bottom."
         },
         {
           "name": "bgVideoPaused",
@@ -10489,7 +11126,7 @@
       "exports": [
         "Section"
       ],
-      "description": "Semantic full-bleed band primitive. No padding by default (size=\"none\") — opt into vertical rhythm with a size preset or a py-* className. Padding presets (1-4), responsive role sizes (compact/strip/body/hero) and background media props. Ideal for full-bleed hero bands with bgVideo or bgImage.",
+      "description": "A full-width band of the page, such as a hero or a content block. It has no padding unless you choose a size, and it can carry a background image or video.",
       "bestPractices": [
         {
           "guidance": true,
@@ -10535,11 +11172,11 @@
         },
         {
           "title": "Custom Solid + Gradient + Token Overlays",
-          "code": "<Section size=\"3\" bgImage=\"https://...\" bgOverlays=\"#1a1a2e/40, (accent)/20, linear(180deg, #000/0%, #000/100%)/60\" surface=\"dark-always\"><Container size=\"md\"><Heading size=\"2xl\">Custom Overlays</Heading></Container></Section>"
+          "code": "<Section size=\"3\" bgImage=\"https://...\" bgOverlays=\"#1a1a2e/40, (brand)/20, linear(180deg, #000/0%, #000/100%)/60\" surface=\"dark-always\"><Container size=\"md\"><Heading size=\"2xl\">Custom Overlays</Heading></Container></Section>"
         }
       ],
       "docsDense": {
-        "description": "Semantic full-bleed band primitive. No padding by default (size=\"none\") — opt into vertical rhythm with size preset or py-* className. Padding presets (1-4), responsive role sizes (compact/strip/body/hero) and background media props. Ideal for full-bleed hero bands with bgVideo or bgImage.",
+        "description": "full-width band of page, such as hero or content block. It has no padding unless you choose size, and it can carry background image or video.",
         "bestPractices": [
           {
             "guidance": true,
@@ -10604,10 +11241,10 @@
           "default": "|"
         },
         {
-          "name": "iconOnly",
-          "type": "boolean",
+          "name": "hitArea",
+          "type": "HitArea",
           "required": false,
-          "doc": "@deprecated use `variant=\"expand\"`."
+          "doc": "Hit-area override (docs: \"Target size\"). \"default\": 24px floor, 44px on touch. \"none\": no hit area growth (dense toolbars; may go below 24px, yours to own). \"touch\": always 44px on a coarse pointer."
         }
       ],
       "builderMeta": {
@@ -10623,7 +11260,7 @@
         "SegmentedControl",
         "SegmentedControlItem"
       ],
-      "description": "Exclusive single-select toggle group built on Radix ToggleGroup primitive supporting default, pill, subtle, expand, and icon variants, with an animated active indicator that slides between items.",
+      "description": "Pick one option from a few, shown side by side with a highlight that slides to the selected one. Comes in default, pill, subtle, expand and icon styles.",
       "bestPractices": [
         {
           "guidance": true,
@@ -10649,7 +11286,7 @@
         }
       ],
       "docsDense": {
-        "description": "Exclusive single-select toggle group built on Radix ToggleGroup primitive supporting default, pill, subtle, expand, and icon variants, with animated active indicator that slides between items.",
+        "description": "Pick one option from few, shown side by side with highlight that slides to selected one. Comes in default, pill, subtle, expand and icon styles.",
         "bestPractices": [
           {
             "guidance": true,
@@ -10702,6 +11339,12 @@
           "type": "boolean",
           "required": false,
           "doc": ""
+        },
+        {
+          "name": "hitArea",
+          "type": "HitArea",
+          "required": false,
+          "doc": "Accessible name for icon-only items when `label` is not a string. Falls back to `value`. */ \"aria-label\"?: string; /** Hit-area override for this item; defaults to the control's. See SegmentedControl."
         }
       ],
       "builderMeta": {
@@ -10811,6 +11454,12 @@
           "doc": "outline (default): a 3:1 control border (WCAG 1.4.11). soft: filled and borderless, for dense tool panels; the value and the chevron identify it. Both show the 2px focus ring."
         },
         {
+          "name": "hitArea",
+          "type": "HitArea",
+          "required": false,
+          "doc": "Hit-area override (docs: \"Target size\"). \"default\": 24px floor, 44px on touch. \"none\": no hit area growth (dense toolbars; may go below 24px, yours to own). \"touch\": always 44px on a coarse pointer."
+        },
+        {
           "name": "disabled",
           "type": "boolean",
           "required": false,
@@ -10847,7 +11496,7 @@
       "exports": [
         "Select"
       ],
-      "description": "Accessible dropdown select control built on Radix Select primitive with option grouping and viewport collision positioning.",
+      "description": "Pick one value from a list. Options can be grouped, and the list stays on screen near edges.",
       "bestPractices": [
         {
           "guidance": true,
@@ -10869,7 +11518,7 @@
         }
       ],
       "docsDense": {
-        "description": "Accessible dropdown select control built on Radix Select primitive with option grouping and viewport collision positioning.",
+        "description": "Pick one value from list. Options can be grouped, and list stays on screen near edges.",
         "bestPractices": [
           {
             "guidance": true,
@@ -10990,7 +11639,7 @@
           "subtle",
           "muted",
           "default",
-          "accent",
+          "brand",
           "contrast",
           "danger",
           "inherit"
@@ -11031,7 +11680,7 @@
       "exports": [
         "Separator"
       ],
-      "description": "Visual horizontal or vertical divider primitive built on Radix Separator using semantic hairline token styling.",
+      "description": "A thin line between content, across or down. It comes in several thicknesses and colours.",
       "bestPractices": [
         {
           "guidance": true,
@@ -11049,7 +11698,7 @@
         }
       ],
       "docsDense": {
-        "description": "Visual horizontal or vertical divider primitive built on Radix Separator using semantic hairline token styling.",
+        "description": "thin line between content, across or down. It comes in several thicknesses and colours.",
         "bestPractices": [
           {
             "guidance": true,
@@ -11096,7 +11745,7 @@
           "name": "position",
           "type": "\"bottom-left\" | \"bottom-right\" | \"top-left\" | \"top-right\"",
           "required": false,
-          "doc": "Default floating trigger placement on screen. Defaults to \"bottom-right\" (20px token offset)."
+          "doc": "Where the inspector bar starts, until it is dragged somewhere else (the new spot is remembered per browser). Defaults to \"bottom-right\"."
         }
       ],
       "builderMeta": {
@@ -11128,17 +11777,16 @@
       "defaultVariants": {},
       "props": [
         {
+          "name": "bridgePort",
+          "type": "number",
+          "required": false,
+          "doc": "Port the local Agent-Browser bridge listens on. Defaults to `NEXT_PUBLIC_SHAVIN_BRIDGE_PORT` / `VITE_SHAVIN_BRIDGE_PORT`, then the built-in default. Set this when you run `npx"
+        },
+        {
           "name": "className",
           "type": "string",
           "required": false,
           "doc": "Optional custom trigger class name."
-        },
-        {
-          "name": "position",
-          "type": "\"bottom-left\" | \"bottom-right\" | \"top-left\" | \"top-right\"",
-          "required": false,
-          "doc": "Default floating trigger placement on screen. Defaults to \"bottom-right\" (20px token offset).",
-          "default": "floating"
         },
         {
           "name": "forceShow",
@@ -11147,10 +11795,10 @@
           "doc": "If true, forces ShavinDevTools to render even in production. By default, it is omitted in production (NODE_ENV === 'production')."
         },
         {
-          "name": "bridgePort",
-          "type": "number",
+          "name": "position",
+          "type": "\"bottom-left\" | \"bottom-right\" | \"top-left\" | \"top-right\"",
           "required": false,
-          "doc": "Port the local Agent-Browser bridge listens on. Defaults to `NEXT_PUBLIC_SHAVIN_BRIDGE_PORT` / `VITE_SHAVIN_BRIDGE_PORT`, then the built-in default. Set this when you run `npx @shavin/cli bridge --port <n>`."
+          "doc": "Where the inspector bar starts, until it is dragged somewhere else (the new spot is remembered per browser). Defaults to \"bottom-right\"."
         }
       ],
       "builderMeta": {
@@ -11166,11 +11814,11 @@
         "ShavinDevInspector",
         "ShavinDevTools"
       ],
-      "description": "Internal: the floating Dev Inspector that ThemeProvider shows during development, with live theme controls, a design audit, the Bridge status and MCP setup.",
+      "description": "Internal: the Dev Inspector that ThemeProvider shows during development: a small control bar with Select, Issues, Theme and Settings tools, a design audit, the Bridge status and MCP setup.",
       "bestPractices": [
         {
           "guidance": true,
-          "description": "Leave it to ThemeProvider; mount <ShavinDevTools /> yourself only to change its corner, with devTools={false} on the provider."
+          "description": "Leave it to ThemeProvider; mount <ShavinDevTools /> yourself only to change where the bar starts, with devTools={false} on the provider."
         },
         {
           "guidance": false,
@@ -11184,18 +11832,19 @@
         }
       ],
       "docsDense": {
-        "description": "Internal: floating Dev Inspector that ThemeProvider shows during development, with live theme controls, design audit, Bridge status and MCP setup.",
+        "description": "Internal: Dev Inspector that ThemeProvider shows during development: small control bar with Select, Issues, Theme and Settings tools, design audit, Bridge status and MCP setup.",
         "bestPractices": [
           {
             "guidance": true,
-            "description": "Leave it to ThemeProvider; mount <ShavinDevTools /> yourself only to change its corner, with devTools={false} on provider."
+            "description": "Leave it to ThemeProvider; mount <ShavinDevTools /> yourself only to change where bar starts, with devTools={false} on provider."
           },
           {
             "guidance": false,
             "description": "Do not ship forceShow to production; keep it for QA and staging."
           }
         ]
-      }
+      },
+      "inheritsDomProps": true
     },
     {
       "name": "Sidebar",
@@ -11286,8 +11935,8 @@
           "name": "resizeColor",
           "type": "ResizeHandleColor",
           "required": false,
-          "doc": "Resize handle colour on hover, focus and drag. Default \"accent-subtle\".",
-          "default": "accent-subtle"
+          "doc": "Resize handle colour on hover, focus and drag. Default \"brand-subtle\".",
+          "default": "brand-subtle"
         },
         {
           "name": "children",
@@ -11322,9 +11971,10 @@
         "SidebarHeader",
         "SidebarNavItem",
         "SidebarSection",
-        "SidebarTrigger"
+        "SidebarTrigger",
+        "useSidebar"
       ],
-      "description": "Comprehensive sidebar layout primitive supporting left/right docking, collapsible modes, resizability, and compound sub-components.",
+      "description": "App navigation down the left or right edge. It can collapse to icons or hide completely, and users can resize it.",
       "bestPractices": [
         {
           "guidance": true,
@@ -11342,7 +11992,7 @@
         }
       ],
       "docsDense": {
-        "description": "Comprehensive sidebar layout primitive supporting left/right docking, collapsible modes, resizability, and compound sub-components.",
+        "description": "App navigation down left or right edge. It can collapse to icons or hide completely, and users can resize it.",
         "bestPractices": [
           {
             "guidance": true,
@@ -11382,7 +12032,8 @@
         "SidebarHeader",
         "SidebarNavItem",
         "SidebarSection",
-        "SidebarTrigger"
+        "SidebarTrigger",
+        "useSidebar"
       ],
       "partOf": "Sidebar",
       "inheritsDomProps": true
@@ -11414,7 +12065,8 @@
         "SidebarHeader",
         "SidebarNavItem",
         "SidebarSection",
-        "SidebarTrigger"
+        "SidebarTrigger",
+        "useSidebar"
       ],
       "partOf": "Sidebar",
       "inheritsDomProps": true
@@ -11446,7 +12098,8 @@
         "SidebarHeader",
         "SidebarNavItem",
         "SidebarSection",
-        "SidebarTrigger"
+        "SidebarTrigger",
+        "useSidebar"
       ],
       "partOf": "Sidebar",
       "inheritsDomProps": true
@@ -11523,7 +12176,8 @@
         "SidebarHeader",
         "SidebarNavItem",
         "SidebarSection",
-        "SidebarTrigger"
+        "SidebarTrigger",
+        "useSidebar"
       ],
       "partOf": "Sidebar"
     },
@@ -11561,7 +12215,8 @@
         "SidebarHeader",
         "SidebarNavItem",
         "SidebarSection",
-        "SidebarTrigger"
+        "SidebarTrigger",
+        "useSidebar"
       ],
       "partOf": "Sidebar"
     },
@@ -11575,7 +12230,14 @@
       "radiusOverride": false,
       "variants": {},
       "defaultVariants": {},
-      "props": [],
+      "props": [
+        {
+          "name": "hitArea",
+          "type": "\"none\" | \"default\" | \"touch\"",
+          "required": false,
+          "doc": "Hit-area override (docs: \"Target size\"): \"default\" 24px floor and 44px on touch, \"none\", or \"touch\"."
+        }
+      ],
       "builderMeta": {
         "label": "Sidebar Trigger",
         "isLayout": false,
@@ -11592,7 +12254,8 @@
         "SidebarHeader",
         "SidebarNavItem",
         "SidebarSection",
-        "SidebarTrigger"
+        "SidebarTrigger",
+        "useSidebar"
       ],
       "partOf": "Sidebar",
       "inheritsDomProps": true
@@ -11642,8 +12305,11 @@
       "examples": [
         {
           "title": "Pulsing Card Loading Skeleton",
-          "code": "<div className=\"flex items-center gap-3\"><Skeleton className=\"h-10 w-10 rounded-full\" /><div className=\"space-y-2\"><Skeleton className=\"h-4 w-32\" /><Skeleton className=\"h-3 w-20\" /></div></div>"
+          "code": "<Flex gap=\"3\" align=\"center\"><Skeleton className=\"h-10 w-10 rounded-full\" /><Skeleton className=\"h-4 w-32\" /></Flex>"
         }
+      ],
+      "structure": [
+        "<Skeleton className=\"h-4 w-32\" /> is one pulsing block (size it with classes); <SkeletonMimic loading={isLoading}>real markup</SkeletonMimic> turns the real children into placeholders."
       ],
       "docsDense": {
         "description": "Pulsing content placeholder block and SkeletonMimic structural wrapper for zero-layout-shift loading states.",
@@ -11773,10 +12439,10 @@
         },
         {
           "name": "color",
-          "type": "\"accent\" | \"mono\"",
+          "type": "\"brand\" | \"mono\"",
           "required": false,
-          "doc": "Fill color style in capsule mode: \"accent\" (active theme accent) or \"mono\" (monochrome inverting). Default \"accent\".",
-          "default": "accent"
+          "doc": "Fill color style in capsule mode: \"brand\" (active theme brand) or \"mono\" (monochrome inverting). Default \"brand\".",
+          "default": "brand"
         },
         {
           "name": "showStops",
@@ -11784,6 +12450,13 @@
           "required": false,
           "doc": "Whether to show subtle stop ticks on hover in capsule mode. Default true for discrete steps (3–30).",
           "default": "true"
+        },
+        {
+          "name": "hitArea",
+          "type": "HitArea",
+          "required": false,
+          "doc": "Hit-area override for the thumbs (default variant) (docs: \"Target size\"). \"default\": 24px floor, 44px on touch. \"none\": no hit area growth (dense toolbars; may go below 24px, yours to own). \"touch\": always 44px on a coarse pointer.",
+          "default": "variant)"
         }
       ],
       "builderMeta": {
@@ -11799,7 +12472,7 @@
         "CapsuleSlider",
         "Slider"
       ],
-      "description": "Range slider input primitive supporting standard track/thumb and tactile capsule pill variants, single or dual thumb values, auto/custom track marks, and radius customization.",
+      "description": "Pick a number, or a range between two handles, by dragging along a track. It can show tick marks, and the capsule style puts the label and value inside the bar.",
       "bestPractices": [
         {
           "guidance": true,
@@ -11825,7 +12498,7 @@
         }
       ],
       "docsDense": {
-        "description": "Range slider input primitive supporting standard track/thumb and tactile capsule pill variants, single or dual thumb values, auto/custom track marks, and radius customization.",
+        "description": "Pick number, or range between two handles, by dragging along track. It can show tick marks, and capsule style puts label and value inside bar.",
         "bestPractices": [
           {
             "guidance": true,
@@ -11910,7 +12583,7 @@
         "Sortable",
         "SortableHandle"
       ],
-      "description": "Zero-dependency HTML5 drag-and-drop list re-ordering primitive with render-prop item formatting and grip handle.",
+      "description": "A list users reorder by dragging items, or by keyboard with screen reader announcements. Items stack, sit in a row or form a grid.",
       "bestPractices": [
         {
           "guidance": true,
@@ -11928,7 +12601,7 @@
         }
       ],
       "docsDense": {
-        "description": "Zero-dependency HTML5 drag-and-drop list re-ordering primitive with render-prop item formatting and grip handle.",
+        "description": "list users reorder by dragging items, or by keyboard with screen reader announcements. Items stack, sit in row or form grid.",
         "bestPractices": [
           {
             "guidance": true,
@@ -11957,6 +12630,12 @@
           "type": "string",
           "required": false,
           "doc": ""
+        },
+        {
+          "name": "hitArea",
+          "type": "HitArea",
+          "required": false,
+          "doc": "Hit-area override (docs: \"Target size\"). \"default\": 24px floor (this control stays at 24px on touch). \"none\": no hit area growth (dense toolbars; may go below 24px, yours to own). \"touch\": always 44px on a coarse pointer."
         }
       ],
       "builderMeta": {
@@ -12002,8 +12681,8 @@
           "name": "tone",
           "type": "ChartTone",
           "required": false,
-          "doc": "Colour of the line, area or bars. Default accent.",
-          "default": "accent"
+          "doc": "Colour of the line, area or bars. Default brand.",
+          "default": "brand"
         },
         {
           "name": "curve",
@@ -12138,7 +12817,7 @@
       "exports": [
         "Spinner"
       ],
-      "description": "Loading indicator supporting circular spin, pulsing wave dots, Claude-style cycling glyphs, and animated typing ellipsis.",
+      "description": "Shows that something is loading. Comes as a spinning ring, pulsing dots, cycling glyphs or animated dots after text.",
       "bestPractices": [
         {
           "guidance": true,
@@ -12156,7 +12835,7 @@
         }
       ],
       "docsDense": {
-        "description": "Loading indicator supporting circular spin, pulsing wave dots, Claude-style cycling glyphs, and animated typing ellipsis.",
+        "description": "Shows that something is loading. Comes as spinning ring, pulsing dots, cycling glyphs or animated dots after text.",
         "bestPractices": [
           {
             "guidance": true,
@@ -12319,7 +12998,7 @@
           "name": "alert",
           "type": "boolean",
           "required": false,
-          "doc": ""
+          "doc": "Marks the card as needing attention: a warning dot before the label and \"Needs attention\" for screen readers. Never underlines the value (an underline reads as a link)."
         },
         {
           "name": "label",
@@ -12439,6 +13118,12 @@
           "type": "string",
           "required": false,
           "doc": ""
+        },
+        {
+          "name": "hitArea",
+          "type": "HitArea",
+          "required": false,
+          "doc": "Hit-area override for the clickable step chips (pills variant). See docs: \"Target size\"."
         }
       ],
       "builderMeta": {
@@ -12559,6 +13244,12 @@
           "type": "string",
           "required": false,
           "doc": "Visible label; wraps the switch in a <label> so it names it and is clickable."
+        },
+        {
+          "name": "hitArea",
+          "type": "HitArea",
+          "required": false,
+          "doc": "Hit-area override (docs: \"Target size\"). \"default\": 24px floor, 44px on touch. \"none\": no hit area growth (dense toolbars; may go below 24px, yours to own). \"touch\": always 44px on a coarse pointer."
         }
       ],
       "builderMeta": {
@@ -12571,7 +13262,7 @@
       "exports": [
         "Switch"
       ],
-      "description": "Toggle switch control built on Radix Switch primitive with pill rounded-full track and animated sliding thumb handle.",
+      "description": "Turns a setting on or off, with an optional label. The thumb slides across the track when toggled.",
       "bestPractices": [
         {
           "guidance": true,
@@ -12589,7 +13280,7 @@
         }
       ],
       "docsDense": {
-        "description": "Toggle switch control built on Radix Switch primitive with pill rounded-full track and animated sliding thumb handle.",
+        "description": "Turns setting on or off, with optional label. thumb slides across track when toggled.",
         "bestPractices": [
           {
             "guidance": true,
@@ -12612,7 +13303,14 @@
       "radiusOverride": false,
       "variants": {},
       "defaultVariants": {},
-      "props": [],
+      "props": [
+        {
+          "name": "scrollLabel",
+          "type": "string",
+          "required": false,
+          "doc": "Accessible name of the scrolling region, announced once the table is wider than its container. Defaults to the table's own `aria-label` or \"Scrollable table\"."
+        }
+      ],
       "builderMeta": {
         "label": "Table",
         "isLayout": false,
@@ -12641,13 +13339,20 @@
         {
           "guidance": false,
           "description": "Do not use Table for page layout columns — reach for Grid or Flex instead."
+        },
+        {
+          "guidance": false,
+          "description": "Do not wrap a Table in overflow-hidden (a Card with overflow-hidden clips the scroll area). Keep the first column short; a comparison table with many columns is fine, it scrolls and fades."
         }
       ],
       "examples": [
         {
           "title": "Data Directory Table",
-          "code": "<Table><TableHeader><TableRow><TableColumnHeaderCell>Name</TableColumnHeaderCell><TableColumnHeaderCell>Role</TableColumnHeaderCell></TableRow></TableHeader><TableBody><TableRow><TableCell>Elena Rostova</TableCell><TableCell>Staff Engineer</TableCell></TableRow></TableBody></Table>"
+          "code": "<Table>\n  <TableHeader><TableRow><TableColumnHeaderCell>Name</TableColumnHeaderCell><TableColumnHeaderCell>Role</TableColumnHeaderCell></TableRow></TableHeader>\n  <TableBody><TableRow><TableCell>Elena Rostova</TableCell><TableCell>Staff Engineer</TableCell></TableRow></TableBody>\n</Table>"
         }
+      ],
+      "structure": [
+        "Table > TableHeader > TableRow > TableColumnHeaderCell; Table > TableBody > TableRow > TableCell"
       ],
       "docsDense": {
         "description": "Data grid table primitives matching design system divider and hairline border visual token specifications.",
@@ -12659,10 +13364,13 @@
           {
             "guidance": false,
             "description": "Do not use Table for page layout columns — reach for Grid or Flex instead."
+          },
+          {
+            "guidance": false,
+            "description": "Do not wrap Table in overflow-hidden ( Card with overflow-hidden clips scroll area). Keep first column short; comparison table with many columns is fine, it scrolls and fades."
           }
         ]
-      },
-      "inheritsDomProps": true
+      }
     },
     {
       "name": "TableBody",
@@ -12902,6 +13610,12 @@
           "type": "string",
           "required": false,
           "doc": ""
+        },
+        {
+          "name": "hitArea",
+          "type": "HitArea",
+          "required": false,
+          "doc": "Names the tab list (states) or the `<nav>` landmark (navigation). */ \"aria-label\"?: string; /** Hit-area override (docs: \"Target size\"). \"default\": 24px floor, 44px on touch. \"none\": no hit area growth (dense toolbars; may go below 24px, yours to own). \"touch\": always 44px on a coarse pointer."
         }
       ],
       "builderMeta": {
@@ -12920,7 +13634,7 @@
         "TabsList",
         "TabsTrigger"
       ],
-      "description": "Tabbed navigation and in-page state container built on Radix Tabs primitive supporting line, segmented, pills, and button variants.",
+      "description": "Switch between panels on a page, or between routes. Comes in line, segmented, pills and button styles.",
       "bestPractices": [
         {
           "guidance": true,
@@ -12950,7 +13664,7 @@
         }
       ],
       "docsDense": {
-        "description": "Tabbed navigation and in-page state container built on Radix Tabs primitive supporting line, segmented, pills, and button variants.",
+        "description": "Switch between panels on page, or between routes. Comes in line, segmented, pills and button styles.",
         "bestPractices": [
           {
             "guidance": true,
@@ -13047,6 +13761,12 @@
           "doc": ""
         },
         {
+          "name": "hitArea",
+          "type": "\"none\" | \"default\" | \"touch\"",
+          "required": false,
+          "doc": "Hit-area override for every trigger in this list. See Tabs."
+        },
+        {
           "name": "orientation",
           "type": "\"horizontal\" | \"vertical\"",
           "required": false,
@@ -13111,6 +13831,12 @@
           "type": "boolean",
           "required": false,
           "doc": ""
+        },
+        {
+          "name": "hitArea",
+          "type": "\"none\" | \"default\" | \"touch\"",
+          "required": false,
+          "doc": "Hit-area override for this trigger; defaults to the list's. See Tabs."
         },
         {
           "name": "orientation",
@@ -13194,7 +13920,7 @@
           "subtle",
           "danger",
           "link",
-          "accent"
+          "brand"
         ],
         "truncate": [
           "true",
@@ -13243,7 +13969,7 @@
         },
         {
           "guidance": true,
-          "description": "Use size=\"overline\" for small section labels above a group."
+          "description": "Use size=\"overline\" sparingly, for a label that adds information (a category or a status) above a group. Most headings need none."
         },
         {
           "guidance": false,
@@ -13265,7 +13991,7 @@
           },
           {
             "guidance": true,
-            "description": "Use size=\"overline\" for small section labels above group."
+            "description": "Use size=\"overline\" sparingly, for label that adds information ( category or status) above group. Most headings need none."
           },
           {
             "guidance": false,
@@ -13425,13 +14151,13 @@
           "name": "separator",
           "type": "ReactNode",
           "required": false,
-          "doc": "Optional separator element or character rendered midway (e.g. '-' or index=3 for 3-3 split)."
+          "doc": "OTP only: separator element or character rendered midway (e.g. '-' or index=3 for 3-3 split)."
         },
         {
           "name": "separatorIndex",
           "type": "number",
           "required": false,
-          "doc": "Index position to render the separator (defaults to Math.floor(length / 2))."
+          "doc": "OTP only: index position to render the separator (defaults to Math.floor(length / 2))."
         },
         {
           "name": "onComplete",
@@ -13456,6 +14182,19 @@
           "type": "string",
           "required": false,
           "doc": "Error message text — when set, the field renders in invalid/error state and shows this message below the input."
+        },
+        {
+          "name": "announceError",
+          "type": "boolean",
+          "required": false,
+          "doc": "Announce `errorMessage` (polite) once when it first appears, for blur and change validation. Default true. Set false while a form moves focus to its FormErrorSummary after a failed submit (FormErrorSummary also silences it automatically for that render).",
+          "default": "true"
+        },
+        {
+          "name": "hitArea",
+          "type": "HitArea",
+          "required": false,
+          "doc": "Hit-area override (docs: \"Target size\"). \"default\": 24px floor, 44px on touch. \"none\": no hit area growth (dense toolbars; may go below 24px, yours to own). \"touch\": always 44px on a coarse pointer. The field itself grows (native input); the password toggle gets a hit area."
         }
       ],
       "builderMeta": {
@@ -13489,6 +14228,9 @@
           "title": "Standard Text Input",
           "code": "<TextField label=\"Email Address\" placeholder=\"alex@company.com\" hint=\"We will never share your email.\" />"
         }
+      ],
+      "structure": [
+        "type=\"otp\" makes it a code-entry input; length, separator, separatorIndex, onComplete and slotClassName apply only then."
       ],
       "docsDense": {
         "description": "Single-line text input control with control radius (--radius-lg), leading/trailing icon slots, and optional label/hint wrapper.",
@@ -13525,14 +14267,13 @@
           "name": "defaultTheme",
           "type": "\"light\" | \"dark\" | \"system\"",
           "required": false,
-          "doc": "Default appearance mode when no stored theme is found. Defaults to \"light\".",
-          "default": "appearance"
+          "doc": "Appearance when nothing is stored yet. Defaults to \"system\" (follows the OS setting)."
         },
         {
-          "name": "accentColor",
+          "name": "brandColor",
           "type": "string",
           "required": false,
-          "doc": "One of the Configurator's 24 named accents (e.g. \"Grass\"), or a literal \"#rrggbb\"."
+          "doc": "One of the Configurator's 24 named brand colours (e.g. \"Monochrome\"), or a literal \"#rrggbb\"."
         },
         {
           "name": "grayColor",
@@ -13571,10 +14312,22 @@
           "doc": "Body font preset family string."
         },
         {
+          "name": "focusRing",
+          "type": "\"subtle\" | \"default\" | \"strong\"",
+          "required": false,
+          "doc": "Focus ring weight for the whole page: \"subtle\" (default: 1px ring, 2px offset), \"default\" (2px, the pre-0.1.0 ring) or \"strong\" (3px). Colour is always --focus (brand text colour, >=3:1 on page fills). Sets data-focus-ring on <html>; tune --focus-width / --focus-offset in CSS for anything else."
+        },
+        {
           "name": "subheadingFont",
           "type": "string",
           "required": false,
           "doc": "Font for h3-h6 headings: \"body\" (default), \"display\" (follow the display font), or a font family name."
+        },
+        {
+          "name": "brandSolid",
+          "type": "BrandSolidMode",
+          "required": false,
+          "doc": "How the fill under text on the brand (solid Button, Badge, selected states) is chosen. Written to `--brand-solid`, `--brand-solid-hover` and `--brand-fg`. - \"accessible\" (default): the brand's hue with lightness lowered just far enough that white text clears 4.6:1 (WCAG 2 AA with headroom); a genuinely light brand (lime, mint, sky, amber) keeps its exact fill and takes dark text. - \"exact\": the exact brand fill, text white or ink by WCAG 2 contrast (the behaviour before this prop). - \"perceptual\": the exact brand fill, text white wherever APCA prefers it. Does NOT meet WCAG 2 AA on every brand colour; a development-only console warning says which. Inherited by ScopedThemeProvider."
         },
         {
           "name": "colorSpace",
@@ -13601,6 +14354,12 @@
           "doc": "Port the local Agent-Browser bridge listens on. Defaults to the env override, then the built-in default. Pass this when running `npx @shavin/cli bridge --port <n>`."
         },
         {
+          "name": "touchTargets",
+          "type": "\"comfortable\" | \"compact\"",
+          "required": false,
+          "doc": "Target size policy (docs: \"Target size\"). \"comfortable\" (default): primary controls grow to 44px under a coarse pointer (touch). \"compact\": they do not grow; every control still keeps its 24px WCAG 2.5.8 floor. Sets `data-touch-targets` on <html>; tune the sizes with the `--tap-min` and `--tap-min-touch` CSS variables."
+        },
+        {
           "name": "children",
           "type": "ReactNode",
           "required": false,
@@ -13619,7 +14378,7 @@
       "exports": [
         "ThemeProvider"
       ],
-      "description": "Global runtime design system theme provider mutating CSS variables on document root for brand accents, radius, and scaling.",
+      "description": "Global runtime design system theme provider mutating CSS variables on document root for brand colours, radius, and scaling.",
       "bestPractices": [
         {
           "guidance": true,
@@ -13632,12 +14391,24 @@
       ],
       "examples": [
         {
+          "title": "Keep the exact brand fill under button text",
+          "code": "<ThemeProvider brandColor=\"Blue\" brandSolid=\"exact\" />"
+        },
+        {
           "title": "Root Theme Initialization",
-          "code": "<ThemeProvider accentColor=\"Grass\" grayColor=\"Zinc\" radius=\"large\" scaling={95} panelBackground=\"solid\" />"
+          "code": "<ThemeProvider brandColor=\"Monochrome\" grayColor=\"Zinc\" radius=\"large\" scaling={95} panelBackground=\"solid\" />"
+        },
+        {
+          "title": "Compact touch targets (dense product UI)",
+          "code": "<ThemeProvider touchTargets=\"compact\" />"
+        },
+        {
+          "title": "Focus ring weight",
+          "code": "<ThemeProvider brandColor=\"Indigo\" focusRing=\"default\" />"
         }
       ],
       "docsDense": {
-        "description": "Global runtime design system theme provider mutating CSS variables on document root for brand accents, radius, and scaling.",
+        "description": "Global runtime design system theme provider mutating CSS variables on document root for brand colours, radius, and scaling.",
         "bestPractices": [
           {
             "guidance": true,
@@ -13678,6 +14449,12 @@
           "type": "boolean",
           "required": false,
           "doc": "Adds the translucent-panels class before first paint (the provider's panelBackground)."
+        },
+        {
+          "name": "focusRing",
+          "type": "\"subtle\" | \"default\" | \"strong\"",
+          "required": false,
+          "doc": "Sets data-focus-ring on <html> before first paint (the provider's focusRing)."
         }
       ],
       "builderMeta": {
@@ -13691,7 +14468,8 @@
       },
       "exports": [
         "ThemeScript",
-        "ThemeSwitcher"
+        "ThemeSwitcher",
+        "useTheme"
       ],
       "partOf": "ThemeSwitcher"
     },
@@ -13761,6 +14539,12 @@
           "type": "string",
           "required": false,
           "doc": ""
+        },
+        {
+          "name": "hitArea",
+          "type": "HitArea",
+          "required": false,
+          "doc": "Hit-area override (docs: \"Target size\"). \"default\": 24px floor, 44px on touch. \"none\": no hit area growth (dense toolbars; may go below 24px, yours to own). \"touch\": always 44px on a coarse pointer."
         }
       ],
       "builderMeta": {
@@ -13774,7 +14558,8 @@
       },
       "exports": [
         "ThemeScript",
-        "ThemeSwitcher"
+        "ThemeSwitcher",
+        "useTheme"
       ],
       "description": "Appearance mode controller providing zero-layout-shift switching between light, dark, and system color schemes, complete with a FOUC-prevention hydration script and useTheme hook.",
       "bestPractices": [
@@ -13784,7 +14569,7 @@
         },
         {
           "guidance": false,
-          "description": "Do not use ThemeSwitcher to configure accent colors — use ThemeProvider or Configurator for branding palette customizations."
+          "description": "Do not use ThemeSwitcher to configure brand colors — use ThemeProvider or Configurator for branding palette customizations."
         }
       ],
       "examples": [
@@ -13814,7 +14599,7 @@
           },
           {
             "guidance": false,
-            "description": "Do not use ThemeSwitcher to configure accent colors — use ThemeProvider or Configurator for branding palette customizations."
+            "description": "Do not use ThemeSwitcher to configure brand colors — use ThemeProvider or Configurator for branding palette customizations."
           }
         ]
       }
@@ -13854,6 +14639,12 @@
           "required": false,
           "doc": "Minutes between each option in select dropdown — 15, 30, 60, etc. Default 30.",
           "default": "30"
+        },
+        {
+          "name": "id",
+          "type": "string",
+          "required": false,
+          "doc": "id of the group, so FormField can point at it."
         }
       ],
       "builderMeta": {
@@ -13870,7 +14661,7 @@
         "TimePickerClock",
         "TimePickerInput"
       ],
-      "description": "Time selection primitive supporting interval dropdown (TimePicker), segmented inputs (TimePickerInput), and analog clock face popover (TimePickerClock).",
+      "description": "Choose a time from a list at set intervals, by typing hours and minutes, or on a clock face in a popover.",
       "bestPractices": [
         {
           "guidance": true,
@@ -13888,7 +14679,7 @@
         }
       ],
       "docsDense": {
-        "description": "Time selection primitive supporting interval dropdown (TimePicker), segmented inputs (TimePickerInput), and analog clock face popover (TimePickerClock).",
+        "description": "Choose time from list at set intervals, by typing hours and minutes, or on clock face in popover.",
         "bestPractices": [
           {
             "guidance": true,
@@ -13919,6 +14710,12 @@
           "doc": ""
         },
         {
+          "name": "id",
+          "type": "string",
+          "required": false,
+          "doc": "id of the group, so FormField can point at it (TimePickerInput)."
+        },
+        {
           "name": "onChange",
           "type": "(d: Date) => void",
           "required": true,
@@ -13945,7 +14742,8 @@
         "TimePickerClock",
         "TimePickerInput"
       ],
-      "partOf": "TimePicker"
+      "partOf": "TimePicker",
+      "inheritsDomProps": true
     },
     {
       "name": "TimePickerInput",
@@ -13963,6 +14761,12 @@
           "type": "string",
           "required": false,
           "doc": ""
+        },
+        {
+          "name": "id",
+          "type": "string",
+          "required": false,
+          "doc": "id of the group, so FormField can point at it (TimePickerInput)."
         },
         {
           "name": "onChange",
@@ -13991,7 +14795,8 @@
         "TimePickerClock",
         "TimePickerInput"
       ],
-      "partOf": "TimePicker"
+      "partOf": "TimePicker",
+      "inheritsDomProps": true
     },
     {
       "name": "Toast",
@@ -14014,35 +14819,64 @@
         "iconSlots": []
       },
       "exports": [
-        "ToastProvider"
+        "ToastProvider",
+        "useToast"
       ],
-      "description": "Non-blocking floating notification system with swipe-to-dismiss, hover expansion, and promise lifecycle helpers.",
+      "description": "Brief notifications that don't block the page. They stack, expand on hover, swipe away, and can track a promise from loading to done.",
       "bestPractices": [
         {
           "guidance": true,
           "description": "Wrap application root with <ToastProvider position='bottom-right'> and consume via useToast()."
         },
         {
+          "guidance": true,
+          "description": "Use success() for small reversible confirmations ('Changes saved'), promise() for a save or job in progress."
+        },
+        {
           "guidance": false,
-          "description": "Do not use Toast for critical modal confirmations — reach for AlertDialog instead."
+          "description": "Do not let a Toast carry the only copy of an error: persist it inline (Callout or field error) and use the toast only as an extra."
+        },
+        {
+          "guidance": false,
+          "description": "Do not use Toast for form validation or destructive confirmations: use field errors and AlertDialog."
         }
       ],
       "examples": [
         {
-          "title": "Success Toast Trigger",
-          "code": "const { success } = useToast(); success(\"Changes saved successfully\");"
+          "title": "Save with success and retry",
+          "code": "const { success, error } = useToast();\nasync function onSave() {\n  try { await save(values); success(\"Changes saved\"); }\n  catch { error(\"Couldn't save changes\", { action: { label: \"Retry\", onClick: onSave } }); }\n}"
+        },
+        {
+          "title": "Track a promise",
+          "code": "const { promise } = useToast();\npromise(saveProfile(values), { loading: \"Saving…\", success: \"Profile saved\", error: \"Couldn't save profile\" });"
+        },
+        {
+          "title": "Undo after delete",
+          "code": "success(\"Order deleted\", { action: { label: \"Undo\", onClick: undo } });"
         }
       ],
+      "structure": [
+        "shavin init mounts <ToastProvider> inside <ThemeProvider> in the root layout; add it there once if it is missing. useToast() throws outside it.",
+        "Trigger from any client component: const { toast, success, error, warning, info, loading, custom, promise, dismiss } = useToast();"
+      ],
       "docsDense": {
-        "description": "Non-blocking floating notification system with swipe-to-dismiss, hover expansion, and promise lifecycle helpers.",
+        "description": "Brief notifications that don't block page. They stack, expand on hover, swipe away, and can track promise from loading to done.",
         "bestPractices": [
           {
             "guidance": true,
             "description": "Wrap application root with <ToastProvider position='bottom-right'> and consume via useToast()."
           },
           {
+            "guidance": true,
+            "description": "Use success() for small reversible confirmations ('Changes saved'), promise() for save or job in progress."
+          },
+          {
             "guidance": false,
-            "description": "Do not use Toast for critical modal confirmations — reach for AlertDialog instead."
+            "description": "Do not let Toast carry only copy of error: persist it inline (Callout or field error) and use toast only as extra."
+          },
+          {
+            "guidance": false,
+            "description": "Do not use Toast for form validation or destructive confirmations: use field errors and AlertDialog."
           }
         ]
       }
@@ -14088,7 +14922,8 @@
         "iconSlots": []
       },
       "exports": [
-        "ToastProvider"
+        "ToastProvider",
+        "useToast"
       ],
       "partOf": "Toast"
     },
@@ -14244,6 +15079,18 @@
           "type": "string",
           "required": false,
           "doc": "Optional custom CSS class name."
+        },
+        {
+          "name": "open",
+          "type": "boolean",
+          "required": false,
+          "doc": "Controlled open state (optional)."
+        },
+        {
+          "name": "onOpenChange",
+          "type": "(open: boolean) => void",
+          "required": false,
+          "doc": "Called when the tooltip wants to open or close (hover, focus, Escape, outside press)."
         }
       ],
       "builderMeta": {
@@ -14258,7 +15105,7 @@
       "exports": [
         "Tooltip"
       ],
-      "description": "Hover or focus label hint built on Radix Tooltip primitive with automatic positioning, arrow indicator, and theme tone overrides.",
+      "description": "A short label that appears on hover or keyboard focus, positioned automatically, with an optional arrow.",
       "bestPractices": [
         {
           "guidance": true,
@@ -14276,7 +15123,7 @@
         }
       ],
       "docsDense": {
-        "description": "Hover or focus label hint built on Radix Tooltip primitive with automatic positioning, arrow indicator, and theme tone overrides.",
+        "description": "short label that appears on hover or keyboard focus, positioned automatically, with optional arrow.",
         "bestPractices": [
           {
             "guidance": true,
@@ -14476,7 +15323,7 @@
       "exports": [
         "Video"
       ],
-      "description": "Video primitive with poster image support, aspect-ratio preservation, object-fit scaling, and graceful placeholder fallback when src is missing.",
+      "description": "Plays a video at a set ratio and fit, with a poster image and a placeholder when the source is missing. By default it plays muted on a loop, unless the user prefers reduced motion, with a pause button.",
       "bestPractices": [
         {
           "guidance": true,
@@ -14502,7 +15349,7 @@
         }
       ],
       "docsDense": {
-        "description": "Video primitive with poster image support, aspect-ratio preservation, object-fit scaling, and graceful placeholder fallback when src is missing.",
+        "description": "Plays video at set ratio and fit, with poster image and placeholder when source is missing. By default it plays muted on loop, unless user prefers reduced motion, with pause button.",
         "bestPractices": [
           {
             "guidance": true,
@@ -14564,10 +15411,7 @@
         ],
         "iconSlots": []
       },
-      "exports": [
-        "MotionPauseButton",
-        "VideoPauseToggle"
-      ],
+      "exports": [],
       "partOf": "Video"
     },
     {
@@ -14679,6 +15523,153 @@
           }
         ]
       }
+    },
+    {
+      "name": "WiseOwlLogo",
+      "group": "internal",
+      "internal": true,
+      "docsPath": "/blocks/overview",
+      "file": "packages/ui/src/primitives/WiseOwlLogo/WiseOwlLogo.tsx",
+      "kind": "plain",
+      "radix": null,
+      "radiusOverride": false,
+      "variants": {
+        "size": [
+          "sm",
+          "md",
+          "lg"
+        ],
+        "color": [
+          "inherit",
+          "default",
+          "muted",
+          "brand"
+        ]
+      },
+      "defaultVariants": {
+        "size": "md",
+        "color": "inherit"
+      },
+      "props": [
+        {
+          "name": "label",
+          "type": "string",
+          "required": false,
+          "doc": "Accessible name. Default \"WiseOwl\".",
+          "default": "WiseOwl"
+        },
+        {
+          "name": "decorative",
+          "type": "boolean",
+          "required": false,
+          "doc": "Hide from assistive tech when the name is already visible next to it."
+        }
+      ],
+      "builderMeta": {
+        "label": "Wise Owl Logo",
+        "isLayout": false,
+        "hasChildren": true,
+        "accepts": [
+          "*"
+        ],
+        "iconSlots": []
+      },
+      "exports": [
+        "WiseOwlLogo",
+        "WiseOwlMark"
+      ],
+      "description": "Internal: the logo of WiseOwl, the fictional finance product Shavin's examples and blocks are built around. WiseOwlLogo is the owl mark with the wordmark; WiseOwlMark is the owl on its own.",
+      "bestPractices": [
+        {
+          "guidance": true,
+          "description": "Use it wherever a WiseOwl example shows the brand: nav bars, sidebars, footers and auth screens."
+        },
+        {
+          "guidance": false,
+          "description": "Do not recolour it with raw colours or add a second colour; pick a color token instead."
+        }
+      ],
+      "examples": [
+        {
+          "title": "Nav brand",
+          "code": "<Link href=\"/\" aria-label=\"WiseOwl home\"><WiseOwlLogo size=\"sm\" decorative /></Link>"
+        },
+        {
+          "title": "Sidebar mark",
+          "code": "<WiseOwlMark size=\"md\" color=\"brand\" />"
+        }
+      ],
+      "docsDense": {
+        "description": "Internal: logo of WiseOwl, fictional finance product Shavin's examples and blocks are built around. WiseOwlLogo is owl mark with wordmark; WiseOwlMark is owl on its own.",
+        "bestPractices": [
+          {
+            "guidance": true,
+            "description": "Use it wherever WiseOwl example shows brand: nav bars, sidebars, footers and auth screens."
+          },
+          {
+            "guidance": false,
+            "description": "Do not recolour it with raw colours or add second colour; pick color token instead."
+          }
+        ]
+      }
+    },
+    {
+      "name": "WiseOwlMark",
+      "group": "internal",
+      "internal": true,
+      "docsPath": "/blocks/overview",
+      "file": "packages/ui/src/primitives/WiseOwlLogo/WiseOwlLogo.tsx",
+      "kind": "plain",
+      "radix": null,
+      "radiusOverride": false,
+      "variants": {
+        "size": [
+          "xs",
+          "sm",
+          "md",
+          "lg",
+          "xl"
+        ],
+        "color": [
+          "inherit",
+          "default",
+          "muted",
+          "brand"
+        ]
+      },
+      "defaultVariants": {
+        "size": "md",
+        "color": "inherit"
+      },
+      "props": [
+        {
+          "name": "label",
+          "type": "string",
+          "required": false,
+          "doc": "Accessible name. Default \"WiseOwl\".",
+          "default": "WiseOwl"
+        },
+        {
+          "name": "decorative",
+          "type": "boolean",
+          "required": false,
+          "doc": "Hide from assistive tech when the name is already visible next to it."
+        }
+      ],
+      "builderMeta": {
+        "label": "Wise Owl Mark",
+        "isLayout": false,
+        "hasChildren": true,
+        "accepts": [
+          "*"
+        ],
+        "iconSlots": []
+      },
+      "exports": [
+        "WiseOwlLogo",
+        "WiseOwlMark"
+      ],
+      "partOf": "WiseOwlLogo"
     }
   ]
 }

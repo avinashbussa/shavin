@@ -56,7 +56,8 @@ an individual is officially representing the community in public spaces.
 ## Enforcement
 
 Instances of abusive, harassing, or otherwise unacceptable behavior may be
-reported to the community leaders responsible for enforcement at avinashbussa1@gmail.com.
+reported to the community leaders responsible for enforcement, privately, through
+[GitHub Security Advisories](https://github.com/avinashbussa/shavin/security/advisories/new) or at hello@shavin.cc.
 All complaints will be reviewed and investigated promptly and fairly.
 
 All community leaders are obligated to respect the privacy and security of the

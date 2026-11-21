@@ -6,12 +6,12 @@
 
 ### Enterprise React design system & AI-ready component engine
 
-**Beta** · React 19 · Next.js · Tailwind v3 and v4
+**Beta** · React 19 · Next.js and Vite · Tailwind v3 and v4
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-gray)](./LICENSE)
 [![Node 22](https://img.shields.io/badge/node-22-blue)](./.nvmrc)
-[![Primitives](https://img.shields.io/badge/primitives-91-purple)](./packages/ui)
-[![MCP](https://img.shields.io/badge/MCP-30%20tools-green)](./packages/mcp-server)
+[![Primitives](https://img.shields.io/badge/primitives-94-purple)](./packages/ui)
+[![MCP](https://img.shields.io/badge/MCP-36%20tools-green)](./packages/mcp-server)
 [![WCAG 2.2 AA](https://img.shields.io/badge/WCAG-2.2%20AA-success)](#what-makes-it-different)
 
 **[Website](https://www.shavin.cc)** · **[Docs](https://docs.shavin.cc)** · **[Contributing](./CONTRIBUTING.md)**
@@ -20,12 +20,11 @@
 
 ---
 
-`@shavin/ui` is a production-grade React design system engineered for teams that build with AI coding agents. It pairs 91 accessible primitives and a strict two-tier token system with a Model Context Protocol server that hands agents the real component APIs, the design rules, and live-DOM auditing. People and agents compose from one source of truth, so generated interfaces come out design-compliant and accessible — built, not improvised.
+`@shavin/ui` is a production-grade React design system engineered for teams that build with AI coding agents. It pairs 94 accessible primitives and a strict two-tier token system with a Model Context Protocol server that hands agents the real component APIs, the design rules, and live-DOM auditing. People and agents compose from one source of truth, so generated interfaces come out design-compliant and accessible — built, not improvised.
 
 > [!NOTE]
-> **Beta — not on npm yet.** The packages are publishing to npm soon; the `npx` commands below describe that first release. Until then, try it from source: clone this repo, `npm install`, and `npm run playground`. See [Develop](#develop).
+> **Beta.** Component APIs and tokens can still change between releases. To try it from source, clone this repo, `npm install`, and `npm run playground`. See [Develop](#develop).
 
-<!-- TODO(visual): hero shot of the primitives / a themed screen. Drop an image here, e.g. ![Shavin components](./docs/assets/showcase.png) -->
 
 ## Contents
 
@@ -41,7 +40,7 @@
 | Capability | What you get |
 |---|---|
 | **Agent&#8209;native** | An MCP server exposes real component APIs, tokens and rules, validates and autofixes generated code, and audits the live DOM in your browser. Agent skills teach layout, typography and motion judgement. |
-| **Two&#8209;tier&nbsp;tokens** | A foundation palette maps to role-based semantic utilities (`bg-surface`, `text-fg`, `border-hairline`). Theme accents and dark mode change without touching component code. |
+| **Two&#8209;tier&nbsp;tokens** | A foundation palette maps to role-based semantic utilities (`bg-surface`, `text-fg`, `border-hairline`). Brand colours and dark mode change without touching component code. |
 | **Concentric&nbsp;geometry** | Nested surfaces keep their curves in step: R<sub>inner</sub> = max(floor, R<sub>outer</sub> − P). |
 | **Accessible&nbsp;by&nbsp;default** | Built on Radix and WAI-ARIA patterns. Keyboard, focus and screen-reader behaviour is held to **WCAG 2.2 AA**, covered by an automated axe plus browser accessibility test suite. |
 | **Motion&nbsp;built&nbsp;in** | Token-driven reveals, scroll choreography, and a timeline runtime for element and split-text animation — all honouring `prefers-reduced-motion`. |
@@ -51,7 +50,7 @@
 
 | Package | What it is |
 |---|---|
-| [`@shavin/ui`](./packages/ui) | 91 React primitives on Radix, two-tier tokens, Tailwind v3 preset and v4 theme ([component docs](https://docs.shavin.cc/components/overview)) |
+| [`@shavin/ui`](./packages/ui) | 94 React primitives on Radix, two-tier tokens, Tailwind v3 preset and v4 theme ([component docs](https://docs.shavin.cc/components/overview)) |
 | [`@shavin/cli`](./packages/cli) | `npx @shavin/cli init` wires Tailwind, styles, ThemeProvider, brand tokens and agent config; `add` installs blocks |
 | [`@shavin/mcp`](./packages/mcp-server) | MCP server: component APIs, tokens and rules for agents, code validation and autofix, live browser audit ([overview](https://www.shavin.cc/mcp)) |
 | [`@shavin/skills`](./packages/skills) | Design-judgement skills and slash commands for AI coding agents |
@@ -59,7 +58,7 @@
 
 ## Get started
 
-One command sets up an existing React or Next.js app (the packages are not on npm yet — see the note above):
+Next.js and Vite (with React 19) are supported today. Other frameworks are planned for later and not available yet; `init` stops with an error, and changes nothing, in any other project. One command sets up an existing Next.js or Vite app:
 
 ```sh
 npx @shavin/cli init
@@ -75,7 +74,7 @@ npx @shavin/cli init
 - installs agent skills into `.agents/` and registers the MCP server for Claude Code, Cursor and VS Code
 - wires the Agent-Browser bridge to start with your dev server (Next or Vite)
 
-Run it as `npx @shavin/cli init --oklch` to use the OKLCH colour space instead (wider gamut, perceptually even accents). Check the wiring at any time with `npx @shavin/cli check`.
+Run it as `npx @shavin/cli init --oklch` to use the OKLCH colour space instead (wider gamut, perceptually even colours). Check the wiring at any time with `npx @shavin/cli check`.
 
 ### Use it
 
@@ -116,22 +115,29 @@ The same block works in `.mcp.json` (Claude Code), `.cursor/mcp.json`, `.vscode/
 | Group | Tools |
 |---|---|
 | **Plan the page** | `plan_page`, `check_page` |
-| **Learn the system** | `get_components`, `get_tokens`, `get_guidelines`, `get_setup_instructions`, `get_project_context`, `get_builder_schema`, `get_block_template` |
-| **Check and fix code** | `validate_code`, `autofix_code`, `audit_source`, `inspect_environment` |
+| **Learn the system** | `get_components`, `get_tokens`, `get_guidelines`, `get_setup_instructions`, `get_project_context`, `get_studio_schema`, `get_block_template` |
+| **Check and fix code** | `validate_code`, `autofix_code`, `audit_source`, `inspect_environment`, `render_check` |
 | **Compose** | `synthesize_layout`, `shavin_steer` |
 | **Skills** | `list_skills`, `get_skill`, `get_skill_mode`, `install_skills`, `list_commands` |
 | **Live browser audit** | `get_live_audit`, `trigger_live_rescan`, `wait_for_live_clean` |
-| **Shavin Studio relay** | `connect_studio`, `compose_to_canvas`, `inject_blocks`, `get_studio_state`, `set_studio_theme`, `clear_studio_canvas`, `disconnect_studio` |
+| **Shavin Studio relay** | `connect_studio`, `compose_to_canvas`, `inject_blocks`, `get_studio_state`, `set_studio_theme`, `clear_studio_canvas`, `duplicate_frame`, `resize_frame`, `export_frame`, `disconnect_studio` |
 
 `shavin_steer` runs high-level design moves — `audit`, `polish`, `harden`, `typeset`, `anti-slop`, `rollback`. Every tool result ends with a short `Next:` line naming the following step, so an agent stays on the workflow even when a host drops the server instructions.
 
 ### Live browser audit (`:7036`)
 
-When an agent starts `@shavin/mcp`, a bridge starts on port 7036. In development, `<ThemeProvider>` streams DOM snapshots to it, so the agent can see token violations and contrast failures in the page you are looking at, then wait until they reach zero. Open `http://localhost:7036/` for the dashboard.
+The bridge lets an agent see the page you are looking at: in development, `<ThemeProvider>` streams DOM snapshots to it on port 7036, so the agent can read token violations and contrast failures and wait until they reach zero. Open `http://localhost:7036/` for the dashboard.
 
-To start the bridge automatically with your dev server, wrap your config — `withShavinBridge` for Next (`@shavin/mcp/next`) or the `shavinBridge()` Vite plugin (`@shavin/mcp/vite`); set `SHAVIN_BRIDGE=0` to opt out. Otherwise run it on its own with `npx @shavin/cli bridge`. Running the bridge on a custom port? Point the browser at it with `NEXT_PUBLIC_SHAVIN_BRIDGE_PORT` / `VITE_SHAVIN_BRIDGE_PORT`, or `<ThemeProvider bridgePort={…}>`.
+`shavin init` installs `@shavin/mcp` (it asks first) and wires the bridge into your Next or Vite config, so it starts with your project's dev server. It also starts whenever an agent starts `@shavin/mcp`.
 
-<!-- TODO(visual): GIF of the live-audit loop — an agent fixing token/contrast violations to zero. e.g. ![Live audit](./docs/assets/live-audit.gif) -->
+Only if you need it:
+
+- **Skipped `init` or the agent tools, or `init` could not edit your config:** wrap the config yourself with `withShavinBridge` (`@shavin/mcp/next`) or add the `shavinBridge()` plugin (`@shavin/mcp/vite`).
+- **No agent running, or no `init`:** run `npx @shavin/cli bridge` next to your dev server (Next.js or Vite).
+- **Opt out:** set `SHAVIN_BRIDGE=0`.
+- **Custom port:** point the browser at it with `NEXT_PUBLIC_SHAVIN_BRIDGE_PORT` / `VITE_SHAVIN_BRIDGE_PORT`, or `<ThemeProvider bridgePort={…}>`.
+
+![Live audit: an agent writes a raw hex colour, the bridge flags it in the open page, and the agent swaps in a token until the page is clean](./docs/assets/live-audit.gif)
 
 ### Skills and project memory
 
@@ -141,13 +147,12 @@ To start the bridge automatically with your dev server, wrap your config — `wi
 |---|---|
 | `shavin-app` | Dashboards, SaaS apps and admin consoles |
 | `shavin-webpage` | Marketing and landing pages |
-| `layout-compositions` | 55 section layouts in 9 families, with selection rules |
+| `layout-compositions` | 57 section layouts in 9 families, with selection rules |
 | `visual-compositor` | Composition, typography, polish and the anti-pattern list (AP-01 to AP-13) |
 | `layout-motion` / `layout-choreography` | Restrained motion, then cinematic scroll scenes |
-| `shavin-ui-builder` / `shavin-ui-qa-linter` | Building blocks, then auditing tokens and accessibility |
-| `shavin-core` | Working inside this repo |
+| `shavin-studio` | Only while a Studio session is connected, or designing a block in isolation for approval |
 
-`SHAVIN.md` at your project root records the brand, accent, density and radius choices so every session, human or agent, starts from the same brief. `.shavin/` holds generated prompt context and rollback snapshots.
+`SHAVIN.md` at your project root records the brand colour, gray, density and radius choices so every session, human or agent, starts from the same brief. `.shavin/` holds generated prompt context and rollback snapshots.
 
 ## Develop
 
@@ -165,7 +170,7 @@ npm run smoke      # install the packed packages into a fresh Next.js + Tailwind
 
 ## Contributing
 
-Contributions are welcome. Read [CONTRIBUTING.md](./CONTRIBUTING.md), then the [contributor docs](./docs/README.md) for where things live and how to work on each package; every commit needs a DCO sign-off (`git commit -s`). Some upstream tooling and hosted services are maintained separately — [CONTRIBUTING.md](./CONTRIBUTING.md#whats-not-open) says what is and isn't open.
+Contributions are welcome. Read [CONTRIBUTING.md](./CONTRIBUTING.md), then the [contributor docs](./docs/README.md) for where things live and how to work on each package; every commit needs a DCO sign-off (`git commit -s`). Some tooling and hosted services are maintained separately — [CONTRIBUTING.md](./CONTRIBUTING.md#whats-not-open) says what is and isn't open.
 
 ## Licence
 
