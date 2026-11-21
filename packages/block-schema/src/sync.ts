@@ -9,7 +9,7 @@
  *  - `"both"`    — both halves are reconciled; either can derive the other.
  *
  * These functions let consumers (Studio, CLI, MCP) derive the missing half
- * at runtime without importing the @shavin/block-renderer parser directly.
+ * at runtime without importing a block parser directly.
  */
 
 import type { BlockTemplate, BlockNode } from "./types";
@@ -21,10 +21,9 @@ export type { BlockOrigin } from "./types";
  * Returns `null` if the block has no rawCode or parsing fails.
  *
  * The caller is responsible for importing the parser from
- * the Studio-local engine module (`apps/studio/src/engine`, exported
- * via `@/engine/builder-core`) and passing it via the `parse` option.
+ * the application's own engine module and passing it via the `parse` option.
  * This keeps `@shavin/block-schema` free of a runtime dependency on
- * the engine (the engine is Studio-private, not a package).
+ * the engine (the engine is application code, not a package).
  */
 export function deriveTree(
   block: Pick<BlockTemplate, "rawCode" | "origin">,

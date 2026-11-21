@@ -23,9 +23,7 @@ const defaultPlans = [
   },
 ];
 
-const defaultAdvisor = { label: "Talk to our team", href: "/advisors" };
-
-export function PricingToggle({ plans = defaultPlans, advisor = defaultAdvisor }) {
+export function PricingToggle({ plans = defaultPlans }) {
   return (
     <Section size="body">
       <Container size="md">
@@ -39,7 +37,7 @@ export function PricingToggle({ plans = defaultPlans, advisor = defaultAdvisor }
                 <SegmentedControlItem value="monthly">Monthly</SegmentedControlItem>
                 <SegmentedControlItem value="annual">Annual</SegmentedControlItem>
               </SegmentedControl>
-              <Text size="sm" weight="medium" color="accent">Save 20% with annual billing</Text>
+              <Text size="sm" weight="medium" color="brand">Save 20% with annual billing</Text>
             </Flex>
           </Flex>
           <Grid columns="auto" minWidth="md" maxColumns="2" gap="5">
@@ -83,7 +81,7 @@ export function PricingToggle({ plans = defaultPlans, advisor = defaultAdvisor }
                   <Text size="sm" color="muted" className="max-w-[52ch] text-pretty">For accountants and planners managing client households with read-only access, notes and bulk exports.</Text>
                 </Flex>
               </Flex>
-              <Link href={advisor.href} size="sm" className="inline-flex h-10 shrink-0 items-center font-medium">{advisor.label}</Link>
+              <Link href="/advisors" size="sm" className="inline-flex h-10 shrink-0 items-center font-medium">Talk to our team</Link>
             </Flex>
           </Card>
         </Flex>

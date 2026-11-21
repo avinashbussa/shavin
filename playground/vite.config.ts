@@ -14,6 +14,7 @@ export default defineConfig(({ mode }) => ({
     alias: [
       { find: "@shavin/ui/components.json", replacement: at("../packages/ui/components.json") },
       { find: /^@shavin\/ui$/, replacement: at("../packages/ui/src/index.ts") },
+      { find: /^@shavin\/ui\/panels$/, replacement: at("../packages/ui/src/panels.ts") },
       { find: /^@\//, replacement: at("../packages/ui/src/") },
     ],
     dedupe: ["react", "react-dom"],

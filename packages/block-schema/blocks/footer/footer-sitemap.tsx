@@ -1,4 +1,4 @@
-import { Button, Container, Flex, Grid, Heading, Icon, Link, Section, Separator, Text } from "@shavin/ui";
+import { Button, Container, Flex, Grid, Icon, Link, Section, Separator, Text, WiseOwlLogo } from "@shavin/ui";
 
 const defaultGroups = [
   {
@@ -66,7 +66,7 @@ export function FooterSitemap({ groups = defaultGroups, legal = defaultLegal }) 
       <Container size="lg">
         <Flex direction="column" gap="7">
           <Flex direction="column" gap="2">
-            <Heading as="p" size="md" tracking="tight">WiseOwl</Heading>
+            <WiseOwlLogo />
             <Text size="sm" color="muted">Calm control of your money.</Text>
           </Flex>
           <Grid as="nav" aria-label="Footer" columns="auto" minWidth="xs" maxColumns="5" gap="6" className="gap-y-10">

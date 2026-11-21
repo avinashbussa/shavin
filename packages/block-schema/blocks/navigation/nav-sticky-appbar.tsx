@@ -1,9 +1,15 @@
-import { Avatar, Box, Breadcrumbs, Card, Container, Flex, Grid, Heading, Icon, IconButton, Kbd, Progress, Section, Text, TextField } from "@shavin/ui";
+import { Avatar, Box, Breadcrumbs, Card, Container, Flex, Grid, Heading, Icon, IconButton, Kbd, Menu, MenuItem, MenuTrigger, Popover, PopoverContent, PopoverTrigger, Progress, Section, Text, TextField } from "@shavin/ui";
 
 const defaultCrumbs = [
   { label: "Household", href: "/household" },
   { label: "Budgets", href: "/budgets" },
   { label: "September" },
+];
+
+const defaultNotifications = [
+  { title: "Groceries is at 82% of its limit", time: "2 h ago" },
+  { title: "Rent posted: $1,850.00", time: "Yesterday" },
+  { title: "Shared goal: Maya added $120", time: "2 days ago" },
 ];
 
 const defaultBudgets = [
@@ -12,7 +18,7 @@ const defaultBudgets = [
   { name: "Transport", spent: "$96.75", limit: "$180.00", percent: 54 },
 ];
 
-export function NavStickyAppbar({ crumbs = defaultCrumbs, budgets = defaultBudgets }) {
+export function NavStickyAppbar({ crumbs = defaultCrumbs, budgets = defaultBudgets, notifications = defaultNotifications }) {
   return (
     <Section size="compact">
       <Container size="lg">
@@ -23,16 +29,46 @@ export function NavStickyAppbar({ crumbs = defaultCrumbs, budgets = defaultBudge
               <TextField type="search" placeholder="Search transactions, merchants or categories" aria-label="Search" leadingIcon={<Icon name="search" size="sm" color="muted" />} trailingIcon={<Kbd>⌘K</Kbd>} />
             </Box>
             <Flex direction="row" align="center" gap="1" className="shrink-0">
-              <IconButton variant="ghost" size="md" aria-label="Search" className="md:hidden">
-                <Icon name="search" size="md" color="inherit" />
-              </IconButton>
-              <Box className="relative">
-                <IconButton variant="ghost" size="md" aria-label="Notifications, 3 unread">
-                  <Icon name="bell" size="md" color="inherit" />
-                </IconButton>
-                <Box aria-hidden="true" className="pointer-events-none absolute right-2.5 top-2.5 h-2 w-2 rounded-full bg-accent ring-2 ring-surface" />
-              </Box>
-              <Avatar src="https://assets.lummi.ai/assets/QmUWu25KJZruktibFUXivSoPDWmKs3S9ASXp7zVENaXSqL?auto=format&w=400" alt="Maya Okafor" size="md" className="ml-1" />
+              <Popover>
+                <PopoverTrigger asChild>
+                  <IconButton variant="ghost" size="md" aria-label="Search" className="md:hidden">
+                    <Icon name="search" size="md" color="inherit" />
+                  </IconButton>
+                </PopoverTrigger>
+                <PopoverContent align="end" className="w-[min(22rem,calc(100vw-2rem))]">
+                  <TextField type="search" placeholder="Search transactions" aria-label="Search transactions" leadingIcon={<Icon name="search" size="sm" color="muted" />} />
+                </PopoverContent>
+              </Popover>
+              <Popover>
+                <Box className="relative">
+                  <PopoverTrigger asChild>
+                    <IconButton variant="ghost" size="md" aria-label="Notifications, 3 unread">
+                      <Icon name="bell" size="md" color="inherit" />
+                    </IconButton>
+                  </PopoverTrigger>
+                  <Box aria-hidden="true" className="pointer-events-none absolute right-2.5 top-2.5 h-2 w-2 rounded-full bg-brand ring-2 ring-surface" />
+                </Box>
+                <PopoverContent align="end" className="w-[min(22rem,calc(100vw-2rem))]">
+                  <Flex direction="column" gap="3">
+                    <Text size="sm" weight="semibold">Notifications</Text>
+                    {notifications.map((item) => (
+                      <Flex key={item.title} direction="column" gap="0">
+                        <Text size="sm">{item.title}</Text>
+                        <Text size="xs" color="subtle">{item.time}</Text>
+                      </Flex>
+                    ))}
+                  </Flex>
+                </PopoverContent>
+              </Popover>
+              <Menu trigger={
+                <MenuTrigger aria-label="Account menu" className="ml-1 rounded-full">
+                  <Avatar src="https://assets.lummi.ai/assets/QmUWu25KJZruktibFUXivSoPDWmKs3S9ASXp7zVENaXSqL?auto=format&w=400" alt="Maya Okafor" size="md" />
+                </MenuTrigger>
+              }>
+                <MenuItem>Profile</MenuItem>
+                <MenuItem>Household settings</MenuItem>
+                <MenuItem className="border-t border-hairline">Sign out</MenuItem>
+              </Menu>
             </Flex>
           </Flex>
           <Flex direction="column" gap="6" className="flex-1 overflow-y-auto p-6">

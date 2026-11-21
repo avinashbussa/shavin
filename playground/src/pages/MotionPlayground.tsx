@@ -28,9 +28,9 @@ export function MotionPlayground() {
           Hover a tile to replay its preset; scroll the page to see the parallax drift.
         </Text>
         <div className="flex flex-wrap gap-2 pt-1">
-          <Badge color="accent">self-boots on import</Badge>
-          <Badge color="accent">CSS scroll-driven + IO fallback</Badge>
-          <Badge color="accent">gsap optional (scrub / pin)</Badge>
+          <Badge color="brand">self-boots on import</Badge>
+          <Badge color="brand">CSS scroll-driven + IO fallback</Badge>
+          <Badge color="brand">gsap optional (scrub / pin)</Badge>
           <Badge>reduced-motion safe</Badge>
         </div>
       </HeroBanner>

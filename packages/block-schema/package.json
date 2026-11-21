@@ -3,8 +3,14 @@
   "version": "0.1.0",
   "description": "Block types, schemas and the open block catalogue for @shavin/ui",
   "license": "MIT",
-  "author": "Avinash Bussa <avinashbussa1@gmail.com>",
-  "homepage": "https://docs.shavin.cc/blocks",
+  "engines": {
+    "node": ">=18"
+  },
+  "author": {
+    "name": "Avinash Bussa",
+    "url": "https://avinashbussa.com"
+  },
+  "homepage": "https://docs.shavin.cc",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/avinashbussa/shavin.git",
@@ -53,7 +59,8 @@
     "dist",
     "hex-policy.mjs",
     "hex-policy.d.mts",
-    "README.md"
+    "README.md",
+    "CHANGELOG.md"
   ],
   "publishConfig": {
     "access": "public"

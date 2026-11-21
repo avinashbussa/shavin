@@ -1,4 +1,4 @@
-import { Container, Flex, Grid, Heading, Icon, Link, Section, Separator, Text } from "@shavin/ui";
+import { Container, Flex, Grid, Icon, Link, Section, Separator, Text, WiseOwlLogo } from "@shavin/ui";
 
 const defaultGroups = [
   {
@@ -45,7 +45,7 @@ export function FooterColumns({ groups = defaultGroups, social = defaultSocial }
         <Flex direction="column" gap="7">
           <Flex direction="column" gap="7" className="lg:flex-row lg:justify-between">
             <Flex direction="column" gap="3" className="max-w-xs">
-              <Heading as="p" size="md" tracking="tight">WiseOwl</Heading>
+              <WiseOwlLogo />
               <Text size="sm" color="muted" className="text-pretty">Calm control of your money, for you and everyone you share it with.</Text>
             </Flex>
             <Grid as="nav" aria-label="Footer" columns="auto" minWidth="xs" maxColumns="3" gap="6" className="lg:min-w-[560px]">

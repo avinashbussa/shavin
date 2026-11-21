@@ -1,4 +1,4 @@
-import { Card, Container, Flex, Grid, Heading, Icon, Progress, Section, Sidebar, SidebarBody, SidebarFooter, SidebarHeader, SidebarNavItem, SidebarSection, SidebarTrigger, Text } from "@shavin/ui";
+import { Card, Container, Flex, Grid, Heading, Icon, Progress, Section, Sidebar, SidebarBody, SidebarFooter, SidebarHeader, SidebarNavItem, SidebarSection, SidebarTrigger, Text, WiseOwlMark } from "@shavin/ui";
 
 const defaultItems = [
   { icon: "layout-dashboard", label: "Overview", active: true },
@@ -21,7 +21,7 @@ export function SidebarCollapsible({ items = defaultItems, goals = defaultGoals 
         <Flex direction="row" className="h-[640px] overflow-hidden rounded-[var(--radius-panel)] border border-hairline bg-canvas">
           <Sidebar variant="collapsible" defaultCollapsed>
             <SidebarHeader>
-              <Flex role="img" aria-label="WiseOwl" align="center" justify="center" className="h-8 w-8 rounded-[var(--radius-lg)] bg-fg text-sm font-semibold text-canvas">W</Flex>
+              <WiseOwlMark size="lg" />
             </SidebarHeader>
             <SidebarBody>
               <SidebarSection>

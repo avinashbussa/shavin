@@ -24,7 +24,7 @@ export function FeaturesIconMatrix({ items = defaultItems }) {
           <Grid columns="auto" minWidth="md" maxColumns="3" gap="6" className="gap-y-10">
             {items.map((item) => (
               <Flex key={item.title} direction="row" align="start" gap="3" className="md:flex-col">
-                <Flex align="center" justify="center" className="h-12 w-12 shrink-0 rounded-[var(--radius-lg)] bg-accent-subtle">
+                <Flex align="center" justify="center" className="h-12 w-12 shrink-0 rounded-[var(--radius-lg)] bg-brand-subtle">
                   <Icon name={item.icon} size="md" color="contrast" />
                 </Flex>
                 <Flex direction="column" gap="1">

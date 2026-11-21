@@ -64,7 +64,7 @@ export const SpatialFrameSchema = z.object({
   rootNodes: z.array(BlockNodeSchema),
   themeScope: z
     .object({
-      accentColor: z.string().optional(),
+      brandColor: z.string().optional(),
       grayColor: z.string().optional(),
       radius: z.string().optional(),
       scaling: z.number().optional(),

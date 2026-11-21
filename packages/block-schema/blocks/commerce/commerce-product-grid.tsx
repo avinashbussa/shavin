@@ -30,7 +30,7 @@ export function CommerceProductGrid({ products = defaultProducts }) {
                   <Flex direction="column" gap="2">
                     <Flex direction="row" align="center" justify="between" gap="3">
                       <Text size="overline" color="muted">{product.category}</Text>
-                      {product.badge && <Badge size="sm" color="accent">{product.badge}</Badge>}
+                      {product.badge && <Badge size="sm" color="brand">{product.badge}</Badge>}
                     </Flex>
                     <Heading as="h3" size="md">{product.name}</Heading>
                     <Text size="sm" color="muted" className="text-pretty">{product.note}</Text>

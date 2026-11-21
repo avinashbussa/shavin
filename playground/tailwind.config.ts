@@ -3,9 +3,9 @@ import preset from "../packages/ui/tailwind-preset";
 
 // Same setup as the docs site: the shared preset, class-based dark mode, and
 // content globs that include the primitives (so classes used in .doc.ts
-// examples are generated too).
+// examples are generated too), and the authored blocks (the responsive block suite renders them from source).
 export default {
   presets: [preset],
   darkMode: "class",
-  content: ["./index.html", "./src/**/*.{ts,tsx}", "../packages/ui/src/**/*.{ts,tsx}"],
+  content: ["./index.html", "./src/**/*.{ts,tsx}", "../packages/ui/src/**/*.{ts,tsx}", "../packages/block-schema/blocks/**/*.tsx"],
 } satisfies Config;

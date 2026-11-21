@@ -1,4 +1,4 @@
-import { AppFrame, Avatar, Box, Card, Container, Flex, Grid, Heading, Icon, Section, Sidebar, SidebarBody, SidebarFooter, SidebarHeader, SidebarNavItem, SidebarSection, SidebarTrigger, Text, TopBar } from "@shavin/ui";
+import { AppFrame, Avatar, Box, Card, Container, Flex, Grid, Heading, Icon, Section, Sidebar, SidebarBody, SidebarFooter, SidebarHeader, SidebarNavItem, SidebarSection, SidebarTrigger, Text, TopBar, WiseOwlLogo } from "@shavin/ui";
 
 const defaultSections = [
   {
@@ -43,7 +43,7 @@ export function SidebarStandard({ sections = defaultSections, stats = defaultSta
             sidebar={
               <Sidebar width="w-64">
                 <SidebarHeader>
-                  <Heading as="p" size="sm" tracking="tight">WiseOwl</Heading>
+                  <WiseOwlLogo size="sm" />
                 </SidebarHeader>
                 <SidebarBody>
                   {sections.map((section) => (

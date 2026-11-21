@@ -2,7 +2,7 @@
 
 Types, Zod schemas and the open block catalog for Shavin UI: ready-made sections (hero, features, pricing, auth, dashboards, footers and more) as both verbatim TSX and parsed block trees. The Shavin CLI, MCP server and Studio all read blocks from here.
 
-- **Browse blocks:** https://docs.shavin.cc/blocks
+- **Docs:** https://docs.shavin.cc
 - **Install one:** `npx @shavin/cli add hero-centered-media`
 
 ## Usage

@@ -1,4 +1,4 @@
-import { Container, Flex, Heading, Icon, Link, Section, Separator, Text } from "@shavin/ui";
+import { Container, Flex, Icon, Link, Section, Separator, Text, WiseOwlLogo } from "@shavin/ui";
 
 const defaultLinks = [
   { label: "Product", href: "/product" },
@@ -20,7 +20,7 @@ export function FooterSimpleCentered({ links = defaultLinks, social = defaultSoc
       <Container size="md">
         <Flex direction="column" align="center" gap="5" className="text-center">
           <Flex direction="column" align="center" gap="4">
-            <Heading as="p" size="5xl" tracking="tighter">WiseOwl</Heading>
+            <WiseOwlLogo size="lg" />
             <Text size="lg" color="muted">Calm control of your money.</Text>
           </Flex>
           <Flex direction="row" justify="center" wrap="wrap" gap="5" className="gap-y-2">

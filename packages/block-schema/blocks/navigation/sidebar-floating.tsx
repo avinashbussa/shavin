@@ -1,4 +1,4 @@
-import { AppFrame, Button, Card, Container, Flex, Grid, Heading, Icon, Section, Sidebar, SidebarBody, SidebarFooter, SidebarHeader, SidebarNavItem, SidebarSection, SidebarTrigger, Text } from "@shavin/ui";
+import { AppFrame, Button, Card, Container, Flex, Grid, Heading, Icon, Section, Sidebar, SidebarBody, SidebarFooter, SidebarHeader, SidebarNavItem, SidebarSection, SidebarTrigger, Text, WiseOwlLogo } from "@shavin/ui";
 
 const defaultItems = [
   { icon: "layout-dashboard", label: "Overview", active: true },
@@ -17,13 +17,13 @@ export function SidebarFloating({ items = defaultItems, stats = defaultStats }) 
   return (
     <Section size="compact">
       <Container size="lg">
-        <Flex bgOverlays="mesh-accent" className="relative h-[640px] overflow-hidden rounded-[var(--radius-panel)] border border-hairline bg-canvas">
+        <Flex bgOverlays="mesh-brand" className="relative h-[640px] overflow-hidden rounded-[var(--radius-panel)] border border-hairline bg-canvas">
           <AppFrame
             className="h-full w-full"
             sidebar={
               <Sidebar variant="floating" width="w-60" className="bg-surface/80 backdrop-blur">
                 <SidebarHeader className="border-b-0">
-                  <Heading as="p" size="sm" tracking="tight">WiseOwl</Heading>
+                  <WiseOwlLogo size="sm" />
                 </SidebarHeader>
                 <SidebarBody>
                   <SidebarSection>
@@ -46,7 +46,7 @@ export function SidebarFloating({ items = defaultItems, stats = defaultStats }) 
           >
             <Flex direction="row" align="center" gap="2" className="shavin-frame-compact-only m-3 mb-0 h-14 shrink-0 rounded-[var(--radius-panel)] border border-hairline bg-surface/80 pl-2 pr-4 shadow-panel backdrop-blur">
               <SidebarTrigger />
-              <Heading as="p" size="sm" tracking="tight">WiseOwl</Heading>
+              <WiseOwlLogo size="sm" />
             </Flex>
             <Flex direction="column" gap="6" role="region" aria-label="Content" tabIndex={0} className="relative min-h-0 min-w-0 flex-1 overflow-y-auto p-6">
               <Flex direction="column" gap="1">

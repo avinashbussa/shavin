@@ -59,7 +59,7 @@ export function MotionPreview({
       title="Hover to replay"
       className="flex min-h-[96px] cursor-default flex-col justify-center gap-1 rounded-[var(--radius-panel)] border border-hairline bg-surface px-5 py-4"
     >
-      <code className="w-fit font-mono text-xs text-accent">{label ?? effect}</code>
+      <code className="w-fit font-mono text-xs text-brand">{label ?? effect}</code>
       {note && <span className="text-sm text-fg-muted">{note}</span>}
     </div>
   );

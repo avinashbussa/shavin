@@ -4,6 +4,7 @@ import { CATEGORY_ORDER, loadPrimitives, passing, required } from "./data";
 import { Overview } from "./pages/Overview";
 import { PrimitivePage } from "./pages/PrimitivePage";
 import { MotionPlayground } from "./pages/MotionPlayground";
+import { TapFixtures } from "./pages/TapFixtures";
 import { Wordmark } from "./Wordmark";
 
 /** Hash routes: #/ (overview) and #/<Folder> (one primitive). No router needed. */
@@ -28,6 +29,7 @@ export function App() {
   const [mobileNav, setMobileNav] = useState(false);
   const current = primitives.find((p) => p.slug === route);
   const isMotion = route === "motion";
+  const isTapFixtures = route === "__tap-fixtures";
 
   useEffect(() => {
     document.title = isMotion ? "Motion | Shavin Playground" : current ? `${current.name} | Shavin Playground` : "Shavin Playground";
@@ -59,7 +61,7 @@ export function App() {
             <Icon name="Menu" size="sm" />
           </button>
           <a href="#/" title="Shavin | Playground" className="flex items-center gap-2.5 transition opacity-95 hover:opacity-100 shrink-0">
-            <Wordmark className="h-6 sm:h-7 w-auto text-fg shrink-0" />
+            <Wordmark className="h-[18px] sm:h-5 w-auto text-fg shrink-0" />
             <div className="flex items-center gap-1.5 border-l border-hairline pl-2">
               <span className="text-xs sm:text-sm font-medium text-fg-muted tracking-tight">Playground</span>
             </div>
@@ -126,6 +128,8 @@ export function App() {
             <PrimitivePage key={current.slug} primitive={current} />
           ) : isMotion ? (
             <MotionPlayground />
+          ) : isTapFixtures ? (
+            <TapFixtures />
           ) : (
             <Overview primitives={primitives} missing={route || null} />
           )}

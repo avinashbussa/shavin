@@ -32,7 +32,7 @@ export function TestimonialsReviewGrid({ reviews = defaultReviews }) {
                 <Flex direction="column" gap="4">
                   <Flex direction="row" gap="1" role="img" aria-label="5 out of 5 stars">
                     {featuredStars.map((star) => (
-                      <Icon key={star} name="star" size="sm" color="accent" className="fill-current" />
+                      <Icon key={star} name="star" size="sm" color="brand" className="fill-current" />
                     ))}
                   </Flex>
                   <Heading as="p" size="lg" weight="normal" className="max-w-[40ch] text-pretty">
@@ -54,7 +54,7 @@ export function TestimonialsReviewGrid({ reviews = defaultReviews }) {
                   <Flex direction="column" gap="3">
                     <Flex direction="row" gap="1" role="img" aria-label={`${review.rating} out of 5 stars`}>
                       {stars.map((star) => (
-                        <Icon key={star} name="star" size="sm" color={star <= review.rating ? "accent" : "subtle"} className={star <= review.rating ? "fill-current" : ""} />
+                        <Icon key={star} name="star" size="sm" color={star <= review.rating ? "brand" : "subtle"} className={star <= review.rating ? "fill-current" : ""} />
                       ))}
                     </Flex>
                     <Text size="md" className="text-pretty">“{review.quote}”</Text>

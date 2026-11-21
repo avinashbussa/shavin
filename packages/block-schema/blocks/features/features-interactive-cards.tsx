@@ -22,7 +22,7 @@ export function FeaturesInteractiveCards({ cards = defaultCards }) {
             {cards.map((card) => (
               <Card key={card.title} padding="lg" interactive className="group relative">
                 <Flex direction="column" gap="5" className="h-full">
-                  <Flex align="center" justify="center" className="h-10 w-10 shrink-0 rounded-panel-inner bg-accent-subtle">
+                  <Flex align="center" justify="center" className="h-10 w-10 shrink-0 rounded-panel-inner bg-brand-subtle">
                     <Icon name={card.icon} size="sm" color="contrast" />
                   </Flex>
                   <Flex direction="column" gap="2">
