@@ -6,6 +6,7 @@ import { publishCommand } from "./commands/publish.mjs";
 import { contextCommand } from "./commands/context.mjs";
 import { bridgeCommand } from "./commands/bridge.mjs";
 import { brandCommand } from "./commands/brand.mjs";
+import { findingsCommand } from "./commands/findings.mjs";
 import { fileURLToPath } from "node:url";
 import { c, fmt, g, printBanner } from "./ui.mjs";
 
@@ -32,7 +33,8 @@ export async function runCli(argv = []) {
     case "add":
       const slug = rest[0];
       const overwrite = rest.includes("--overwrite");
-      await addCommand(slug, { overwrite });
+      const yes = rest.includes("--yes") || rest.includes("-y");
+      await addCommand(slug, { overwrite, yes, oklch: rest.includes("--oklch") });
       break;
 
     case "list":
@@ -48,8 +50,12 @@ export async function runCli(argv = []) {
       break;
 
     case "check":
-      await checkCommand();
+    case "doctor": {
+      const targetIdx = rest.indexOf("--target");
+      const renderIdx = rest.indexOf("--render");
+      await checkCommand({ json: rest.includes("--json"), targetDir: targetIdx !== -1 ? rest[targetIdx + 1] : undefined, renderUrl: renderIdx !== -1 ? rest[renderIdx + 1] : undefined });
       break;
+    }
 
     case "bridge":
       const portIdx = rest.indexOf("--port");
@@ -60,6 +66,10 @@ export async function runCli(argv = []) {
 
     case "brand":
       await brandCommand(rest);
+      break;
+
+    case "findings":
+      await findingsCommand(rest);
       break;
 
     case "--help":
@@ -74,15 +84,17 @@ export async function runCli(argv = []) {
     ${c.brand}${"init".padEnd(20)}${c.reset} ${c.fgSubtle}Scaffold @shavin/ui, SHAVIN.md & Tailwind preset${c.reset}
     ${c.brand}${"add <slug>".padEnd(20)}${c.reset} ${c.fgSubtle}Install block from canonical registry (@author/slug)${c.reset}
     ${c.brand}${"list [cat]".padEnd(20)}${c.reset} ${c.fgSubtle}Browse available blocks (--community for creator catalog)${c.reset}
-    ${c.brand}${"check".padEnd(20)}${c.reset} ${c.fgSubtle}Audit project setup, tokens & ThemeProvider${c.reset}
+    ${c.brand}${"check, doctor".padEnd(20)}${c.reset} ${c.fgSubtle}Health check: versions, setup, agent files (--json; --render <url> loads a page headless; exits 1 on failure)${c.reset}
     ${c.brand}${"context".padEnd(20)}${c.reset} ${c.fgSubtle}Extract < 300 token AI prompt manifest${c.reset}
     ${c.brand}${"publish <file>".padEnd(20)}${c.reset} ${c.fgSubtle}Verify block with MCP quality gate & package manifest${c.reset}
     ${c.brand}${"bridge".padEnd(20)}${c.reset} ${c.fgSubtle}Start the Agent-Browser Bridge daemon${c.reset}
+    ${c.brand}${"findings".padEnd(20)}${c.reset} ${c.fgSubtle}Read, take or finish findings sent from the page${c.reset}
     ${c.brand}${"brand [--check|--init]".padEnd(20)}${c.reset} ${c.fgSubtle}Generate or scaffold brand color tokens${c.reset}
 
   ${c.bold}${c.fg}Options:${c.reset}
     ${c.fgMuted}${"--oklch".padEnd(20)}${c.reset} ${c.fgSubtle}Use OKLCH color space for init (v4 OKLCH path)${c.reset}
     ${c.fgMuted}${"--overwrite".padEnd(20)}${c.reset} ${c.fgSubtle}Overwrite existing files when adding blocks${c.reset}
+    ${c.fgMuted}${"--yes, -y".padEnd(20)}${c.reset} ${c.fgSubtle}add: run init and install missing packages without asking${c.reset}
     ${c.fgMuted}${"--community".padEnd(20)}${c.reset} ${c.fgSubtle}Query online community creator registry${c.reset}
     ${c.fgMuted}${"--port <port>".padEnd(20)}${c.reset} ${c.fgSubtle}Override the bridge server port${c.reset}
     ${c.fgMuted}${"--json".padEnd(20)}${c.reset} ${c.fgSubtle}Output machine-readable JSON format${c.reset}

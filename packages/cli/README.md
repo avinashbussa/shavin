@@ -1,12 +1,12 @@
 # Shavin CLI (`@shavin/cli`)
 
-Sets up Shavin UI in a React or Next.js project, installs blocks, and keeps brand tokens and agent context in sync.
+Sets up Shavin UI in a Next.js or Vite (React 19) project, installs blocks, and keeps brand tokens and agent context in sync.
 
 ```sh
 npx @shavin/cli init          # or: npx @shavin/cli init --oklch
 ```
 
-- **Docs:** https://docs.shavin.cc/start/getting-started
+- **Docs:** https://docs.shavin.cc
 
 ## What `init` does
 
@@ -25,15 +25,15 @@ npx @shavin/cli init          # or: npx @shavin/cli init --oklch
 | Command | Description |
 |---|---|
 | `init [--oklch]` | Set up the project (above) |
-| `add <slug>` | Install a block from the registry (`hero-centered-media`, `@author/slug` or a registry URL) |
+| `add <slug> [--yes]` | Install a block from the registry (`hero-centered-media`, `@author/slug` or a registry URL). Offers to run `init` when `@shavin/ui` is missing, then installs the npm packages the block needs; `--yes` does both without asking |
 | `list [category] [--community]` | Browse blocks |
-| `check` | Audit setup: Tailwind wiring, `@source`, styles, `ThemeProvider` |
+| `check` (alias `doctor`) `[--json] [--target <dir>] [--render <url>]` | Health check: Node, React and version alignment, Tailwind wiring, `@source`, `ThemeProvider`, agent files. `--render <url>` also loads that page headless (needs a running dev server and Playwright) and confirms Shavin renders styled. Exits 1 when a check fails (warnings pass), so it works in CI |
 | `context` | Print a compact (< 300 token) project manifest for AI prompts |
 | `brand [--init] [--check] [--oklch]` | Generate brand colour tokens from the hex values in `brand-tokens.css` |
 | `bridge [--port <port>]` | Start the agent–browser bridge and live audit dashboard (default port 7036) |
 | `publish <file>` | Validate a block against the quality gate and package its manifest |
 
-Common options: `--overwrite` (replace files when adding blocks), `--json` (machine-readable output), `--help`.
+Common options: `--overwrite` (replace files when adding blocks), `--yes` / `-y` (let `add` run `init` and install packages without asking), `--json` (machine-readable output), `--help`.
 
 ## Related packages
 

@@ -2,7 +2,7 @@
   "Shavin Button": {
     "prefix": "s-button",
     "body": [
-      "<Button variant=\"${1|solid,soft,outline,ghost|}\" tone=\"${2|accent,danger|}\" size=\"${3|md,sm,lg|}\">${4:Button Label}</Button>"
+      "<Button variant=\"${1|solid,soft,outline,ghost|}\" tone=\"${2|brand,danger|}\" size=\"${3|md,sm,lg|}\">${4:Button Label}</Button>"
     ],
     "description": "Render a @shavin/ui Button primitive"
   },
@@ -230,14 +230,14 @@
   "Shavin Icon": {
     "prefix": "s-icon",
     "body": [
-      "<Icon name=\"${1:sparkles}\" size=\"${2|md,sm,xs,lg,xl|}\" color=\"${3|fg,subtle,muted,accent|}\" />"
+      "<Icon name=\"${1:sparkles}\" size=\"${2|md,sm,xs,lg,xl|}\" color=\"${3|fg,subtle,muted,brand|}\" />"
     ],
     "description": "Render a @shavin/ui Icon primitive"
   },
   "Shavin Badge": {
     "prefix": "s-badge",
     "body": [
-      "<Badge variant=\"${1|soft,solid,outline,surface|}\" tone=\"${2|accent,success,warning,danger,neutral|}\">${3:Active}</Badge>"
+      "<Badge variant=\"${1|soft,solid,outline,surface|}\" tone=\"${2|brand,success,warning,danger,neutral|}\">${3:Active}</Badge>"
     ],
     "description": "Render a @shavin/ui status Badge chip"
   },
@@ -324,7 +324,7 @@
   "Shavin Spinner": {
     "prefix": "s-spinner",
     "body": [
-      "<Spinner size=\"${1|md,sm,lg|}\" tone=\"${2|accent,fg,subtle|}\" />"
+      "<Spinner size=\"${1|md,sm,lg|}\" tone=\"${2|brand,fg,subtle|}\" />"
     ],
     "description": "Render an animated @shavin/ui Spinner"
   },
@@ -360,7 +360,7 @@
       "  </div>",
       "  <div className=\"flex justify-end gap-2\">",
       "    <Button variant=\"ghost\" onClick={() => ${2:setIsOpen}(false)}>Cancel</Button>",
-      "    <Button variant=\"solid\" tone=\"accent\" onClick={() => ${2:setIsOpen}(false)}>Confirm</Button>",
+      "    <Button variant=\"solid\" tone=\"brand\" onClick={() => ${2:setIsOpen}(false)}>Confirm</Button>",
       "  </div>",
       "</Dialog>"
     ],
@@ -626,7 +626,7 @@
   "Shavin Text": {
     "prefix": "s-text",
     "body": [
-      "<Text size=\"${1|base,sm,xs,lg|}\" color=\"${2|default,subtle,muted,accent|}\" className=\"text-pretty\">",
+      "<Text size=\"${1|base,sm,xs,lg|}\" color=\"${2|default,subtle,muted,brand|}\" className=\"text-pretty\">",
       "  ${3:Body text content}",
       "</Text>"
     ],
@@ -681,7 +681,7 @@
       "<DataList orientation=\"${1|horizontal,vertical|}\">",
       "  <DataListItem label=\"${2:User ID}\">${3:usr_9918}</DataListItem>",
       "  <DataListItem label=\"${4:Email}\">${5:user@shavin.cc}</DataListItem>",
-      "  <DataListItem label=\"${6:Plan}\"><Badge tone=\"accent\">${7:Enterprise}</Badge></DataListItem>",
+      "  <DataListItem label=\"${6:Plan}\"><Badge tone=\"brand\">${7:Enterprise}</Badge></DataListItem>",
       "</DataList>"
     ],
     "description": "Render a key-value @shavin/ui DataList"
@@ -690,7 +690,7 @@
     "prefix": "s-themeprovider",
     "body": [
       "<ThemeProvider",
-      "  accentColor=\"${1|grass,monochrome,indigo,blue,violet,red,amber|}\"",
+      "  brandColor=\"${1|monochrome,indigo,blue,violet,red,amber|}\"",
       "  grayColor=\"${2|gray,zinc,slate,neutral,stone|}\"",
       "  radius=\"${3|large,medium,small,full,none|}\"",
       "  scaling=\"${4|100%,95%,90%,105%,110%|}\"",

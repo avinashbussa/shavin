@@ -3,8 +3,14 @@
   "version": "0.1.0",
   "description": "Sets up and checks projects that use @shavin/ui: init, add blocks, check, context, bridge, brand",
   "license": "MIT",
-  "author": "Avinash Bussa <avinashbussa1@gmail.com>",
-  "homepage": "https://docs.shavin.cc/start/getting-started",
+  "engines": {
+    "node": ">=22"
+  },
+  "author": {
+    "name": "Avinash Bussa",
+    "url": "https://avinashbussa.com"
+  },
+  "homepage": "https://docs.shavin.cc",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/avinashbussa/shavin.git",
@@ -30,6 +36,13 @@
     "shavin-cli": "./bin/shavin.mjs",
     "cli": "./bin/shavin.mjs"
   },
+  "exports": {
+    ".": "./src/index.mjs",
+    "./doctor": "./src/lib/doctor.mjs",
+    "./render-check": "./src/lib/render-check.mjs",
+    "./visual-check": "./src/lib/visual-check.mjs",
+    "./package.json": "./package.json"
+  },
   "scripts": {
     "start": "node ./bin/shavin.mjs",
     "bridge": "node ./bin/shavin.mjs bridge"
@@ -40,8 +53,14 @@
   "files": [
     "bin",
     "src",
-    "README.md"
+    "README.md",
+    "CHANGELOG.md"
   ],
+  "shavin": {
+    "compat": {
+      "@shavin/ui": ">=0.1.0 <0.2.0"
+    }
+  },
   "publishConfig": {
     "access": "public"
   }

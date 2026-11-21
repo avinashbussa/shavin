@@ -2,7 +2,7 @@
  * @shavin/cli — Brand Token Engine (pure functions)
  *
  * Zero-dependency ESM. Shared by:
- *   - scripts/shavin-brand-tokens.mjs (monorepo root)
+ *   - scripts/shavin-brand-tokens.mjs (repo root)
  *   - packages/cli/src/commands/brand.mjs (consumer CLI: `npx shavin brand`)
  *
  * Exports the luminance engine, CSS parser, CSS rebuilder, and
@@ -21,11 +21,17 @@ import {
   oklchForegroundFor,
   oklchHoverFor,
   oklchTextFor,
-  oklchAchromaticInversion,
-} from "../../../ui/src/lib/color-space.mjs";
+  oklchBrandForMode,
+  oklchSolidFor,
+  oklchSolidHoverFor,
+  apcaContrast,
+  brandTextSurfaces,
+  BRAND_TEXT_CONTRAST,
+  rgbTripletToOklch,
+} from "./color-space.mjs";
 
 // ═══════════════════════════════════════════════════════════════════════
-// LUMINANCE ENGINE — identical math to theme-presets.ts
+// CONTRAST ENGINE — identical math to theme-presets.ts
 // Duplicated here (pure JS, no React) to keep the script zero-dependency.
 // If the thresholds in theme-presets.ts change, mirror them here.
 // ═══════════════════════════════════════════════════════════════════════
@@ -53,36 +59,102 @@ export function relativeLuminance(triplet) {
   return 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
 }
 
+export function contrastRatio(a, b) {
+  const x = relativeLuminance(a);
+  const y = relativeLuminance(b);
+  return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05);
+}
+
+/** Text on a solid brand fill: white while it clears 4.5:1, otherwise the higher-contrast ink. */
 export function foregroundFor(triplet) {
-  return relativeLuminance(triplet) > 0.45 ? "10 10 12" : "255 255 255";
+  const white = contrastRatio("255 255 255", triplet);
+  if (white >= 4.5) return "255 255 255";
+  return contrastRatio("10 10 12", triplet) > white ? "10 10 12" : "255 255 255";
 }
 
+/**
+ * Hover fill for a solid brand button. The text keeps foregroundFor(triplet) on hover, so the
+ * fill moves the usual way (lighter in dark mode, darker in light mode) only while that keeps
+ * contrast with the text; otherwise it moves away from the text colour.
+ */
 export function hoverFor(triplet, isDark) {
-  return mix(triplet, isDark ? 255 : 0, 0.12);
+  return hoverWithForeground(triplet, foregroundFor(triplet), isDark);
 }
 
+function hoverWithForeground(triplet, fg, isDark) {
+  const usual = mix(triplet, isDark ? 255 : 0, 0.12);
+  if (contrastRatio(fg, usual) >= Math.min(4.5, contrastRatio(fg, triplet))) return usual;
+  return mix(triplet, fg === "255 255 255" ? 0 : 255, 0.12);
+}
+
+// ── Solid brand fill: -solid / -solid-hover / -fg (mirror of brandSolidFor in theme-presets.ts) ──
+/** How the fill under text on the brand is chosen: "accessible" (default), "exact" or "perceptual". */
+export const SOLID_MODES = ["accessible", "exact", "perceptual"];
+export const DEFAULT_SOLID_MODE = "accessible";
+const WHITE_T = "255 255 255";
+const INK_T = "10 10 12";
+const perceptualForegroundFor = (fill) =>
+  Math.abs(apcaContrast(WHITE_T, fill)) > Math.abs(apcaContrast(INK_T, fill)) ? WHITE_T : INK_T;
+
+/**
+ * Solid fill, hover and text for a brand triplet already resolved for its mode (resolveTriplet).
+ * accessible: the brand's hue with lightness lowered until white text clears 4.6:1; a genuinely light
+ * brand keeps its exact fill and dark text. exact: today's fill and WCAG-picked text. perceptual: exact
+ * fill, text white where APCA prefers it (does not meet WCAG 2 AA on every brand).
+ */
+export function solidFor(triplet, isDark, mode = DEFAULT_SOLID_MODE) {
+  if (mode === "exact") return { fill: triplet, hover: hoverFor(triplet, isDark), fg: foregroundFor(triplet) };
+  if (mode === "perceptual") {
+    const fg = perceptualForegroundFor(triplet);
+    return { fill: triplet, hover: hoverWithForeground(triplet, fg, isDark), fg };
+  }
+  const s = oklchSolidFor(rgbTripletToOklch(triplet));
+  const fill = s.changed ? oklchToRgbTriplet(s.fill) : triplet;
+  const fg = s.light ? foregroundFor(triplet) : WHITE_T;
+  const usual = mix(fill, isDark ? 255 : 0, 0.12);
+  const hover = contrastRatio(fg, usual) >= 4.5 ? usual : mix(fill, fg === WHITE_T ? 0 : 255, 0.12);
+  return { fill, hover, fg };
+}
+
+/** solidFor for the OKLCH output path: oklch() CSS strings. `o` is the brand resolved for its mode (oklchBrandForMode). */
+export function solidForOklch(o, isDark, mode = DEFAULT_SOLID_MODE) {
+  if (mode === "exact") {
+    return { fill: oklchToCss(o), hover: oklchToCss(oklchHoverFor(o, isDark, 0.12)), fg: oklchToCss(oklchForegroundFor(o)) };
+  }
+  if (mode === "perceptual") {
+    const fgO = perceptualForegroundFor(oklchToRgbTriplet(o)) === WHITE_T ? { L: 1, C: 0, H: 0 } : { L: 0.18, C: 0, H: 0 };
+    return { fill: oklchToCss(o), hover: oklchToCss(oklchSolidHoverFor(o, fgO, isDark)), fg: oklchToCss(fgO) };
+  }
+  const s = oklchSolidFor(o);
+  const fgO = s.light ? oklchForegroundFor(o) : { L: 1, C: 0, H: 0 };
+  return { fill: oklchToCss(s.fill), hover: oklchToCss(oklchSolidHoverFor(s.fill, fgO, isDark)), fg: oklchToCss(fgO) };
+}
+
+/**
+ * Brand-coloured text on the page: keeps the colour when it already clears the target on
+ * every page surface and on the brand's own soft tints over them, otherwise darkens it (light
+ * mode) or lightens it (dark mode) in small steps until it does, so the hue is kept. Same
+ * surfaces and target as the runtime engine (brandTextSurfaces in color-space.mjs).
+ */
 export function textFor(triplet, isDark) {
-  const lum = relativeLuminance(triplet);
-  if (isDark) {
-    if (lum < 0.22) {
-      const amount = Math.min(0.80, Math.max(0.45, 0.70 - lum * 1.8));
-      return mix(triplet, 255, amount);
-    }
-    return triplet;
+  const bgs = brandTextSurfaces(triplet, isDark).map(relativeLuminance);
+  for (let step = 0; step <= 50; step++) {
+    const candidate = mix(triplet, isDark ? 255 : 0, step / 50);
+    const x = relativeLuminance(candidate);
+    const min = Math.min(...bgs.map((y) => (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05)));
+    if (min >= BRAND_TEXT_CONTRAST) return candidate;
   }
-  if (lum > 0.35) {
-    const amount = Math.min(0.68, Math.max(0.42, 0.28 + lum * 0.45));
-    return mix(triplet, 0, amount);
-  }
-  return triplet;
+  return isDark ? "255 255 255" : "0 0 0";
 }
 
-/** Resolves a brand color triplet with achromatic inversion. */
+/** The brand triplet for one page mode: grays that vanish flip, coloured brands keep their hue. */
 export function resolveTriplet(triplet, isDark) {
   const lum = relativeLuminance(triplet);
-  if (isDark && lum < 0.12) return "255 255 255";
-  if (!isDark && lum > 0.85) return "10 10 12";
-  return triplet;
+  if (!(isDark && lum < 0.12) && !(!isDark && lum > 0.85)) return triplet;
+  // Grays flip; coloured brands keep their hue and move to 3:1 against the canvas (as @shavin/ui does).
+  const o = rgbTripletToOklch(triplet);
+  if (o.C < 0.03) return isDark ? "255 255 255" : "10 10 12";
+  return oklchToRgbTriplet(oklchBrandForMode(o, isDark));
 }
 
 // ═══════════════════════════════════════════════════════════════════════
@@ -97,18 +169,32 @@ export function resolveTriplet(triplet, isDark) {
  * Each declaration: { name, value, isVarRef, isHex }
  *   name:      the color name without the --brand- prefix
  *   value:     raw string after the colon (trimmed, without ;)
- *   isVarRef:  true if value is `var(--accent)` or similar
+ *   isVarRef:  true if value is `var(--brand)` or similar
  *   isHex:     true if value is a #hex literal
  */
+/**
+ * The core brand colour owns --brand, --brand-fg, --brand-hover and the rest, so a custom brand colour
+ * may not use those suffixes as its name (a colour named "subtle" would write --brand-subtle).
+ */
+export const RESERVED_BRAND_NAMES = ["fg", "hover", "solid", "solid-hover", "solid-mode", "contrast", "text", "subtle", "subtle-hover", "on-dark", "on-light"];
+
+/** Custom brand colour names that clash with the core brand tokens. */
+export function reservedBrandNames(declarations) {
+  return declarations
+    .map((d) => d.name)
+    .filter((n) => RESERVED_BRAND_NAMES.includes(n) || n.startsWith("on-dark-") || n.startsWith("on-light-"));
+}
+
 export function parseBrandTokens(cssText) {
   const declarations = [];
+  let solidMode = DEFAULT_SOLID_MODE;
 
   // Extract the content between the INPUT section marker and the
   // GENERATED section marker. We anchor on the box-drawing marker
   // pattern (─── INPUT ───) to avoid matching the word "INPUT" in
   // the header comment text.
   const inputMatch = cssText.match(/─{3}\s*INPUT[\s\S]*?(?=─{3}\s*GENERATED)/);
-  if (!inputMatch) return { declarations };
+  if (!inputMatch) return { declarations, solidMode };
 
   const inputSection = inputMatch[0];
 
@@ -120,12 +206,17 @@ export function parseBrandTokens(cssText) {
   while ((match = declRegex.exec(inputSection)) !== null) {
     const [, name, rawValue] = match;
     const value = rawValue.trim();
+    // --brand-solid-mode: accessible | exact | perceptual chooses how every colour's -solid / -fg is derived.
+    if (name === "solid-mode") {
+      if (SOLID_MODES.includes(value)) solidMode = value;
+      continue;
+    }
     const isVarRef = /^var\(/.test(value);
     const isHex = /^#[0-9a-fA-F]{3,8}$/.test(value);
     declarations.push({ name, value, isVarRef, isHex });
   }
 
-  return { declarations };
+  return { declarations, solidMode };
 }
 
 // ═══════════════════════════════════════════════════════════════════════
@@ -135,14 +226,16 @@ export function parseBrandTokens(cssText) {
 /**
  * For each brand color with a hex value, compute the full cluster:
  *   --brand-{name}              (resolved triplet, achromatic inversion)
- *   --brand-{name}-fg           (black or white foreground for solid fills)
- *   --brand-{name}-hover        (±12% mix)
+ *   --brand-{name}-solid        (fill under text: accessible by default, see --brand-solid-mode)
+ *   --brand-{name}-solid-hover  (its hover fill; -fg keeps >= 4.5:1 on it)
+ *   --brand-{name}-fg           (text on -solid: white, or dark ink for a light brand)
+ *   --brand-{name}-hover        (±12% mix of the exact brand)
  *   --brand-{name}-contrast     (WCAG-safe text color)
  *   --brand-{name}-text         (alias of contrast)
  *   --brand-{name}-subtle       (rgb(... / 0.12) light, 0.15 dark)
  *   --brand-{name}-subtle-hover (rgb(... / 0.18) light, 0.22 dark)
  *
- * For var() aliases (like --brand-primary: var(--accent)), just pass
+ * For var() aliases (like --brand-ocean: var(--brand-teal)), just pass
  * through — no computation needed.
  *
  * Returns:
@@ -151,7 +244,7 @@ export function parseBrandTokens(cssText) {
  *   colorNames: string[]   List of color names (for Tailwind preset)
  *   aliasNames: string[]   List of alias names (for Tailwind preset)
  */
-export function computeBrandTokens(declarations) {
+export function computeBrandTokens(declarations, solidMode = DEFAULT_SOLID_MODE) {
   const lightLines = [];
   const darkLines = [];
   const colorNames = []; // hex-based colors → full derived token set
@@ -159,7 +252,7 @@ export function computeBrandTokens(declarations) {
 
   for (const decl of declarations) {
     if (decl.isVarRef) {
-      // Pass-through alias (e.g. --brand-primary: var(--accent))
+      // Pass-through alias (e.g. --brand-ocean: var(--brand-teal))
       lightLines.push(`  --brand-${decl.name}: ${decl.value};`);
       aliasNames.push(decl.name);
       continue;
@@ -176,8 +269,11 @@ export function computeBrandTokens(declarations) {
 
     // Light mode
     lightLines.push(`  --brand-${n}: ${lightTriplet};`);
-    lightLines.push(`  --brand-${n}-fg: ${foregroundFor(lightTriplet)};`);
+    const lightSolid = solidFor(lightTriplet, false, solidMode);
+    lightLines.push(`  --brand-${n}-fg: ${lightSolid.fg};`);
     lightLines.push(`  --brand-${n}-hover: ${hoverFor(lightTriplet, false)};`);
+    lightLines.push(`  --brand-${n}-solid: ${lightSolid.fill};`);
+    lightLines.push(`  --brand-${n}-solid-hover: ${lightSolid.hover};`);
     lightLines.push(`  --brand-${n}-contrast: ${textFor(lightTriplet, false)};`);
     lightLines.push(`  --brand-${n}-text: ${textFor(lightTriplet, false)};`);
     lightLines.push(`  --brand-${n}-subtle: rgb(var(--brand-${n}) / 0.12);`);
@@ -185,8 +281,11 @@ export function computeBrandTokens(declarations) {
 
     // Dark mode
     darkLines.push(`  --brand-${n}: ${darkTriplet};`);
-    darkLines.push(`  --brand-${n}-fg: ${foregroundFor(darkTriplet)};`);
+    const darkSolid = solidFor(darkTriplet, true, solidMode);
+    darkLines.push(`  --brand-${n}-fg: ${darkSolid.fg};`);
     darkLines.push(`  --brand-${n}-hover: ${hoverFor(darkTriplet, true)};`);
+    darkLines.push(`  --brand-${n}-solid: ${darkSolid.fill};`);
+    darkLines.push(`  --brand-${n}-solid-hover: ${darkSolid.hover};`);
     darkLines.push(`  --brand-${n}-contrast: ${textFor(darkTriplet, true)};`);
     darkLines.push(`  --brand-${n}-text: ${textFor(darkTriplet, true)};`);
     darkLines.push(`  --brand-${n}-subtle: rgb(var(--brand-${n}) / 0.15);`);
@@ -214,7 +313,7 @@ export function computeBrandTokens(declarations) {
  * @param {Array} declarations — parsed from parseBrandTokens()
  * @returns {{ lightLines, darkLines, colorNames, aliasNames }}
  */
-export function computeBrandTokensOklch(declarations) {
+export function computeBrandTokensOklch(declarations, solidMode = DEFAULT_SOLID_MODE) {
   const lightLines = [];
   const darkLines = [];
   const colorNames = [];
@@ -231,15 +330,18 @@ export function computeBrandTokensOklch(declarations) {
 
     const n = decl.name;
     const baseOklch = hexToOklch(decl.value);
-    const lightO = oklchAchromaticInversion(baseOklch, false);
-    const darkO = oklchAchromaticInversion(baseOklch, true);
+    const lightO = oklchBrandForMode(baseOklch, false);
+    const darkO = oklchBrandForMode(baseOklch, true);
 
     colorNames.push(n);
 
     // Light mode
     lightLines.push(`  --brand-${n}: ${oklchToCss(lightO)};`);
-    lightLines.push(`  --brand-${n}-fg: ${oklchToCss(oklchForegroundFor(lightO))};`);
+    const lightSolid = solidForOklch(lightO, false, solidMode);
+    lightLines.push(`  --brand-${n}-fg: ${lightSolid.fg};`);
     lightLines.push(`  --brand-${n}-hover: ${oklchToCss(oklchHoverFor(lightO, false, 0.12))};`);
+    lightLines.push(`  --brand-${n}-solid: ${lightSolid.fill};`);
+    lightLines.push(`  --brand-${n}-solid-hover: ${lightSolid.hover};`);
     lightLines.push(`  --brand-${n}-contrast: ${oklchToCss(oklchTextFor(lightO, false))};`);
     lightLines.push(`  --brand-${n}-text: ${oklchToCss(oklchTextFor(lightO, false))};`);
     lightLines.push(`  --brand-${n}-subtle: color-mix(in oklch, var(--brand-${n}) 12%, transparent);`);
@@ -247,8 +349,11 @@ export function computeBrandTokensOklch(declarations) {
 
     // Dark mode
     darkLines.push(`  --brand-${n}: ${oklchToCss(darkO)};`);
-    darkLines.push(`  --brand-${n}-fg: ${oklchToCss(oklchForegroundFor(darkO))};`);
+    const darkSolid = solidForOklch(darkO, true, solidMode);
+    darkLines.push(`  --brand-${n}-fg: ${darkSolid.fg};`);
     darkLines.push(`  --brand-${n}-hover: ${oklchToCss(oklchHoverFor(darkO, true, 0.12))};`);
+    darkLines.push(`  --brand-${n}-solid: ${darkSolid.fill};`);
+    darkLines.push(`  --brand-${n}-solid-hover: ${darkSolid.hover};`);
     darkLines.push(`  --brand-${n}-contrast: ${oklchToCss(oklchTextFor(darkO, true))};`);
     darkLines.push(`  --brand-${n}-text: ${oklchToCss(oklchTextFor(darkO, true))};`);
     darkLines.push(`  --brand-${n}-subtle: color-mix(in oklch, var(--brand-${n}) 15%, transparent);`);
@@ -335,13 +440,14 @@ export function rebuildCSOklch(originalText, tokens) {
   const inputBlock = inputContent
     ? `\n${inputContent}`
     : `\n  /* ─── INPUT ───────────────────────────────────────────────────────────
-     Enter hex values only. Do not delete --brand-primary.
-     --brand-primary always aliases --accent by default so the system
-     works with zero customization. Override with a #hex to set a
-     custom primary that still gets all derived tokens.
+     Your main brand colour is --brand (bg-brand, text-brand-contrast …),
+     set with <ThemeProvider brandColor>; it is not set here.
+     Add extra colours as hex values, e.g. --brand-coral: #FF6B6B;
+     fg, hover, solid, solid-hover, contrast, text, subtle and on-dark/on-light are reserved
+     names: they belong to --brand itself.
      ──────────────────────────────────────────────────────────────────── */
-  --brand-primary: var(--accent);
   /* --brand-coral: #FF6B6B; */
+  /* --brand-solid-mode: accessible; */ /* or exact | perceptual: how -solid and -fg are derived (default accessible) */
   /* --brand-teal: #14B8A6; */
 `;
 
@@ -411,13 +517,14 @@ export function rebuildCSS(originalText, tokens) {
     ? `\n${inputContent}`
     : `
   /* ─── INPUT ───────────────────────────────────────────────────────────
-     Enter hex values only. Do not delete --brand-primary.
-     --brand-primary always aliases --accent by default so the system
-     works with zero customization. Override with a #hex to set a
-     custom primary that still gets all derived tokens.
+     Your main brand colour is --brand (bg-brand, text-brand-contrast …),
+     set with <ThemeProvider brandColor>; it is not set here.
+     Add extra colours as hex values, e.g. --brand-coral: #FF6B6B;
+     fg, hover, solid, solid-hover, contrast, text, subtle and on-dark/on-light are reserved
+     names: they belong to --brand itself.
      ──────────────────────────────────────────────────────────────────── */
-  --brand-primary: var(--accent);
   /* --brand-coral: #FF6B6B; */
+  /* --brand-solid-mode: accessible; */ /* or exact | perceptual: how -solid and -fg are derived (default accessible) */
   /* --brand-teal: #14B8A6; */
 `;
 
@@ -436,7 +543,7 @@ export function rebuildCSS(originalText, tokens) {
    system's semantic tokens. Enter ONLY hex values in the INPUT section
    below — the \`shavin-brand-tokens\` predev script auto-computes every
    derived token (fg, hover, contrast, text, subtle backgrounds) using
-   the same WCAG luminance engine that powers --accent, then writes the
+   the same WCAG luminance engine that powers --brand, then writes the
    results to the GENERATED section.
 
    After the first \`npm run dev\`, this file stays static in source —
@@ -497,6 +604,8 @@ export function generateThemeV4CSSOklch(colorNames, aliasNames) {
     entries.push({ key: `--color-brand-${name}`, value: `var(--brand-${name})` });
     entries.push({ key: `--color-brand-${name}-fg`, value: `var(--brand-${name}-fg)` });
     entries.push({ key: `--color-brand-${name}-hover`, value: `var(--brand-${name}-hover)` });
+    entries.push({ key: `--color-brand-${name}-solid`, value: `var(--brand-${name}-solid)` });
+    entries.push({ key: `--color-brand-${name}-solid-hover`, value: `var(--brand-${name}-solid-hover)` });
     entries.push({ key: `--color-brand-${name}-contrast`, value: `var(--brand-${name}-contrast)` });
     entries.push({ key: `--color-brand-${name}-text`, value: `var(--brand-${name}-text)` });
     entries.push({ key: `--color-brand-${name}-subtle`, value: `var(--brand-${name}-subtle)` });
@@ -531,8 +640,8 @@ ${themeBlock}
  * Color naming: CSS var `--brand-coral` → Tailwind key `brand-coral`
  *   → bg-brand-coral, text-brand-coral, border-brand-coral/50, etc.
  *
- * For hex-based colors, all 7 tokens are exposed:
- *   brand-{name}, brand-{name}-fg, brand-{name}-hover,
+ * For hex-based colors, all 9 tokens are exposed:
+ *   brand-{name}, brand-{name}-fg, brand-{name}-hover, brand-{name}-solid, brand-{name}-solid-hover,
  *   brand-{name}-contrast, brand-{name}-text,
  *   brand-{name}-subtle, brand-{name}-subtle-hover
  *
@@ -555,6 +664,8 @@ export function generateTailwindPreset(colorNames, aliasNames) {
     entries.push({ key: `brand-${name}`, value: `rgb(var(--brand-${name}) / <alpha-value>)` });
     entries.push({ key: `brand-${name}-fg`, value: `rgb(var(--brand-${name}-fg) / <alpha-value>)` });
     entries.push({ key: `brand-${name}-hover`, value: `rgb(var(--brand-${name}-hover) / <alpha-value>)` });
+    entries.push({ key: `brand-${name}-solid`, value: `rgb(var(--brand-${name}-solid) / <alpha-value>)` });
+    entries.push({ key: `brand-${name}-solid-hover`, value: `rgb(var(--brand-${name}-solid-hover) / <alpha-value>)` });
     entries.push({ key: `brand-${name}-contrast`, value: `rgb(var(--brand-${name}-contrast) / <alpha-value>)` });
     entries.push({ key: `brand-${name}-text`, value: `rgb(var(--brand-${name}-text) / <alpha-value>)` });
     entries.push({ key: `brand-${name}-subtle`, value: `var(--brand-${name}-subtle)` });
@@ -596,7 +707,7 @@ ${colorsBlock}
  * Tailwind v4 reads to generate bg-brand-*, text-brand-*, etc. utilities.
  *
  * @param {string[]} colorNames — hex-based brand color names (e.g. ["primary"])
- * @param {string[]} aliasNames — alias-based brand color names (e.g. ["accent-2"])
+ * @param {string[]} aliasNames — alias-based brand color names (e.g. ["brand-2"])
  * @returns {string} — CSS file content with @theme inline block
  */
 export function generateThemeV4CSS(colorNames, aliasNames) {
@@ -612,6 +723,8 @@ export function generateThemeV4CSS(colorNames, aliasNames) {
     entries.push({ key: `--color-brand-${name}`, value: `rgb(var(--brand-${name}))` });
     entries.push({ key: `--color-brand-${name}-fg`, value: `rgb(var(--brand-${name}-fg))` });
     entries.push({ key: `--color-brand-${name}-hover`, value: `rgb(var(--brand-${name}-hover))` });
+    entries.push({ key: `--color-brand-${name}-solid`, value: `rgb(var(--brand-${name}-solid))` });
+    entries.push({ key: `--color-brand-${name}-solid-hover`, value: `rgb(var(--brand-${name}-solid-hover))` });
     entries.push({ key: `--color-brand-${name}-contrast`, value: `rgb(var(--brand-${name}-contrast))` });
     entries.push({ key: `--color-brand-${name}-text`, value: `rgb(var(--brand-${name}-text))` });
     entries.push({ key: `--color-brand-${name}-subtle`, value: `var(--brand-${name}-subtle)` });
@@ -644,7 +757,7 @@ ${themeBlock}
 
 /**
  * The default brand-tokens.css template for consumer projects.
- * Contains only --brand-primary: var(--accent) as a zero-config alias.
+ * Declares no colours: the main brand colour comes from ThemeProvider brandColor, and extra colours are added here.
  */
 export const DEFAULT_BRAND_TOKENS_CSS = `/* =========================================================================
    Shavin Brand Color Tokens
@@ -653,7 +766,7 @@ export const DEFAULT_BRAND_TOKENS_CSS = `/* ====================================
    system's semantic tokens. Enter ONLY hex values in the INPUT section
    below — the \`shavin brand:gen\` predev script auto-computes every
    derived token (fg, hover, contrast, text, subtle backgrounds) using
-   the same WCAG luminance engine that powers --accent, then writes the
+   the same WCAG luminance engine that powers --brand, then writes the
    results to the GENERATED section.
 
    After the first \`npm run dev\`, this file stays static in source —
@@ -673,17 +786,19 @@ export const DEFAULT_BRAND_TOKENS_CSS = `/* ====================================
 .light {
 
   /* ─── INPUT ───────────────────────────────────────────────────────────
-     Enter hex values only. Do not delete --brand-primary.
-     --brand-primary always aliases --accent by default so the system
-     works with zero customization. Override with a #hex to set a
-     custom primary that still gets all derived tokens.
+     Your main brand colour is --brand (bg-brand, text-brand-contrast …),
+     set with <ThemeProvider brandColor>; it is not set here.
+     Add extra colours as hex values, e.g. --brand-coral: #FF6B6B;
+     fg, hover, solid, solid-hover, contrast, text, subtle and on-dark/on-light are reserved
+     names: they belong to --brand itself.
      ──────────────────────────────────────────────────────────────────── */
-  --brand-primary: var(--accent);
+  /* --brand-coral: #FF6B6B; */
+  /* --brand-solid-mode: accessible; */ /* or exact | perceptual: how -solid and -fg are derived (default accessible) */
 
   /* ─── GENERATED ───────────────────────────────────────────────────────
      Do NOT edit — auto-computed by shavin-brand-tokens.
      ──────────────────────────────────────────────────────────────────── */
-  --brand-primary: var(--accent);
+  /* (no brand colors defined — add hex values in the INPUT section above) */
 
 }
 
@@ -714,9 +829,9 @@ export function detectBrandTokensPath(cwd) {
     { css: "styles/brand-tokens.css", preset: "styles/brand-preset.mjs" },
     // Vite / React
     { css: "src/brand-tokens.css", preset: "src/brand-preset.mjs" },
-    // Root (monorepo or flat)
+    // Root (workspace or flat)
     { css: "brand-tokens.css", preset: "brand-preset.mjs" },
-    // Monorepo source (for running within the monorepo)
+    // Repository source (for running within this repository)
     { css: "packages/ui/src/styles/brand-tokens.css", preset: "packages/ui/src/styles/brand-preset.mjs" },
   ];
 

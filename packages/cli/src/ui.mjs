@@ -15,7 +15,7 @@ export const c = {
   // Core Brand Colors (Lighter Luminance TrueColor)
   brand: "\x1b[38;2;253;164;175m",        // Lighter Luminous Rose / Pink-300 (#fda4af)
   brandLight: "\x1b[38;2;254;205;211m",   // Pastel Rose Light (#fecdd3)
-  brandMuted: "\x1b[38;2;225;29;72m",     // Medium Rose Accent (#e11d48)
+  brandMuted: "\x1b[38;2;225;29;72m",     // Medium Rose Brand (#e11d48)
   
   // Subtle Hairline Borders (Subtler than subtle text)
   border: "\x1b[38;2;63;63;70m",          // Hairline Zinc Border (#3f3f46)
