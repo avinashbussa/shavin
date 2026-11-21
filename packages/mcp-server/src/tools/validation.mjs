@@ -18,8 +18,13 @@
  */
 
 import { checkUsage } from "./usage-check.mjs";
+import { findHitAreaWarnings } from "./hit-area-lint.mjs";
+import { findBgSurfaceWarnings } from "./bg-surface-lint.mjs";
 import { findViewportShellPatterns } from "./responsive-lint.mjs";
 import { findHexViolations, matchHexColors } from "@shavin/block-schema/hex-policy";
+import { enforcementViolations, legacyPaths, isLegacyFile } from "./enforce.mjs";
+import { findConcentricIssues, concentricAutofix } from "./concentric-lint.mjs";
+import { relative, resolve, isAbsolute } from "node:path";
 
 function splitLines(code) {
   return code.split(/\r?\n/);
@@ -34,6 +39,8 @@ function stripExemptMarkedLines(code) {
   return splitLines(code)
     .filter((l) => !/data-overlay|data-gradient|data-scope-theme/.test(l))
     .map((l) => l.replace(/\bbg(Overlays|Image|Video)\s*=\s*(?:"[^"]*"|'[^']*'|`[^`]*`)/g, "bg$1=\"\""))
+    // brandColor="#hex" on ThemeProvider / ScopedThemeProvider is where a custom brand colour belongs.
+    .map((l) => l.replace(/\bbrandColor\s*=\s*(?:"[^"]*"|'[^']*'|\{\s*(?:"[^"]*"|'[^']*')\s*\})/g, 'brandColor="brand"'))
     .join("\n");
 }
 
@@ -78,8 +85,9 @@ export function checkMotionTimelines(code) {
   return out;
 }
 
-export function validateCode(code) {
+export function validateCode(code, { enforce = false } = {}) {
   const violations = [];
+  const original = code;
   code = stripExemptMarkedLines(code);
   // Context-aware: "Order #1543" / "#142" ids are content, not colours.
   const hexMatches = matchHexColors(code);
@@ -98,20 +106,16 @@ export function validateCode(code) {
     violations.push(`Direct foundation variable references found: ${foundationVars.join(", ")}. Nothing outside global.css should reference --n-* directly.`);
   }
 
-  const rawRadius = code.match(/\brounded-(sm|md|lg|xl|2xl|3xl|full)\b/g) ?? [];
-  const radiusInClasses = rawRadius.filter((m) => !/import|type|interface/.test(code));
-  if (radiusInClasses.length > 0) {
-    violations.push(
-      `Literal radius utilities found: ${radiusInClasses.join(", ")}. Use rounded-[var(--radius-lg)] or rounded-[var(--radius-panel)].`
-    );
-  }
+  // Literal radius and concentric radius (role-aware; every message names the exact class to write).
+  // rounded-full stays legal for pills, avatars, dots and switches.
+  for (const c of findConcentricIssues(original)) violations.push(c.message);
 
   const rawColors = code.match(
     /\b(bg|text|border|ring|fill|stroke)-(slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-\d{2,3}\b/g
   ) ?? [];
   if (rawColors.length > 0) {
     violations.push(
-      `Raw Tailwind color scale utilities found: ${rawColors.join(", ")}. Use semantic utilities (bg-surface, text-fg, text-fg-muted, border-hairline, bg-accent, …) instead.`
+      `Raw Tailwind color scale utilities found: ${rawColors.join(", ")}. Use semantic utilities (bg-surface, text-fg, text-fg-muted, border-hairline, bg-brand, …) instead.`
     );
   }
 
@@ -119,11 +123,14 @@ export function validateCode(code) {
 
   for (const t of checkMotionTimelines(code)) violations.push(`${t.warn ? "Warning" : "Error"} (${t.rule}): ${t.message}`);
 
+  if (enforce) violations.push(...enforcementViolations(original).errors);
+
   return violations;
 }
 
-export function validateCodeDense(code) {
+export function validateCodeDense(code, { enforce = false } = {}) {
   const issues = [];
+  const original = code;
   code = stripExemptMarkedLines(code);
   const hexMatches = matchHexColors(code);
   if (hexMatches.length > 0) {
@@ -136,11 +143,7 @@ export function validateCodeDense(code) {
   if (foundationVars.length > 0) {
     issues.push(`foundation=[${[...new Set(foundationVars)].join(",")}] -> USE semantic tokens`);
   }
-  const rawRadius = (code.match(/\brounded-(sm|md|lg|xl|2xl|3xl|full)\b/g) ?? [])
-    .filter((m) => !/import|type|interface/.test(code));
-  if (rawRadius.length > 0) {
-    issues.push(`radius=[${[...new Set(rawRadius)].join(",")}] -> USE rounded-[var(--radius-panel)] / rounded-[var(--radius-lg)]`);
-  }
+  for (const c of findConcentricIssues(original)) issues.push(c.dense);
   const rawColors = code.match(
     /\b(bg|text|border|ring|fill|stroke)-(slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-\d{2,3}\b/g
   ) ?? [];
@@ -152,6 +155,7 @@ export function validateCodeDense(code) {
     issues.push(`responsive:${w.rule}@L${w.line} -> ${fix}`);
   }
   for (const t of checkMotionTimelines(code)) issues.push(`${t.rule} -> ${t.message}`);
+  if (enforce) issues.push(...enforcementViolations(original).dense);
   return issues;
 }
 
@@ -185,17 +189,13 @@ export function autofixCode(code) {
     return "var(--fg)";
   });
 
-  fixedCode = fixedCode.replace(/\brounded-(lg|xl|2xl|3xl)\b/g, (match) => {
-    fixesApplied.push(`Replaced literal ${match} with rounded-[var(--radius-panel)]`);
-    return "rounded-[var(--radius-panel)]";
-  });
+  // Radius: role-aware. Controls get --radius-lg, containers --radius-panel, nested elements
+  // rounded-panel-pN from the padding; an ambiguous role is reported in `unfixed`, never guessed.
+  const radius = concentricAutofix(fixedCode);
+  fixedCode = radius.fixedCode;
+  fixesApplied.push(...radius.fixesApplied);
 
-  fixedCode = fixedCode.replace(/\brounded-(sm|md)\b/g, (match) => {
-    fixesApplied.push(`Replaced literal ${match} with rounded-[var(--radius-lg)]`);
-    return "rounded-[var(--radius-lg)]";
-  });
-
-  return { fixedCode, fixesApplied };
+  return { fixedCode, fixesApplied, unfixed: radius.unfixed };
 }
 
 export function registerValidationTools(server, COMPONENTS) {
@@ -203,11 +203,12 @@ export function registerValidationTools(server, COMPONENTS) {
     {
       schema: {
         name: "validate_code",
-        description: "Call on every JSX/TSX file or snippet you write before returning it. Lints against @shavin/ui token laws (no raw hex/rgb/--n-*, no raw Tailwind colour scales, radius roles, contrast hierarchy). Then run audit_source and check_page on the project. Supports 'dense' (default) and 'full'.",
+        description: "Call on every JSX/TSX file or snippet you write or change, on every turn, before returning it. FAILS on: raw hex/rgb/--n-* (hex is allowed only as brandColor on ThemeProvider), raw Tailwind colour scales, literal radius (rounded-lg, rounded-xl, ...), concentric radius (a control with the panel radius, a container with the control radius, a nested rounded element that does not fit its parent's padding; rounded-full is allowed; every message names the exact class to write), raw button/input/select/textarea/table/dialog, styled-div imitations of components, other UI libraries, deep @shavin/ui imports, arbitrary type sizes, inline colour styles. WARNS (does not fail) on hitArea=\"none\" or the hit-area-none class: it can drop a control below the WCAG 2.2 AA 2.5.8 24px floor; restore by removing it or using hitArea=\"default\". Then run audit_source and check_page on the project. Supports 'dense' (default) and 'full'.",
         inputSchema: {
           type: "object",
           properties: {
             code: { type: "string", description: "The JSX, TSX, or HTML code to validate." },
+            file: { type: "string", description: "Optional path of the file the code is from (relative to the project). Files listed under Legacy paths in SHAVIN.md (another UI library) are reported, not failed." },
             density: {
               type: "string",
               enum: ["dense", "full"],
@@ -220,36 +221,53 @@ export function registerValidationTools(server, COMPONENTS) {
       handler: async (args) => {
         const rawCode = args?.code || "";
         const density = args?.density || "dense";
-        const violations = validateCode(rawCode);
+        const violations = validateCode(rawCode, { enforce: true });
         const usage = checkUsage(rawCode, COMPONENTS);
         for (const u of usage) violations.push(`Component usage: ${u}`);
+        // Warning-level findings never fail a file; they ride along with PASS or FAIL.
+        const warnings = [...findHitAreaWarnings(rawCode), ...findBgSurfaceWarnings(rawCode)];
+        const warnLine = warnings.length ? `\nWARN (${warnings.length}, does not fail): ${warnings.map((w) => `[${w.rule}: ${w.message}]`).join("; ")}` : "";
+
+        // Coexistence: legacy files (another UI library the project already had) are reported, not failed.
+        if (args?.file && violations.length) {
+          const cwd = process.cwd();
+          const abs = isAbsolute(args.file) ? args.file : resolve(cwd, args.file);
+          if (isLegacyFile(relative(cwd, abs), legacyPaths(cwd))) {
+            const issues = [...validateCodeDense(rawCode, { enforce: true }), ...usage.map((u) => `usage: ${u}`)];
+            return { content: [{ type: "text", text: `LEGACY (not failed): ${args.file} is listed under Legacy paths in SHAVIN.md. ${issues.length} finding(s): ${issues.map((i) => `[${i}]`).join("; ")}\nNew and changed code outside the legacy paths is Shavin only; migrate this file only if the user asks.` }] };
+          }
+        }
 
         if (violations.length === 0) {
           if (density === "dense") {
-            return { content: [{ type: "text", text: "PASS: token pure; component variants/props valid." }] };
+            return { content: [{ type: "text", text: `PASS: token pure; component variants/props valid.${warnLine}` }] };
           }
           return {
             content: [{
               type: "text",
-              text: "## ✅ Code is 100% Token Pure and Clean!\nZero raw hex, rgb, or literal radius issues detected.",
+              text: "## ✅ Code is 100% Token Pure and Clean!\nZero raw hex, rgb, or literal radius issues detected." +
+                (warnings.length ? `\n\n### ⚠️ Warnings (${warnings.length}, do not fail):\n` + warnings.map((w, i) => `${i + 1}. (${w.rule}) ${w.message}`).join("\n") : ""),
             }],
           };
         }
 
-        const { fixedCode, fixesApplied } = autofixCode(rawCode);
+        const { fixedCode, fixesApplied, unfixed } = autofixCode(rawCode);
 
         if (density === "dense") {
-          const denseIssues = [...validateCodeDense(rawCode), ...usage.map((u) => `usage: ${u}`)];
+          const denseIssues = [...validateCodeDense(rawCode, { enforce: true }), ...usage.map((u) => `usage: ${u}`)];
           const lines = [
             `FAIL (${violations.length} violations): ${denseIssues.map((i) => `[${i}]`).join("; ")}`,
           ];
+          if (warnings.length) lines.push(warnLine.trim());
           if (fixesApplied.length > 0) {
             lines.push(`AUTOFIX (${fixesApplied.length}): ${fixesApplied.join("; ")}`);
           }
+          if (unfixed.length > 0) lines.push(`MANUAL (${unfixed.length}, role ambiguous): ${unfixed.join("; ")}`);
           return { content: [{ type: "text", text: lines.join("\n") }] };
         }
 
         let report = `## ⚠️ Violations Found (${violations.length}):\n\n` + violations.map((v, i) => `${i + 1}. ${v}`).join("\n");
+        if (warnings.length) report += `\n\n### Warnings (${warnings.length}, do not fail):\n` + warnings.map((w, i) => `${i + 1}. (${w.rule}) ${w.message}`).join("\n");
         if (fixesApplied.length > 0) {
           report += `\n\n### 🛠️ Self-Healing Suggested Patch (${fixesApplied.length} fixes available):\n`;
           report += fixesApplied.map((f, i) => `- Fix ${i + 1}: ${f}`).join("\n");
@@ -267,7 +285,7 @@ export function registerValidationTools(server, COMPONENTS) {
     {
       schema: {
         name: "autofix_code",
-        description: "Automatically transpile non-compliant code to use @shavin/ui semantic tokens and concentric radii.",
+        description: "Automatically transpile non-compliant code to use @shavin/ui semantic tokens and concentric radii. Radius is role-aware: controls get rounded-[var(--radius-lg)], containers rounded-[var(--radius-panel)], nested elements rounded-panel-pN from the parent padding; an ambiguous role is returned in `unfixed` with both exact options.",
         inputSchema: {
           type: "object",
           properties: {

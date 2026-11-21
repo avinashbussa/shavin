@@ -30,7 +30,7 @@ Start from the composition's grid (unchanged) and swap the container language:
 
 ## 3. Mixing rules
 
-- One dominant treatment per page and at most one accent treatment (for example, `ruled` throughout with a `full-bleed` closing CTA).
+- One dominant treatment per page and at most one brand treatment (for example, `ruled` throughout with a `full-bleed` closing CTA).
 - Docs pages inside a marketing site switch to `ruled` or `flat`; editorial pages switch to `open` or `ruled`. Tokens stay the same.
 - Don't mix carded and flat in adjacent sections; it reads as inconsistency.
 - Radius scale is one system: concentric inside padded panels (`foundations.md` §2). Use `rounded-panel-inner` or `rounded-panel-p5` for nested radii.
@@ -51,7 +51,7 @@ Some compositions don't support every treatment; the `treatments` list in each c
 
 ## 5. Which treatment for which style
 
-| Style | Primary | Accent |
+| Style | Primary | Brand |
 |---|---|---|
 | Marketing / SaaS | carded or flat | full-bleed closing CTA (C3) |
 | Editorial | open or ruled | full-bleed image breaks |

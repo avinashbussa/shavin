@@ -30,7 +30,7 @@ Layer 0 (The Canvas): Base background token (bg-canvas)
       className="absolute inset-0 w-full h-full bg-cover bg-center opacity-30 dark:opacity-20 scale-105"
       style={{ backgroundImage: "url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1964&auto=format&fit=crop')" }}
     />
-    {/* Layer 2: Directional Scrim (preserves WCAG AAA contrast) */}
+    {/* Layer 2: Directional Scrim (keeps text at 4.5:1, WCAG 2.2 AA) */}
     <div className="absolute inset-0 bg-gradient-to-b from-canvas/30 via-surface/80 to-surface backdrop-blur-[2px]" />
   </div>
 
@@ -53,7 +53,7 @@ Instead of drawing separate box outlines around every column:
 - Add subtle crosshairs at grid intersections:
 ```tsx
 <div className="relative border border-hairline/70 rounded-[var(--radius-panel)] p-8">
-  {/* Crosshair accents at corners */}
+  {/* Crosshair highlights at corners */}
   <span className="absolute -top-1.5 -left-1.5 text-hairline font-mono text-xs select-none">+</span>
   <span className="absolute -top-1.5 -right-1.5 text-hairline font-mono text-xs select-none">+</span>
   <span className="absolute -bottom-1.5 -left-1.5 text-hairline font-mono text-xs select-none">+</span>
@@ -91,7 +91,7 @@ Hero / main media is **curated photography** (Lummi `assets.lummi.ai`, Unsplash,
 | Instead of... | Use... |
 |---|---|
 | Floating purple 3D sphere as hero focal | **Editorial photo or mesh backdrop** (`bgImage` + `bgOverlays="scrim-left"`, or `bgOverlays="mesh-lime-animated, dark-20"`) |
-| Cliché stock (laptops, handshakes, offices) | **Curated Lummi/Unsplash photography** — also usable as accents for visual balance |
+| Cliché stock (laptops, handshakes, offices) | **Curated Lummi/Unsplash photography** — also usable as highlights for visual balance |
 | Tiny unreadable UI screenshot | **Calm looping video** (`bgVideo` + `bgPoster`) or a large type-led statement |
 
 3D renders are allowed only as optional decorative graphics, never focal media. Product mockups rebuilt from Shavin primitives (token inspectors, telemetry cards) are optional and rarely used — only when you are highly confident of the result.
@@ -105,7 +105,7 @@ Awwwards-winning editorial sites create visual electricity by creating deliberat
 ### The Triad Pairing
 1. **Primary Headline**: Clean, high-impact Sans (`font-extrabold tracking-tight text-fg`).
 2. **Metadata & Status**: Precise Monospace (`font-mono text-xs uppercase tracking-widest text-fg-subtle`).
-3. **Accent Proof / Quotes**: High-contrast, elegant typography (`italic font-normal text-fg-subtle text-lg`).
+3. **Brand Proof / Quotes**: High-contrast, elegant typography (`italic font-normal text-fg-subtle text-lg`).
 
 ---
 
@@ -113,5 +113,5 @@ Awwwards-winning editorial sites create visual electricity by creating deliberat
 
 For long-form feature launches or product tours:
 - **Sticky Column Narrative**: Pin the visual preview (code editor or UI mock) on one side (`sticky top-24`) while the reader scrolls through 3–4 narrative milestones on the opposite column.
-- **Milestone Illumination**: The active narrative step illuminates with `border-accent text-fg`, while past/future steps rest at `text-fg-subtle opacity-60`.
+- **Milestone Illumination**: The active narrative step illuminates with `border-brand text-fg`, while past/future steps rest at `text-fg-subtle opacity-60`.
 - **Zero Reflow**: Pinning and transitions must be GPU-only via `transform: translate3d` or CSS `position: sticky`.

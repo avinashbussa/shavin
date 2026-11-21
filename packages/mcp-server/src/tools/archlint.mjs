@@ -13,9 +13,13 @@
  *   5. Raw <button> instead of <Button> primitive
  *   6. Raw <section> instead of <Section> primitive
  *
- * ALL findings are reported as WARNINGS (never errors), because users may
- * intentionally mix frameworks (e.g. plain HTML in a Next.js page that also
- * uses Shavin primitives, or third-party components that produce raw elements).
+ * Architecture findings (raw div/p/a, missing cva/cn) are WARNINGS: users may
+ * intentionally mix plain HTML in a page that also uses Shavin primitives.
+ * Hard rules are ERRORS (the same rules as validate_code, see enforce.mjs): raw
+ * controls, styled-div imitations of components, other UI libraries, deep
+ * imports, arbitrary type sizes, inline colour styles. Files under the Legacy
+ * paths of SHAVIN.md (another UI library the project already had) are reported
+ * as "legacy", never failed.
  *
  * The tool accepts a target directory and walks it recursively, skipping
  * node_modules, .next, dist, build, and test/fixture files.
@@ -24,6 +28,8 @@
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { resolve, join, relative, extname } from "node:path";
 import { findViewportShellPatterns } from "./responsive-lint.mjs";
+import { findConcentricIssues } from "./concentric-lint.mjs";
+import { checkEnforcement, legacyPaths, isLegacyFile } from "./enforce.mjs";
 
 // ── Primitive mapping: raw HTML element → recommended Shavin primitive ──────
 
@@ -182,7 +188,7 @@ function usesShavinUI(source) {
 
 // ── Main scan function ────────────────────────────────────────────────────────
 
-function scanFile(filePath, rootDir) {
+function scanFile(filePath, rootDir, legacy = []) {
   const issues = [];
   let source;
   try {
@@ -191,8 +197,17 @@ function scanFile(filePath, rootDir) {
     return issues;
   }
 
-  const relPath = relative(rootDir, filePath);
+  const relPath = relative(rootDir, filePath).split("\\").join("/"); // forward slashes on every platform
   const isShavinConsumer = usesShavinUI(source);
+
+  // 0. Hard rules (errors). Legacy files are reported, not failed.
+  if (/\.(tsx|jsx)$/.test(filePath)) {
+    const legacyFile = isLegacyFile(relPath, legacy);
+    for (const f of checkEnforcement(source)) {
+      issues.push({ type: f.rule, severity: legacyFile ? "legacy" : f.severity === "error" ? "error" : "warning", file: relPath, line: f.line, message: `L${f.line}: ${f.message}. ${f.fix}` });
+    }
+    if (legacyFile) return issues;
+  }
 
   // 1. Raw HTML elements (only warn if the file already uses @shavin/ui —
   //    otherwise it might be a non-Shavin file)
@@ -211,16 +226,7 @@ function scanFile(filePath, rootDir) {
     }
   }
 
-  // 2. Deep imports (always warn — this is a hard rule in AGENTS.md)
-  const deepImports = findDeepImports(source);
-  for (const imp of deepImports) {
-    issues.push({
-      type: "deep-import",
-      severity: "warning",
-      file: relPath,
-      message: `Deep import: ${imp} — use root import "from \"@shavin/ui\"" instead`,
-    });
-  }
+  // 2. Deep imports are an error now (see 0. above, enforce.mjs).
 
   // 2b. Sparkles icon (AP-13): never use unless the user asks
   if (/name=["']sparkles?["']|icon=["']sparkles?["']|\bSparkles?\b[^a-zA-Z]|\u2728/.test(source)) {
@@ -236,6 +242,13 @@ function scanFile(filePath, rootDir) {
   if (isShavinConsumer) {
     for (const w of findViewportShellPatterns(source)) {
       issues.push({ type: "responsive-shell", severity: "warning", file: relPath, line: w.line, message: `L${w.line}: ${w.message}` });
+    }
+  }
+
+  // 2d. Concentric radius (control/container role, nested inner radius vs parent padding); message names the exact class
+  if (isShavinConsumer) {
+    for (const c of findConcentricIssues(source)) {
+      issues.push({ type: c.rule, severity: "warning", file: relPath, line: c.line, message: c.message });
     }
   }
 
@@ -272,11 +285,12 @@ function scanFile(filePath, rootDir) {
 
 export function scanDirectory(targetDir) {
   const files = walkDir(targetDir);
+  const legacy = legacyPaths(targetDir);
   const allIssues = [];
   const fileStats = {};
 
   for (const file of files) {
-    const issues = scanFile(file, targetDir);
+    const issues = scanFile(file, targetDir, legacy);
     if (issues.length > 0) {
       allIssues.push(...issues);
       fileStats[file] = issues.length;
@@ -287,7 +301,9 @@ export function scanDirectory(targetDir) {
   const summary = {
     filesScanned: files.length,
     filesWithIssues: Object.keys(fileStats).length,
-    totalWarnings: allIssues.length,
+    totalErrors: allIssues.filter((i) => i.severity === "error").length,
+    totalLegacy: allIssues.filter((i) => i.severity === "legacy").length,
+    totalWarnings: allIssues.filter((i) => i.severity === "warning").length,
     byType: {},
     byFile: {},
   };
@@ -310,30 +326,37 @@ export function scanDirectory(targetDir) {
 
 function formatDense(result) {
   const { summary, topFiles, issues } = result;
-  if (summary.totalWarnings === 0) {
-    return `PASS: 0 warnings. ${summary.filesScanned} files scanned. Source architecture is clean.`;
+  if (summary.totalErrors === 0 && summary.totalWarnings === 0 && summary.totalLegacy === 0) {
+    return `PASS: 0 errors, 0 warnings. ${summary.filesScanned} files scanned. Source architecture is clean.`;
   }
-
-  const lines = [
-    `WARN (${summary.totalWarnings} warnings across ${summary.filesWithIssues}/${summary.filesScanned} files):`,
-    `  raw-element: ${summary.byType["raw-element"] || 0} | deep-import: ${summary.byType["deep-import"] || 0} | missing-cva: ${summary.byType["missing-cva"] || 0} | missing-cn: ${summary.byType["missing-cn"] || 0}`,
-    "",
-    "Top files by warning count:",
-    ...topFiles.map((f) => `  ${f.warnings}× ${f.file}`),
-    "",
-    "Sample warnings (first 15):",
-    ...issues.slice(0, 15).map((i) => {
-      if (i.type === "raw-element") return `  [${i.file}] ${i.count}× <${i.element}> → <${i.primitive}>`;
-      return `  [${i.file}] ${i.message}`;
-    }),
-  ];
-  if (issues.length > 15) lines.push(`  ... and ${issues.length - 15} more`);
+  const errors = issues.filter((i) => i.severity === "error");
+  const warns = issues.filter((i) => i.severity === "warning");
+  const legacy = issues.filter((i) => i.severity === "legacy");
+  const head = summary.totalErrors
+    ? `FAIL (${summary.totalErrors} errors, ${summary.totalWarnings} warnings${legacy.length ? `, ${legacy.length} legacy` : ""} across ${summary.filesWithIssues}/${summary.filesScanned} files):`
+    : `WARN (${summary.totalWarnings} warnings${legacy.length ? `, ${legacy.length} legacy (not failed)` : ""} across ${summary.filesWithIssues}/${summary.filesScanned} files):`;
+  const lines = [head];
+  if (errors.length) {
+    lines.push("Errors (fix before you finish):");
+    lines.push(...errors.slice(0, 20).map((i) => `  [${i.file}] ${i.message}`));
+    if (errors.length > 20) lines.push(`  ... and ${errors.length - 20} more errors`);
+    lines.push("");
+  }
+  if (warns.length) {
+    lines.push(`  raw-element: ${summary.byType["raw-element"] || 0} | deep-import: ${summary.byType["deep-import"] || 0} | missing-cva: ${summary.byType["missing-cva"] || 0} | missing-cn: ${summary.byType["missing-cn"] || 0}`);
+    lines.push("Top files by warning count:");
+    lines.push(...topFiles.slice(0, 5).map((f) => `  ${f.warnings}× ${f.file}`));
+    lines.push("Sample warnings (first 10):");
+    lines.push(...warns.slice(0, 10).map((i) => (i.type === "raw-element" ? `  [${i.file}] ${i.count}× <${i.element}> → <${i.primitive}>` : `  [${i.file}] ${i.message}`)));
+    if (warns.length > 10) lines.push(`  ... and ${warns.length - 10} more`);
+  }
+  if (legacy.length) lines.push(`Legacy (SHAVIN.md Legacy paths, reported not failed): ${legacy.length} finding(s) in ${new Set(legacy.map((i) => i.file)).size} file(s). Migrate only if the user asks.`);
   return lines.join("\n");
 }
 
 function formatFull(result) {
   const { summary, topFiles, issues } = result;
-  if (summary.totalWarnings === 0) {
+  if (summary.totalErrors === 0 && summary.totalWarnings === 0 && summary.totalLegacy === 0) {
     return [
       "## ✅ Source Architecture is Clean!",
       "",
@@ -398,7 +421,7 @@ function formatFull(result) {
 
   lines.push("---");
   lines.push("");
-  lines.push("> **Note:** All findings are warnings, not errors. Projects may intentionally mix frameworks or use raw HTML in specific contexts. Use your judgment to decide which to fix.");
+  lines.push(`> **Errors (${summary.totalErrors})** are hard rules and must be fixed; warnings are judgement calls; legacy findings (${summary.totalLegacy}, SHAVIN.md Legacy paths) are reported, not failed.`);
   return lines.join("\n");
 }
 
@@ -409,13 +432,13 @@ export function registerArchLintTool(server) {
     schema: {
       name: "audit_source",
       description:
-        "Call on a project folder after writing code. Scans .tsx/.jsx for architecture issues the live audit can't see: raw HTML where a Shavin primitive exists, deep @shavin/ui imports, variant components without cva(), className merging without cn(). Pair with check_page({ targetDir }).",
+        "Call on a project folder (or its changed paths) on every turn that writes UI. Scans .tsx/.jsx for architecture issues the live audit can't see: raw HTML where a Shavin primitive exists, deep @shavin/ui imports, variant components without cva(), className merging without cn(). Pair with check_page({ targetDir }).",
       inputSchema: {
         type: "object",
         properties: {
           targetDir: {
             type: "string",
-            description: "Target project/app directory to scan (e.g. 'apps/website' or 'apps/docs'). Defaults to process.cwd().",
+            description: "Target project/app directory to scan (e.g. 'apps/web' or 'packages/app'). Defaults to process.cwd().",
           },
           density: {
             type: "string",

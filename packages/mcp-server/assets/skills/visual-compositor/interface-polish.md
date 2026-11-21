@@ -17,7 +17,7 @@ Physical feedback on click makes UI feel responsive, tactile, and grounded:
 <Button 
   size="md" 
   variant="solid" 
-  tone="accent" 
+  tone="brand" 
   className="active:scale-[0.96] transition-transform duration-150"
 >
   Start Building Free
@@ -51,47 +51,22 @@ A classic failure of AI layout design is **over-containment**: wrapping every si
 
 - **Size, weight, placement, and contrast** must do 90% of the work.
 - Do NOT add a badge above a title unless it conveys an urgent state change (e.g. `v2.4 Active` or `Failed`).
-- At most 1 concise badge per view — use overline text for section labels.
+- At most 1 concise badge per view. Section labels are optional; plain overline text only where it adds information.
 
 ---
 
 ## 4. The Lummi-Mesh Atmospheric Recipe
 
-To achieve the warm, high-end atmospheric depth seen in flagship landing pages (Apple keynotes, Linear launches, Stripe sessions), combine a subtle photographic pastel gradient texture with a directional gradient scrim:
-
-```tsx
-<div className="relative overflow-hidden bg-surface py-24 md:py-32 text-center">
-  {/* Atmospheric Pastel Mesh Layer */}
-  <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden" aria-hidden="true">
-    <div 
-      className="absolute inset-0 w-full h-full bg-cover bg-center opacity-30 dark:opacity-20 scale-105"
-      style={{
-        backgroundImage: "url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1964&auto=format&fit=crop')",
-      }}
-    />
-    {/* Directional Scrim protecting text contrast */}
-    <div className="absolute inset-0 bg-gradient-to-b from-canvas/30 via-surface/80 to-surface backdrop-blur-[2px]" />
-  </div>
-
-  <Container size="lg" className="relative z-10">
-    {/* Foreground content sits with 100% crisp contrast */}
-  </Container>
-</div>
-```
-
-**Why this works:**
-- The background photography provides continuous, organic chromatic shifts (warm apricot on the left to silky lavender on the right) that synthetic CSS radial gradients cannot replicate.
-- The directional scrim (`from-canvas/30 via-surface/80 to-surface backdrop-blur-[2px]`) softly diffuses the texture, guaranteeing WCAG AAA contrast for foreground typography.
-
-### Preferred: layout bg props (`@shavin/ui`)
+To get the warm, high-end atmospheric depth of flagship landing pages, put a photographic or mesh backdrop behind the content with a scrim that keeps text at 4.5:1 or better (measure it). Use the layout bg props (`@shavin/ui`); never hand-build the layers. Photography gives organic colour shifts a CSS gradient cannot, and the scrim diffuses it so the text stays crisp.
 
 ```tsx
 <Section size="hero" surface="dark-always" bgImage="https://assets.lummi.ai/…" bgOverlays="scrim-left, dark-20">…</Section>
-<Section size="hero" surface="dark-always" bgOverlays="mesh-lime-animated, dark-20">…</Section>
-<Section size="hero" bgVideo="…pexels…" bgPoster="…" bgOverlays="scrim-left, fade-canvas">…</Section>
+<Section size="hero" surface="dark-always" bgOverlays="mesh-night, dark-20">…</Section>
+<Section size="hero" surface="dark-always" bgVideo="…pexels…" bgPoster="…" bgOverlays="scrim-left, fade-canvas">…</Section>
 ```
 
-- Meshes: `mesh-lime|dusk|mint|peach` (fixed pastel), `mesh-accent` (theme); `-animated` = slow drift, off under reduced motion. `scrim-left` for left copy; `fade-canvas` dissolves into page. Radial/hex-alpha syntax: `adapters/shavin-ui.md` §4b.
+- Meshes: `mesh-lime|mint|dawn|peach|rose|night` (fixed palettes), `mesh-brand` (follows the theme); `-animated` = slow drift, off under reduced motion. `scrim-left` for left copy; `fade-canvas` dissolves into page. Radial/hex-alpha syntax: `adapters/shavin-ui.md` §4b.
+- Always set `surface` on a mesh or custom gradient: `dark-always` for `mesh-night` and other dark backdrops, `light-always` for pale ones. Photos, video and fx default to `dark-always` with a scrim, but say it anyway.
 - Dark media: `surface="dark-always"`; subtitles `text-fg-muted`, not `-subtle`.
 
 ---
@@ -130,9 +105,8 @@ Icons have less visual density than letters. When placing an icon on the right s
 $$\text{Icon-Side Padding} = \text{Text-Side Padding} - 2\text{px}$$
 ```tsx
 // ✅ Optical balance: pl-4 (16px) paired with pr-3.5 (14px)
-<Button className="pl-4 pr-3.5 flex items-center gap-2">
-  <span>Continue</span>
-  <ArrowRight className="h-4 w-4 shrink-0" />
+<Button className="pl-4 pr-3.5" iconRight={<Icon name="ArrowRight" size="sm" />}>
+  Continue
 </Button>
 ```
 
@@ -140,9 +114,9 @@ $$\text{Icon-Side Padding} = \text{Text-Side Padding} - 2\text{px}$$
 The geometric bounding box center of a triangle $\neq$ its visual center of mass. Always nudge play icons 2px to the right:
 ```tsx
 // ✅ Shift play triangle 2px right to achieve optical center
-<button className="flex items-center justify-center p-3 rounded-full bg-surface shadow-card">
-  <Play className="h-5 w-5 fill-current ml-0.5" />
-</button>
+<IconButton aria-label="Play">
+  <Icon name="Play" size="md" className="ml-0.5" />
+</IconButton>
 ```
 
 ### 3. Shadows Instead of Solid Borders for Adaptive Surfaces

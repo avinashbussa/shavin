@@ -1,8 +1,8 @@
 # Adapter: semantic HTML + Tailwind (generic)
 
-Use this when the project has no design-system primitives, or when the target stack is not `@shavin/ui`. It also serves as the base for translating to other stacks (CSS modules, vanilla CSS, other component libraries): keep the structure and tokens, change the syntax.
+Plain HTML reference: the token contract and DOM structure behind the compositions. Not a supported target: Shavin projects use `@shavin/ui` on Next.js or Vite.
 
-Contents: 1 Token contract · 2 Building blocks · 3 Measure and type utilities · 4 Treatment recipes · 5 Translating to other stacks
+Contents: 1 Token contract · 2 Building blocks · 3 Measure and type utilities · 4 Treatment recipes
 
 ---
 
@@ -18,7 +18,7 @@ Define semantic tokens once; components use only these, so dark mode and re-them
   --fg: #111114;
   --fg-subtle: #5b5b66;
   --hairline: #e4e4e8;
-  --accent: #3b5bdb;
+  --brand: #3b5bdb;
 
   --radius-panel: 20px;
   --panel-pad: 24px;
@@ -98,10 +98,3 @@ Logical properties for RTL: `ps-*`, `pe-*`, `ms-*`, `me-*`, `text-start`, `text-
 | open | No container classes; structure via type scale, `gap-*` and whitespace |
 
 Concentric inner radius: `rounded-[max(calc(var(--radius-panel)-var(--panel-pad)),4px)]`.
-
-## 5. Translating to other stacks
-
-1. Keep the DOM order, landmarks, `data-slot` attributes and headings exactly.
-2. Map the token contract to the stack's theming mechanism.
-3. Keep the breakpoints in each composition's `Grid:` line (`base`, `sm`/`md`, `lg`, `xl`).
-4. Replace Tailwind utilities with equivalent CSS. The three that matter most: `text-wrap: balance`, `max-width` in `ch`, and `aspect-ratio`.

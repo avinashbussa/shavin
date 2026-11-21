@@ -1,14 +1,17 @@
 /**
  * MCP Tools for live Studio canvas control via Supabase Realtime relay.
  *
- * These 7 tools enable an AI agent to:
+ * These 10 tools enable an AI agent to:
  *   1. connect_studio        — join a Studio session by pairing code
  *   2. compose_to_canvas     — synthesize a layout and inject it live
  *   3. inject_blocks         — inject raw BlockNode[] tree into the canvas
- *   4. set_studio_theme      — change theme config (accent, dark mode, etc.)
+ *   4. set_studio_theme      — change theme config (brand, dark mode, etc.)
  *   5. get_studio_state      — read current canvas blocks + theme
  *   6. clear_studio_canvas   — remove all blocks from the canvas
  *   7. disconnect_studio     — end the session
+ *   8. duplicate_frame       — copy a frame (new ids), placed beside it
+ *   9. export_frame          — render a frame to PNG / JPG / WebP on disk
+ *  10. resize_frame          — resize a frame to a device / social preset or custom size
  *
  * All tools share a global StudioRelay instance. connect_studio creates it;
  * the rest use the active relay. disconnect_studio cleans up.
@@ -59,7 +62,161 @@ function requireRelay() {
   return { relay };
 }
 
+/**
+ * Report the Studio theme without claiming anything that did not happen.
+ * - `requested` null: nothing was asked, so the file theme was left alone (and is read back for the record).
+ * - `requested` set: read the live theme back and compare; a mismatch or an unreadable state is said plainly,
+ *   with the recovery steps.
+ * @returns {Promise<string[]>} lines for a tool result
+ */
+export async function describeTheme(relay, requested) {
+  let live = null;
+  try {
+    live = (await relay.getState(5000))?.theme ?? null;
+  } catch {
+    live = null;
+  }
+  const show = (t) => `brand ${t.brand ?? "?"}, gray ${t.gray ?? "?"}, radius ${t.radius ?? "?"}`;
+  if (!requested) {
+    return [
+      `**Theme**: unchanged. compose_to_canvas only changes the file theme when you pass \`theme\`.${live ? ` Current: ${show(live)}.` : ""}`,
+    ];
+  }
+  const asked = Object.entries(requested).filter(([, v]) => v !== undefined);
+  const askedText = asked.map(([k, v]) => `${k} ${v}`).join(", ");
+  if (!live) {
+    return [
+      `**Theme**: requested ${askedText}, but Studio's theme could not be read back, so it is NOT confirmed. ` +
+        `Recovery: call get_studio_state to check; if it differs, call set_studio_theme with the same values.`,
+    ];
+  }
+  const norm = (v) => String(v ?? "").trim().toLowerCase();
+  const wrong = asked.filter(([k, v]) => {
+    const got = norm(live[k]);
+    return got !== norm(v) && !got.includes(norm(v));
+  });
+  if (wrong.length === 0) return [`**Theme**: applied and confirmed (${show(live)}).`];
+  return [
+    `**Theme**: requested ${askedText} but Studio reports ${show(live)}, so ${wrong.map(([k]) => k).join(", ")} did not apply. ` +
+      `Recovery: call set_studio_theme with ${JSON.stringify(Object.fromEntries(wrong))}, then get_studio_state to confirm. ` +
+      `Check the value is a valid Studio option (see get_studio_schema).`,
+  ];
+}
+
 import { checkUsage } from "./usage-check.mjs";
+import { mkdir, writeFile } from "node:fs/promises";
+import { dirname, extname, isAbsolute, resolve } from "node:path";
+
+import { SOCIAL_FRAME_PRESETS, SOCIAL_FRAME_SIZES } from "./social-presets.mjs";
+import { composePoster } from "./poster-compose.mjs";
+export { SOCIAL_FRAME_PRESETS, SOCIAL_FRAME_SIZES };
+
+/** Shown when no `title` was passed: Studio, which knows the frames on the canvas, picks the name. */
+const DEFAULT_FRAME_TITLE_NOTE = "(named by Studio from its type and size, e.g. \"Mobile 390\")";
+
+const SOCIAL_DEVICE_DESCRIPTION =
+  "Device preset for the frame. Default: Studio's default viewport (Desktop unless the file says otherwise). 'block' is retired and becomes 'desktop'. " +
+  "Social presets are exact canvases (no padding, clipped at the edge, exported at exactly this size): " +
+  "'social-portrait' 1080x1350 (Instagram 4:5), 'social-square' 1080x1080, 'social-wide' 1600x900 (16:9). Their width/height are ignored.";
+
+export const FRAME_DEVICES = ["desktop", "mobile", "tablet", "auto", "block", ...SOCIAL_FRAME_PRESETS];
+/** Presets `resize_frame` accepts (no retired "block", no "auto": pass width/height for a custom size). */
+export const RESIZE_DEVICES = ["desktop", "tablet", "mobile", ...SOCIAL_FRAME_PRESETS];
+const MAX_FRAME_PX = 10000;
+
+/** The `frame` input schema shared by compose_to_canvas and inject_blocks (one definition, same shape). */
+export function frameInputSchema(description) {
+  return {
+    type: "object",
+    description,
+    properties: {
+      title: {
+        type: "string",
+        description: "Frame title shown on canvas (e.g. 'Pricing Page', 'Mobile Hero'). Default when omitted: Studio names the frame by its type and size, e.g. 'Desktop 1440', 'Mobile 390', 'Instagram portrait 1080×1350', 'Custom 1200×800', numbered when taken ('Desktop 1440 (2)').",
+      },
+      device: { type: "string", enum: FRAME_DEVICES, description: SOCIAL_DEVICE_DESCRIPTION },
+      width: { type: "integer", minimum: 1, maximum: MAX_FRAME_PX, description: "Frame width in pixels. Default: the device preset's width (desktop 1440, tablet 768, mobile 390), else 800." },
+      height: { type: "integer", minimum: 1, maximum: MAX_FRAME_PX, description: "Frame height in pixels. Default: the device preset's height (desktop 1024, tablet 1024, mobile 844), else 600." },
+    },
+  };
+}
+
+/**
+ * Validate a `frame` argument. Returns an error message with exact recovery steps, or null when it is fine.
+ * Width and height on a social preset are ignored by design (the size is exact), so they are not an error here.
+ */
+export function validateFrameSpec(frame) {
+  if (frame === undefined || frame === null) return null;
+  if (typeof frame !== "object" || Array.isArray(frame)) return `frame must be an object like { device: "social-square", title: "Post" }. Got ${Array.isArray(frame) ? "an array" : typeof frame}.`;
+  if (frame.device !== undefined && !FRAME_DEVICES.includes(frame.device)) {
+    return `Unknown frame.device "${frame.device}". Use one of: ${FRAME_DEVICES.join(", ")}; or omit device and pass width/height for a custom size.`;
+  }
+  for (const k of ["width", "height"]) {
+    const v = frame[k];
+    if (v !== undefined && (!Number.isInteger(v) || v < 1 || v > MAX_FRAME_PX)) {
+      return `frame.${k} must be a whole number of pixels from 1 to ${MAX_FRAME_PX}, got ${JSON.stringify(v)}. Pass e.g. { width: 1200, height: 800 }, or use a device preset (${RESIZE_DEVICES.join(", ")}).`;
+    }
+  }
+  if (frame.title !== undefined && typeof frame.title !== "string") return `frame.title must be a string, got ${typeof frame.title}. Pass e.g. { title: "Pricing Page" }.`;
+  return null;
+}
+
+/**
+ * Validate resize_frame arguments. Returns an error message with exact recovery steps, or null.
+ * Social presets are exact pixel sizes, so combining one with width/height is refused rather than silently ignored.
+ */
+export function validateResizeArgs(args) {
+  const { frameId, device, width, height } = args ?? {};
+  if (typeof frameId !== "string" || !frameId.trim()) {
+    return "frameId is required. Call `get_studio_state` and pass the id of one of its frames (listed as `frame-...`), e.g. resize_frame({ frameId: \"frame-main\", device: \"social-square\" }).";
+  }
+  const hasSize = width !== undefined || height !== undefined;
+  if (device === undefined && !hasSize) {
+    return `Nothing to resize to. Pass a device preset (${RESIZE_DEVICES.join(", ")}) or a custom width and/or height in pixels.`;
+  }
+  if (device !== undefined && hasSize) {
+    return `Pass either device or width/height, not both. Social presets are exact sizes (${Object.entries(SOCIAL_FRAME_SIZES).map(([k, v]) => `${k} ${v.width}x${v.height}`).join(", ")}) and cannot be adjusted: drop width/height to use ${device}, or drop device for a custom size.`;
+  }
+  if (device !== undefined && !RESIZE_DEVICES.includes(device)) {
+    return `Unknown device "${device}". Use one of: ${RESIZE_DEVICES.join(", ")}; or omit device and pass width/height for a custom size.${device === "block" || device === "auto" ? ` "${device}" is not a size: use desktop for the default web size.` : ""}`;
+  }
+  for (const [k, v] of [["width", width], ["height", height]]) {
+    if (v !== undefined && (!Number.isInteger(v) || v < 1 || v > MAX_FRAME_PX)) {
+      return `${k} must be a whole number of pixels from 1 to ${MAX_FRAME_PX}, got ${JSON.stringify(v)}. Pass e.g. { width: 1200, height: 800 }.`;
+    }
+  }
+  return null;
+}
+
+/** Pixel size a frame spec resolves to (social presets are exact). */
+export function frameSize(frame) {
+  const fixed = SOCIAL_FRAME_SIZES[frame?.device];
+  if (fixed) return fixed;
+  const web = WEB_FRAME_SIZES[frame?.device];
+  return { width: frame?.width || web?.width || 800, height: frame?.height || web?.height || 600 };
+}
+
+const WEB_FRAME_SIZES = { desktop: { width: 1440, height: 1024 }, tablet: { width: 768, height: 1024 }, mobile: { width: 390, height: 844 } };
+
+const EXPORT_EXT = { png: ".png", jpg: ".jpg", webp: ".webp" };
+
+/**
+ * Resolve and write an exported image. Relative paths resolve against the MCP process's working directory.
+ * The extension must match the format (or be missing, then it is added), so a .png file never holds JPEG bytes.
+ * @returns {Promise<string>} the absolute path written
+ */
+export async function writeExportFile(buffer, path, format) {
+  if (typeof path !== "string" || !path.trim()) throw new Error("path is required. Pass where to save the image, e.g. \"/tmp/post.png\".");
+  const want = EXPORT_EXT[format];
+  if (!want) throw new Error(`Unsupported format "${format}". Use png, jpg or webp.`);
+  let abs = isAbsolute(path) ? path : resolve(process.cwd(), path);
+  const ext = extname(abs).toLowerCase();
+  if (!ext) abs += want;
+  else if (!(ext === want || (format === "jpg" && ext === ".jpeg"))) throw new Error(`path ends in "${ext}" but format is "${format}". Use a ${want} path or change the format.`);
+  await mkdir(dirname(abs), { recursive: true });
+  await writeFile(abs, buffer);
+  return abs;
+}
 
 export function registerStudioRelayTools(server, COMPONENTS) {
   return [
@@ -68,10 +225,8 @@ export function registerStudioRelayTools(server, COMPONENTS) {
       schema: {
         name: "connect_studio",
         description:
-          "Connect to a live Shavin Studio canvas session via Supabase Realtime. " +
-          "The user must open studio.shavin.cc, click 'Connect AI', and share the 6-character pairing code. " +
-          "Once connected, the AI agent can compose designs, inject blocks, change themes, and read canvas state in real-time while the user watches. " +
-          "This is the entry point for all other Studio relay tools.",
+          "Connect to a live Shavin Studio canvas by 6-character pairing code (studio.shavin.cc → 'Connect AI'). " +
+          "Only for Studio sessions: the other Studio tools (compose_to_canvas, inject_blocks, set_studio_theme, get_studio_state, clear_studio_canvas, disconnect_studio) are listed after this succeeds.",
         inputSchema: {
           type: "object",
           properties: {
@@ -122,10 +277,12 @@ export function registerStudioRelayTools(server, COMPONENTS) {
                   `**Agent**: ${relay.agentName}`,
                   `**Status**: ${result.session?.status || "connected"}`,
                   ``,
+                  `Before you compose, load the Studio rules: \`get_skill({ name: "shavin-studio" })\` (BlockNode prop names, @tablet/@mobile overrides, frames). They are only needed while Studio is connected.`,
+                  ``,
                   `The Studio canvas is now live. You can:`,
                   `• \`compose_to_canvas\` — Generate a full layout from a prompt and inject it live`,
                   `• \`inject_blocks\` — Inject a raw BlockNode[] tree`,
-                  `• \`set_studio_theme\` — Change accent, dark mode, radius, etc.`,
+                  `• \`set_studio_theme\` — Change brand, dark mode, radius, etc.`,
                   `• \`get_studio_state\` — Read current canvas blocks + theme`,
                   `• \`clear_studio_canvas\` — Clear all blocks`,
                   `• \`disconnect_studio\` — End the session`,
@@ -156,7 +313,9 @@ export function registerStudioRelayTools(server, COMPONENTS) {
         description:
           "Synthesize a complete multi-section page layout from a natural language prompt and inject it directly into the live Studio canvas. " +
           "Uses the synthesize_layout pipeline to generate @shavin/ui JSX, which is rendered as a BlockNode tree on the canvas. " +
-          "The user sees the design appear in real-time. Requires a prior `connect_studio` call.",
+          "The user sees the design appear in real-time. Requires a prior `connect_studio` call. " +
+          "For a social frame (device social-portrait / social-square / social-wide) it composes ONE poster section that fits the exact canvas and uses the prompt's own text: " +
+          "put the copy in quotes, e.g. headline \"Ship faster\", subhead \"One line\", CTA \"Start free\". Fixture copy is never used; if the text cannot fit, the result says so with the recovery steps.",
         inputSchema: {
           type: "object",
           properties: {
@@ -178,31 +337,18 @@ export function registerStudioRelayTools(server, COMPONENTS) {
                 "Injection mode: 'replace' makes these the main (first) frame's sections, 'append' adds them after its existing sections. " +
                 "A frame holds any number of sections, stacked top to bottom. Default: 'replace'. Ignored when frame is provided.",
             },
-            frame: {
-              type: "object",
-              description:
-                "When provided, creates a NEW spatial frame on the canvas (alongside existing ones) " +
+            frame: frameInputSchema(
+              "When provided, creates a NEW spatial frame on the canvas (alongside existing ones) " +
                 "and injects the composed layout into it. Use this to design for mobile/tablet viewports " +
                 "or to add multiple screens to the canvas.",
-              properties: {
-                title: {
-                  type: "string",
-                  description: "Frame title shown on canvas (e.g. 'Pricing Page', 'Mobile Hero'). Default: 'AI Frame N'.",
-                },
-                device: {
-                  type: "string",
-                  enum: ["desktop", "mobile", "tablet", "auto", "block"],
-                  description: "Device preset for the frame. Default: Studio's default viewport (Desktop unless the file says otherwise). 'block' is retired and becomes 'desktop'.",
-                },
-                width: { type: "integer", description: "Frame width in pixels. Default: 800." },
-                height: { type: "integer", description: "Frame height in pixels. Default: 600." },
-              },
-            },
+            ),
             theme: {
               type: "object",
-              description: "Optional theme override applied before injection.",
+              description:
+                "Optional. Set the FILE's theme (brandColor, grayColor, radius, panelBackground) before injection; the result reads it back and says whether it applied. " +
+                "If omitted, the file's theme is left exactly as it is (compose never picks a theme for you). Use set_studio_theme to change it later.",
               properties: {
-                accentColor: { type: "string" },
+                brandColor: { type: "string" },
                 grayColor: { type: "string" },
                 radius: { type: "string" },
                 panelBackground: { type: "string" },
@@ -233,32 +379,43 @@ export function registerStudioRelayTools(server, COMPONENTS) {
         } = args ?? {};
 
         if (!prompt) {
-          return errorResponse("prompt is required.");
+          return errorResponse("prompt is required. Pass a description like \"SaaS landing page with hero, features, pricing and CTA\".");
         }
+        const frameError = validateFrameSpec(frame);
+        if (frameError) return errorResponse(frameError);
 
         try {
-          // 1. Synthesize the layout using the existing pipeline
-          const synthResult = synthesizeLayout({
-            prompt,
-            category,
-            theme,
-            sections,
-          });
+          // 1. Social presets are exact poster canvases: compose ONE poster section from the prompt's own text.
+          //    Explicit `sections` keep the block pipeline (the caller picked those blocks on purpose).
+          const poster =
+            SOCIAL_FRAME_PRESETS.includes(frame?.device) && !(sections && sections.length > 0)
+              ? composePoster({ prompt, device: frame.device })
+              : null;
+          // Otherwise synthesize page sections from the scored block registry.
+          const synthResult = poster
+            ? {
+                code: poster.code,
+                sections: [{ slug: poster.slug, name: "Poster", code: poster.code }],
+                blocksUsed: [poster.slug],
+                visualCompositor: { activationMode: "POSTER" },
+              }
+            : synthesizeLayout({ prompt, category, theme, sections });
 
-          // 2. Apply theme if provided
-          if (theme && Object.keys(theme).length > 0) {
-            await relay.setTheme({
-              accent: theme.accentColor,
-              gray: theme.grayColor,
-              radius: theme.radius,
-              panelBackground: theme.panelBackground,
-            });
+          // 2. Theme: compose never changes the file theme on its own. It is set only when `theme` is passed
+          //    (then read back below), so the report can say what is really in the file.
+          const themeRequested = {
+            brand: theme?.brandColor,
+            gray: theme?.grayColor,
+            radius: theme?.radius,
+            panelBackground: theme?.panelBackground,
+          };
+          const themeKeys = Object.keys(themeRequested).filter((k) => themeRequested[k] !== undefined);
+          if (themeKeys.length > 0) {
+            await relay.setTheme(themeRequested);
           }
 
           // 3. Parse the synthesized JSX into BlockNode[] tree
           // The Studio's parseTsxToBlocks handles arbitrary @shavin/ui JSX.
-          // We send the raw JSX as a special "jsx" block type that the Studio
-          // will parse on the client side.
           // One __jsx_source__ per block: each rawCode is a self-contained
           // module that parses to a real node tree. Falls back to the joined
           // file only when the synthesizer returned no sections.
@@ -284,10 +441,23 @@ export function registerStudioRelayTools(server, COMPONENTS) {
           if (renderInfo?.error) {
             return errorResponse(`Studio rejected the composed layout: ${renderInfo.error}`);
           }
-          const composeWarnings = (renderInfo?.warnings || []).map((w) => `⚠ ${w}`);
+          const composeWarnings = [...(poster?.warnings || []), ...(renderInfo?.warnings || [])].map((w) => `⚠ ${w}`);
           const composeRender = renderInfo
             ? `Rendered in ${renderInfo.renderTime}ms, confirmed on canvas (${renderInfo.blockCount} root block${renderInfo.blockCount === 1 ? "" : "s"}).`
             : `Sent, but Studio did not confirm a render within 15s. Call get_studio_state to verify.`;
+
+          // Theme line: only what is true. Read the live theme back.
+          const themeLines = await describeTheme(relay, themeKeys.length > 0 ? themeRequested : null);
+
+          // Prompt text that the block pipeline cannot place (fixture copy is kept): say so, with the way out.
+          const quoted = !poster && /["\u201C][^"\u201D]{2,}["\u201D]/.test(prompt);
+          if (quoted) {
+            composeWarnings.push(
+              "⚠ Text quoted in the prompt was NOT used: page blocks keep their own sample copy. " +
+                "Recovery: compose into a social frame (frame.device \"social-portrait\", \"social-square\" or \"social-wide\") to place the prompt's text, " +
+                "or write the layout yourself and call inject_blocks with `code`, or double-click the text on the canvas to edit it.",
+            );
+          }
 
           return {
             content: [
@@ -299,15 +469,25 @@ export function registerStudioRelayTools(server, COMPONENTS) {
                   `**Prompt**: ${prompt}`,
                   `**Category**: ${category}`,
                   `**Mode**: ${mode}`,
-                  ...(frame ? [`**Frame**: ${frame.title || "AI Frame"} (${frame.device || "block"}, ${frame.width || 800}×${frame.height || 600})`] : []),
-                  `**Blocks used**: ${synthResult.blocksUsed?.join(", ") || "auto-selected"}`,
-                  `**Activation mode**: ${synthResult.visualCompositor?.activationMode || "N/A"}`,
-                  `**Theme applied**: ${JSON.stringify(synthResult.themeApplied)}`,
+                  ...(frame ? [`**Frame**: ${frame.title || DEFAULT_FRAME_TITLE_NOTE} (${frame.device || "block"}, ${frameSize(frame).width}×${frameSize(frame).height})`] : []),
+                  ...(poster
+                    ? [
+                        `**Composition**: one poster section for ${frame.device} (prompt text, no fixture copy)`,
+                        `**Headline**: ${poster.copy.headline}`,
+                        ...(poster.copy.subhead ? [`**Subhead**: ${poster.copy.subhead}`] : []),
+                        ...(poster.copy.cta ? [`**CTA**: ${poster.copy.cta}`] : []),
+                        `**Fit**: ${poster.fit.ok ? "fits the canvas" : "may be clipped (see warning)"} (heading ${poster.fit.headingSize}, ~${poster.fit.usedHeight}px of ${poster.fit.availableHeight}px)`,
+                      ]
+                    : [
+                        `**Blocks used**: ${synthResult.blocksUsed?.join(", ") || "auto-selected"}`,
+                        `**Activation mode**: ${synthResult.visualCompositor?.activationMode || "N/A"}`,
+                      ]),
+                  ...themeLines,
                   ``,
                   composeRender,
                   ...composeWarnings,
                   synthResult.code
-                    ? `\n--- Generated JSX (${synthResult.code.length} chars) ---\n\`\`\`tsx\n${synthResult.code.slice(0, 2000)}${synthResult.code.length > 2000 ? "\n... (truncated)" : ""}\n\`\`\``
+                    ? `\n--- Generated JSX (${synthResult.code.length} chars)${poster ? "" : "; its ThemeProvider is a preview, the canvas keeps the file theme"} ---\n\`\`\`tsx\n${synthResult.code.slice(0, 2000)}${synthResult.code.length > 2000 ? "\n... (truncated)" : ""}\n\`\`\``
                     : "",
                 ].join("\n"),
               },
@@ -361,7 +541,7 @@ export function registerStudioRelayTools(server, COMPONENTS) {
                       "Use the same prop names as @shavin/ui CVA variants: weight (not fontWeight), name (not icon). " +
                       "For responsive design, use @tablet/@mobile suffixes: " +
                       "{ columns: '3', 'columns@mobile': '1', gap: '6', 'gap@mobile': '4' }. " +
-                      "For Icon blocks: { name: 'Check', size: 'sm', color: 'accent' } \u2014 name is a Lucide icon name (Check, Star, ArrowRight, etc.). " +
+                      "For Icon blocks: { name: 'Check', size: 'sm', color: 'brand' } \u2014 name is a Lucide icon name (Check, Star, ArrowRight, etc.). " +
                       "Never set the same style via both a prop and className (e.g. size='7' AND className='text-3xl' conflicts).",
                   },
                   children: {
@@ -379,26 +559,11 @@ export function registerStudioRelayTools(server, COMPONENTS) {
                 "Injection mode: 'replace' makes the blocks the main (first) frame's sections, 'append' adds them after its existing " +
                 "sections (one call per section is fine). Default: 'replace'. Ignored when frame is provided.",
             },
-            frame: {
-              type: "object",
-              description:
-                "When provided, creates a NEW spatial frame on the canvas (alongside existing ones) " +
+            frame: frameInputSchema(
+              "When provided, creates a NEW spatial frame on the canvas (alongside existing ones) " +
                 "and injects the blocks into it. Existing frames are left untouched. " +
-                "Use this to design for mobile/tablet viewports or to add multiple screens.",
-              properties: {
-                title: {
-                  type: "string",
-                  description: "Frame title shown on canvas (e.g. 'Pricing Page', 'Mobile Hero'). Default: 'AI Frame N'.",
-                },
-                device: {
-                  type: "string",
-                  enum: ["desktop", "mobile", "tablet", "auto", "block"],
-                  description: "Device preset for the frame. Default: Studio's default viewport (Desktop unless the file says otherwise). 'block' is retired and becomes 'desktop'.",
-                },
-                width: { type: "integer", description: "Frame width in pixels. Default: 800." },
-                height: { type: "integer", description: "Frame height in pixels. Default: 600." },
-              },
-            },
+                "Use this to design for mobile/tablet viewports, social posts (social-* presets) or to add multiple screens.",
+            ),
           },
         },
       },
@@ -408,6 +573,8 @@ export function registerStudioRelayTools(server, COMPONENTS) {
 
         const { code, mode = "replace", frame } = args ?? {};
         let { blocks } = args ?? {};
+        const frameError = validateFrameSpec(frame);
+        if (frameError) return errorResponse(frameError);
 
         let usageWarnings = [];
         if (typeof code === "string" && code.trim()) {
@@ -446,7 +613,7 @@ export function registerStudioRelayTools(server, COMPONENTS) {
                 type: "text",
                 text: [
                   `✅ Injected ${result.blockCount} blocks into Studio canvas (mode: ${result.mode}).`,
-                  ...(result.frame ? [`**Frame**: ${result.frame.title || "AI Frame"} (${result.frame.device || "block"}, ${result.frame.width || 800}×${result.frame.height || 600})`] : []),
+                  ...(result.frame ? [`**Frame**: ${result.frame.title || DEFAULT_FRAME_TITLE_NOTE} (${result.frame.device || "block"}, ${frameSize(result.frame).width}×${frameSize(result.frame).height})`] : []),
                   ``,
                   `Block types: ${blocks.map((b) => b.type).join(", ")}`,
                   renderLine,
@@ -467,19 +634,19 @@ export function registerStudioRelayTools(server, COMPONENTS) {
       schema: {
         name: "set_studio_theme",
         description:
-          "Change the Studio canvas theme in real-time. Updates accent color, gray scale, radius preset, dark/light mode, scaling, and panel background. " +
+          "Change the Studio canvas theme in real-time. Updates brand color, gray scale, radius preset, dark/light mode, scaling, and panel background. " +
           "The user sees the theme change instantly. Requires a prior `connect_studio` call.",
         inputSchema: {
           type: "object",
           properties: {
-            accent: {
+            brand: {
               type: "string",
               description:
-                "Accent color preset name. Valid values: Maeve, Grass, Amber, Tomato, Crimson, Pink, Plum, Iris, Indigo, Blue, Sky, Cyan, Teal, Mint, Monochrome, Black.",
+                "Brand color preset name. Valid values: Monochrome, Tomato, Red, Ruby, Crimson, Pink, Plum, Purple, Violet, Iris, Indigo, Blue, Cyan, Teal, Jade, Green, Grass, Lime, Mint, Sky, Amber, Gold, Bronze, Brown.",
             },
             gray: {
               type: "string",
-              description: "Gray color preset name. Valid values: Gray, Slate, Mauve, Olive, Sand, Zinc.",
+              description: "Gray color preset name. Valid values: Zinc, Slate, Gray, Neutral, Stone.",
             },
             radius: {
               type: "string",
@@ -512,16 +679,22 @@ export function registerStudioRelayTools(server, COMPONENTS) {
 
         try {
           const result = await relay.setTheme(theme);
+          // Read the theme back so the reply says what Studio now has, not just what was sent.
+          const lines = await describeTheme(relay, {
+            brand: theme.brand,
+            gray: theme.gray,
+            radius: theme.radius,
+            panelBackground: theme.panelBackground,
+          });
 
           return {
             content: [
               {
                 type: "text",
                 text: [
-                  `✅ Studio theme updated!`,
-                  ``,
-                  `Applied: ${JSON.stringify(result.theme, null, 2)}`,
-                  `The user can see the theme change live on the canvas.`,
+                  `Studio theme request sent: ${JSON.stringify(result.theme)}`,
+                  ...lines,
+                  `The user can see the theme on the canvas.`,
                 ].join("\n"),
               },
             ],
@@ -589,7 +762,7 @@ export function registerStudioRelayTools(server, COMPONENTS) {
                   blockSummary.length > 0 ? blockSummary.join("\n") : "  (empty canvas)",
                   ``,
                   `**Theme**:`,
-                  `  Accent: ${state.theme?.accent || "default"}`,
+                  `  Brand: ${state.theme?.brand || "default"}`,
                   `  Gray: ${state.theme?.gray || "default"}`,
                   `  Radius: ${state.theme?.radius || "default"}`,
                   `  Dark mode: ${state.theme?.dark ? "on" : "off"}`,
@@ -635,6 +808,142 @@ export function registerStudioRelayTools(server, COMPONENTS) {
           };
         } catch (err) {
           return errorResponse(`Failed to clear canvas: ${err.message}`);
+        }
+      },
+    },
+
+    // 8. duplicate_frame
+    {
+      schema: {
+        name: "duplicate_frame",
+        description:
+          "Duplicate a frame on the live Studio canvas: same size, preset and content with fresh node ids, placed to the right of the original and selected. " +
+          "Use it to make variants (copy, then edit the copy) or several social posts from one layout. " +
+          "Get frame ids from `get_studio_state`. Requires a prior `connect_studio` call.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            frameId: { type: "string", description: "Id of the frame to copy (from get_studio_state). Default: the selected frame, else the main frame." },
+            title: { type: "string", description: "Title for the copy. Default: '<title> (Copy)', or the next number for a default-named frame ('Desktop 1440 (2)'). With count > 1 the copies are numbered." },
+            count: { type: "integer", minimum: 1, maximum: 10, description: "How many copies to make. Default: 1." },
+          },
+        },
+      },
+      handler: async (args) => {
+        const { relay, error } = requireRelay();
+        if (error) return error;
+        const { frameId, title, count } = args ?? {};
+        try {
+          const { frames } = await relay.duplicateFrame({ frameId, title, count });
+          return {
+            content: [
+              {
+                type: "text",
+                text: [
+                  `✅ Duplicated ${frames.length === 1 ? "frame" : `${frames.length} frames`}.`,
+                  ``,
+                  ...frames.map((f) => `- \`${f.id}\` "${f.title}" at (${Math.round(f.bounds.x)}, ${Math.round(f.bounds.y)}), ${Math.round(f.bounds.width)}×${Math.round(f.bounds.height)}`),
+                ].join("\n"),
+              },
+            ],
+          };
+        } catch (err) {
+          return errorResponse(`Failed to duplicate frame: ${err.message}`);
+        }
+      },
+    },
+
+    // 8b. resize_frame
+    {
+      schema: {
+        name: "resize_frame",
+        description:
+          "Resize a frame on the live Studio canvas to a device preset or a custom pixel size, keeping its content. " +
+          "Social presets are exact canvases and never rounded or scaled: 'social-portrait' 1080x1350, 'social-square' 1080x1080, 'social-wide' 1600x900. " +
+          "Web presets: desktop 1440x1024, tablet 768x1024, mobile 390x844. Pass device, or width and/or height (a missing side keeps its current size), not both. " +
+          "Get frame ids from `get_studio_state`. Requires a prior `connect_studio` call.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            frameId: { type: "string", description: "Id of the frame to resize (from get_studio_state)." },
+            device: { type: "string", enum: RESIZE_DEVICES, description: "Device preset to resize to. Social presets are exact pixel sizes. Cannot be combined with width/height." },
+            width: { type: "integer", minimum: 1, maximum: MAX_FRAME_PX, description: "Custom width in pixels. A size that equals a preset exactly becomes that preset. Cannot be combined with device." },
+            height: { type: "integer", minimum: 1, maximum: MAX_FRAME_PX, description: "Custom height in pixels. Cannot be combined with device." },
+          },
+          required: ["frameId"],
+        },
+      },
+      handler: async (args) => {
+        const { relay, error } = requireRelay();
+        if (error) return error;
+        const invalid = validateResizeArgs(args);
+        if (invalid) return errorResponse(invalid);
+        const { frameId, device, width, height } = args;
+        try {
+          const { frame } = await relay.resizeFrame({ frameId, device, width, height });
+          const b = frame.bounds || {};
+          return {
+            content: [
+              {
+                type: "text",
+                text: [
+                  `✅ Resized "${frame.title}" (\`${frame.id}\`) to ${Math.round(b.width)}×${Math.round(b.height)} px (${frame.presetDevice || "custom"}).`,
+                  ``,
+                  `Content was kept; check it still fits with get_studio_state or export_frame.`,
+                ].join("\n"),
+              },
+            ],
+          };
+        } catch (err) {
+          return errorResponse(`Failed to resize frame: ${err.message}${/No frame/.test(err.message) ? "" : " Check the frameId with get_studio_state and retry."}`);
+        }
+      },
+    },
+
+    // 9. export_frame
+    {
+      schema: {
+        name: "export_frame",
+        description:
+          "Render a frame on the live Studio canvas to an image file on this machine (PNG, JPG or WebP, 1x to 3x) and return its path and pixel size. " +
+          "A social preset frame ('social-portrait' 1080x1350, 'social-square' 1080x1080, 'social-wide' 1600x900) exports at exactly that size at 1x. " +
+          "Studio must be open and visible in a browser tab (hidden tabs do not render). Requires a prior `connect_studio` call.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            path: { type: "string", description: "Where to write the image: an absolute path, or relative to the MCP server's working directory. Folders are created. The extension must match the format (added when missing)." },
+            frameId: { type: "string", description: "Id of the frame to export (from get_studio_state). Default: the selected frame, else the main frame." },
+            format: { type: "string", enum: ["png", "jpg", "webp"], description: "Image format. Default: png." },
+            scale: { type: "integer", enum: [1, 2, 3], description: "Pixel ratio, 1 to 3. Default: 1." },
+          },
+          required: ["path"],
+        },
+      },
+      handler: async (args) => {
+        const { relay, error } = requireRelay();
+        if (error) return error;
+        const { path, frameId, format = "png", scale = 1 } = args ?? {};
+        if (!path) return errorResponse("path is required. Pass where to save the image, e.g. \"/tmp/post.png\" or \"out/post.png\".");
+        if (!EXPORT_EXT[format]) return errorResponse(`Unsupported format "${format}". Use png, jpg or webp.`);
+        if (![1, 2, 3].includes(scale)) return errorResponse("scale must be 1, 2 or 3.");
+        try {
+          const img = await relay.exportFrame({ frameId, format, scale });
+          const written = await writeExportFile(img.buffer, path, img.format);
+          return {
+            content: [
+              {
+                type: "text",
+                text: [
+                  `✅ Exported "${img.title}" (\`${img.frameId}\`).`,
+                  ``,
+                  `- File: ${written}`,
+                  `- Size: ${img.width}×${img.height} px (${scale}x, ${img.format.toUpperCase()}, ${(img.buffer.length / 1024).toFixed(0)} KB)`,
+                ].join("\n"),
+              },
+            ],
+          };
+        } catch (err) {
+          return errorResponse(`Failed to export frame: ${err.message}`);
         }
       },
     },

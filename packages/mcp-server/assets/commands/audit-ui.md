@@ -17,9 +17,9 @@ $ARGUMENTS (Target File or Component Path, e.g., `src/components/Hero.tsx`, `src
 Inspect the specified code and report all violations using this checklist:
 
 ### 1. Token Purity Check (Zero Tolerance)
-- [ ] No hardcoded hex values (`#ffffff`, `#09090b`, `#3b82f6`). Fix: replace with `bg-surface`, `text-fg`, `bg-accent`.
+- [ ] No hardcoded hex values (`#ffffff`, `#09090b`, `#3b82f6`). Fix: replace with `bg-surface`, `text-fg`, `bg-brand`.
 - [ ] No `rgb()` or `rgba()` literals. Fix: replace with semantic classes.
-- [ ] No raw Tailwind color classes (`bg-blue-600`, `text-gray-500`, `border-slate-200`). Fix: replace with semantic equivalents (`bg-accent`, `text-fg-subtle`, `border-hairline`).
+- [ ] No raw Tailwind color classes (`bg-blue-600`, `text-gray-500`, `border-slate-200`). Fix: replace with semantic equivalents (`bg-brand`, `text-fg-subtle`, `border-hairline`).
 - [ ] No foundation variable references (`--n-*`). Fix: use semantic variables.
 
 ### 2. Concentric Radius Check

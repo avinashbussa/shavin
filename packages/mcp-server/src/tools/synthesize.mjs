@@ -99,7 +99,7 @@ export function synthesizeLayout({
   const modeSpec = determineActivationMode(prompt, category);
 
   const appliedTheme = {
-    accentColor: theme.accentColor || "grass",
+    brandColor: theme.brandColor || "monochrome",
     grayColor: theme.grayColor || "gray",
     radius: theme.radius || modeSpec.recommendedRadius,
     panelBackground: theme.panelBackground || modeSpec.panelBg,
@@ -140,6 +140,23 @@ export function synthesizeLayout({
     (b.dependencies || []).forEach((d) => allDeps.add(d));
   });
 
+  // Each block's rawCode is a full module with its own import lines. Concatenating them as-is
+  // repeated those imports (and their bindings) in the page file. Lift them out instead: names
+  // from @shavin/ui join the single top import, other imports are kept once.
+  const IMPORT_RE = /^import\s[\s\S]*?from\s+["']([^"']+)["'];?[ \t]*\n?/gm;
+  const otherImports = new Set();
+  const blockBodies = matchedBlocks.map((b) =>
+    (b.rawCode || "").replace(IMPORT_RE, (stmt, source) => {
+      if (source === "@shavin/ui") {
+        const names = stmt.match(/\{([^}]*)\}/)?.[1] ?? "";
+        names.split(",").map((n) => n.trim()).filter(Boolean).forEach((n) => allDeps.add(n));
+      } else if (source !== "react") {
+        otherImports.add(stmt.trim());
+      }
+      return "";
+    }).trim(),
+  );
+
   const importsList = Array.from(allDeps).sort().join(", ");
 
   const blockComponents = matchedBlocks.map((b, idx) => {
@@ -150,25 +167,23 @@ export function synthesizeLayout({
     return `        {/* Section: ${b.name} (${b.category}) */}\n        <section className="w-full ${modeSpec.sectionGap} border-b border-hairline last:border-0">\n          <${compName} />\n        </section>`;
   }).join("\n\n");
 
-  const componentImplementations = matchedBlocks.map((b) => {
-    return b.rawCode;
-  }).join("\n\n");
+  const componentImplementations = blockBodies.join("\n\n");
 
   const fullCode = `import React from "react";
-import { ${importsList} } from "@shavin/ui";
+import { ${importsList} } from "@shavin/ui";${otherImports.size ? `\n${[...otherImports].join("\n")}` : ""}
 
 ${componentImplementations}
 
 export default function SynthesizedPage() {
   return (
     <ThemeProvider
-      accentColor="${appliedTheme.accentColor}"
+      brandColor="${appliedTheme.brandColor}"
       grayColor="${appliedTheme.grayColor}"
       radius="${appliedTheme.radius}"
       panelBackground="${appliedTheme.panelBackground}"
     >
-      <main className="min-h-screen bg-canvas text-fg selection:bg-accent/20">
-        <Container size="xl" className="px-4 py-8 space-y-8">
+      <main className="min-h-screen bg-canvas text-fg selection:bg-brand/20">
+        <Container size="lg" className="px-4 py-8 space-y-8">
 ${blockComponents}
         </Container>
       </main>
@@ -189,9 +204,8 @@ ${blockComponents}
 
   return {
     code: fullCode,
-    // One self-contained module per block. Canvas injection uses these:
-    // `code` concatenates every block's imports into one file (duplicate
-    // bindings), which is not a valid module and cannot be parsed to a node tree.
+    // One self-contained module per block. Canvas injection uses these, since one
+    // parsed module per section maps cleanly onto canvas sections.
     sections: matchedBlocks.map((b) => ({ slug: b.slug, name: b.name, code: b.rawCode })),
     blocksUsed: matchedBlocks.map((b) => b.slug),
     visualCompositor: {
@@ -206,7 +220,7 @@ ${blockComponents}
       },
       first3SecondsFoldChecklist: [
         "Primary value proposition and badge visible above 700px viewport fold",
-        "Clear primary CTA with solid accent button",
+        "Clear primary CTA with solid brand button",
         "Supporting social proof or telemetry metric counters immediately visible",
       ],
     },
@@ -217,7 +231,7 @@ ${blockComponents}
       checks,
     },
     a11yChecklist: [
-      "WCAG 2.1 AAA color contrast maintained across Light/Dark modes",
+      "WCAG 2.2 AA color contrast (4.5:1 text, 3:1 UI) across Light/Dark modes",
       "Interactive controls have descriptive ARIA labels",
       "Keyboard navigable focus traps on dialogs and popovers",
     ],
@@ -237,7 +251,7 @@ export function registerSynthesizeTool(server) {
           theme: {
             type: "object",
             properties: {
-              accentColor: { type: "string" },
+              brandColor: { type: "string" },
               grayColor: { type: "string" },
               radius: { type: "string" },
               panelBackground: { type: "string" },

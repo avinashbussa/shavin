@@ -26,7 +26,7 @@ ENUMS = {
     "density": {"low", "medium", "high"},
     "styles": {"structural", "marketing", "editorial", "hybrid", "documentation", "expressive"},
     "treatments": {"carded", "ruled", "flat", "full-bleed", "open"},
-    "media": {"none", "product-ui", "code", "photo", "illustration", "video", "data", "logos"},
+    "media": {"none", "product-ui", "code", "photo", "mesh", "illustration", "video", "data", "logos"},
     "motion": {"tier0", "tier1", "choreography-ok"},
 }
 LIST_KEYS = {"styles", "treatments", "media", "slots"}
@@ -147,7 +147,7 @@ def main():
     # bare-string grid bug anywhere in references
     for md in REFS.rglob("*.md"):
         for n, line in enumerate(md.read_text(encoding="utf-8").splitlines(), 1):
-            if BARE_GRID.search(line):
+            if BARE_GRID.search(line) and "stack=" not in line:  # stack="auto" is the fix, so a line that sets it is fine
                 err(f"{md.relative_to(ROOT)}:{n}: bare-string grid columns (use a responsive object)")
 
     print(f"compositions: {len(all_ids)} across {len(families)} families")

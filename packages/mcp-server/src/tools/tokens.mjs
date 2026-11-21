@@ -12,12 +12,12 @@ export function registerTokensTool(server, TOKENS) {
         properties: {
           category: {
             type: "string",
-            enum: ["all", "background", "text", "border", "accent", "radius", "space", "animation", "shadow"],
+            enum: ["all", "background", "text", "border", "brand", "radius", "space", "animation", "shadow"],
             description: "Token category to filter by (default: 'all').",
           },
           name: {
             type: "string",
-            description: "Specific token name to search for (e.g. 'bg-surface', 'radius-panel', 'accent').",
+            description: "Specific token name to search for (e.g. 'bg-surface', 'radius-panel', 'brand').",
           },
           density: {
             type: "string",
@@ -74,8 +74,8 @@ export function registerTokensTool(server, TOKENS) {
         "# @shavin/ui Semantic Tokens (Dense Overview)",
         "RULE: Zero hex/rgb. Semantic classes ONLY. Import root @shavin/ui ONLY.",
         "",
-        "**BACKGROUNDS**: bg-canvas, bg-surface, bg-surface-hover, bg-surface-raised, bg-accent, bg-accent-subtle",
-        "**TEXT/FOREGROUND**: text-fg (headings), text-fg-subtle (paired descriptions), text-fg-muted (standalone meta), text-accent",
+        "**BACKGROUNDS**: bg-canvas, bg-surface, bg-surface-hover, bg-elevated, bg-elevated-hover (rows inside menus and popovers), bg-surface-raised, bg-brand (identity fills with no text on them), bg-brand-solid + text-brand-fg + hover:bg-brand-solid-hover (anything with text on the brand: solid buttons, badges, selected states), bg-brand-subtle",
+        "**TEXT/FOREGROUND**: text-fg (headings), text-fg-subtle (paired descriptions), text-fg-muted (standalone meta), text-brand-text (brand-coloured text and icons; contrast-guaranteed, never raw text-brand)",
         "**BORDERS**: border-hairline (resting cards/dividers), border-hairline-strong (hover/active/featured states)",
         "**CONCENTRIC RADIUS**:",
         "  - Containers/Panels: rounded-[var(--radius-panel)] (cards, dialogs, popovers, menus; capped at finite curve, NEVER pill)",

@@ -87,8 +87,8 @@ function allowedValues(comp, prop) {
 // Non-component exports of the "use client" root bundle: calling them from a
 // Server Component throws. They are also exported from "@shavin/ui/server".
 const SERVER_SAFE = new Set([
-  "cn", "isLocalhost", "getWebsiteUrl", "getStudioUrl", "getDocsUrl", "getCommunityUrl", "getKitsUrl", "getAssetsUrl",
-  "concentricContainerStyle", "concentricCompoundStyle", "concentricBoundaryResetStyle", "withConcentricStyle",
+  "cn",
+  "concentricContainerStyle", "concentricRadius", "paddingScaleFromClassName", "concentricBoundaryResetStyle", "withConcentricStyle",
   "cardPaddingToScale", "surfaceClass", "SHAVIN_META",
 ]);
 

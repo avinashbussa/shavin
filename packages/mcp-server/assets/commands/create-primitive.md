@@ -1,6 +1,6 @@
 # Create `@shavin/ui` Primitive Component
 
-Automated recipe to create a new WCAG 2.1 AAA compliant UI primitive inside `@shavin/ui`.
+Automated recipe to create a new accessible UI primitive (tested against WCAG 2.2 AA) inside `@shavin/ui`.
 
 ## Input Argument
 $ARGUMENTS (Component Name, e.g., `Accordion`, `Rating`, `Kbd`)
@@ -16,7 +16,7 @@ Execute the primitive pipeline in order:
 
 ### 1. Primitive Source (`packages/ui/src/primitives/{ComponentName}/{ComponentName}.tsx`)
 - Import `cva` from `class-variance-authority`, `cn` from `../../lib/cn`.
-- Use ONLY semantic tokens (`bg-surface`, `text-fg`, `border-hairline`, `bg-accent`, `text-accent`, etc.). ZERO raw hex, `rgb()`, or `--n-*`.
+- Use ONLY semantic tokens (`bg-surface`, `text-fg`, `border-hairline`, `bg-brand-solid` with `text-brand-fg` for a fill under text, `text-brand-text`, etc.). ZERO raw hex, `rgb()`, or `--n-*`.
 - Controls use `--radius-lg`; floating containers use `--radius-panel` + `data-panel` attribute.
 - Define `componentVariants` with `cva()` and merge `className` via `cn()`.
 - Create index file: `packages/ui/src/primitives/{ComponentName}/index.ts`.

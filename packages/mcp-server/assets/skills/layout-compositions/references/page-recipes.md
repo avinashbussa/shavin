@@ -4,7 +4,7 @@ A recipe is a starting sequence, not a template to copy. It answers "what order 
 
 Every recipe assumes ST5 (page shell) underneath. A validator checks that every ID below exists.
 
-Contents: SaaS launch · Developer tool / open source · Documentation site · Editorial / magazine · Portfolio / studio · Pricing and conversion · Case study · Hybrid (product + docs + blog)
+Contents: SaaS launch · Developer tool / open source · Documentation site · Editorial / magazine · Portfolio / studio · Pricing and conversion · Storefront · Case study · Hybrid (product + docs + blog)
 
 ---
 
@@ -35,7 +35,7 @@ Contents: SaaS launch · Developer tool / open source · Documentation site · E
 |---|---|---|---|
 | 1 | Navigation | ST1 | Docs and GitHub links visible |
 | 2 | Hero | H2 (code on the right) | A real, runnable snippet |
-| 3 | Numbers | S1 | Only real figures |
+| 3 | Numbers | S1 | The user's figures, else plausible placeholders |
 | 4 | Capabilities | F5 (by language or use case) | |
 | 5 | Breadth | F2 | |
 | 6 | Install | C2 | Copy button |
@@ -99,6 +99,22 @@ Static layout must be complete first. Add `layout-motion`, then `layout-choreogr
 | 4 | Proof | T2 | |
 | 5 | Objections | Q2 | |
 | 6 | Close | C1 | |
+
+## Storefront
+
+**Arc:** see it, browse, trust it, leave an email.
+
+| # | Section | Composition | Notes |
+|---|---|---|---|
+| 1 | Navigation | ST1 | Cart or basket as the primary action |
+| 2 | Hero | H4 or H3 (real photo), H6 for several products | One collection link, no pitch |
+| 3 | Reassurance | F1 (3 items) | Shipping, returns, materials or origin |
+| 4 | Products | G6 (4–12 items) or G2 (12+) | Grid of `Card`: image, name, price, one `Button` |
+| 5 | Story | F3 (2 rows) or G4 | Maker or brand story with photos |
+| 6 | Reviews | T2 | Placeholder voices are fine |
+| 7 | Questions | Q2 | Shipping, returns, sizing |
+| 8 | Newsletter | C5 | |
+| 9 | Footer | ST3 | |
 
 ## Case study
 

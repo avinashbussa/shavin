@@ -4,7 +4,7 @@ export function registerContextTool(server, ROOT) {
   return {
     schema: {
       name: "get_project_context",
-      description: "CALL FIRST in a @shavin/ui project. Returns the project's design profile (app, archetype, theme, accent, density) and the tool workflow: plan_page → check_page → get_skill/get_components → validate_code → check_page({ targetDir }).",
+      description: "CALL FIRST in a @shavin/ui project. Returns the project's design profile (app, archetype, theme, brand, density) and the tool workflow: plan_page → check_page → get_skill/get_components → validate_code → check_page({ targetDir }).",
       inputSchema: {
         type: "object",
         properties: {

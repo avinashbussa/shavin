@@ -37,23 +37,23 @@ A common AI failure mode is **defensive minimalism**: mistaking strict design-sy
 
 ---
 
-## 2. The Ban on AI-Slop Ambient Accent Glows
+## 2. The Ban on AI-Slop Ambient Brand Glows
 
 One of the most recognizable "AI slop" hallmarks is dropping a garish, highly saturated glowing orb into a layout:
 
 ```tsx
-// ❌ FORBIDDEN: AI-Slop Ambient Accent Glow Orb
-<div className="absolute -top-24 -left-24 w-96 h-96 bg-accent/20 rounded-full blur-3xl pointer-events-none" />
+// ❌ FORBIDDEN: AI-Slop Ambient Brand Glow Orb
+<div className="absolute -top-24 -left-24 w-96 h-96 bg-brand/20 rounded-full blur-3xl pointer-events-none" />
 ```
 
 Why this is banned:
 - It looks like an unconsidered prompt artifact from 2023-era generic web templates.
 - It over-saturates the viewport and creates harsh color halos around typography.
-- It clashes with Radix/Shavin semantic themes when switching between accent palettes.
+- It clashes with Radix/Shavin semantic themes when switching between brand palettes.
 
 ### The Replacement: Soft Pastel Mesh Textures
 
-Instead of single saturated accent orbs, use **diffuse pastel meshes** and multi-stop subtle gradients:
+Instead of single saturated brand orbs, use **diffuse pastel meshes** and multi-stop subtle gradients:
 
 ```tsx
 // ✅ RECOMMENDED: Atmospheric Pastel Mesh Layer
@@ -87,9 +87,9 @@ Another major AI slop trap is dumping **context-heavy literal stock photos** int
 
 | Asset Category | Description | When to Use | Example Sources / Treatments |
 |---|---|---|---|
-| **1. Curated Editorial Photography** | Atmospheric, art-directed photos (landscape, architecture, texture, considered portraiture) — never cliché office stock. | Hero / main media with copy on top behind a scrim; also anywhere as accents for visual balance (not only people/testimonials). | Lummi (`assets.lummi.ai`), Unsplash, or user-supplied, via layout bg props `bgImage` + `bgOverlays` (e.g. `"scrim-left"`, `"dark-20"`). |
-| **2. Mesh Gradients & Animated Backgrounds** | Fixed pastel meshes or theme-accent mesh, optionally drifting; or a calm looping video. | Hero / statement / closing CTA backdrops. | `bgOverlays="mesh-lime"` / `mesh-night` / `mesh-mint` / `mesh-peach` / `mesh-accent` (append `-animated`); Pexels video via `bgVideo` + `bgPoster`. |
-| **3. Abstract Atmospheric Textures** | Soft procedural contours, blurred chromatic grain, delicate light-refracting prism glass, architectural minimalism. | Full-bleed section backdrops, card backgrounds, bento accent tiles. | Subtle generative gradient textures, architectural cast shadows, or minimalist macro glass photography. |
+| **1. Curated Editorial Photography** | Atmospheric, art-directed photos (landscape, architecture, texture, considered portraiture) — never cliché office stock. | Hero / main media with copy on top behind a scrim; also anywhere as highlights for visual balance (not only people/testimonials). | Lummi (`assets.lummi.ai`), Unsplash, or user-supplied, via layout bg props `bgImage` + `bgOverlays` (e.g. `"scrim-left"`, `"dark-20"`). |
+| **2. Mesh Gradients & Animated Backgrounds** | Fixed pastel meshes or theme-brand mesh, optionally drifting; or a calm looping video. | Hero / statement / closing CTA backdrops. | `bgOverlays="mesh-lime"` / `mesh-night` / `mesh-mint` / `mesh-peach` / `mesh-brand` (append `-animated`); Pexels video via `bgVideo` + `bgPoster`. |
+| **3. Abstract Atmospheric Textures** | Soft procedural contours, blurred chromatic grain, delicate light-refracting prism glass, architectural minimalism. | Full-bleed section backdrops, card backgrounds, bento brand tiles. | Subtle generative gradient textures, architectural cast shadows, or minimalist macro glass photography. |
 | **4. 3D Abstract Renders (optional, decorative only)** | Translucent glass ribbons, geometric pastel shapes, iridescent solids. | Optional decorative graphics only — **never** focal hero/feature media. | Lummi/Unsplash renders with neutral or transparent backgrounds. |
 
 > Product mockups / UI screenshots rebuilt from Shavin primitives are **not** default imagery. Use them only when you are highly confident of the result (rare); never tiny raster screenshots.
@@ -123,6 +123,6 @@ When placing text or controls over any photo, mesh, video, or texture, text read
 
 **Scrim Checklist:**
 - [ ] Uses semantic token (`from-surface`, `via-surface/80`, `from-canvas`), NEVER hardcoded `#000` or `#fff`.
-- [ ] Title text maintains AAA contrast (`text-fg`).
+- [ ] Title text keeps at least 4.5:1 contrast, WCAG 2.2 AA (`text-fg`).
 - [ ] Subtitle text uses `text-fg-subtle` — **except on media**: over photos/mesh/video use `text-fg-muted` for subtitles/overlines, with `surface="dark-always"` (or `light-always`) on the media container.
-- [ ] Prefer layout bg props (`bgImage` / `bgVideo` + `bgPoster` / `bgOverlays`) over hand-rolled layers: e.g. `bgOverlays="scrim-left, dark-20"`, `"mesh-lime-animated, dark-20"`, `"fade-canvas"`. Mesh presets: `mesh-lime`, `mesh-night`, `mesh-mint`, `mesh-peach`, `mesh-accent` (+`-animated`). See `layout-compositions/references/adapters/shavin-ui.md` §4b.
+- [ ] Prefer layout bg props (`bgImage` / `bgVideo` + `bgPoster` / `bgOverlays`) over hand-rolled layers: e.g. `bgOverlays="scrim-left, dark-20"`, `"mesh-lime-animated, dark-20"`, `"fade-canvas"`. Mesh presets: `mesh-lime`, `mesh-night`, `mesh-mint`, `mesh-peach`, `mesh-brand` (+`-animated`). See `layout-compositions/references/adapters/shavin-ui.md` §4b.

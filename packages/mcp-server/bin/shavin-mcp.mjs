@@ -1,5 +1,20 @@
 #!/usr/bin/env node
-import { startMcpServer, startRemoteServer, globalBridge, BRIDGE_PORT } from "../src/index.mjs";
+// `shavin-mcp --hook`: the Claude Code PostToolUse edit hook (registered by `shavin init`). It is a mode of this
+// bin, not a second bin: a package with two bins breaks `npx @shavin/mcp` ("could not determine executable").
+if (process.argv.includes("--hook")) {
+  const { readPayload, runHook } = await import("../src/hook.mjs");
+  try {
+    const { code, message } = runHook(await readPayload());
+    if (message) process.stderr.write(`${message}\n`);
+    process.exit(code);
+  } catch (e) {
+    // A broken hook must never block the agent's work.
+    process.stderr.write(`[shavin-mcp --hook] skipped: ${e?.message || e}\n`);
+    process.exit(0);
+  }
+}
+
+const { startMcpServer, startRemoteServer, globalBridge, BRIDGE_PORT } = await import("../src/index.mjs");
 
 // A stray error in a timer or an unhandled rejection (e.g. a Realtime hiccup)
 // must never kill the MCP process: that silently drops the live Studio session.

@@ -17,7 +17,7 @@ Contents: 1 Vocabulary map · 2 Conventions · 3 Tokens · 4 Treatment recipes �
 | grid | `<Grid columns="…" stack="auto" gap="…">` | `columns="3" stack="auto"`, `gap="6"`, `gap="12"` |
 | stack / row | `<Flex direction align justify gap>` | `direction="column"`, `align="center"`, `justify="between"` |
 | panel | `<Card>` | `className="p-6"` etc. |
-| heading / body | `<Heading size>` · `<Text size>` | hero display `size="4xl"` (fluid 36→60px) / `size="5xl"` (36→72px); section `size="3xl"` (36→48px), `size="2xl"` (30→36px); no `md:text-*` steps. All Headings apply `text-balance` |
+| heading / body | `<Heading size>` · `<Text size>` | marketing and agency hero `size="5xl"` (fluid 36→72px); `size="4xl"` (36→60px) for dense app or docs heroes; section `size="3xl"` (36→48px), `size="2xl"` (30→36px); no `md:text-*` steps. All Headings apply `text-balance` |
 | button | `<Button size variant>` | `size="lg"`, variants `"ghost"`, `"outline"` |
 | tabs | `<Tabs defaultValue>` `<TabsList>` `<TabsContent>` | F5, G2 |
 | accordion | `<Accordion type="single" collapsible>` `<AccordionItem>` | Q2 |
@@ -47,7 +47,7 @@ Contents: 1 Vocabulary map · 2 Conventions · 3 Tokens · 4 Treatment recipes �
 | Primary text | `text-fg` |
 | Secondary text | `text-fg-subtle` |
 | Hairline border | `border-hairline`, `divide-hairline` |
-| Accent | `text-accent`, `border-accent` |
+| Brand | `text-brand-text`, `bg-brand-solid text-brand-fg` (fill under text), `border-brand-text` (state border) |
 | Panel radius (outer) | `rounded-[var(--radius-panel)]` |
 | Control radius | `rounded-[var(--radius-lg)]` |
 | Panel radius (inner, concentric) | `rounded-panel-inner` |
@@ -79,7 +79,7 @@ Use tokens for every colour so dark mode and re-theming work. Don't hard-code he
 | `bgOverlays` | Comma-separated stack, e.g. `"scrim-left, dark-20"` |
 | `surface` | `"dark-always"` / `"light-always"` on the media container so text doesn't flip with page theme |
 
-**Overlay presets:** `mesh-lime`, `mesh-night`, `mesh-mint`, `mesh-peach` (fixed pastel palettes), `mesh-accent` (theme accent); append `-animated` for slow drift that stops under reduced motion (`bgOverlays="mesh-lime-animated, dark-20"`). `scrim-left` = directional scrim for left-aligned copy over media; `fade-canvas` = theme-aware dissolve into the page. Off-centre radial: `radial(at 20% 30%, #8b5cf699/0%, #8b5cf600/45%)`; 8-digit hex alpha works in overlay colours.
+**Overlay presets:** `mesh-lime`, `mesh-night`, `mesh-mint`, `mesh-peach` (fixed pastel palettes), `mesh-brand` (theme brand); append `-animated` for slow drift that stops under reduced motion (`bgOverlays="mesh-lime-animated, dark-20"`). `scrim-left` = directional scrim for left-aligned copy over media; `fade-canvas` = theme-aware dissolve into the page. Off-centre radial: `radial(at 20% 30%, #8b5cf699/0%, #8b5cf600/45%)`; 8-digit hex alpha works in overlay colours.
 
 **On-media text:** on dark media use `text-fg` for headings and `text-fg-muted` (not `text-fg-subtle`, too faint over media) for subtitles/overlines. Off media the `text-fg-subtle` subtitle rule stands.
 
@@ -97,7 +97,7 @@ Use tokens for every colour so dark mode and re-theming work. Don't hard-code he
 `@shavin/ui` implements concentric radii at the foundation level. The formula: `R_inner = max(floor, R_outer - P)` with `floor = min(radius-lg, radius-panel / 2)` — padded children never collapse to square corners (only a 0-radius theme yields 0).
 
 - **Automatic**: set `radius="concentric"` on any component — it walks up the tree to find the nearest ancestor with a radius + padding value and auto-computes the inner radius.
-- **Manual utilities**: `rounded-panel-inner` (uses current `--radius-panel` and `--panel-pad`), `rounded-panel-p3` (assumes p-3 = 12px), `rounded-panel-p5` (assumes p-5 = 20px).
+- **Manual utilities**: `rounded-panel-inner` (fallback: the plain `--radius-panel`, no subtraction), `rounded-panel-p3` (assumes p-3 = 12px), `rounded-panel-p5` (assumes p-5 = 20px).
 - **Fallback**: if no ancestor has radius or padding, the theme's default radius is used and a warning is surfaced.
 
 Never give parent and child the same radius when padding is non-zero. Container surfaces always use `rounded-[var(--radius-panel)]`; controls use `rounded-[var(--radius-lg)]`.
@@ -106,10 +106,10 @@ Never give parent and child the same radius when padding is non-zero. Container 
 
 `component-language.md` governs the four repeated micro-choices (overline form, interactive control, typographic voice, colour application) that compound across every section. Decide these per page before reaching for primitives:
 
-- **Overline:** don't reflex `<Badge>` for every eyebrow — plain small-caps label, rule+label, numeral, icon+label, or none are all valid (`component-language.md` §1).
+- **Overline:** don't reflex `<Badge>` for every eyebrow — plain small-caps label, rule+label, numeral, icon+label, or none are all valid, and none is the usual choice; use a label only where it adds information (`component-language.md` §1).
 - **Controls:** `<Button>` is for a single action; use `<Tabs>`/`<SegmentedControl>` for 2–5 mutually exclusive views of the same content (`component-language.md` §2).
 - **Type voice:** decide weight contrast, family pairing, and scale ratio per page — don't default to the last project's choice (`component-language.md` §3).
-- **Colour application:** name a pattern (single accent, duotone, per-section rotation, monochrome+break, gradient ground) — don't reach for the same accent at the same opacity everywhere (`component-language.md` §4).
+- **Colour application:** name a pattern (single brand, duotone, per-section rotation, monochrome+break, gradient ground) — don't reach for the same brand at the same opacity everywhere (`component-language.md` §4).
 
 ## 7. Verify before use
 

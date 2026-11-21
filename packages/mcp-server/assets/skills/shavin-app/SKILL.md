@@ -4,7 +4,8 @@ description: >
   Guides the architecture, layout partitioning, interaction patterns, state management,
   and implementation of SaaS web applications, dashboards, AI chat tools, admin consoles,
   and complex product interfaces using @shavin/ui as the base design system engine, powered by
-  visual-language-skills cognitive design principles and Vercel Web Interface Guidelines.
+  cognitive design principles and Vercel Web Interface Guidelines. Covers forms, settings, auth,
+  onboarding, data tables and the six-state rule.
 sections:
   - id: philosophy
     description: "Applications as decision-support tools"
@@ -13,30 +14,28 @@ sections:
   - id: density
     description: "Product density standard (14px token base)"
   - id: state
-    description: "4-states rule and interaction quality"
+    description: "Six-state rule (first-time, empty, loading, error, success, disabled) and interaction quality"
   - id: layouts
     description: "Standard application layout architectures"
   - id: copy
     description: "Anti-slop microcopy standards"
+  - id: patterns
+    file: patterns.md
+    description: "Worked patterns: data table, settings, auth, onboarding (~2K tokens)"
   - id: checklist
     description: "Pre-flight verification checklist"
 ---
 
-- **Token-efficient usage:** This skill is ~3,300 tokens. For specific rules, call:
-> - `get_skill({ name: "shavin-app", section: "density" })` — density standards
-> - `get_skill({ name: "shavin-app", section: "state" })` — 4-states rule
-> - `get_skill({ name: "shavin-app", section: "layouts" })` — layout patterns
->
-> **Core rules (token compliance, radius, typography):** Auto-injected by MCP or see `core-rules.md`.
-
 # shavin-app Skill
 
-- 💡 **MCP Routing:** Call `get_skill({ name: "shavin-app", section: "<topic>" })` to fetch targeted rules on demand (e.g. `section: "density"`, `section: "layout"`, `section: "state"`, `section: "checklist"`). Call `get_tokens` or `get_components` via `shavin-mcp` for live DS specs.
-- 💡 **No-MCP fallback:** Read this file's sections directly (`view skills/shavin-app/SKILL.md`) — identical content, no tool call needed. For token/color values, read `packages/ui/tokens.json` / `components.json` directly instead of `get_tokens`/`get_components`. For linting, run `node bin/lint-tokens.mjs <path>` instead of `validate_code`.
+- Targeted sections: `get_skill({ name: "shavin-app", section: "density" | "state" | "layouts" | "patterns" | "checklist" })`.
+- Core rules (tokens, radius, typography, fg vs fg-subtle vs fg-muted) are in `.agents/skills/core-rules.md` and are not injected. Read it when you need the full detail.
+- Live specs: `get_components({ name })` and `get_tokens()`. Without MCP, read `node_modules/@shavin/ui/components.json` and run `npx shavin-lint-tokens <path>` instead of `validate_code`.
+- Every UI element is a `@shavin/ui` component (no raw `button`/`input`/`table`/`dialog`, no hand-styled div imitations, no other UI library). These rules apply on every UI-writing turn, including small follow-ups.
 
 You are an **Application Product Architect & Engineer** using the **Shavin Design System (`@shavin/ui`)**. Your purpose is to architect, partition, and implement dense, reliable, highly interactive, and accessible SaaS web applications, AI chat tools, administrative consoles, and workspace dashboards.
 
-This skill synthesizes **`@shavin/ui` application primitives** with the cognitive laws of **`visual-language-skills`** and **Vercel Web Interface Guidelines** to eliminate AI UI slop, guarantee 100% state coverage, and deliver product interfaces that feel fast, predictable, and human-considered.
+This skill synthesizes **`@shavin/ui` application primitives** with cognitive design laws and **Vercel Web Interface Guidelines** to eliminate AI UI slop, guarantee six-state coverage, and deliver product interfaces that feel fast, predictable, and human-considered.
 
 ---
 
@@ -57,8 +56,19 @@ Web applications are tools for decision-making and task execution. Every applica
 
 Always compose applications using native `@shavin/ui` application primitives:
 
-| Category | `@shavin/ui` Primitives to Use |
+| Category | `@shavin/ui` primitives to use |
 |---|---|
+| **App chrome & layout** | `AppFrame`, `Sidebar`, `SidebarHeader`, `SidebarBody`, `SidebarFooter`, `SidebarSection`, `SidebarNavItem`, `SidebarTrigger`, `TopBar`, `ActionBar`, `BottomNav`, `Breadcrumbs`, `Container`, `Section`, `Grid`, `Flex`, `Box`, `Card`, `CardList`, `CardRow`, `Separator`, `ScrollArea` |
+| **Overlays** | `Dialog`, `AlertDialog`, `Drawer`, `Popover`, `ContextMenu`, `Menu`, `MenuItem`, `Tooltip`, `HoverCard` |
+| **Inputs & forms** | `TextField`, `TextArea`, `Select`, `Dropdown`, `Combobox`, `Checkbox`, `Switch`, `RadioGroup`, `Slider`, `ColorPicker`, `IconPicker`, `DatePicker`, `TimePicker`, `Button`, `IconButton` |
+| **Data & workspaces** | `Table`, `TableHeader`, `TableBody`, `TableRow`, `TableColumnHeaderCell`, `TableCell`, `Pagination`, `DataList`, `DataListItem`, `StatCard`, `Row`, `RowDragHandle`, `Stepper`, `Tabs`, `SegmentedControl`, `Badge`, `Avatar`, `Progress`, `LineChart`, `BarChart`, `Sparkline`, `DonutChart`, `Heatmap`, `FunnelChart` |
+| **Feedback** | `Callout`, `Toast` (`ToastProvider` + `useToast()`), `Skeleton`, `SkeletonMimic`, `Spinner`, `Murmur` |
+| **Content** | `Heading`, `Text`, `Icon`, `Link`, `CodeBlock`, `Kbd`, `Backdrop` |
+| **AI surfaces** | `ChatBubble`, `Reasoning`, `ToolCall`, `FileOutput`, `VoiceInput`, `Murmur` |
+
+Not in the library: `Header`, `Footer`, `DocSection`, a generic `Chart`. Compose from the primitives above; confirm any other name with `get_components`.
+
+---|---|
 | **App Chrome & Layout** | `<AppFrame>`, `<Sidebar>`, `<SidebarBody>`, `<SidebarFooter>`, `<SidebarSection>`, `<SidebarNavItem>`, `<SidebarTrigger>`, `<TopBar>`, `<ActionBar>`, `<BottomNav>`, `<Container>`, `<Grid>`, `<Flex>` |
 | **Overlays & Modals** | `<Dialog>`, `<AlertDialog>`, `<Popover>`, `<ContextMenu>`, `<Menu>`, `<Tooltip>` |
 | **Inputs & Form Controls** | `<TextField>`, `<TextArea>`, `<Select>`, `<Dropdown>`, `<Combobox>`, `<Checkbox>`, `<Switch>`, `<RadioGroup>`, `<Slider>`, `<ColorPicker>`, `<IconPicker>`, `<DatePicker>`, `<TimePicker>` |
@@ -73,31 +83,44 @@ Unlike marketing websites (which use 16px body text), `@shavin/ui` applications 
 - `<Text>` primitive defaults to `size="sm"` (`14px`).
 - Form labels, table cells, sidebar links, and data rows default to `text-sm` density for maximum productivity without visual clutter.
 
-> **Font loading, typography hierarchy, concentric radius, token compliance:** See `core-rules.md` (auto-injected).
+- Font loading, typography hierarchy, concentric radius and token compliance: see `.agents/skills/core-rules.md` (not injected).
 
 ---
 
 ## 4. Mandatory State & Interaction Quality Standards
 
-### A. The 4-States Rule (100% State Coverage)
-Every data surface, list, table, or dashboard MUST explicitly implement all 4 states:
-1. **Loading State**: Use `<Skeleton>` loaders matching layout dimensions, or `<Spinner size="md" />` inside CTA buttons.
-2. **Empty State**: Provide clear icon, explanation text (`<Text color="muted">`), and primary onboarding CTA. Never leave blank space.
-3. **Error State**: Display `<Callout tone="danger">` with explicit "Retry" buttons; scroll and focus the first invalid field on form submit.
-4. **Success State & Optimistic Feedback**: Trigger `<Toast>` notifications ("Changes saved") and use `<AlertDialog intent="danger">` for destructive actions (Cancel focused by default).
+### A. The Six-State Rule
+
+Every surface (list, table, form, settings page, auth screen, onboarding, chat, dialog) implements all six states, not only data surfaces. Build each branch, not just the happy path. **These are the default: build them without being asked.** A request such as "build a dashboard" or "add a settings page" already includes them; the user will not list them.
+
+1. **First-time**: the user has never used it. `<EmptyState kind="first-time" title description action={<Button>…</Button>} />`: what it is and the first action. Onboarding flows use `Stepper`.
+2. **Empty**: had items, none now: `EmptyState kind="empty"` with the `Button` that adds one. A filter or search matched nothing: `EmptyState kind="no-results"` echoing the filter, with "Clear filters". Never blank space, never "No data". `variant="bordered"` keeps a region (table body, drop zone) visible.
+3. **Loading**: `Skeleton` / `SkeletonMimic` with the real layout's dimensions (a `loading.tsx` per data route in Next). Content is never a spinner. An action in progress: `<Button loading loadingLabel="Saving…">` (keeps its width, stays focusable). Long jobs: `useToast().promise`.
+4. **Error**: page or region: `Callout color="danger"` with a title, what happened, and a retry `Button`. Field errors: `TextField errorMessage`, or `FormField error` around `TextArea` / `Select` / `Combobox` / pickers / groups. On a failed submit of 3+ fields: `FormErrorSummary errors={[{ id, message }]}` at the top (it takes focus and links to each field), and keep each field's error. Distinct messages per cause (wrong password vs unknown email vs network).
+5. **Success**: `const { success } = useToast()` for "Changes saved" (`init` mounts `ToastProvider` inside `ThemeProvider`; `shavin doctor` checks it). A finished flow (onboarding, checkout): `EmptyState kind="success" focusOnMount`. An inline `Callout color="success"` when the user must keep reading it. A toast never carries the only copy of an error.
+6. **Disabled**: `Button disabledReason="…"` / `IconButton disabledReason="…"` (stays focusable, reason in a Tooltip and as its description); a field: `FormField disabled hint="Available on the Pro plan"`. Never a silently dead control.
+
+Submit buttons stay enabled until the request starts, then show `loading`. Other controls (cancel, siblings, steps not yet reachable) may be disabled with a reason.
+
+**Site-level states (every app and site).** Next app router: `app/not-found.tsx` (404: `Heading`, one line of `Text`, a `Button` home) and `app/error.tsx` plus `app/global-error.tsx` (error boundary: `Callout color="danger"`, what happened, a retry `Button` calling `reset()`). Pages router: `pages/404.tsx` and `pages/_error.tsx`. Vite: a catch-all not-found route and an error boundary component around the app. `check_page` fails a project without them.
+
+**Interaction states.** Hover, pressed, focus-visible and active come with the components (`Button`, `Link`, `Tabs`, `Menu`, `Checkbox`…): that is why nothing interactive is built by hand. Never remove a focus ring (`outline-none` without a `focus-visible` replacement), and give every custom `asChild` element the component's states.
+
+### A2. Destructive Actions
+Delete, revoke, leave and reset go through `<AlertDialog intent="danger" title description confirmLabel onConfirm open onOpenChange />` (Cancel focused by default). Name the object and the consequence in `description`.
 
 ### B. Vercel Web Interface & Ergonomic Guidelines
-1. **Hit Targets**: Minimum touch target $\ge 44\text{px}$ on mobile. Small icon buttons must expand hit area via padding or pseudo-elements.
+1. **Hit Targets**: Controls reach 44px on touch automatically (24px AA floor); `size` is visual only. Opt out: `touchTargets="compact"` or `hitArea`. Stand-alone links use `<Link standalone>`; no hand-rolled `min-h-11`.
 2. **Form Ergonomics**:
    - Mobile input zoom is handled by the primitives: `TextField`, `TextArea`, `Select` and `Combobox` render 16px below `md` and 14px from `md` up. Do not add `text-base`/`text-sm` via `className` on them.
    - `Flex`, `Stack` style layout primitives default to `gap="3"` (12px), including `direction="column"`. A name + description pair (title over subtitle) must set `gap="0"` or `gap="1"` explicitly; otherwise the two lines float apart.
    - Controls that share a row or toolbar must use the same `size` (heights match Button: sm 32px, md 40px, lg 48px). Never size them with `className` (no `h-*`, `py-*` or text-size overrides). Example: `<TextField size="md" />` beside `<Select size="md" />` beside `<Button size="md">`.
    - Never block paste in `<input>` or `<textarea>` (allow 2FA codes & passwords).
    - `Enter` submits single inputs; `⌘/Ctrl+Enter` submits `<textarea>`.
-   - Never disable buttons while filling form; keep submit enabled until request starts, then show `<Spinner>` while preserving button width.
-3. **Concentric Radius:** See `core-rules.md` (auto-injected).
+   - Do not disable the submit button while the user fills the form; keep it enabled until the request starts, then show `<Spinner>` while preserving button width (see the six-state rule for other disabled controls).
+3. **Concentric Radius:** controls `--radius-lg`, containers `--radius-panel`; nested `R_inner = max(floor, R_outer - P)`, `floor = min(radius-lg, radius-panel / 2)` (use `rounded-panel-inner`).
 4. **Compositor Animation Rule**:
-   - Animate compositor-only properties (`transform`, `opacity`); NEVER animate layout geometry (`width`, `height`, `top`, `left`).
+   - Animate compositor-only properties (`transform`, `opacity`); do not hand-animate layout geometry (`width`, `height`, `top`, `left`). Height animation inside `Accordion` is fine: the component owns it.
    - Never use `transition: all` — list transition properties explicitly (`transition-colors`, `transition-transform`).
 5. **URL & Navigation Synchronization**:
    - Active tabs, search filters, pagination steps, and drawer states MUST sync to URL search params (`useSearchParams`) to support deep-linking and browser back/forward history.
@@ -132,11 +155,28 @@ Every data surface, list, table, or dashboard MUST explicitly implement all 4 st
   <TopBar className="gap-2"><SidebarTrigger /><Text as="span" size="sm" weight="medium">Overview</Text></TopBar>
   <Flex direction="column" gap="6" className="min-h-0 flex-1 overflow-y-auto p-6">
     <Heading as="h1" size="xl">Overview</Heading>
-    <Grid columns="auto" minWidth="sm" gap="4">
-      <StatCard label="Monthly Revenue" value="$42,850" sub="+12.4%" />
-      <StatCard label="Active Customers" value="1,420" sub="+80 this week" />
-      <StatCard label="Pending Orders" value="18" alert />
-    </Grid>
+    {status === "error" ? (
+      <Callout color="danger" title="Could not load metrics">
+        <Flex direction="column" gap="3">
+          <Text>The metrics service timed out.</Text>
+          <Button variant="outline" onClick={refetch}>Retry</Button>
+        </Flex>
+      </Callout>
+    ) : status === "loading" ? (
+      <Grid columns="auto" minWidth="sm" gap="4">
+        <Skeleton className="h-24" /><Skeleton className="h-24" /><Skeleton className="h-24" />
+      </Grid>
+    ) : stats.length === 0 ? (
+      <Flex direction="column" align="center" gap="3">
+        <Icon name="chart-column" size="lg" color="subtle" />
+        <Text color="subtle">No orders yet. Metrics appear after the first order.</Text>
+        <Button onClick={openNewOrder}>Create order</Button>
+      </Flex>
+    ) : (
+      <Grid columns="auto" minWidth="sm" gap="4">
+        {stats.map((s) => <StatCard key={s.label} label={s.label} value={s.value} sub={s.sub} alert={s.alert} />)}
+      </Grid>
+    )}
   </Flex>
 </AppFrame>
 ```
@@ -146,9 +186,7 @@ Every data surface, list, table, or dashboard MUST explicitly implement all 4 st
 - Content that sits in rows of cards or stats uses `Grid columns="auto" minWidth="..."` (wraps by itself, adapts when the sidebar opens or closes). Use a numeric `columns` only when the design needs exactly N columns.
 
 ### Pattern B: Settings & Configuration Panel
-- Use `<CardList>` or `<CardRow>` for field grouping.
-- Use `<SegmentedControl>` or `<RadioGroup>` for single-choice option sets.
-- Fixed bottom action bar: `<ActionBar>` floating above content for unsaved changes.
+See section 6 (settings pattern).
 
 ### Pattern C: AI Chat / Messaging Surface
 - Transcript container with auto-scroll.
@@ -164,7 +202,13 @@ Every data surface, list, table, or dashboard MUST explicitly implement all 4 st
 
 ---
 
-## 6. Anti-Copy Slop & Authentic Microcopy Standards
+## 6. Worked Patterns
+
+Data table, settings, auth and onboarding patterns (components, key props and all six states each) live in `patterns.md`: `get_skill({ name: "shavin-app", section: "patterns" })`, or read `.agents/skills/shavin-app/patterns.md`. Load it for any screen of those kinds.
+
+---
+
+## 7. Anti-Copy Slop & Authentic Microcopy Standards
 
 AI models frequently default to generic placeholder labels or corporate marketing clichés. Every screen built with `@shavin/ui` must use **realistic, concrete, domain-specific microcopy**:
 
@@ -182,17 +226,17 @@ AI models frequently default to generic placeholder labels or corporate marketin
 
 ---
 
-## 7. Pre-Flight Verification Checklist
+## 8. Pre-Flight Verification Checklist
 
 Before releasing any application screen or feature component, verify:
 
 - [ ] **Orientation:** Is the current location clear via active `SidebarNavItem` and `Breadcrumbs`?
 - [ ] **Density Baseline:** Are body texts and data tables operating at 14px (`text-sm` / `size="sm"`)?
 - [ ] **Content Realism:** Is copy free of AI marketing clichés and lazy placeholder text?
-- [ ] **4-State Coverage:** Are Loading (Skeleton), Empty (Onboarding CTA), Error (Recovery Callout), and Success (Toast) states all handled?
-- [ ] **Ergonomics & Zoom:** Is mobile input font-size $\ge 16\text{px}$ to prevent iOS auto-zoom?
+- [ ] **Six-State Coverage:** First-time, empty, loading, error, success and disabled all built on this surface (not only the happy path)?
+- [ ] **Ergonomics & Zoom:** Mobile inputs 16px (primitives do this); custom: `hit-area-touch`?
 - [ ] **Destructive Action Safety:** Do delete/destructive actions prompt with `<AlertDialog intent="danger">` (Cancel focused by default)?
 - [ ] **Concentric Radius:** Do nested surfaces use `rounded-panel-inner` to satisfy $R_{\text{inner}} = \max(\text{floor}, R_{\text{outer}} - P)$ (floor = `min(radius-lg, radius-panel / 2)`)?
-- [ ] **Compositor Animation:** Are transitions limited to `transform` and `opacity` without `transition: all`?
+- [ ] **Compositor Animation:** Hand-written transitions limited to `transform` and `opacity`, no `transition: all`?
 - [ ] **Token Compliance:** Are all colors (`text-fg`, `bg-surface`, `border-hairline`) using semantic Shavin tokens?
-- [ ] **Clean Compilation:** Does `npm run verify` pass with 0 errors?
+- [ ] **Validation:** `validate_code` / `check_page` run on every UI turn; typecheck and build pass with 0 errors?

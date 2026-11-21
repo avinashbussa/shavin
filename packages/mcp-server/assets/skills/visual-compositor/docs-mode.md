@@ -22,7 +22,7 @@ Before this file existed, documentation portals were force-fit into either `MARK
 
 ## Navigation & wayfinding
 
-- Sidebar items use active-state styling matching the current route (`bg-accent-subtle text-accent` or `border-l-2 border-accent`), not a full-card selected state.
+- Sidebar items use active-state styling matching the current route (`bg-brand-subtle text-brand-text` or `border-l-2 border-brand`), not a full-card selected state.
 - Breadcrumbs above the `h1` for pages nested more than one level deep.
 - Prev/Next page links at the bottom of content, `border-t border-hairline pt-6`.
 - A `Cmd+K` / search trigger is expected in the header on any real docs site — flag its absence in `audit-checklist.md` review for DOCS-mode pages, even though it isn't literally part of this skill's own token rules.
