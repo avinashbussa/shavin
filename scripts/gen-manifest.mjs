@@ -8,7 +8,7 @@
  * share a zero-drift contract of every primitive, its variants, and its prompt guidance.
  */
 import { readFileSync, writeFileSync, existsSync, readdirSync } from "node:fs";
-import { join, relative, basename, dirname } from "node:path";
+import { join, relative, basename, dirname, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import vm from "node:vm";
 import ts from "typescript";
@@ -22,7 +22,10 @@ const OUT = join(UI_DIR, "components.json");
 const RESIZABLE_SRC = join(UI_DIR, "src", "primitives", "Resizable", "ResizeHandle.tsx");
 const ROOT_OUT = join(ROOT, "components.json");
 const META_OUT = join(UI_DIR, "src", "lib", "meta.ts");
-const ROUTES_OUT = join(UI_DIR, "src", "lib", "docs-routes.ts");
+// Private: component -> docs page map for the private apps. It lives in @shavin/site-links, which the public
+// repository does not have, so it is generated and checked only when that package is present.
+const ROUTES_OUT = join(ROOT, "packages", "site-links", "src", "docs-routes.ts");
+const ROUTES_ENABLED = existsSync(dirname(ROUTES_OUT));
 // Private: the docs app. When present, --check fails on any docsPath with no page.
 const DOCS_APP = existsSync(join(ROOT, "apps", "docs", "src", "app")) ? join(ROOT, "apps", "docs", "src", "app") : null;
 
@@ -57,6 +60,7 @@ const DOCS_PATH_BY_FOLDER = {
   // Internal tools
   BlockPreview: "/blocks/overview",
   ShavinDevTools: "/start/dev-inspector",
+  WiseOwlLogo: "/blocks/overview",
 };
 /**
  * Primitives shipped on a subpath entry instead of the "@shavin/ui" root (kept out
@@ -68,7 +72,7 @@ const IMPORT_PATH_BY_FOLDER = {
 const kebab = (s) => s.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase();
 const docsPathFor = (folder) => DOCS_PATH_BY_FOLDER[folder] ?? `/components/${kebab(folder)}`;
 // Private: block totals including the pro catalogue, for the marketing site.
-// Skipped when apps/website is absent (the public repo).
+// Skipped when the website app is absent (the public repo).
 const WEBSITE_STATS_OUT = existsSync(join(ROOT, "apps", "website", "src", "lib"))
   ? join(ROOT, "apps", "website", "src", "lib", "block-stats.ts")
   : null;
@@ -215,7 +219,10 @@ function variantsFor(src, name, blocks, isPrimary) {
   const sources = [];
   const header = src.match(new RegExp(`interface\\s+${name}Props\\b[^{]*|type\\s+${name}Props\\s*=[^;{]*`));
   if (header) sources.push(header[0]);
-  const fn = src.match(new RegExp(`function\\s+${name}\\s*(?:<[^>]*>)?\\s*\\(`));
+  // Wrapped components (`const Card = withX(CardBase)`) declare their props on `<Name>Base`.
+  const fn =
+    src.match(new RegExp(`function\\s+${name}\\s*(?:<[^>]*>)?\\s*\\(`)) ??
+    src.match(new RegExp(`function\\s+${name}Base\\s*(?:<[^>]*>)?\\s*\\(`));
   if (fn) {
     const rest = src.slice(fn.index, fn.index + 2000);
     const end = rest.search(/\)\s*(?::[^{=]*)?(?:\{|=>)/);
@@ -256,7 +263,7 @@ function parseProps(src, componentName) {
       { name: "bgVideo", type: "string", required: false, doc: "Background video URL (mp4, webm, etc.). Renders an autoPlay/loop/muted <video> element behind children." },
       { name: "bgImage", type: "string", required: false, doc: "Background image URL. Renders an <img> with object-cover (default) or object-contain." },
       { name: "bgSize", type: '"cover" | "contain"', required: false, doc: "Background media fit. \"cover\" fills the container (default), \"contain\" fits within.", default: "cover" },
-      { name: "bgOverlays", type: "string", required: false, doc: "Comma-separated shorthand for overlay layers. Supports presets (\"dark-50\"), solid colors (#hex or (token)), gradients (linear/radial), and fx backdrops (\"fx:dither-waves\", \"fx:fluid-silk(speed=1.2)\"; needs @shavin/fx registered, else falls back to mesh). JSON array of OverlayLayer[] as fallback for advanced cases. Layers composite top-to-bottom." },
+      { name: "bgOverlays", type: "string", required: false, doc: "Comma-separated shorthand for overlay layers. Supports presets (\"dark-50\"), solid colors (#hex or (token)), gradients (linear/radial), and fx backdrops (\"fx:dither-waves\", \"fx:fluid-silk(speed=1.2)\"; needs `npm i @shavin/fx` (free to use under its own licence) and `registerFxBackdrops()`, else falls back to mesh). JSON array of OverlayLayer[] as fallback for advanced cases. Layers composite top-to-bottom." },
       { name: "bgVideoPaused", type: "boolean", required: false, doc: "When true, pauses the background video (renders a static poster frame instead of autoplay).", default: "false" },
     );
   }
@@ -307,6 +314,32 @@ function exportsOf(src) {
   return [...names].sort();
 }
 
+/**
+ * Names the folder's index.ts really exports from `file` (what `import { X } from "@shavin/ui"`
+ * can reach): everything for `export * from`, only the listed names for `export { a } from`,
+ * nothing when the file is not re-exported. Null when the file is not a direct child of a
+ * folder with an index.ts (no filtering then).
+ */
+function indexVisibleNames(primDir, file) {
+  const dir = dirname(file);
+  if (dirname(dir) !== primDir) return null;
+  const idx = join(dir, "index.ts");
+  if (!existsSync(idx)) return null;
+  const base = basename(file, ".tsx");
+  const src = stripComments(readFileSync(idx, "utf8"));
+  let all = false;
+  const named = new Set();
+  for (const m of src.matchAll(/export\s+(?:type\s+)?(\*|\{[^}]*\})\s+from\s+["']\.\/([^"']+)["']/g)) {
+    if (m[2].replace(/\.(tsx?|js)$/, "") !== base) continue;
+    if (m[1] === "*") all = true;
+    else for (const part of m[1].slice(1, -1).split(",")) {
+      const t = part.trim();
+      if (t && !/^type\s/.test(t)) named.add(t.split(/\s+as\s+/).pop().trim());
+    }
+  }
+  return all ? null : named;
+}
+
 function compressText(text) {
   if (!text) return "";
   return text
@@ -351,12 +384,14 @@ function loadCoLocatedDoc(fileDir, primaryName) {
     description: String(b.description).trim(),
   }));
   const examples = (doc.examples ?? []).map((e) => ({ title: String(e.title).trim(), code: String(e.code).trim() }));
+  // One-line composition notes ("Table > TableHeader > TableRow ...", provider/hook setup) for agents.
+  const structure = (doc.structure ?? []).map((l) => String(l).trim()).filter(Boolean);
   const docsDense = {
     description: compressText(description),
     bestPractices: bestPractices.map((b) => ({ guidance: b.guidance, description: compressText(b.description) })),
   };
 
-  return { description, bestPractices, examples, docsDense };
+  return { description, bestPractices, examples, structure, docsDense };
 }
 
 const LAYOUT_COMPONENTS = new Set(["Flex", "Grid", "Container", "Section", "Box", "AppFrame", "Row", "Sidebar", "SidebarHeader", "SidebarBody", "SidebarFooter", "SidebarSection"]);
@@ -420,7 +455,10 @@ function build() {
     const primaryName = basename(file, ".tsx");
     const radixMatch = src.match(/from\s+["'](@radix-ui\/react-[\w-]+)["']/);
     const blocks = cvaBlocks(src);
-    const exportedSymbols = exportsOf(src).filter((s) => /^[A-Z]/.test(s) && s !== "ALL_ICONS");
+    const allExports = exportsOf(src);
+    const exportedSymbols = allExports.filter((s) => /^[A-Z]/.test(s) && s !== "ALL_ICONS");
+    // Public hooks (useToast ...) are listed in `exports` so agents import them, but are not components.
+    const exportedHooks = allExports.filter((s) => /^use[A-Z]/.test(s));
     const folderDoc = dirDoc.get(basename(fileDir));
 
     // The file name is emitted only when it is a real export or the folder's doc
@@ -446,7 +484,7 @@ function build() {
         ...(internal ? { internal: true } : {}),
         docsPath: docsPathFor(basename(fileDir)),
         ...(IMPORT_PATH_BY_FOLDER[basename(fileDir)] ? { importPath: IMPORT_PATH_BY_FOLDER[basename(fileDir)] } : {}),
-        file: relative(ROOT, file),
+        file: relative(ROOT, file).split(sep).join("/"), // POSIX: same components.json on every OS
         kind: radixMatch ? "radix" : "plain",
         radix: radixMatch ? radixMatch[1] : null,
         radiusOverride: Object.prototype.hasOwnProperty.call(variants, "radius"),
@@ -454,11 +492,15 @@ function build() {
         defaultVariants: defaults,
         props: parsedProps,
         builderMeta: determineBuilderMeta(name, parsedProps),
-        exports: exportedSymbols,
+        exports: (() => {
+          const visible = indexVisibleNames(primDir, file);
+          return [...exportedSymbols, ...exportedHooks].filter((n) => !visible || visible.has(n));
+        })(),
         ...(partOf ? { partOf } : {}),
         description: doc?.description || undefined,
         bestPractices: doc?.bestPractices || undefined,
         examples: doc?.examples || undefined,
+        ...(doc?.structure?.length ? { structure: doc.structure } : {}),
         docsDense: doc?.docsDense || undefined,
       });
     });
@@ -526,6 +568,10 @@ function buildMetaTs(primitiveDirCount) {
     ? join(ROOT, "packages", "skills", "skills")
     : join(ROOT, ".agents", "skills");
   const skills = [];
+  const internalPath = join(ROOT, "packages", "skills", "internal.json");
+  const maintainerOnly = existsSync(internalPath) ? JSON.parse(readFileSync(internalPath, "utf8")).maintainerOnly.map((e) => e.path) : [];
+  const commandsDir = join(ROOT, "packages", "skills", "commands");
+  const commandCount = existsSync(commandsDir) ? readdirSync(commandsDir).filter((f) => f.endsWith(".md")).length : 0;
   if (existsSync(skillsDir)) {
     const skillEntries = readdirSync(skillsDir, { withFileTypes: true }).filter(d => d.isDirectory()).sort();
     for (const entry of skillEntries) {
@@ -587,6 +633,10 @@ export const SHAVIN_META = {
   primitiveCount: ${primitiveDirCount},
   mcpToolCount: ${mcpTools.length},
   skillCount: ${skills.length},
+  /** Skills a project gets (skillCount minus the maintainer-only ones in packages/skills/internal.json). */
+  consumerSkillCount: ${skills.filter((s) => !maintainerOnly.includes(s.name)).length},
+  /** Slash commands a project gets (packages/skills/commands). */
+  commandCount: ${commandCount},
   blockCount: ${blockCount},
   manifestCount: 2,
   tokenPurityTarget: 100,
@@ -620,7 +670,7 @@ const routesTs = buildRoutesTs(manifestResult.components);
 function buildRoutesTs(components) {
   const entries = components.map((c) => `  ${JSON.stringify(c.name)}: ${JSON.stringify(c.docsPath)},`).join("\n");
   return `// Generated by scripts/gen-manifest.mjs -- do not edit by hand (run: npm run manifest:gen).
-// Docs page for every exported component. Import from "@shavin/ui/lib/docs-routes".
+// Docs page for every exported component. Import from "@shavin/site-links".
 
 export const DOCS_BASE_URL = "https://docs.shavin.cc";
 
@@ -640,7 +690,7 @@ export function docsUrl(name: string, base: string = DOCS_BASE_URL): string {
 `;
 }
 
-/** docsPath values with no page in apps/docs (private repo only). */
+/** docsPath values with no page in the docs app (maintainers' checkout only). */
 function missingDocsPages(components) {
   if (!DOCS_APP) return [];
   const bad = new Map();
@@ -700,8 +750,8 @@ if (check) {
   }
   let currentRoutes = "";
   try { currentRoutes = readFileSync(ROUTES_OUT, "utf8"); } catch { /* missing -> stale */ }
-  if (currentRoutes !== routesTs) {
-    console.error(`  ${c.error}${g.stepFail}${c.reset} packages/ui/src/lib/docs-routes.ts is stale -- run \`npm run manifest:gen\` and commit the result.`);
+  if (ROUTES_ENABLED && currentRoutes !== routesTs) {
+    console.error(`  ${c.error}${g.stepFail}${c.reset} packages/site-links/src/docs-routes.ts is stale -- run \`npm run manifest:gen\` and commit the result.`);
     process.exit(1);
   }
   const missing = missingDocsPages(manifestResult.components);
@@ -741,7 +791,7 @@ if (OUT !== ROOT_OUT) {
   writeFileSync(ROOT_OUT, json);
 }
 writeFileSync(META_OUT, metaTs);
-writeFileSync(ROUTES_OUT, routesTs);
+if (ROUTES_ENABLED) writeFileSync(ROUTES_OUT, routesTs);
 {
   const missing = missingDocsPages(manifestResult.components);
   if (missing.length) console.warn(`  ${c.warning}!${c.reset} docsPath with no page in apps/docs:\n  ${missing.join("\n  ")}`);
@@ -756,7 +806,7 @@ printCard({
     { label: "Total Components:", value: `${c.fg}${manifestResult.count} registered components${c.reset}` },
     { label: "Public Primitives:", value: `${c.fg}${manifestResult.primitiveCount} exported from @shavin/ui${c.reset}` },
     { label: "Internal Utilities:", value: `${c.fg}${manifestResult.internalCount} components${c.reset}` },
-    { label: "Source of Truth:", value: `${c.fg}meta.ts, docs-routes.ts & components.json${c.reset}` },
+    { label: "Source of Truth:", value: `${c.fg}meta.ts & components.json${ROUTES_ENABLED ? " (docs-routes.ts in @shavin/site-links)" : ""}${c.reset}` },
   ],
   footer: `${c.fgSubtle}Target: ${OUT}${c.reset}`,
 });

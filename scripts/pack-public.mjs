@@ -3,7 +3,7 @@
  * pack-public — build and pack the open packages into prod-dist/packages/.
  *
  * The public counterpart to pack:all (scripts/pack-all.mjs stays private — it
- * builds @shavin/fx and @shavin/block-renderer, which never ship). Produces
+ * also builds packages that are published or kept out of the public repo). Produces
  * distributable tarballs of the five open packages a contributor can install
  * into a real app:
  *
@@ -14,7 +14,7 @@
  */
 import fs from "node:fs";
 import path from "node:path";
-import { execFileSync } from "node:child_process";
+import { runSync } from "./lib/spawn-cross.mjs";
 import { fileURLToPath } from "node:url";
 import { c, g, fmt, printBanner, printCard, printStage, formatDuration } from "./lib/term-ui.mjs";
 
@@ -29,7 +29,7 @@ const PKGS = [
   ["skills", "@shavin/skills"],
 ];
 const sh = (cmd, args, cwd) =>
-  execFileSync(cmd, args, { cwd: cwd || ROOT, encoding: "utf8", stdio: ["pipe", "pipe", "pipe"], env: { ...process.env, NO_COLOR: "1", FORCE_COLOR: "0" } });
+  runSync(cmd, args, { cwd: cwd || ROOT, encoding: "utf8", stdio: ["pipe", "pipe", "pipe"], env: { ...process.env, NO_COLOR: "1", FORCE_COLOR: "0" } });
 
 const start = Date.now();
 process.stdout.write("\n");

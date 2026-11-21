@@ -140,7 +140,7 @@ function baseUtility(cls) {
 }
 
 // extract candidate class tokens from a line: contents of every string literal,
-// split on whitespace. (Comments already stripped upstream.)
+// split on whitespace. (Comments already stripped earlier.)
 function classCandidates(line) {
   const out = [];
   for (const m of line.matchAll(/["'`]([^"'`]*)["'`]/g)) {

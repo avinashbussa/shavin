@@ -1,0 +1,122 @@
+name: Release
+
+# Hand-triggered only. Publishes the open packages to npm with provenance, then tags and releases.
+# Needs the NPM_TOKEN repo secret (an npm automation token with publish rights on the @shavin scope).
+# Publishes the five open packages only. @shavin/fx is published separately.
+on:
+  workflow_dispatch:
+    inputs:
+      packages:
+        description: "Packages to publish: all, or a comma list of block-schema, ui, skills, cli, mcp"
+        required: true
+        default: all
+      dry_run:
+        description: "Dry run: run every check and npm publish --dry-run, but publish, tag and release nothing"
+        type: boolean
+        required: true
+        default: true
+
+permissions:
+  id-token: write
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Check and publish
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      PACKAGES: ${{ inputs.packages }}
+      DRY_RUN: ${{ inputs.dry_run }}
+    steps:
+      - name: Refuse a real release from anywhere but main
+        if: ${{ !inputs.dry_run && github.ref != 'refs/heads/main' }}
+        run: |
+          echo "A real release must run from main, not $GITHUB_REF" >&2
+          exit 1
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          registry-url: https://registry.npmjs.org
+      - name: Check changelog entries and @shavin/ui compatibility
+        # Fails before anything is built or published: each package to publish needs a CHANGELOG entry for its
+        # version, and cli, mcp and skills must declare a shavin.compat range that includes the @shavin/ui being
+        # published (or the one already on npm when ui is not in this run). Each message gives the fix.
+        run: node scripts/check-release-compat.mjs
+      - run: npm ci --no-audit --no-fund
+      - run: npm run regen
+      - run: npm run build
+      - run: npm run verify
+      - run: npm run smoke
+      - name: Install test against a local registry
+        run: npm run test:e2e
+      - name: Publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          set -euo pipefail
+          # Publish order: cli depends on block-schema, mcp depends on cli.
+          ORDER="block-schema:packages/block-schema ui:packages/ui skills:packages/skills cli:packages/cli mcp:packages/mcp-server"
+          want() {
+            [ "$PACKAGES" = "all" ] && return 0
+            case ",$(echo "$PACKAGES" | tr -d ' ')," in *",$1,"*) return 0 ;; esac
+            return 1
+          }
+          for known in $(echo "$PACKAGES" | tr ',' ' '); do
+            [ "$known" = "all" ] && continue
+            case " $ORDER " in *" $known:"*) ;; *) echo "Unknown package: $known" >&2; exit 1 ;; esac
+          done
+          : > published.txt
+          for entry in $ORDER; do
+            short="${entry%%:*}"; dir="${entry#*:}"
+            want "$short" || continue
+            name=$(node -p "require('./$dir/package.json').name")
+            version=$(node -p "require('./$dir/package.json').version")
+            if npm view "$name@$version" version >/dev/null 2>&1; then
+              echo "::notice::$name@$version is already published, skipping"
+              continue
+            fi
+            if [ "$DRY_RUN" = "true" ]; then
+              npm publish "./$dir" --provenance --access public --dry-run
+            else
+              npm publish "./$dir" --provenance --access public
+              echo "$name@$version" >> published.txt
+            fi
+          done
+          echo "Published this run:"; cat published.txt
+      - name: Tag and release
+        if: ${{ !inputs.dry_run }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # Release notes come from each package's CHANGELOG.md (the same parser feeds the project website).
+          while read -r tag; do
+            [ -n "$tag" ] || continue
+            if git rev-parse -q --verify "refs/tags/$tag" >/dev/null; then
+              echo "::notice::tag $tag exists, skipping"
+              continue
+            fi
+            name="${tag%@*}"; version="${tag##*@}"
+            node scripts/release-notes.mjs --package "$name" --version "$version" > "$RUNNER_TEMP/notes.md"
+            git tag -a "$tag" -m "$tag"
+            git push origin "refs/tags/$tag"
+            gh release create "$tag" --title "$tag" --notes-file "$RUNNER_TEMP/notes.md" --verify-tag
+          done < published.txt
+          # First launch only: when this run published all five packages at 0.1.0, add one umbrella release.
+          umbrella=true
+          for n in block-schema ui skills cli mcp; do
+            grep -qx "@shavin/$n@0.1.0" published.txt || umbrella=false
+          done
+          if [ "$umbrella" = "true" ] && ! git rev-parse -q --verify "refs/tags/v0.1.0" >/dev/null; then
+            git tag -a v0.1.0 -m "Shavin 0.1.0"
+            git push origin refs/tags/v0.1.0
+            gh release create v0.1.0 --title "Shavin 0.1.0" --notes-file docs/release/umbrella-v0.1.0.md --verify-tag
+          fi

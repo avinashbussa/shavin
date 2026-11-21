@@ -55,7 +55,7 @@ function scorePrimitive(fileName, filePath) {
   let a11yScore = 20;
   const issues = [];
 
-  const isSpecialUtility = /ColorPicker|Chart|DatePicker|TimePicker|CodeBlock|CodeEditor|Tooltip|ShavinDevTools|BlockPreview/.test(fileName);
+  const isSpecialUtility = /ColorPicker|Chart|DatePicker|TimePicker|CodeBlock|CodeEditor|Tooltip|ShavinDevTools|DevToolsPanel|BlockPreview/.test(fileName);
 
   // 1. Token Purity Check (40 pts)
   if (!isSpecialUtility) {
@@ -86,7 +86,7 @@ function scorePrimitive(fileName, filePath) {
   }
 
   // 3. CVA & Merging Pattern (20 pts)
-  const isStructuralWrapper = /Box|Container|Section|Flex|Grid|ThemeProvider|Layout|AspectRatio|DatePicker|ShavinDevTools|BlockPreview|CodeEditor/.test(fileName);
+  const isStructuralWrapper = /Box|Container|Section|Flex|Grid|ThemeProvider|Layout|AspectRatio|DatePicker|ShavinDevTools|DevToolsPanel|BlockPreview|CodeEditor/.test(fileName);
   const usesCVA = /cva\s*\(/.test(codeContent);
   const usesCN = /\bcn\s*\(/.test(codeContent);
   const exposesClassName = /className\b/.test(codeContent);
@@ -130,6 +130,8 @@ function scorePrimitive(fileName, filePath) {
 }
 
 import { c, g, fmt, printCard } from './lib/term-ui.mjs';
+import { gradeBadge } from "./lib/grade.mjs";
+const PASS_THRESHOLD = 90;
 
 const VERBOSE_MODE = process.argv.includes('--verbose');
 
@@ -157,13 +159,13 @@ function runScoreLedger() {
     results.push(result);
     totalPoints += result.totalScore;
 
-    if (result.totalScore < 90) failedCount++;
+    if (result.totalScore < PASS_THRESHOLD) failedCount++;
     if (result.issues.length > 0) {
       warnings.push({ name: file.name, score: result.totalScore, issues: result.issues });
     }
 
     if (VERBOSE_MODE) {
-      const status = result.totalScore >= 90 ? fmt.pass(result.totalScore + "/100") : fmt.fail(result.totalScore + "/100");
+      const status = result.totalScore >= PASS_THRESHOLD ? fmt.pass(result.totalScore + "/100") : fmt.fail(result.totalScore + "/100");
       console.log(`  ${file.name.padEnd(24)} ${status}`);
       for (const issue of result.issues) {
         console.log(`    ${c.warning}${g.stepWarn}${c.reset} ${c.fgMuted}${issue}${c.reset}`);
@@ -177,8 +179,8 @@ function runScoreLedger() {
     title: `${c.brand}${g.brand} Primitive Score Ledger${c.reset}`,
     items: [
       { label: "Primitives Scanned:", value: `${c.fg}${files.length} primitives${c.reset}` },
-      { label: "Average Score:", value: `${c.bold}${c.fg}${averageScore} / 100${c.reset} ${fmt.badge("VERIFIED AAA", c.success)}` },
-      { label: "Passing Threshold:", value: `${c.fg}≥ 90 / 100${c.reset}` },
+      { label: "Average Score:", value: `${c.bold}${c.fg}${averageScore} / 100${c.reset} ${gradeBadge(averageScore, { fmt, c }, { threshold: PASS_THRESHOLD })}` },
+      { label: "Passing Threshold:", value: `${c.fg}≥ ${PASS_THRESHOLD} / 100${c.reset}` },
       { label: "Status:", value: failedCount === 0 ? fmt.pass("All primitives passed") : fmt.fail(`${failedCount} primitives below threshold`) },
     ],
     footer: warnings.length > 0 && !VERBOSE_MODE
@@ -187,7 +189,7 @@ function runScoreLedger() {
   });
 
   if (CHECK_MODE && failedCount > 0) {
-    console.error(`\n  ${c.error}${g.stepFail}${c.reset} ${c.fg}Score Ledger Check Failed: ${failedCount} primitives scored below 90/100.${c.reset}\n`);
+    console.error(`\n  ${c.error}${g.stepFail}${c.reset} ${c.fg}Score Ledger Check Failed: ${failedCount} primitives scored below ${PASS_THRESHOLD}/100.${c.reset}\n`);
     process.exit(1);
   }
 }

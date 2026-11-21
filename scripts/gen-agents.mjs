@@ -14,7 +14,7 @@
  *   packages/skills/AGENTS.md                consumer variant (shipped; MCP install_skills / get_guidelines)
  *   packages/cli/src/templates/AGENTS.md     consumer variant (written by `shavin init`)
  *   packages/cli/src/templates/SHAVIN.md     project design brief (written by `shavin init`),
- *                                            a copy of skills/shavin-core/SHAVIN.template.md
+ *                                            a copy of packages/skills/agents/SHAVIN.template.md
  *   SHAVIN.md                                this repo's own brief, the same template with repo values
  *
  * --check also fails on count claims that no longer match the source (factProblems()):
@@ -27,6 +27,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { c, g, fmt, printBanner, printCard, startTaskSpinner } from "./lib/term-ui.mjs";
 import { BRIDGE_PORT } from "../packages/mcp-server/src/bridge/constants.mjs";
+import { getEnabledTools } from "../packages/mcp-server/src/remote/transport.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const SRC = path.join(ROOT, "packages/skills/agents");
@@ -59,6 +60,8 @@ function counts() {
     primitives: manifest.primitiveCount ?? num("primitiveCount"),
     mcpTools: num("mcpToolCount"),
     skills: num("skillCount"),
+    consumerSkills: num("consumerSkillCount"),
+    commands: num("commandCount"),
     compositions,
     families: families.size,
     mcpToolNames: [...(meta.match(/mcpTools:\s*\[([\s\S]*?)\]/)?.[1] ?? "").matchAll(/"([a-z_]+)"/g)].map((m) => m[1]),
@@ -78,7 +81,7 @@ function layoutTree(audience, n) {
     let desc = (p.description ?? "").replace(/\.$/, "");
     if (p.name === "@shavin/ui") desc += ` (${n.primitives} primitives)`;
     if (p.name === "@shavin/mcp") desc += ` (${n.mcpTools} tools, bridge :${BRIDGE_PORT})`;
-    rows.push(`  ${pad(d + "/").slice(0, 25)}${p.name}${open ? "" : " (private)"}: ${desc}`);
+    rows.push(`  ${pad(d + "/").slice(0, 25)}${p.name}${open ? "" : p.private ? " (private)" : " (on npm, source private)"}: ${desc}`);
   }
   if (audience === "maintainer") {
     rows.push("apps/                      All private.");
@@ -103,7 +106,7 @@ const fill = (text, vars) => text.replace(/\{\{(\w+)\}\}/g, (m, k) => {
   return String(vars[k]);
 });
 
-/** audience: "maintainer" (monorepo), "public" (mirror), "consumer" (projects using @shavin/ui). */
+/** audience: "maintainer" (the maintainers' checkout), "public" (this repository as published), "consumer" (projects using @shavin/ui). */
 export function renderAgents(audience) {
   const n = counts();
   const repo = audience !== "consumer";
@@ -157,19 +160,25 @@ export function coverageProblems() {
   return problems;
 }
 
-const SHAVIN_TEMPLATE = path.join(ROOT, "packages/skills/skills/shavin-core/SHAVIN.template.md");
+const SHAVIN_TEMPLATE = path.join(ROOT, "packages/skills/agents/SHAVIN.template.md");
 /** This repo's values for its own SHAVIN.md (the template supplies everything else). */
 const REPO_BRIEF = {
   "Product Name": "Shavin (@shavin/ui and its agent tooling)",
   "Domain": "Design system, docs, Studio and marketing site (shavin.cc)",
   "Site Type": "`MARKETING`",
   "Default Visual Mode": "`EDITORIAL`",
+  "Brand Personality": "High-taste, minimal, crisp, high-contrast, zero-fluff",
+  "Primary Brand": "`monochrome`",
+  "Display / Body Font": "`Rethink Sans / Inter`",
+  "Theme Mode": "`dark-first`",
 };
 
 export function renderShavin(values = {}) {
   let text = read(SHAVIN_TEMPLATE);
   for (const [label, value] of Object.entries(values)) {
-    const re = new RegExp(`(\\*\\*${label.replace(/[/]/g, "\\/")}\\*\\*: )[^\\n<]*`);
+    // The theme labels carry an UNSET hint comment in the template; a repo that sets a value drops it.
+    const keepComment = label === "Site Type" || label === "Default Visual Mode" || label === "Product Name" || label === "Domain";
+    const re = new RegExp(`(\\*\\*${label.replace(/[/]/g, "\\/")}\\*\\*: )${keepComment ? "[^\\n<]*" : "[^\\n]*"}`);
     if (!re.test(text)) throw new Error(`gen-agents: SHAVIN.template.md has no "${label}" line`);
     text = text.replace(re, `$1${value}${label === "Site Type" || label === "Default Visual Mode" ? " " : ""}`);
   }
@@ -187,11 +196,13 @@ function factFiles() {
       else if (e.name.endsWith(".md")) list.push(p);
     }
   };
-  // Monorepo: the guides, architecture docs and the contributor docs the mirror publishes.
+  // Maintainers' checkout: the guides, architecture docs and the contributor docs published here.
   // Public repo (no docs/agents): those contributor docs live in docs/.
   const docDirs = hasMaintainerSources() ? ["docs/agents", "docs/architecture", "docs/guides", "docs/public-repo-copy"] : ["docs"];
   for (const d of ["packages/skills/skills", "packages/skills/commands", "packages/skills/agents", ...docDirs]) walkMd(path.join(ROOT, d));
-  for (const f of ["README.md", "CONTRIBUTING.md", "scripts/mirror-public/README.md", "scripts/gen-llms.mjs", "packages/cli/src/templates/CLAUDE.md", "packages/skills/README.md", "packages/mcp-server/README.md", "packages/cli/README.md", "packages/ui/README.md"]) list.push(path.join(ROOT, f));
+  for (const f of ["README.md", "CONTRIBUTING.md", "scripts/mirror-public/README.md", "scripts/gen-llms.mjs", "packages/cli/src/templates/CLAUDE.md", "packages/skills/README.md", "packages/mcp-server/README.md", "packages/cli/README.md", "packages/ui/README.md",
+    // Source comments that state the tool counts (stdio and remote), and the docs index.
+    "packages/mcp-server/src/remote/server.mjs", "packages/mcp-server/src/remote/transport.mjs", "docs/README.md", "apps/docs/src/components/art/RoleArt.tsx"]) list.push(path.join(ROOT, f));
   const kits = path.join(ROOT, "kits");
   if (fs.existsSync(kits)) {
     for (const k of fs.readdirSync(kits, { withFileTypes: true })) {
@@ -220,8 +231,15 @@ export function factProblems() {
       for (const m of line.matchAll(/\b(\d{1,2}) (?:named )?(?:AI-slop )?anti-patterns\b/g)) {
         if (Number(m[1]) !== n.antiPatterns) problems.push(`${at} says ${m[1]} anti-patterns (there are ${n.antiPatterns})`);
       }
-      for (const m of line.matchAll(/\b(\d{2}) (?:specialized |modular |MCP |MCP server )?(?:AI agent )?tools\b/g)) {
-        if (Number(m[1]) !== n.mcpTools && Number(m[1]) !== n.mcpTools - 4) problems.push(`${at} says ${m[1]} tools (the MCP has ${n.mcpTools}, ${n.mcpTools - 4} in remote mode)`);
+      // Tool counts: "32 tools", "32 MCP tools", "32-tool", "(32 Tools)" and shields badges ("MCP-32%20tools").
+      // Remote mode lacks the dev-bridge and filesystem tools and render_check (it needs a local browser); the count
+      // is read from the transport table, so it cannot drift from the code.
+      for (const m of line.matchAll(/\b(\d{2})(?: |-|%20)(?:specialized |modular |MCP |MCP server )?(?:AI agent )?tools?\b/gi)) {
+        if (Number(m[1]) !== n.mcpTools && ![getEnabledTools("remote").length, getEnabledTools("rest").length].includes(Number(m[1]))) problems.push(`${at} says ${m[1]} tools (the MCP has ${n.mcpTools}, ${getEnabledTools("remote").length} in remote mode, ${getEnabledTools("rest").length} over REST)`);
+      }
+      // Skill counts: the repo has skillCount, a project gets consumerSkillCount (maintainer-only skills are not installed).
+      for (const m of line.matchAll(/\b(\d{1,2})\+? (?:agent )?skills\b/g)) {
+        if (![n.skills, n.consumerSkills].includes(Number(m[1]))) problems.push(`${at} says ${m[1]} skills (the repo has ${n.skills}, a project gets ${n.consumerSkills})`);
       }
     });
   }
@@ -285,7 +303,7 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
   printCard({
     title: `${c.brand}${g.brand} Agent Instructions Synchronized${c.reset}`,
     items: [
-      { label: "Maintainer Files:", value: `${c.fg}AGENTS.md & CLAUDE.md (monorepo root)${c.reset}` },
+      { label: "Maintainer Files:", value: `${c.fg}AGENTS.md & CLAUDE.md (repo root)${c.reset}` },
       { label: "Consumer Files:", value: `${c.fg}packages/skills/AGENTS.md & cli templates${c.reset}` },
       { label: "Coverage Audit:", value: `${c.fg}All skills, commands & MCP tools matched${c.reset}` },
     ],

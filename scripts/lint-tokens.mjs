@@ -31,12 +31,12 @@ const ROOT = join(fileURLToPath(import.meta.url), "..", "..");
 // truth for that concept (not a violation site).
 const FILE_EXEMPT = {
   // theme-presets.ts maps semantic vars to the --n-* scale (theme definition
-  // data); ShavinDevTools.tsx's audit rule only MENTIONS --n-* in comments.
+  // data); DevToolsPanel.tsx's audit rule only MENTIONS --n-* in comments.
   "no-foundation": [
     join("packages", "ui", "src", "lib", "theme-presets.ts"),
-    join("packages", "ui", "src", "primitives", "ShavinDevTools", "ShavinDevTools.tsx"),
+    join("packages", "ui", "src", "primitives", "ShavinDevTools", "DevToolsPanel.tsx"),
   ],
-  // theme-presets.ts IS the accent/gray palette definition — hex belongs here,
+  // theme-presets.ts IS the brand/gray palette definition — hex belongs here,
   // same way global.css owns the --n-* foundation scale.
   // media-overlays.tsx IS the overlay preset table definition — intentional
   // black/white-alpha scrims over background imagery (theme-independent by
@@ -44,7 +44,7 @@ const FILE_EXEMPT = {
   // Same source-of-truth status. Rendered overlays carry data-overlay="true"
   // and are exempted by the live DOM audit (mirrors data-swatch).
   // StudioColorPicker.tsx is a color-picking tool surface: its swatch grids
-  // ARE palette data (the 24 Radix accents, the theme's semantic colors per
+  // ARE palette data (the 24 Radix brand colours, the theme's semantic colors per
   // mode, the fixed hue-spectrum rainbow). Hex is the domain, not styling.
   "no-hex": [
     // ShavinMdStipple: SVG brand artwork; gradient stops are fixed white masks.
@@ -85,6 +85,8 @@ const FILE_EXEMPT = {
   ],
   "no-literal-radius": [
     join("apps", "website", "src", "components", "CodeCompactnessComparison.tsx"),
+    // Shows plain Tailwind code (rounded-lg, rounded-xl) next to the Shavin version, as copy
+    join("apps", "website", "src", "app", "compare", "tailwind", "page.tsx"),
   ],
 };
 
@@ -98,11 +100,11 @@ const RULES = [
     msg: "raw hex color literal — use a semantic token (e.g. text-fg, bg-surface, border-hairline)",
     // A literal hex is legitimate when it's DATA passed to the theming API —
     // that's the supported way to set a custom brand color (ThemeProvider's
-    // `accentColor` accepts a "#rrggbb"). Blocking it would make the theming
+    // `brandColor` accepts a "#rrggbb"). Blocking it would make the theming
     // API hostile to its own purpose. Ad-hoc styling (className / style={{}})
     // does NOT match these and stays blocked.
     allowLineIncludes: [
-      /accentColor\s*:\s*["']#[0-9a-fA-F]+["']/,
+      /brandColor\s*:\s*["']#[0-9a-fA-F]+["']/,
       /grayColor\s*:\s*["']#[0-9a-fA-F]+["']/,
       /type=["']color["']/,
       /\brawAlpha\b/,
@@ -184,7 +186,7 @@ for (const file of files) {
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
       if (!(rule.test ? rule.test(line) : rule.re.test(line))) continue;
-      // legitimate theming-API data (e.g. accentColor="#..."), not styling?
+      // legitimate theming-API data (e.g. brandColor="#..."), not styling?
       if ((rule.allowLineIncludes || []).some((rx) => rx.test(line))) continue;
       // disable on the same line?
       if (new RegExp(`ds-lint-disable-line\\s+${rule.name}\\b`).test(raw[i] || "")) continue;
