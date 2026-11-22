@@ -153,7 +153,7 @@ motion: choreography-ok
 │               │ [Single CTA]                  │
 └───────────────┴───────────────────────────────┘
 ```
-**Contract:** Real text (an `<h1>`), 3–12 words, with deliberate line breaks. One CTA. Set it in `Heading size="5xl"` (fluid, up to 72px): a type-only hero needs scale to carry the page. For larger display type use X2.
+**Contract:** Real text (an `<h1>`), 3–12 words, with deliberate line breaks. One CTA. Set it in `Heading size="5xl"` (fluid, up to 72px) when the headline is four words or fewer, otherwise `size="4xl"` (up to 60px): a type-only hero needs scale to carry the page, but never more than twice the size of a section title. For larger display type use X2.
 **Watch:** Never render the headline as an image. Handle long words with `overflow-wrap`/`hyphens`. Cap height at 100svh so type doesn't push the CTA away. Check contrast on coloured grounds.
 
 ### H6 · Floating Elements Hero

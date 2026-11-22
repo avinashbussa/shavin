@@ -8,15 +8,29 @@ import { Murmur } from "../Murmur/Murmur";
 import { Text } from "../Text";
 import { AlertCircle, RotateCw } from "lucide-react";
 
-export const bubbleVariants = cva("w-fit max-w-[85%] px-3 py-2 text-sm leading-relaxed", {
+export const bubbleVariants = cva("w-fit max-w-full px-3 py-2 text-sm leading-relaxed", {
   variants: {
     variant: {
-      incoming: "bg-surface-hover text-fg rounded-[var(--radius-panel)] rounded-tl-[0.25rem]",
-      outgoing: "bg-brand-solid text-brand-fg rounded-[var(--radius-panel)] rounded-tr-[0.25rem]",
+      incoming: "bg-surface-hover text-fg rounded-[var(--radius-panel)]",
+      outgoing: "bg-brand-solid text-brand-fg rounded-[var(--radius-panel)]",
       system: "mx-auto max-w-full bg-transparent px-3 py-1 text-center text-xs text-fg-subtle",
     },
+    sharpCorner: {
+      bottom: "",
+      top: "",
+      none: "",
+    },
   },
-  defaultVariants: { variant: "incoming" },
+  compoundVariants: [
+    { variant: "incoming", sharpCorner: "top", className: "rounded-tl-[0.25rem]" },
+    { variant: "outgoing", sharpCorner: "top", className: "rounded-tr-[0.25rem]" },
+    { variant: "incoming", sharpCorner: "bottom", className: "rounded-bl-[0.25rem]" },
+    { variant: "outgoing", sharpCorner: "bottom", className: "rounded-br-[0.25rem]" },
+  ],
+  defaultVariants: {
+    variant: "incoming",
+    sharpCorner: "top",
+  },
 });
 
 /** Who is speaking. `variant` (incoming, outgoing, system) is the older spelling of the same thing. */
@@ -39,8 +53,12 @@ export interface ChatBubbleProps extends VariantProps<typeof bubbleVariants> {
   role?: ChatRole;
   /** bubble or flat. Defaults to flat for role="assistant", bubble otherwise (and for `variant`). */
   layout?: ChatLayout;
+  /** Which corner of a bubble gets the sharp speech-bubble tail. Default "top", as before. "none" keeps all corners round. */
+  sharpCorner?: "bottom" | "top" | "none";
   /** Turn lifecycle. Default "ready". submitted shows the pending indicator, streaming a live caret, stopped a label, error a retry row. */
   status?: ChatStatus;
+  /** Live, unconfirmed text (a speech transcript still being heard). Shown italic and quiet until you drop the flag. */
+  interim?: boolean;
   /** Message shown when status="error". */
   error?: string;
   /** Called by the Retry button in the error row. */
@@ -55,6 +73,8 @@ export interface ChatBubbleProps extends VariantProps<typeof bubbleVariants> {
   author?: string;
   /** Timestamp / status shown under the bubble. */
   timestamp?: string;
+  /** If true, the timestamp only appears on hover. */
+  hoverTimestamp?: boolean;
   /** Avatar image for the message sender. */
   avatarSrc?: string;
   /** Fallback initials when no avatar image (e.g. "AI", "AB"). */
@@ -75,7 +95,9 @@ export function ChatBubble({
   variant,
   role,
   layout,
+  sharpCorner = "top",
   status = "ready",
+  interim,
   error,
   onRetry,
   actions,
@@ -83,6 +105,7 @@ export function ChatBubble({
   pendingLabel = "Thinking…",
   author,
   timestamp,
+  hoverTimestamp,
   avatarSrc,
   avatarFallback,
   hideAvatar,
@@ -110,7 +133,10 @@ export function ChatBubble({
     if (live) setWasLive(true);
   }, [live]);
   const liveProps = { "aria-live": live || wasLive ? ("polite" as const) : undefined, "aria-busy": live || undefined };
+
   const avatar = !hideAvatar && <Avatar size="sm" src={avatarSrc} fallback={avatarFallback} alt={author ?? ""} />;
+
+  const itemsAlign = flat ? "items-start gap-3" : "items-end";
 
   const content = (
     <>
@@ -120,26 +146,26 @@ export function ChatBubble({
           {pendingLabel}
         </span>
       ))}
-      {children}
+      {interim ? <span className="italic text-fg-subtle">{children}</span> : children}
       {status === "streaming" && <span aria-hidden className="inline-block h-4 w-1.5 animate-pulse-dot rounded-[var(--radius-sm)] bg-brand" />}
     </>
   );
 
   return (
     <div
-      className={cn("flex w-full gap-2", flat ? "items-start gap-3" : "items-end", outgoing ? "flex-row-reverse" : "flex-row", className)}
+      className={cn("group flex w-full gap-2", itemsAlign, outgoing ? "flex-row-reverse" : "flex-row", className)}
       data-role={resolvedRole}
       data-status={status}
     >
       {avatar}
-      <div className={cn("flex min-w-0 flex-col gap-1", flat ? "flex-1 gap-2" : outgoing ? "items-end" : "items-start")}>
+      <div className={cn("flex min-w-0 flex-col gap-1", flat ? "flex-1 gap-2" : cn("max-w-[85%]", outgoing ? "items-end" : "items-start"))}>
         {author && <Text size="xs" color="muted" weight="medium" className="px-1">{author}</Text>}
         {flat ? (
           <div className="flex min-w-0 flex-col gap-3 text-sm leading-relaxed text-fg" {...liveProps}>
             {content}
           </div>
         ) : (
-          <div className={bubbleVariants({ variant: surface })} {...liveProps}>
+          <div className={bubbleVariants({ variant: surface, sharpCorner })} {...liveProps}>
             {content}
           </div>
         )}
@@ -157,7 +183,18 @@ export function ChatBubble({
         )}
         {!live && (actions || timestamp) && (
           <div className="flex items-center gap-2 px-1">
-            {timestamp && <Text size="xs" color="subtle">{timestamp}</Text>}
+            {timestamp && (
+              <Text
+                size="xs"
+                color="subtle"
+                className={cn(
+                  "transition-opacity duration-150",
+                  hoverTimestamp && "opacity-0 group-hover:opacity-100"
+                )}
+              >
+                {timestamp}
+              </Text>
+            )}
             {actions}
           </div>
         )}

@@ -1951,6 +1951,21 @@
           ]
         },
         {
+          "name": "sharpCorner",
+          "description": "ChatBubble sharpCorner style variant.",
+          "values": [
+            {
+              "name": "bottom"
+            },
+            {
+              "name": "top"
+            },
+            {
+              "name": "none"
+            }
+          ]
+        },
+        {
           "name": "children",
           "description": "Message content. For AI turns pass the parts in order: Reasoning, ToolCall, text, CodeBlock, FileOutput. Use layout=\"flat\" (the default for role=\"assistant\") so cards and code are not squeezed into a bubble."
         },
@@ -1965,6 +1980,18 @@
         {
           "name": "status",
           "description": "Turn lifecycle. Default \"ready\". submitted shows the pending indicator, streaming a live caret, stopped a label, error a retry row."
+        },
+        {
+          "name": "interim",
+          "description": "Live, unconfirmed text (a speech transcript still being heard). Shown italic and quiet until you drop the flag.",
+          "values": [
+            {
+              "name": "true"
+            },
+            {
+              "name": "false"
+            }
+          ]
         },
         {
           "name": "error",
@@ -1993,6 +2020,18 @@
         {
           "name": "timestamp",
           "description": "Timestamp / status shown under the bubble."
+        },
+        {
+          "name": "hoverTimestamp",
+          "description": "If true, the timestamp only appears on hover.",
+          "values": [
+            {
+              "name": "true"
+            },
+            {
+              "name": "false"
+            }
+          ]
         },
         {
           "name": "avatarSrc",
@@ -7026,7 +7065,31 @@
         },
         {
           "name": "duration",
-          "description": "Elapsed time shown when done, e.g. \"4s\"."
+          "description": "Elapsed time shown when done, e.g. \"4s\". Omit it and the component times the thinking itself."
+        },
+        {
+          "name": "autoCollapse",
+          "description": "Fold the text away when status goes from thinking to done (uncontrolled only). Default true; pass false to leave it open.",
+          "values": [
+            {
+              "name": "true"
+            },
+            {
+              "name": "false"
+            }
+          ]
+        },
+        {
+          "name": "maxHeight",
+          "description": "Cap the open text at this height (px or CSS length) and scroll inside it, so a long chain of thought does not push the message down.",
+          "values": [
+            {
+              "name": "number"
+            },
+            {
+              "name": "string"
+            }
+          ]
         },
         {
           "name": "label",
@@ -9893,7 +9956,27 @@
         },
         {
           "name": "name",
-          "description": "Tool identifier shown in monospace, e.g. \"search_tickets\"."
+          "description": "Tool identifier shown in monospace, e.g. \"search_tickets\". Also names the approval group."
+        },
+        {
+          "name": "title",
+          "description": "Plain-language heading shown instead of `name` (wraps, not monospace): \"Change text\"."
+        },
+        {
+          "name": "compact",
+          "description": "Hide the status badge and keep the icon (the label stays for screen readers). For narrow panels.",
+          "values": [
+            {
+              "name": "true"
+            },
+            {
+              "name": "false"
+            }
+          ]
+        },
+        {
+          "name": "footer",
+          "description": "Row under the result for actions about this call, such as Undo."
         },
         {
           "name": "status",
@@ -10205,7 +10288,19 @@
         },
         {
           "name": "state",
-          "description": "Current state. Default \"idle\"."
+          "description": "Current state. Default \"idle\". processing is the step after transcribing, when the app acts on what was said."
+        },
+        {
+          "name": "mode",
+          "description": "Default \"push-to-send\". hands-free drops the send arrow: one Stop button ends the session, and the layout is a centred stack that fits a side panel."
+        },
+        {
+          "name": "description",
+          "description": "Quiet line under the status, e.g. what the voice command will act on (\"Pointing at Hero heading\")."
+        },
+        {
+          "name": "processingLabel",
+          "description": "Text for the processing state. Default \"Working on it…\"."
         },
         {
           "name": "level",
@@ -10217,7 +10312,7 @@
         },
         {
           "name": "transcript",
-          "description": "Live or final transcript shown while listening or transcribing."
+          "description": "Live or final transcript shown while listening or transcribing. Wraps up to two lines."
         },
         {
           "name": "error",
@@ -10237,7 +10332,7 @@
         },
         {
           "name": "onCancel",
-          "description": "Discard the recording (listening)."
+          "description": "Discard the recording (listening). Also shows a cancel button while requesting, transcribing and processing, so nobody has to wait it out."
         }
       ]
     },

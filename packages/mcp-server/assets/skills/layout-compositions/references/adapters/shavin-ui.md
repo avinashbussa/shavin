@@ -17,7 +17,7 @@ Contents: 1 Vocabulary map · 2 Conventions · 3 Tokens · 4 Treatment recipes �
 | grid | `<Grid columns="…" stack="auto" gap="…">` | `columns="3" stack="auto"`, `gap="6"`, `gap="12"` |
 | stack / row | `<Flex direction align justify gap>` | `direction="column"`, `align="center"`, `justify="between"` |
 | panel | `<Card>` | `className="p-6"` etc. |
-| heading / body | `<Heading size>` · `<Text size>` | marketing and agency hero `size="5xl"` (fluid 36→72px); `size="4xl"` (36→60px) for dense app or docs heroes; section `size="3xl"` (36→48px), `size="2xl"` (30→36px); no `md:text-*` steps. All Headings apply `text-balance` |
+| heading / body | `<Heading size>` · `<Text size>` | marketing and agency hero `size="4xl"` (fluid 36→60px); `size="5xl"` (36→72px) only for the type-only hero H5 or a headline of four words or fewer; at 1440px the hero title is at most twice the size of a section title (`3xl`, 36→48px); a wide display font reads larger than Inter at the same size, so use `4xl` when the display font is not the body font; section `size="3xl"` (36→48px), `size="2xl"` (30→36px); no `md:text-*` steps. All Headings apply `text-balance` |
 | button | `<Button size variant>` | `size="lg"`, variants `"ghost"`, `"outline"` |
 | tabs | `<Tabs defaultValue>` `<TabsList>` `<TabsContent>` | F5, G2 |
 | accordion | `<Accordion type="single" collapsible>` `<AccordionItem>` | Q2 |

@@ -44,7 +44,7 @@ Contents: 0 How to decide · 1 Structural · 2 Hero · 3 Features · 4 Proof · 
 | Physical goods, food, lifestyle, hospitality | H4 or H3 with a real photo | H6 for several products |
 | B2B or SaaS product | H1 or H2 on a photo, mesh or video backdrop (`bgImage`, `bgOverlays`, `bgVideo`) | H5 |
 | Developer tool | H2 with a runnable snippet | H5 |
-| Studio, agency, portfolio | H5 at `5xl`, or H3 | H4 |
+| Studio, agency, portfolio | H5 at `5xl` (four words or fewer, else `4xl`), or H3 | H4 |
 | Community, nonprofit, retreat, event | H3 or H4 with a real photo | H5 |
 | Docs front door | D4, never a hero | |
 

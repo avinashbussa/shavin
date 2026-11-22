@@ -1,17 +1,22 @@
 "use client";
-import React, { useId, useState } from "react";
+import React, { useEffect, useId, useRef, useState } from "react";
 import { cn } from "../../lib/cn";
 import { hitAreaClass, type HitArea } from "../../lib/hit-area";
 import { ChevronRight } from "lucide-react";
 import { Murmur } from "../Murmur/Murmur";
+import { announce } from "../../lib/announce";
 
 export interface ReasoningProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
   /** The model's thinking text. */
   children?: React.ReactNode;
   /** thinking: live, open by default with a pulsing mark. done: collapsed summary. Default "done". */
   status?: "thinking" | "done";
-  /** Elapsed time shown when done, e.g. "4s". */
+  /** Elapsed time shown when done, e.g. "4s". Omit it and the component times the thinking itself. */
   duration?: string;
+  /** Fold the text away when status goes from thinking to done (uncontrolled only). Default true; pass false to leave it open. */
+  autoCollapse?: boolean;
+  /** Cap the open text at this height (px or CSS length) and scroll inside it, so a long chain of thought does not push the message down. */
+  maxHeight?: number | string;
   /** Override the trigger label. */
   label?: string;
   /** Initial open state when uncontrolled. Defaults to open while thinking, closed when done. */
@@ -31,6 +36,8 @@ export function Reasoning({
   children,
   status = "done",
   duration,
+  maxHeight,
+  autoCollapse = true,
   label,
   defaultOpen,
   open: openProp,
@@ -43,7 +50,28 @@ export function Reasoning({
   const [inner, setInner] = useState(defaultOpen ?? status === "thinking");
   const open = openProp ?? inner;
   const thinking = status === "thinking";
-  const text = label ?? (thinking ? "Thinking…" : duration ? `Thought for ${duration}` : "Thought process");
+  // Time the thinking ourselves so "Thinking… 4s" is live and "Thought for 4s" is right without the host passing it.
+  const [seconds, setSeconds] = useState(0);
+  const sawThinking = useRef(thinking);
+  const prevThinking = useRef(thinking);
+  useEffect(() => {
+    if (!thinking) return;
+    setSeconds(0);
+    const t0 = Date.now();
+    const timer = setInterval(() => setSeconds(Math.floor((Date.now() - t0) / 1000)), 1000);
+    return () => clearInterval(timer);
+  }, [thinking]);
+  // thinking -> done: fold the text away (unless the host controls it) and tell screen readers.
+  useEffect(() => {
+    if (prevThinking.current && !thinking) {
+      if (openProp === undefined && autoCollapse) setInner(false);
+      announce("Finished thinking", "polite");
+    }
+    if (thinking) sawThinking.current = true;
+    prevThinking.current = thinking;
+  }, [thinking, openProp, autoCollapse]);
+  const timed = sawThinking.current && seconds > 0 ? `${seconds}s` : undefined;
+  const text = label ?? (thinking ? (timed ? `Thinking… ${timed}` : "Thinking…") : duration ?? timed ? `Thought for ${duration ?? timed}` : "Thought process");
   const toggle = () => {
     const next = !open;
     setInner(next);
@@ -63,7 +91,7 @@ export function Reasoning({
         <ChevronRight className={cn("h-3.5 w-3.5 transition-transform", open && "rotate-90")} aria-hidden />
       </button>
       {open && children != null && (
-        <div id={id} className="border-l border-hairline pl-3 text-sm leading-relaxed text-fg-subtle">
+        <div id={id} className={cn("border-l border-hairline pl-3 text-sm leading-relaxed text-fg-subtle", maxHeight !== undefined && "overflow-y-auto")} style={maxHeight !== undefined ? { maxHeight } : undefined}>
           {children}
         </div>
       )}

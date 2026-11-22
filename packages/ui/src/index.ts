@@ -212,7 +212,7 @@ export { Backdrop, registerBackdrop, BACKDROP_FREE_VARIANTS, type BackdropProps,
 export { Reasoning, type ReasoningProps } from "./primitives/Reasoning";
 export { ToolCall, type ToolCallProps, type ToolCallStatus, type ToolApprovalScope } from "./primitives/ToolCall";
 export { FileOutput, type FileOutputProps, type FileOutputKind, type FileOutputStatus } from "./primitives/FileOutput";
-export { VoiceInput, type VoiceInputProps, type VoiceInputState } from "./primitives/VoiceInput";
+export { VoiceInput, type VoiceInputProps, type VoiceInputState, type VoiceInputMode } from "./primitives/VoiceInput";
 export { Progress } from "./primitives/Progress";
 export { Spinner } from "./primitives/Spinner";
 export { Skeleton, SkeletonMimic } from "./primitives/Skeleton";

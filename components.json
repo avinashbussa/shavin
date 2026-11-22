@@ -3157,10 +3157,16 @@
           "incoming",
           "outgoing",
           "system"
+        ],
+        "sharpCorner": [
+          "bottom",
+          "top",
+          "none"
         ]
       },
       "defaultVariants": {
-        "variant": "incoming"
+        "variant": "incoming",
+        "sharpCorner": "top"
       },
       "props": [
         {
@@ -3183,11 +3189,24 @@
           "doc": "bubble or flat. Defaults to flat for role=\"assistant\", bubble otherwise (and for `variant`)."
         },
         {
+          "name": "sharpCorner",
+          "type": "\"bottom\" | \"top\" | \"none\"",
+          "required": false,
+          "doc": "Which corner of a bubble gets the sharp speech-bubble tail. Default \"top\", as before. \"none\" keeps all corners round.",
+          "default": "top"
+        },
+        {
           "name": "status",
           "type": "ChatStatus",
           "required": false,
           "doc": "Turn lifecycle. Default \"ready\". submitted shows the pending indicator, streaming a live caret, stopped a label, error a retry row.",
           "default": "ready"
+        },
+        {
+          "name": "interim",
+          "type": "boolean",
+          "required": false,
+          "doc": "Live, unconfirmed text (a speech transcript still being heard). Shown italic and quiet until you drop the flag."
         },
         {
           "name": "error",
@@ -3232,6 +3251,12 @@
           "type": "string",
           "required": false,
           "doc": "Timestamp / status shown under the bubble."
+        },
+        {
+          "name": "hoverTimestamp",
+          "type": "boolean",
+          "required": false,
+          "doc": "If true, the timestamp only appears on hover."
         },
         {
           "name": "avatarSrc",
@@ -10420,7 +10445,20 @@
           "name": "duration",
           "type": "string",
           "required": false,
-          "doc": "Elapsed time shown when done, e.g. \"4s\"."
+          "doc": "Elapsed time shown when done, e.g. \"4s\". Omit it and the component times the thinking itself."
+        },
+        {
+          "name": "autoCollapse",
+          "type": "boolean",
+          "required": false,
+          "doc": "Fold the text away when status goes from thinking to done (uncontrolled only). Default true; pass false to leave it open.",
+          "default": "true;"
+        },
+        {
+          "name": "maxHeight",
+          "type": "number | string",
+          "required": false,
+          "doc": "Cap the open text at this height (px or CSS length) and scroll inside it, so a long chain of thought does not push the message down."
         },
         {
           "name": "label",
@@ -14942,7 +14980,25 @@
           "name": "name",
           "type": "string",
           "required": true,
-          "doc": "Tool identifier shown in monospace, e.g. \"search_tickets\"."
+          "doc": "Tool identifier shown in monospace, e.g. \"search_tickets\". Also names the approval group."
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "required": false,
+          "doc": "Plain-language heading shown instead of `name` (wraps, not monospace): \"Change text\"."
+        },
+        {
+          "name": "compact",
+          "type": "boolean",
+          "required": false,
+          "doc": "Hide the status badge and keep the icon (the label stays for screen readers). For narrow panels."
+        },
+        {
+          "name": "footer",
+          "type": "React.ReactNode",
+          "required": false,
+          "doc": "Row under the result for actions about this call, such as Undo."
         },
         {
           "name": "status",
@@ -15429,8 +15485,28 @@
           "name": "state",
           "type": "VoiceInputState",
           "required": false,
-          "doc": "Current state. Default \"idle\".",
+          "doc": "Current state. Default \"idle\". processing is the step after transcribing, when the app acts on what was said.",
           "default": "idle"
+        },
+        {
+          "name": "mode",
+          "type": "VoiceInputMode",
+          "required": false,
+          "doc": "Default \"push-to-send\". hands-free drops the send arrow: one Stop button ends the session, and the layout is a centred stack that fits a side panel.",
+          "default": "push-to-send"
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "required": false,
+          "doc": "Quiet line under the status, e.g. what the voice command will act on (\"Pointing at Hero heading\")."
+        },
+        {
+          "name": "processingLabel",
+          "type": "string",
+          "required": false,
+          "doc": "Text for the processing state. Default \"Working on it…\".",
+          "default": "Working"
         },
         {
           "name": "level",
@@ -15448,7 +15524,7 @@
           "name": "transcript",
           "type": "string",
           "required": false,
-          "doc": "Live or final transcript shown while listening or transcribing."
+          "doc": "Live or final transcript shown while listening or transcribing. Wraps up to two lines."
         },
         {
           "name": "error",
@@ -15478,7 +15554,7 @@
           "name": "onCancel",
           "type": "() => void",
           "required": false,
-          "doc": "Discard the recording (listening)."
+          "doc": "Discard the recording (listening). Also shows a cancel button while requesting, transcribing and processing, so nobody has to wait it out."
         }
       ],
       "builderMeta": {
@@ -15505,6 +15581,10 @@
         }
       ],
       "examples": [
+        {
+          "title": "Hands-free dock",
+          "code": "<VoiceInput mode=\"hands-free\" state=\"listening\" level={0.4} transcript=\"make this heading bigger\" description=\"Pointing at Hero heading\" onStop={() => {}} />"
+        },
         {
           "title": "Listening",
           "code": "<VoiceInput state=\"listening\" level={0.6} elapsed=\"0:07\" onStop={() => {}} onCancel={() => {}} />"

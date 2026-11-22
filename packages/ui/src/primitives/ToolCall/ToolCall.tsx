@@ -31,8 +31,14 @@ function StatusIcon({ status }: { status: ToolCallStatus }) {
 }
 
 export interface ToolCallProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
-  /** Tool identifier shown in monospace, e.g. "search_tickets". */
+  /** Tool identifier shown in monospace, e.g. "search_tickets". Also names the approval group. */
   name: string;
+  /** Plain-language heading shown instead of `name` (wraps, not monospace): "Change text". */
+  title?: string;
+  /** Hide the status badge and keep the icon (the label stays for screen readers). For narrow panels. */
+  compact?: boolean;
+  /** Row under the result for actions about this call, such as Undo. */
+  footer?: React.ReactNode;
   /** Lifecycle of the call. */
   status?: ToolCallStatus;
   /** One line saying what the tool is doing or wants to do, in plain language. */
@@ -52,6 +58,9 @@ export interface ToolCallProps extends Omit<React.HTMLAttributes<HTMLDivElement>
 /** One tool/function call by an assistant, including the permission request before it runs. */
 export function ToolCall({
   name,
+  title,
+  compact,
+  footer,
   status = "done",
   description,
   input,
@@ -75,10 +84,14 @@ export function ToolCall({
           <StatusIcon status={status} />
         </span>
         <div className="min-w-0 flex-1">
-          <Text as="p" size="sm" weight="medium" className="truncate font-mono">{name}</Text>
-          {description && <Text as="p" size="xs" color="subtle" className="truncate">{description}</Text>}
+          {title
+            ? <Text as="p" size="sm" weight="medium" className="break-words">{title}</Text>
+            : <Text as="p" size="sm" weight="medium" className="truncate font-mono">{name}</Text>}
+          {description && <Text as="p" size="xs" color="subtle" className={title ? "break-words" : "truncate"}>{description}</Text>}
         </div>
-        <Badge variant="soft" tone={meta.tone} size="sm">{meta.label}</Badge>
+        {compact
+          ? <span className="sr-only">{meta.label}</span>
+          : <Badge variant="soft" tone={meta.tone} size="sm">{meta.label}</Badge>}
       </div>
       {asking && (
         <div role="group" aria-label={`Permission request for ${name}`} className="flex flex-col gap-3">
@@ -93,6 +106,7 @@ export function ToolCall({
       {(status === "done" || status === "error") && children != null && (
         <div className="rounded-[var(--radius-lg)] bg-surface-hover px-3 py-2 text-xs text-fg-muted">{children}</div>
       )}
+      {footer != null && <div className="flex items-center justify-between gap-2 border-t border-hairline pt-2">{footer}</div>}
     </div>
   );
 }

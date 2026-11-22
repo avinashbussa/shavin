@@ -6,7 +6,10 @@ export const docs: ComponentDoc = {
   features: [
     "status: pending, running, needs-approval, done, error, denied",
     "needs-approval shows the input and Allow once, Always allow and Deny actions",
-    "Result goes in children and shows when done or error"
+    "Result goes in children and shows when done or error",
+    "title replaces the monospace name with a wrapping plain-language heading",
+    "compact swaps the status badge for the icon alone (label kept for screen readers)",
+    "footer is a row under the result for actions such as Undo"
 ],
   accessibility: [
     "Permission actions sit in a role=group labelled with the tool name",

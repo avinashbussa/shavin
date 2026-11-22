@@ -5,7 +5,10 @@ export const docs: ComponentDoc = {
   description: "Collapsible disclosure for a model's reasoning: pulsing Thinking\u2026 while live, Thought for 4s when done.",
   features: [
     "status: thinking (open, pulsing mark) or done (collapsed summary)",
-    "duration and label props, controlled or uncontrolled open state"
+    "duration and label props, controlled or uncontrolled open state",
+    "Times the thinking itself: Thinking\u2026 4s while live, Thought for 4s after, unless you pass duration",
+    "Folds away on thinking to done when uncontrolled (autoCollapse, default true), and announces that it finished",
+    "maxHeight scrolls a long chain of thought inside the block"
 ],
   accessibility: [
     "Trigger is a button with aria-expanded and aria-controls",
