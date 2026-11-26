@@ -51,7 +51,7 @@
 | Package | What it is |
 |---|---|
 | [`@shavin/ui`](./packages/ui) | 94 React primitives on Radix, two-tier tokens, Tailwind v3 preset and v4 theme ([component docs](https://docs.shavin.cc/components/overview)) |
-| [`@shavin/cli`](./packages/cli) | `npx @shavin/cli init` wires Tailwind, styles, ThemeProvider, brand tokens and agent config; `add` installs blocks |
+| [`@shavin/cli`](./packages/cli) | `npx @shavin/cli init` wires Tailwind, styles, ThemeProvider, brand tokens and agent config; `brand` sets colour, fonts and mode in one step; `findings` hands findings sent from the page to an agent; `add` installs blocks |
 | [`@shavin/mcp`](./packages/mcp-server) | MCP server: component APIs, tokens and rules for agents, code validation and autofix, live browser audit ([overview](https://www.shavin.cc/mcp)) |
 | [`@shavin/skills`](./packages/skills) | Design-judgement skills and slash commands for AI coding agents |
 | [`@shavin/block-schema`](./packages/block-schema) | Block types, schemas and the open block catalogue ([browse blocks](https://www.shavin.cc/blocks)) |
@@ -113,6 +113,8 @@ The same block works in `.mcp.json` (Claude Code), `.cursor/mcp.json`, `.vscode/
 **On Windows** use `cmd /c npx`, because `npx` there is `npx.cmd` and a client that starts it without a shell fails with `spawn npx ENOENT`: `{ "command": "cmd", "args": ["/c", "npx", "-y", "@shavin/mcp"] }`. `init` writes this form on Windows.
 
 #### Tools
+
+There are 36 tools in all. An agent sees 22 of them by default: the Studio tools appear once a Studio session is connected, and the live-audit and findings tools once a browser tab is connected. Set `SHAVIN_MCP_ALL_TOOLS=1` to list all 36.
 
 | Group | Tools |
 |---|---|
