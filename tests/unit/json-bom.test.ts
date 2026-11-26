@@ -142,7 +142,7 @@ describe("applyTheme and .shavin/config.json", () => {
     expect(r.notes.join("\n")).not.toMatch(/not valid JSON/);
     const cfg = readJson(dir, ".shavin/config.json");
     expect(cfg.keep).toBe("me");
-    expect(cfg.presets).toEqual({ gray: "zinc", brandColor: "teal" });
+    expect(cfg.presets).toEqual({ gray: "zinc", brandColor: "teal", neutrals: "neutral", neutralsAmount: "subtle" });
     expect(cfg.brandConfirmed).toBe(true);
   });
   it("does not replace a config it cannot read: it warns and leaves the file as it was", async () => {

@@ -7,6 +7,9 @@
  *   npx @shavin/cli brand --color teal --display-font Fraunces --body-font Inter --mode light-first [--confirm] [--json]
  *                              apply a theme choice: ThemeProvider props, SHAVIN.md and .shavin/config.json
  *
+ *                            add --neutrals brand|neutral and --neutrals-amount subtle|medium to choose whether the greys
+ *                            lean toward the brand hue (opt-in; default: neutral, subtle)
+ *
  * Every extra brand colour gets --brand-<name>-solid / -solid-hover / -fg (the fill under text and its
  * text colour). `--brand-solid-mode: accessible | exact | perceptual;` in the INPUT section chooses how
  * they are derived (default accessible: white text >= 4.6:1, light brands keep their exact fill).

@@ -25,6 +25,12 @@ export const FONT_NAMES = [
   "Roboto", "Saira", "Source Serif 4", "Space Grotesk", "Staatliches", "Titillium Web", "Urbanist", "Work Sans",
 ];
 
+/** Grey scale hue: "neutral" keeps the plain grey (default), "brand" tints the greys toward the brand colour (opt-in). */
+export const NEUTRALS_MODES = ["brand", "neutral"];
+export const NEUTRALS_AMOUNTS = ["subtle", "medium"];
+export const DEFAULT_NEUTRALS = "neutral";
+export const DEFAULT_NEUTRALS_AMOUNT = "subtle";
+
 export const MODES = { "dark-first": "dark", "light-first": "light", system: "system" };
 
 const LAYOUT_CANDIDATES = [
@@ -42,7 +48,7 @@ export function readFlag(args, name) {
 }
 
 export function isThemeInvocation(args) {
-  return ["--color", "--display-font", "--body-font", "--mode", "--confirm"].some((f) => args.some((a) => a === f || a.startsWith(`${f}=`)));
+  return ["--color", "--display-font", "--body-font", "--mode", "--neutrals", "--neutrals-amount", "--confirm"].some((f) => args.some((a) => a === f || a.startsWith(`${f}=`)));
 }
 
 function canonicalFont(name) {
@@ -71,6 +77,16 @@ export function parseThemeFlags(args) {
     if (!MODES[mode]) return { error: `Unknown mode "${mode}". Use one of: ${Object.keys(MODES).join(", ")}.` };
     values.mode = mode;
   }
+  const neutrals = readFlag(args, "--neutrals");
+  if (neutrals !== undefined) {
+    if (!NEUTRALS_MODES.includes(neutrals)) return { error: `Unknown --neutrals "${neutrals}". Use one of: ${NEUTRALS_MODES.join(", ")}.` };
+    values.neutrals = neutrals;
+  }
+  const amount = readFlag(args, "--neutrals-amount");
+  if (amount !== undefined) {
+    if (!NEUTRALS_AMOUNTS.includes(amount)) return { error: `Unknown --neutrals-amount "${amount}". Use one of: ${NEUTRALS_AMOUNTS.join(", ")}.` };
+    values.neutralsAmount = amount;
+  }
   values.confirm = args.includes("--confirm");
   return { values };
 }
@@ -80,13 +96,18 @@ function setJsxProp(attrs, name, value) {
   return `${without} ${name}="${value}"`;
 }
 
+function removeJsxProp(attrs, name) {
+  return attrs.replace(new RegExp(`\\s+${name}=(?:"[^"]*"|'[^']*'|\\{[^{}]*\\})`, "g"), "");
+}
+
 /** Patches the first plain <ThemeProvider ...> opening tag. Returns the new source or null. */
 export function patchThemeProvider(src, props) {
   if (!/import\s*\{[^}]*\bThemeProvider\b[^}]*\}\s*from\s*["']@shavin\/ui["']/.test(src)) return null;
   const m = src.match(/<ThemeProvider\b([^<>]*?)(\/?)>/);
   if (!m) return null;
   let attrs = m[1];
-  for (const [name, value] of Object.entries(props)) attrs = setJsxProp(attrs, name, value);
+  // A value of null removes the prop (used for the defaults of the neutrals options, which are not written out).
+  for (const [name, value] of Object.entries(props)) attrs = value === null ? removeJsxProp(attrs, name) : setJsxProp(attrs, name, value);
   return src.replace(m[0], `<ThemeProvider${attrs}${m[2]}>`);
 }
 
@@ -115,6 +136,9 @@ export function applyTheme(cwd, values) {
   if (values.displayFont) providerProps.displayFont = values.displayFont;
   if (values.bodyFont) providerProps.bodyFont = values.bodyFont;
   if (values.mode) providerProps.defaultTheme = MODES[values.mode];
+  // Only non-default neutrals choices appear in the layout; the defaults (neutral, subtle) are what the provider does anyway.
+  if (values.neutrals) providerProps.neutrals = values.neutrals === DEFAULT_NEUTRALS ? null : values.neutrals;
+  if (values.neutralsAmount) providerProps.neutralsAmount = values.neutralsAmount === DEFAULT_NEUTRALS_AMOUNT ? null : values.neutralsAmount;
 
   if (Object.keys(providerProps).length) {
     let patched = false;
@@ -132,7 +156,7 @@ export function applyTheme(cwd, values) {
       if (next === src) { patched = true; break; }
     }
     if (!patched) {
-      paste.push(`<ThemeProvider ${Object.entries(providerProps).map(([k, v]) => `${k}="${v}"`).join(" ")}>`);
+      if (Object.values(providerProps).some((v) => v !== null)) paste.push(`<ThemeProvider ${Object.entries(providerProps).filter(([, v]) => v !== null).map(([k, v]) => `${k}="${v}"`).join(" ")}>`);
       notes.push("No plain <ThemeProvider> found in the root layout; add the props above by hand.");
     }
   }
@@ -143,6 +167,11 @@ export function applyTheme(cwd, values) {
     const before = md;
     if (values.color) md = setLabelLine(md, "Primary Brand", values.color);
     if (values.mode) md = setLabelLine(md, "Theme Mode", values.mode);
+    if (values.neutrals || values.neutralsAmount) {
+      const cur = md.match(/^- \*\*Neutrals\*\*:\s*`?([^`\n]*)`?/m);
+      const [curMode, curAmount] = cur ? cur[1].split("/").map((x) => x.trim()) : [];
+      md = setLabelLine(md, "Neutrals", `${values.neutrals || curMode || DEFAULT_NEUTRALS} / ${values.neutralsAmount || curAmount || DEFAULT_NEUTRALS_AMOUNT}`, "Theme Mode");
+    }
     if (values.displayFont || values.bodyFont) {
       const cur = md.match(/^- \*\*Display \/ Body Font\*\*:\s*`?([^`\n]*)`?/m);
       const [curD, curB] = cur && !/unset/i.test(cur[1]) ? cur[1].split("/").map((s) => s.trim()) : [];
@@ -172,6 +201,13 @@ export function applyTheme(cwd, values) {
   if (values.displayFont) cfg.presets.displayFont = values.displayFont;
   if (values.bodyFont) cfg.presets.bodyFont = values.bodyFont;
   if (values.mode) cfg.presets.mode = values.mode;
+  // Choosing a colour records the neutrals default too, so the config shows what the provider does.
+  if (values.color) {
+    cfg.presets.neutrals ??= DEFAULT_NEUTRALS;
+    cfg.presets.neutralsAmount ??= DEFAULT_NEUTRALS_AMOUNT;
+  }
+  if (values.neutrals) cfg.presets.neutrals = values.neutrals;
+  if (values.neutralsAmount) cfg.presets.neutralsAmount = values.neutralsAmount;
   if (values.confirm) cfg.brandConfirmed = true;
   mkdirSync(dirname(cfgPath), { recursive: true });
   writeFileSync(cfgPath, JSON.stringify(cfg, null, 2), "utf8");

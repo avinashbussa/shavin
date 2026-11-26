@@ -9,6 +9,7 @@ export const docs: ComponentDoc = {
     "Integrates preset themes (e.g. Editorial, Corporate, Modern)",
     "focusRing sets the keyboard focus ring weight for the page: subtle (default, 1px), default (2px) or strong (3px); ScopedThemeProvider takes the same prop and inherits when unset. Tune --focus-width / --focus-offset in CSS for anything else",
     "brandSolid chooses the fill under text on the brand (solid Button, Badge, selected states): \"accessible\" (default) darkens the brand just enough for white text at 4.6:1, \"exact\" keeps the exact brand fill, \"perceptual\" keeps it and picks text by APCA (not WCAG 2 AA on every brand)",
+    "neutrals: \"neutral\" (default) keeps the plain grey. Opt in with neutrals=\"brand\" to tint the greys toward the brand hue at very low chroma, with the same lightness as the plain greys so contrast is unchanged; it wins over a gray preset, and grey or monochrome brands never tint. neutralsAmount (with neutrals=\"brand\"): \"subtle\" (default) or \"medium\"",
     "Can be used standalone or wrapping application root",
     "touchTargets: \"comfortable\" (default) grows primary controls to 44px on touch; \"compact\" keeps their size (the 24px WCAG 2.5.8 floor stays). Tune with --tap-min and --tap-min-touch",
     "ScopedThemeProvider touchTargets: unset inherits from the nearest parent provider (it is not an explicit \"comfortable\"), so a compact page keeps unset scoped islands compact; pass \"comfortable\" or \"compact\" to override"
@@ -41,6 +42,10 @@ export const docs: ComponentDoc = {
     {
       title: "Root Theme Initialization",
       code: '<ThemeProvider brandColor="Monochrome" grayColor="Zinc" radius="large" scaling={100} panelBackground="solid" />'
+    },
+    {
+      title: "Brand-tinted greys (opt in), subtle or stronger",
+      code: '<ThemeProvider brandColor="Tomato" neutrals="brand" />\n<ThemeProvider brandColor="Tomato" neutrals="brand" neutralsAmount="medium" />'
     },
     {
       title: "Compact touch targets (dense product UI)",

@@ -14368,6 +14368,18 @@
           "doc": "How the fill under text on the brand (solid Button, Badge, selected states) is chosen. Written to `--brand-solid`, `--brand-solid-hover` and `--brand-fg`. - \"accessible\" (default): the brand's hue with lightness lowered just far enough that white text clears 4.6:1 (WCAG 2 AA with headroom); a genuinely light brand (lime, mint, sky, amber) keeps its exact fill and takes dark text. - \"exact\": the exact brand fill, text white or ink by WCAG 2 contrast (the behaviour before this prop). - \"perceptual\": the exact brand fill, text white wherever APCA prefers it. Does NOT meet WCAG 2 AA on every brand colour; a development-only console warning says which. Inherited by ScopedThemeProvider."
         },
         {
+          "name": "neutrals",
+          "type": "NeutralsMode",
+          "required": false,
+          "doc": "Hue of the grey scale. \"neutral\" (default) keeps the plain grey. \"brand\" is opt-in: it tints backgrounds, borders and text greys toward the brand colour at very low chroma, with the same lightness as the plain greys so every contrast pair holds, and wins over a gray preset. Grey and monochrome brands never tint."
+        },
+        {
+          "name": "neutralsAmount",
+          "type": "NeutralsAmount",
+          "required": false,
+          "doc": "How much of the brand hue shows in tinted greys: \"subtle\" (default) or \"medium\"."
+        },
+        {
           "name": "colorSpace",
           "type": "ColorSpace",
           "required": false,
@@ -14435,6 +14447,10 @@
         {
           "title": "Root Theme Initialization",
           "code": "<ThemeProvider brandColor=\"Monochrome\" grayColor=\"Zinc\" radius=\"large\" scaling={100} panelBackground=\"solid\" />"
+        },
+        {
+          "title": "Brand-tinted greys (opt in), subtle or stronger",
+          "code": "<ThemeProvider brandColor=\"Tomato\" neutrals=\"brand\" />\n<ThemeProvider brandColor=\"Tomato\" neutrals=\"brand\" neutralsAmount=\"medium\" />"
         },
         {
           "title": "Compact touch targets (dense product UI)",

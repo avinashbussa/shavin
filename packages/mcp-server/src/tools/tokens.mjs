@@ -2,6 +2,9 @@
  * Tool: get_tokens
  * Query @shavin/ui tokens by category, name, or semantic role.
  */
+const NEUTRALS_NOTE =
+  "The greys (canvas, surface, hairline, fg-muted, fg-subtle) are plain neutral by default. Optional: ThemeProvider neutrals=\"brand\" tints them toward the brand hue at very low chroma and the same lightness, so contrast is unchanged (neutralsAmount=\"subtle\"|\"medium\"); grey and monochrome brands stay neutral. Set it only when asked: `npx @shavin/cli brand --neutrals brand|neutral --neutrals-amount subtle|medium`. Use the semantic tokens as usual; never a hand-picked grey.";
+
 export function registerTokensTool(server, TOKENS) {
   return {
     schema: {
@@ -67,7 +70,8 @@ export function registerTokensTool(server, TOKENS) {
       // Dense token clustering
       if (category !== "all" && TOKENS.semantic?.[category]) {
         const tokenList = Object.keys(TOKENS.semantic[category]).map((k) => `--${k}`).join(", ");
-        return { content: [{ type: "text", text: `# @shavin/ui Tokens [${category.toUpperCase()}]\n${tokenList}` }] };
+        const note = category === "brand" || category === "background" ? `\n${NEUTRALS_NOTE}` : "";
+        return { content: [{ type: "text", text: `# @shavin/ui Tokens [${category.toUpperCase()}]\n${tokenList}${note}` }] };
       }
 
       const denseClusters = [
@@ -76,6 +80,7 @@ export function registerTokensTool(server, TOKENS) {
         "",
         "**BACKGROUNDS**: bg-canvas, bg-surface, bg-surface-hover, bg-elevated, bg-elevated-hover (rows inside menus and popovers), bg-surface-raised, bg-brand (identity fills with no text on them), bg-brand-solid + text-brand-fg + hover:bg-brand-solid-hover (anything with text on the brand: solid buttons, badges, selected states), bg-brand-subtle",
         "**TEXT/FOREGROUND**: text-fg (headings), text-fg-subtle (paired descriptions), text-fg-muted (standalone meta), text-brand-text (brand-coloured text and icons; contrast-guaranteed, never raw text-brand)",
+        `**NEUTRALS**: ${NEUTRALS_NOTE}`,
         "**BORDERS**: border-hairline (resting cards/dividers), border-hairline-strong (hover/active/featured states)",
         "**CONCENTRIC RADIUS**:",
         "  - Containers/Panels: rounded-[var(--radius-panel)] (cards, dialogs, popovers, menus; capped at finite curve, NEVER pill)",

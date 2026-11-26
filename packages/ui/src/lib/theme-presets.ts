@@ -27,6 +27,14 @@ import {
   rgbTripletToOklch,
   getColorSpace,
 } from "./color-space";
+import {
+  type NeutralsAmount,
+  type NeutralsMode,
+  DEFAULT_NEUTRALS_AMOUNT,
+  isNeutralsAmount,
+  tintedNeutralVars,
+  NEUTRAL_STEPS,
+} from "./neutral-tint";
 
 export function hexToTriplet(hex: string): string {
   const m = hex.replace("#", "");
@@ -429,6 +437,26 @@ export function applyGrayColor(name: string) {
   root.style.setProperty("--n-450", cs === "oklch" ? oklchToCss(rgbTripletToOklch(n450)) : n450);
 }
 
+const TINTED_STEP_PROPS = NEUTRAL_STEPS.map((s) => `--n-${s}`);
+
+/**
+ * Runtime twin of the tinted greys in themeCss: writes the scale for `brand`, or clears what an earlier
+ * call wrote when the brand is grey or `brand` is undefined. Same values as the server-rendered CSS.
+ */
+export function applyNeutralsTint(brand: string | undefined, amount: NeutralsAmount = DEFAULT_NEUTRALS_AMOUNT) {
+  const root = document.documentElement;
+  const vars = brand ? tintedNeutralVars(brandHexOf(brand), amount, getColorSpace()) : {};
+  if (!Object.keys(vars).length) {
+    if (root.dataset.shavinNeutrals) {
+      for (const p of TINTED_STEP_PROPS) root.style.removeProperty(p);
+      delete root.dataset.shavinNeutrals;
+    }
+    return;
+  }
+  for (const [k, v] of Object.entries(vars)) root.style.setProperty(k, v);
+  root.dataset.shavinNeutrals = amount;
+}
+
 export function applyRadiusPreset(name: string) {
   const preset = RADIUS_PRESETS.find((r) => r.name.toLowerCase() === name.toLowerCase());
   if (!preset) return;
@@ -574,6 +602,14 @@ export interface ThemeConfigInput {
   subheadingFont?: string;
   /** How solid brand fills are chosen: "accessible" (default) | "exact" | "perceptual". See BrandSolidMode. */
   brandSolid?: BrandSolidMode;
+  /**
+   * Grey scale hue. "brand" tints the greys toward the brand colour at very low chroma (same lightness
+   * as the default scale, so contrast is unchanged); "neutral" (the default) keeps the plain grey.
+   * Opt-in only. Wins over a gray preset when set. Grey and monochrome brands never tint.
+   */
+  neutrals?: NeutralsMode;
+  /** How much of the brand hue shows in the greys when they are tinted: "subtle" (default) | "medium". */
+  neutralsAmount?: NeutralsAmount;
 }
 
 export interface ResolvedThemeConfig {
@@ -586,6 +622,15 @@ export interface ResolvedThemeConfig {
   bodyFont?: string;
   subheadingFont?: string;
   brandSolid: BrandSolidMode;
+  /** Set when the greys follow the brand: the brand to tint toward and how much. */
+  neutralsTint?: { brand: string; amount: NeutralsAmount };
+}
+
+/** Hex for a brand preset name or literal hex; "#000000" (Monochrome) for anything unknown. */
+function brandHexOf(nameOrHex: string): string {
+  return nameOrHex.startsWith("#")
+    ? nameOrHex
+    : BRAND_PRESETS.find((p) => p.name.toLowerCase() === nameOrHex.toLowerCase())?.hex ?? "#000000";
 }
 
 /**
@@ -593,7 +638,7 @@ export interface ResolvedThemeConfig {
  * "Monochrome" preset when nothing is set), then each explicit prop overrides it.
  */
 export function resolveThemeConfig(input: ThemeConfigInput = {}): ResolvedThemeConfig {
-  const { theme, brandColor, grayColor, radius, scaling, panelBackground, displayFont, bodyFont, subheadingFont, brandSolid } = input;
+  const { theme, brandColor, grayColor, radius, scaling, panelBackground, displayFont, bodyFont, subheadingFont, brandSolid, neutrals, neutralsAmount } = input;
   const nothingSet = !theme && !brandColor && !grayColor && !radius && !displayFont && !bodyFont;
   const preset = theme
     ? THEME_PRESETS.find((t) => t.name.toLowerCase() === theme.toLowerCase())
@@ -601,9 +646,14 @@ export function resolveThemeConfig(input: ThemeConfigInput = {}): ResolvedThemeC
       ? THEME_PRESETS.find((t) => t.name === "Monochrome")
       : undefined;
   const scale = scaling ?? preset?.scaling;
+  const brand = brandColor ?? preset?.brandColor;
+  const gray = grayColor ?? preset?.grayColor;
+  // Opt-in only: the greys stay plain unless neutrals is "brand" (which wins over a preset gray).
+  const tintGreys = neutrals === "brand";
   return {
-    brand: brandColor ?? preset?.brandColor,
-    gray: grayColor ?? preset?.grayColor,
+    brand,
+    gray: tintGreys && brand ? undefined : gray,
+    neutralsTint: tintGreys && brand ? { brand, amount: isNeutralsAmount(neutralsAmount) ? neutralsAmount : DEFAULT_NEUTRALS_AMOUNT } : undefined,
     radius: radius ?? preset?.radius,
     scaling: scale === undefined ? undefined : typeof scale === "string" ? parseInt(scale, 10) : scale,
     translucentPanels: (panelBackground ?? preset?.panelBackground) === "translucent",
@@ -655,6 +705,7 @@ export function themeCss(input: ThemeConfigInput & { colorSpace?: ColorSpace } =
       }
     }
   }
+  if (c.neutralsTint) Object.assign(shared, tintedNeutralVars(brandHexOf(c.neutralsTint.brand), c.neutralsTint.amount, cs));
   if (c.radius) {
     const r = RADIUS_PRESETS.find((x) => x.name.toLowerCase() === c.radius!.toLowerCase());
     if (r) {

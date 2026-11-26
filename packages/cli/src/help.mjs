@@ -26,13 +26,15 @@ export function printHelp() {
     ${c.brand}${"publish <file>".padEnd(20)}${c.reset} ${c.fgSubtle}Verify block with MCP quality gate & package manifest${c.reset}
     ${c.brand}${"bridge".padEnd(20)}${c.reset} ${c.fgSubtle}Start the Agent-Browser Bridge daemon${c.reset}
     ${c.brand}${"findings".padEnd(20)}${c.reset} ${c.fgSubtle}Read, take or finish findings sent from the page${c.reset}
-    ${c.brand}${"brand [--check|--init]".padEnd(20)}${c.reset} ${c.fgSubtle}Generate or scaffold brand color tokens, or apply a theme (--color, --display-font, --body-font, --mode, --confirm)${c.reset}
+    ${c.brand}${"brand [--check|--init]".padEnd(20)}${c.reset} ${c.fgSubtle}Generate or scaffold brand color tokens, or apply a theme (--color, --display-font, --body-font, --mode, --neutrals, --confirm)${c.reset}
 
   ${c.bold}${c.fg}Options:${c.reset}
     ${c.fgMuted}${"--oklch".padEnd(20)}${c.reset} ${c.fgSubtle}Use OKLCH color space for init (v4 OKLCH path)${c.reset}
     ${c.fgMuted}${"--overwrite".padEnd(20)}${c.reset} ${c.fgSubtle}Overwrite existing files when adding blocks${c.reset}
     ${c.fgMuted}${"--yes, -y".padEnd(20)}${c.reset} ${c.fgSubtle}add: run init and install missing packages without asking${c.reset}
     ${c.fgMuted}${"--community".padEnd(20)}${c.reset} ${c.fgSubtle}Query online community creator registry${c.reset}
+    ${c.fgMuted}${"--neutrals <m>".padEnd(20)}${c.reset} ${c.fgSubtle}brand: "neutral" (default) keeps plain greys; "brand" opts in to greys tinted toward the brand hue${c.reset}
+    ${c.fgMuted}${"--neutrals-amount <a>".padEnd(20)}${c.reset} ${c.fgSubtle}brand: with --neutrals brand, "subtle" (default) or "medium"${c.reset}
     ${c.fgMuted}${"--port <port>".padEnd(20)}${c.reset} ${c.fgSubtle}Override the bridge server port${c.reset}
     ${c.fgMuted}${"--json".padEnd(20)}${c.reset} ${c.fgSubtle}Output machine-readable JSON format${c.reset}
     ${c.fgMuted}${"--version, -v".padEnd(20)}${c.reset} ${c.fgSubtle}Print the CLI version${c.reset}

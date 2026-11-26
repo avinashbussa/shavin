@@ -3,6 +3,7 @@ import { useEffect, useLayoutEffect, useMemo, type ReactNode } from "react";
 import {
   applyBrandColor,
   applyGrayColor,
+  applyNeutralsTint,
   applyPanelBackground,
   applyRadiusPreset,
   applyScalingPreset,
@@ -17,6 +18,7 @@ import {
   perceptualAaFailures,
   type BrandSolidMode,
 } from "../../lib/theme-presets";
+import type { NeutralsAmount, NeutralsMode } from "../../lib/neutral-tint";
 import { ThemeInheritanceContext } from "./themeContext";
 import { setColorSpace, type ColorSpace } from "../../lib/color-space";
 import { ThemeScript } from "../ThemeSwitcher";
@@ -77,6 +79,14 @@ export interface ThemeProviderProps {
    */
   brandSolid?: BrandSolidMode;
   /**
+   * Hue of the grey scale. "neutral" (default) keeps the plain grey. "brand" is opt-in: it tints backgrounds,
+   * borders and text greys toward the brand colour at very low chroma, with the same lightness as the plain
+   * greys so every contrast pair holds, and wins over a gray preset. Grey and monochrome brands never tint.
+   */
+  neutrals?: NeutralsMode;
+  /** How much of the brand hue shows in tinted greys: "subtle" (default) or "medium". */
+  neutralsAmount?: NeutralsAmount;
+  /**
    * Color space for runtime token values. "rgb" (default) outputs bare RGB triplets
    * for Tailwind v3 + v4-rgb paths. "oklch" outputs oklch() CSS strings for the
    * Tailwind v4 OKLCH path (global-oklch.css + theme-v4-oklch.css).
@@ -134,6 +144,8 @@ export function ThemeProvider({
   subheadingFont,
   focusRing,
   brandSolid = "accessible",
+  neutrals,
+  neutralsAmount,
   colorSpace = "rgb",
   preloadFonts,
   devTools,
@@ -182,6 +194,12 @@ export function ThemeProvider({
   useEffect(() => {
     if (grayColor) applyGrayColor(grayColor);
   }, [grayColor]);
+  // After the brand and gray effects: the tinted greys replace whatever scale they just wrote. Clears itself
+  // when the brand turns grey or `neutrals` is "neutral".
+  useEffect(() => {
+    const t = resolveThemeConfig({ theme, brandColor, grayColor, neutrals, neutralsAmount }).neutralsTint;
+    applyNeutralsTint(t?.brand, t?.amount);
+  }, [theme, brandColor, grayColor, neutrals, neutralsAmount, colorSpace]);
   useEffect(() => {
     if (radius) applyRadiusPreset(radius);
   }, [radius]);
@@ -210,7 +228,7 @@ export function ThemeProvider({
 
   // Publish the resolved config so tooling (the Dev Inspector) starts from what this provider was
   // given instead of its own defaults. Runs after the apply effects above.
-  const resolved = resolveThemeConfig({ theme, brandColor, grayColor, radius, scaling, panelBackground, displayFont, bodyFont, subheadingFont, brandSolid });
+  const resolved = resolveThemeConfig({ theme, brandColor, grayColor, radius, scaling, panelBackground, displayFont, bodyFont, subheadingFont, brandSolid, neutrals, neutralsAmount });
   const configSig = JSON.stringify([theme, resolved]);
   useEffect(() => {
     const detail: ShavinThemeConfig = { theme, ...resolved };
@@ -221,7 +239,7 @@ export function ThemeProvider({
 
   // Rendered into the server HTML so the first paint already uses the brand. The effects above
   // still run and write the same values, which keeps live updates (DevTools, Studio) working.
-  const css = themeCss({ theme, brandColor, grayColor, radius, scaling, displayFont, bodyFont, subheadingFont, brandSolid, colorSpace });
+  const css = themeCss({ theme, brandColor, grayColor, radius, scaling, displayFont, bodyFont, subheadingFont, brandSolid, neutrals, neutralsAmount, colorSpace });
   const inheritance = useMemo(() => ({ brandSolid: resolved.brandSolid, brand: resolved.brand }), [resolved.brandSolid, resolved.brand]);
   const { translucentPanels } = resolveThemeConfig({ theme, brandColor, grayColor, radius, panelBackground, displayFont, bodyFont });
 

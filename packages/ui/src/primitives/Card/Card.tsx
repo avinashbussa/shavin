@@ -20,7 +20,7 @@ const cardVariants = cva("rounded-[var(--radius-panel)] border border-hairline b
       "3xl": "p-12",
     },
     interactive: {
-      true: "hover:border-hairline-strong hover:shadow-panel cursor-pointer",
+      true: "hover:border-hairline-strong hover:shadow-panel cursor-pointer motion-safe:active:translate-y-px",
       false: "",
     },
   },

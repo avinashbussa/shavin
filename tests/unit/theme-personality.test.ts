@@ -149,3 +149,49 @@ describe("MCP reminder while the theme is unconfirmed", () => {
     }
   });
 });
+
+describe("neutrals flags", () => {
+  it("parses --neutrals and --neutrals-amount and rejects unknown values", () => {
+    expect(themeSet.parseThemeFlags(["--neutrals", "neutral", "--neutrals-amount=medium"]).values).toMatchObject({ neutrals: "neutral", neutralsAmount: "medium" });
+    expect(themeSet.parseThemeFlags(["--neutrals", "warm"]).error).toMatch(/Unknown --neutrals/);
+    expect(themeSet.parseThemeFlags(["--neutrals-amount", "loud"]).error).toMatch(/Unknown --neutrals-amount/);
+    expect(themeSet.isThemeInvocation(["--neutrals", "brand"])).toBe(true);
+  });
+
+  it("writes only non-default choices to the layout and records everything in config and SHAVIN.md", () => {
+    const dir = project({ "src/app/layout.tsx": LAYOUT, "SHAVIN.md": TEMPLATE });
+    try {
+      themeSet.applyTheme(dir, themeSet.parseThemeFlags(["--color", "#b4472a"]).values);
+      let layout = readFileSync(join(dir, "src/app/layout.tsx"), "utf8");
+      expect(layout).toContain('<ThemeProvider brandColor="#b4472a">');
+      let cfg = JSON.parse(readFileSync(join(dir, ".shavin/config.json"), "utf8"));
+      expect(cfg.presets).toMatchObject({ brandColor: "#b4472a", neutrals: "neutral", neutralsAmount: "subtle" });
+
+      // Opt in: the prop appears in the layout.
+      themeSet.applyTheme(dir, themeSet.parseThemeFlags(["--neutrals", "brand", "--neutrals-amount", "medium"]).values);
+      layout = readFileSync(join(dir, "src/app/layout.tsx"), "utf8");
+      expect(layout).toContain('neutrals="brand"');
+      expect(layout).toContain('neutralsAmount="medium"');
+      expect(readFileSync(join(dir, "SHAVIN.md"), "utf8")).toContain("- **Neutrals**: `brand / medium`");
+      cfg = JSON.parse(readFileSync(join(dir, ".shavin/config.json"), "utf8"));
+      expect(cfg.presets).toMatchObject({ neutrals: "brand", neutralsAmount: "medium" });
+
+      // Back to the defaults: the props leave the layout, the choice stays recorded.
+      themeSet.applyTheme(dir, themeSet.parseThemeFlags(["--neutrals", "neutral", "--neutrals-amount", "subtle"]).values);
+      layout = readFileSync(join(dir, "src/app/layout.tsx"), "utf8");
+      expect(layout).not.toContain("neutrals");
+      expect(readFileSync(join(dir, "SHAVIN.md"), "utf8")).toContain("- **Neutrals**: `neutral / subtle`");
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("brand --help mentions the option", async () => {
+    // `shavin brand --help` is answered by bin/shavin.mjs from src/help.mjs, before the command module loads.
+    const { readFileSync: read } = await import("node:fs");
+    const help = read(resolve(ROOT, "packages/cli/src/help.mjs"), "utf8");
+    expect(help).toContain("--neutrals <m>");
+    expect(help).toContain("--neutrals-amount <a>");
+    expect(help).toContain('"neutral" (default)');
+  });
+});

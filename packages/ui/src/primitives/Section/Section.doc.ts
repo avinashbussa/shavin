@@ -12,6 +12,7 @@ export const docs: ComponentDoc = {
     "Surface contrast scope via surface prop for media backgrounds. With a photo, video or fx backdrop and no surface it defaults to dark-always plus a dark scrim (dark-30, fx dark-50); meshes and custom gradients need an explicit surface (dark-always or light-always)",
     "Background media: bgVideo, bgImage, bgOverlays (presets, hex, tokens, gradients via comma-separated shorthand), bgSize, bgVideoPaused, bgPoster (video poster + reduced-motion fallback)",
     "Mesh backdrops: bgOverlays=\"mesh-lime\" | mesh-mint | mesh-peach | mesh-brand (append -animated for a slow drift); directional scrim-left and theme-aware fade-canvas; off-centre radial(at 20% 30%, ...)",
+    "Scroll-in reveal (CSS only, on by default): h1-h3 inside a <Section data-composition=\"...\"> fade and rise a little as they scroll into view, in browsers that support animation-timeline: view() (Chrome and Edge 115+, Safari 26+); content is always visible without it and under prefers-reduced-motion. Turn it off with data-reveal=\"off\" on the Section (or on one heading); mark any other block with data-reveal to opt it in. data-composition=\"none\" screens never reveal",
     "Fx backdrops (needs `npm i @shavin/fx`, free to use under its own licence, and `registerFxBackdrops()`): bgOverlays=\"fx:dither-waves, gradient-bottom\"; params only when changed: fx:fluid-silk(speed=1.2 color=brand); quote text values: fx:type-tiles(text='Plan money')",
   ],
   accessibility: [
