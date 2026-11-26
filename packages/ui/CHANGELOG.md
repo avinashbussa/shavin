@@ -47,6 +47,8 @@ The Shavin React primitive library: token-driven components that coding agents c
   - pass `autoCollapse={false}` to keep a block open
   - existing uncontrolled blocks now collapse on their own
 - **Visible change**: `ChatBubble` keeps its 85% width cap on the message column, not on the bubble, so a short bubble sizes to its text instead of wrapping early in a narrow container
+- Opt-in brand-tinted greys: `ThemeProvider` takes `neutrals` (`"neutral"` or `"brand"`) and `neutralsAmount` (`"subtle"` or `"medium"`). With `"brand"` the greys lean toward the brand hue at very low chroma and keep the lightness of the plain greys, so contrast is unchanged. The default is unchanged
+- **Visible change**: headings in composed sections fade and rise as they scroll into view (CSS only, off under `prefers-reduced-motion`; `data-reveal="off"` opts out), and interactive cards move one pixel on press
 
 ### Also in this release
 

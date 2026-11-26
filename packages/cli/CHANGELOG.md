@@ -12,6 +12,7 @@ The `shavin` command: sets up a project for @shavin/ui and checks it.
 - `shavin check` visual runs (and the `render_check` MCP tool) hide the dev inspector bar, so it is not measured or shown in screenshots
 - `shavin init` for Next.js and Vite, Tailwind 3 and 4, with optional MCP and agent skills setup
 - `shavin brand --color <preset|#hex> --display-font <name> --body-font <name> --mode <dark-first|light-first|system> --confirm` applies a theme choice in one step: the `ThemeProvider` props, the `SHAVIN.md` lines and `.shavin/config.json`. A new project starts with the theme `UNSET` and `brandConfirmed: false`, so an agent proposes colours and fonts from the brief and then tells you what it chose
+- `shavin brand` takes `--neutrals <neutral|brand>` and `--neutrals-amount <subtle|medium>` for the opt-in brand-tinted greys
 - The `CLAUDE.md` that `shavin init` writes carries the page body width rule: body sections use `Container size="lg"`, `xl` is for the nav and footer
 - When `shavin init` cannot set a project up (an unsupported framework, no app at the folder), the message lists what to do in place and no longer ends with a link to the documentation website
 - `shavin add <block>` installs a block into your project
