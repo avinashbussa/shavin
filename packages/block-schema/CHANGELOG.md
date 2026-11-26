@@ -22,3 +22,4 @@ Anyone who copied Shavin from the public GitHub repository before this release s
 - **Breaking**: block API changes. `auth-signin`, `auth-signup` and `auth-sso-first` no longer take a `providers` prop (the buttons are written out and follow Google and Apple branding rules; `auth-sso-first` says "Continue with SSO"). `pricing-toggle` no longer takes `advisor`; the "Talk to our team" link is inline.
 - 17 free blocks show the WiseOwl sample logo instead of the plain-text name. `app-shell` KPI tiles run 4 / 4 / 2 across on desktop, tablet and phone.
 - `engines.node` is `>=18`.
+- Known advisory: `zod` 3 (used for the block schemas) is flagged by `npm audit` for GHSA-mrhx-c7xc-m3w5 (memory use on very large arrays). There is no zod 3 fix; the move to zod 4 is a breaking change planned for a later release. See SECURITY.md.
