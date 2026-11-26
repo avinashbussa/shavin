@@ -16,6 +16,7 @@ export default defineConfig({
       "@shavin/ui/primitives": at("./packages/ui/src/primitives"),
       "@shavin/ui/lib": at("./packages/ui/src/lib"),
       "@shavin/ui/styles": at("./packages/ui/src/styles"),
+      "@shavin/ui/panels": at("./packages/ui/src/panels.ts"),
       "@shavin/ui": at("./packages/ui/src/index.ts"),
       "@shavin/block-schema/hex-policy": at("./packages/block-schema/hex-policy.mjs"),
       "@shavin/block-schema": at("./packages/block-schema/src/index.ts"),

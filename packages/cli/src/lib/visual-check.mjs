@@ -100,7 +100,7 @@ export function analyze(data, bgs, vp, errors = []) {
   const isApp = data.isApp || (data.hasTable && h1 < 48);
   if (vp.width >= 1024 && !isApp && data.items.length) {
     if (largest < body * 3) add("info", "type-scale", "", "", `largest type is ${(largest / body).toFixed(1)}x the body size (${largest.toFixed(0)}px over ${body.toFixed(0)}px); strong marketing pages use 3x or more`);
-    if (h1 && h1 < 64) add("info", "h1-size", "h1", "", `H1 is ${h1.toFixed(0)}px at ${vp.width}px wide${h1 < 48 ? ", well under" : ", under"} 64px; marketing heroes read stronger at 64px or more (Heading size="5xl")`);
+    if (h1 && h1 < 48) add("info", "h1-size", "h1", "", `H1 is ${h1.toFixed(0)}px at ${vp.width}px wide, under 48px; marketing heroes read stronger at 4xl (Heading size="4xl", fluid 36 to 60px), and 5xl is for a short headline`);
   }
   const tiny = data.items.filter((it) => it.fontSize < 14 && !it.caps && !it.offscreen && it.text.length >= 30);
   if (tiny.length) add("info", "small-text", tiny[0].sel, tiny[0].text, `${tiny.length} sentence${tiny.length > 1 ? "s" : ""} of body copy under 14px (${tiny[0].fontSize.toFixed(0)}px); keep secondary text at 14px or more`);

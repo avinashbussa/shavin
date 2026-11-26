@@ -90,7 +90,7 @@ Chevron convention: `ChevronRight` (rotated 90° down when expanded) for nav tre
 
 ## ThemeProvider
 
-`init` already mounts it once in the root layout; do not add a second one. Its values come from `SHAVIN.md` and `.shavin/config.json` (for example `<ThemeProvider brandColor="monochrome" grayColor="zinc" radius="medium" scaling="95%" panelBackground="solid">`). To change the brand: a preset name (`brandColor="teal"`), a custom hex on `ThemeProvider` or `ScopedThemeProvider` (`brandColor="#0f766e"`), or `npx @shavin/cli brand`; update `SHAVIN.md` and `.shavin/config.json` to match. A hex is allowed in those places only.
+`init` already mounts it once in the root layout; do not add a second one. Its values come from `SHAVIN.md` and `.shavin/config.json` (for example `<ThemeProvider brandColor="monochrome" grayColor="zinc" radius="medium" scaling="100%" panelBackground="solid">`). To change the brand: a preset name (`brandColor="teal"`), a custom hex on `ThemeProvider` or `ScopedThemeProvider` (`brandColor="#0f766e"`), or `npx @shavin/cli brand`; update `SHAVIN.md` and `.shavin/config.json` to match. A hex is allowed in those places only.
 
 ---
 

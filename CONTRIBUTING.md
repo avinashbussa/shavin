@@ -60,7 +60,7 @@ By making a contribution to this project, I certify that:
 
 1. Fork the repository and clone your fork.
 2. Use Node 22 (`nvm use` reads `.nvmrc`), then `npm ci` at the root. It installs every workspace from the lockfile.
-3. Get your bearings: [`docs/README.md`](docs/README.md) is the documentation index — its "Quick Links for New Contributors" points to where each package lives and which files to read first. [`AGENTS.md`](AGENTS.md) holds the design-system rules.
+3. Get your bearings: [`docs/README.md`](docs/README.md) is the documentation index: a table of guides (repository map, primitives, tokens, skills, MCP server, CLI, block schema, testing locally) with when to read each. [`AGENTS.md`](AGENTS.md) holds the design-system rules.
 4. Create a branch: `git checkout -b feat/my-change`.
 5. Make your change, then test it (below).
 6. Open a pull request against `main` and fill in the template.

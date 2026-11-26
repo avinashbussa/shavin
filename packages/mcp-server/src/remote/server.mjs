@@ -10,7 +10,7 @@
  *
  * Architecture:
  *   AI Agent (Cursor/Claude Code) → HTTP POST /mcp → StreamableHTTPServerTransport
- *   → MCP Server (28 tools, transport-filtered) → Supabase Realtime → Studio Canvas
+ *   → MCP Server (tools filtered by transport) → Supabase Realtime → Studio Canvas
  *
  * Session management:
  *   Stateful mode — each MCP client gets a sessionId. The StudioRelay
@@ -18,6 +18,7 @@
  *   to different Studio sessions simultaneously.
  */
 
+import { MCP_VERSION } from "../version.mjs";
 import { createServer } from "node:http";
 import { randomUUID } from "node:crypto";
 import { randomBytes } from "node:crypto";
@@ -69,7 +70,7 @@ export function createServerWithTools(transport = "remote") {
     {
       name: "shavin",
       title: "Shavin",
-      version: "0.1.0",
+      version: MCP_VERSION,
     },
     {
       capabilities: {
@@ -289,7 +290,7 @@ export async function startRemoteServer(opts = {}) {
           status: "ok",
           server: "shavin",
           transport: "streamable-http",
-          version: "0.1.0",
+          version: MCP_VERSION,
           tools: "use POST /mcp with MCP protocol",
           auth: "Bearer token (Supabase JWT) required for /mcp",
         })

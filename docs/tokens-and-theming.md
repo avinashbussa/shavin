@@ -28,7 +28,7 @@ In the v4 theme files, never map a token to itself inside `@theme inline` (for e
 
 ## Brand tokens
 
-Consumers who bring their own brand colours run `npx shavin brand --init` to scaffold `brand-tokens.css` (hex input), edit it, then `npx shavin brand` to write the derived tokens and preset (`--check` fails in CI when they are stale). If you change the generator, test both RGB and OKLCH output.
+Consumers who bring their own brand colours run `npx @shavin/cli brand --init` to scaffold `brand-tokens.css` (hex input), edit it, then `npx @shavin/cli brand` to write the derived tokens and preset (`--check` fails in CI when they are stale). A project can also apply a choice in one step with `npx @shavin/cli brand --color <preset|#hex> --display-font <name> --body-font <name> --mode <dark-first|light-first|system> --confirm`: it writes the `ThemeProvider` props, the `SHAVIN.md` lines and `.shavin/config.json`. Until that runs with `--confirm`, a new project's theme is `UNSET` and agents are told to choose colours and fonts from the brief and confirm them. If you change the generator, test both RGB and OKLCH output.
 
 ## Dark and light
 

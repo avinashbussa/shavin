@@ -1,10 +1,10 @@
 /**
  * @shavin/cli — `brand` command
  *
- *   npx shavin brand           (re)generate derived tokens + Tailwind preset
- *   npx shavin brand --check   exit non-zero if stale (CI)
- *   npx shavin brand --init    scaffold brand-tokens.css into the project
- *   npx shavin brand --color teal --display-font Fraunces --body-font Inter --mode light-first [--confirm] [--json]
+ *   npx @shavin/cli brand           (re)generate derived tokens + Tailwind preset
+ *   npx @shavin/cli brand --check   exit non-zero if stale (CI)
+ *   npx @shavin/cli brand --init    scaffold brand-tokens.css into the project
+ *   npx @shavin/cli brand --color teal --display-font Fraunces --body-font Inter --mode light-first [--confirm] [--json]
  *                              apply a theme choice: ThemeProvider props, SHAVIN.md and .shavin/config.json
  *
  * Every extra brand colour gets --brand-<name>-solid / -solid-hover / -fg (the fill under text and its
@@ -138,7 +138,7 @@ export async function brandCommand(args = []) {
     const existing = findBrandCSS(cwd);
     if (existing) {
       console.log(`  ✓ brand-tokens.css already exists at ${existing.cssPath}`);
-      console.log(`    Run \`npx shavin brand\` to regenerate derived tokens.`);
+      console.log(`    Run \`npx @shavin/cli brand\` to regenerate derived tokens.`);
       return;
     }
 
@@ -165,10 +165,10 @@ export async function brandCommand(args = []) {
   const paths = findBrandCSS(cwd);
   if (!paths) {
     if (checkMode) {
-      console.error("  ✗ brand-tokens.css not found. Run `npx shavin brand --init` to scaffold it.");
+      console.error("  ✗ brand-tokens.css not found. Run `npx @shavin/cli brand --init` to scaffold it.");
       process.exit(1);
     }
-    console.error("  ✗ brand-tokens.css not found. Run `npx shavin brand --init` to scaffold it.");
+    console.error("  ✗ brand-tokens.css not found. Run `npx @shavin/cli brand --init` to scaffold it.");
     process.exit(1);
   }
 
@@ -194,7 +194,7 @@ export async function brandCommand(args = []) {
       console.error("  ✗ brand-tokens.css not found at:", cssPath);
       process.exit(1);
     }
-    console.error("  ✗ brand-tokens.css not found. Run `npx shavin brand --init` to scaffold it.");
+    console.error("  ✗ brand-tokens.css not found. Run `npx @shavin/cli brand --init` to scaffold it.");
     process.exit(1);
   }
 

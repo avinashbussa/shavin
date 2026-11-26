@@ -40,7 +40,7 @@ export const docs: ComponentDoc = {
     },
     {
       title: "Root Theme Initialization",
-      code: '<ThemeProvider brandColor="Monochrome" grayColor="Zinc" radius="large" scaling={95} panelBackground="solid" />'
+      code: '<ThemeProvider brandColor="Monochrome" grayColor="Zinc" radius="large" scaling={100} panelBackground="solid" />'
     },
     {
       title: "Compact touch targets (dense product UI)",

@@ -26,6 +26,27 @@ The Shavin React primitive library: token-driven components that coding agents c
 - The inspector's "Add custom font" option explains how to add a font in place instead of opening the documentation website
 - The target size warning (`hitArea="none"`) and the Button, Link and ThemeProvider docs say what the 24px floor is, the trade-off and how to restore it in place; they no longer link to the documentation website
 - `ShavinDevTools` no longer reports a made-up "7.1:1 (AAA Pass)" when a colour cannot be read: it says "unknown". Its contrast note names WCAG 2, not 2.1
+- AI primitives gain the states voice and streaming UIs need. Nothing is removed and every default is kept
+  - `VoiceInput`
+    - `mode="hands-free"`: a centred stack with one Stop button, for voice-activity detection (new `VoiceInputMode` type)
+    - a `processing` state with `processingLabel`
+    - a `description` line, and a transcript that wraps to two lines at any width
+    - a cancel button while requesting, transcribing and processing, when `onCancel` is passed
+  - `ChatBubble`
+    - `interim` for live, unconfirmed text such as a speech transcript
+    - `sharpCorner` (top by default, bottom or none) and `hoverTimestamp`
+  - `Reasoning`
+    - times the thinking itself ("Thinking… 4s", then "Thought for 4s") unless `duration` is passed
+    - announces when it finishes
+    - `maxHeight` scrolls long text inside the block
+  - `ToolCall`
+    - `title`: a wrapping plain-language heading in place of the monospace `name`
+    - `compact`: icon only, status kept for screen readers
+    - `footer`: a row under the result for actions such as Undo
+- **Visible change**: `Reasoning` folds away when thinking finishes (new `autoCollapse`, on by default)
+  - pass `autoCollapse={false}` to keep a block open
+  - existing uncontrolled blocks now collapse on their own
+- **Visible change**: `ChatBubble` keeps its 85% width cap on the message column, not on the bubble, so a short bubble sizes to its text instead of wrapping early in a narrow container
 
 ### Also in this release
 

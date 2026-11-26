@@ -335,6 +335,29 @@ function DevToolsPanel({
   const mutationDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const bridgeSyncDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastAuditSigRef = useRef<string>("");
+  // False once the panel is gone. Bridge answers, event-stream callbacks and timers that arrive later must do nothing:
+  // a state update after the page is torn down reaches for `window` inside React and fails with an unhandled error.
+  const aliveRef = useRef(true);
+  const bridgeRequestsRef = useRef<Set<AbortController>>(new Set());
+  useEffect(() => {
+    aliveRef.current = true;
+    const requests = bridgeRequestsRef.current;
+    return () => {
+      aliveRef.current = false;
+      requests.forEach((c) => c.abort());
+      requests.clear();
+      if (mutationDebounceRef.current) clearTimeout(mutationDebounceRef.current);
+      if (bridgeSyncDebounceRef.current) clearTimeout(bridgeSyncDebounceRef.current);
+    };
+  }, []);
+  /** A bridge request that is aborted when the panel unmounts. */
+  const bridgeFetch = (url: string, init: RequestInit) => {
+    const controller = new AbortController();
+    bridgeRequestsRef.current.add(controller);
+    return fetch(url, { ...init, signal: controller.signal }).finally(() => bridgeRequestsRef.current.delete(controller));
+  };
+  /** setTimeout whose callback is skipped once the panel is gone. */
+  const laterIfMounted = (fn: () => void, ms: number) => setTimeout(() => { if (aliveRef.current) fn(); }, ms);
 
   useEffect(() => {
     setMounted(true);
@@ -856,6 +879,7 @@ function DevToolsPanel({
     if (typeof window !== "undefined") {
       if (bridgeSyncDebounceRef.current) clearTimeout(bridgeSyncDebounceRef.current);
       bridgeSyncDebounceRef.current = setTimeout(() => {
+        if (!aliveRef.current) return;
         try {
           const errCount = issues.filter((i) => i.severity === "error").length;
           const warnCount = issues.filter((i) => i.severity === "warning").length;
@@ -921,13 +945,14 @@ function DevToolsPanel({
             },
           };
 
-          fetch(bridgeUrl("/api/audit", bPort), {
+          bridgeFetch(bridgeUrl("/api/audit", bPort), {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
             mode: "cors",
           })
             .then((res) => {
+              if (!aliveRef.current) return;
               if (res.ok) {
                 setBridgeConnected(true);
                 addStreamEvent({
@@ -941,7 +966,7 @@ function DevToolsPanel({
               }
             })
             .catch(() => {
-              setBridgeConnected(false);
+              if (aliveRef.current) setBridgeConnected(false);
             });
         } catch {
           // Quiet bridge sync failure
@@ -959,17 +984,17 @@ function DevToolsPanel({
         direction: "out",
         summary: "Requested full DOM audit re-scan",
       });
-      const res = await fetch(bridgeUrl("/api/rescan", bPort), {
+      const res = await bridgeFetch(bridgeUrl("/api/rescan", bPort), {
         method: "POST",
         mode: "cors",
       });
-      if (res.ok) {
+      if (res.ok && aliveRef.current) {
         runLiveAudit();
       }
     } catch {
       // Quiet bridge error
     } finally {
-      setTimeout(() => setTriggeringRescan(false), 400);
+      laterIfMounted(() => setTriggeringRescan(false), 400);
     }
   }, [addStreamEvent, runLiveAudit]);
 
@@ -980,12 +1005,14 @@ function DevToolsPanel({
     try {
       // Derive the project root from the current origin's pathname
       // The bridge scans the directory it was launched from (process.cwd())
-      const res = await fetch(bridgeUrl("/api/source-audit", bPort), {
+      const res = await bridgeFetch(bridgeUrl("/api/source-audit", bPort), {
         method: "GET",
         mode: "cors",
       });
+      if (!aliveRef.current) return;
       if (res.ok) {
         const data = await res.json();
+        if (!aliveRef.current) return;
         setSourceWarnings(data.issues || []);
         setSourceAuditTimestamp(new Date().toLocaleTimeString());
         addStreamEvent({
@@ -999,9 +1026,9 @@ function DevToolsPanel({
         setSourceAuditError("Bridge returned an error");
       }
     } catch {
-      setSourceAuditError(`Cannot reach AI Bridge (:${bPort}). Start it with: npx @shavin/cli bridge`);
+      if (aliveRef.current) setSourceAuditError(`Cannot reach AI Bridge (:${bPort}). Start it with: npx @shavin/cli bridge`);
     } finally {
-      setSourceAuditLoading(false);
+      if (aliveRef.current) setSourceAuditLoading(false);
     }
   }, [addStreamEvent]);
 
@@ -1011,6 +1038,7 @@ function DevToolsPanel({
 
     let es: EventSource | null = null;
     let heartbeat: ReturnType<typeof setInterval> | null = null;
+    let disposed = false;
     try {
       const myTabId = sessionStorage.getItem("__shavin_tab_id") || (() => {
         const id = `tab_${Math.random().toString(36).slice(2, 9)}`;
@@ -1021,6 +1049,7 @@ function DevToolsPanel({
 
       es = new EventSource(`${bridgeUrl("/api/events", bPort)}?tabId=${encodeURIComponent(myTabId)}&browser=${encodeURIComponent(myBrowser)}`);
       es.onopen = () => {
+        if (disposed || !aliveRef.current) return;
         setBridgeConnected(true);
         addStreamEvent({
           type: "sse_connected",
@@ -1029,6 +1058,7 @@ function DevToolsPanel({
         });
       };
       es.onmessage = (event) => {
+        if (disposed || !aliveRef.current) return;
         try {
           const data = JSON.parse(event.data);
           addStreamEvent({
@@ -1061,6 +1091,7 @@ function DevToolsPanel({
         }
       };
       es.onerror = () => {
+        if (disposed || !aliveRef.current) return;
         setBridgeConnected(false);
       };
 
@@ -1086,8 +1117,14 @@ function DevToolsPanel({
     }
 
     return () => {
+      disposed = true;
       if (heartbeat) clearInterval(heartbeat);
-      if (es) es.close();
+      if (es) {
+        es.onopen = null;
+        es.onmessage = null;
+        es.onerror = null;
+        es.close();
+      }
     };
   }, [mounted, addStreamEvent, runLiveAudit]);
 
@@ -1209,8 +1246,10 @@ function DevToolsPanel({
       );
 
       setTimeout(() => {
-        window.removeEventListener("scroll", updateBeaconPos);
-        window.removeEventListener("resize", updateBeaconPos);
+        if (typeof window !== "undefined") {
+          window.removeEventListener("scroll", updateBeaconPos);
+          window.removeEventListener("resize", updateBeaconPos);
+        }
         beacon.style.opacity = "0";
         setTimeout(() => beacon.remove(), 300);
       }, 3500);
@@ -1238,7 +1277,7 @@ function DevToolsPanel({
 
       if (mutationDebounceRef.current) clearTimeout(mutationDebounceRef.current);
       mutationDebounceRef.current = setTimeout(() => {
-        runLiveAudit();
+        if (aliveRef.current) runLiveAudit();
       }, 250);
     });
     observer.observe(document.body, {
@@ -1398,7 +1437,7 @@ function DevToolsPanel({
     if (typeof navigator !== "undefined" && navigator.clipboard) {
       navigator.clipboard.writeText(cmd);
       setCopiedTool(toolName);
-      setTimeout(() => setCopiedTool(null), 2000);
+      laterIfMounted(() => setCopiedTool(null), 2000);
     }
   };
 
@@ -1421,7 +1460,7 @@ function DevToolsPanel({
 
     navigator.clipboard.writeText(promptText);
     setCopiedIssueId(issue.id);
-    setTimeout(() => setCopiedIssueId(null), 2000);
+    laterIfMounted(() => setCopiedIssueId(null), 2000);
   };
 
   const copyAllIssuesForAgent = () => {
@@ -1442,7 +1481,7 @@ function DevToolsPanel({
 
     navigator.clipboard.writeText(fullPrompt);
     setCopiedAllIssues(true);
-    setTimeout(() => setCopiedAllIssues(false), 2000);
+    laterIfMounted(() => setCopiedAllIssues(false), 2000);
   };
 
   const buttonStyle: React.CSSProperties = dragOffset

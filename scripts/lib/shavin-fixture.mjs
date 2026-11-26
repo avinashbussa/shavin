@@ -65,7 +65,8 @@ const waitForPing = (port, logFile, ms = 150000) =>
 /** Build ui + block-schema (dist/) — mcp bundles via prepack. */
 export const buildPackages = () => {
   sh("npm", ["run", "build"]);
-  sh("npm", ["run", "build:schema"]); // `npm run build` is ui only; block-schema/dist would otherwise exist only if something built it earlier
+  // `npm run build` does not build block-schema in every checkout (it is ui only in some), so build it by name: this works in both.
+  sh("npm", ["run", "build", "-w", "@shavin/block-schema"]);
   if (fs.existsSync(path.join(ROOT, "packages/fx/package.json"))) sh("npm", ["run", "build:fx"]);
   const fxBuilt = !fs.existsSync(path.join(ROOT, "packages/fx/package.json")) || fs.existsSync(path.join(ROOT, "packages/fx/dist/index.js"));
   return fxBuilt && fs.existsSync(path.join(ROOT, "packages/ui/dist/index.js")) && fs.existsSync(path.join(ROOT, "packages/block-schema/dist/index.js"));

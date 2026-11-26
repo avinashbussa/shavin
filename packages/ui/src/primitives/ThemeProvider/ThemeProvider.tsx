@@ -174,8 +174,6 @@ export function ThemeProvider({
       applyThemePreset(theme);
     } else if (!brandColor && !grayColor && !radius && !displayFont && !bodyFont) {
       applyThemePreset("Monochrome");
-      // The Monochrome preset is tuned for dense apps (95%); with no props the app keeps its own scale.
-      if (!scaling) applyScalingPreset(100);
     }
   }, [theme, brandColor, grayColor, radius, displayFont, bodyFont, scaling]);
   useEffect(() => {

@@ -252,7 +252,9 @@ export function outputs() {
   return {
     "AGENTS.md": renderAgents(audience),
     "CLAUDE.md": renderClaude(audience),
-    "packages/skills/AGENTS.md": consumer,
+    // This copy sits in the @shavin/skills folder, where ./SHAVIN.md does not exist (it is copied into a project root, and the
+    // CLI template next to its own SHAVIN.md keeps the link), so here the file name is plain text.
+    "packages/skills/AGENTS.md": consumer.replace("[`SHAVIN.md`](./SHAVIN.md)", "`SHAVIN.md`"),
     "packages/cli/src/templates/AGENTS.md": consumer,
     "packages/cli/src/templates/SHAVIN.md": renderShavin(),
     "SHAVIN.md": renderShavin(REPO_BRIEF),

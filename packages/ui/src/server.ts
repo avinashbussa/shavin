@@ -1,7 +1,7 @@
 // Server-safe entry: `import { cn } from "@shavin/ui/server"`.
 //
 // The root "@shavin/ui" bundle is marked "use client", which makes every
-// non-component export (cn, URL helpers, ...) unusable from React Server
+// non-component export (cn, the concentric helpers, ...) unusable from React Server
 // Components. Everything here is pure and has no React runtime or DOM access,
 // so Server Components, route handlers and metadata functions can import it.
 export { cn } from "./lib/cn";

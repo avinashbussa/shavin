@@ -28,10 +28,10 @@ describe("release compatibility gate", () => {
   });
 
   it("blocks a package whose range excludes the ui published in the same run, with the exact fix", () => {
-    const root = repo({ ui: "0.2.0" }, { "mcp-server": ">=0.1.0 <0.2.0" });
+    const root = repo({ ui: "0.2.0", cli: "0.2.0", "mcp-server": "0.2.0", skills: "0.2.0", "block-schema": "0.2.0" }, { "mcp-server": ">=0.1.0 <0.2.0" });
     const [p, ...rest] = releaseProblems({ root, selected: "all", onNpm: nothingPublished });
     expect(rest).toEqual([]);
-    expect(p).toContain("@shavin/mcp@0.1.0 documents @shavin/ui >=0.1.0 <0.2.0, but this release publishes @shavin/ui 0.2.0");
+    expect(p).toContain("@shavin/mcp@0.2.0 documents @shavin/ui >=0.1.0 <0.2.0, but this release publishes @shavin/ui 0.2.0");
     expect(p).toContain('edit "shavin.compat" in packages/mcp-server/package.json');
   });
 
@@ -50,8 +50,8 @@ describe("release compatibility gate", () => {
   });
 
   it("ignores packages already on npm (the workflow skips them)", () => {
-    const root = repo({ ui: "0.2.0" }, { cli: ">=0.1.0 <0.2.0" });
-    const onNpm = (spec: string) => (spec === "@shavin/cli@0.1.0" ? "0.1.0" : null);
+    const root = repo({ ui: "0.2.0", skills: "0.2.0", "mcp-server": "0.2.0", "block-schema": "0.2.0" }, { cli: ">=0.1.0 <0.2.0" });
+    const onNpm = (spec: string) => (spec.startsWith("@shavin/cli") ? "0.1.0" : null);
     expect(releaseProblems({ root, selected: "all", onNpm })).toEqual([]);
   });
 
@@ -60,5 +60,62 @@ describe("release compatibility gate", () => {
     const problems = releaseProblems({ root, selected: "ui", onNpm: nothingPublished });
     expect(problems[0]).toMatch(/CHANGELOG\.md is missing/);
     expect(problems[0]).toMatch(/npm run version-packages/);
+  });
+
+  describe("lock, changeset and version agreement", () => {
+    const meta = (root: string, v: string) => {
+      mkdirSync(join(root, "packages", "ui", "src", "lib"), { recursive: true });
+      writeFileSync(join(root, "packages", "ui", "src", "lib", "meta.ts"), `export const SHAVIN_META = {\n  version: "${v}",\n} as const;\n`);
+    };
+    const lock = (root: string, rootV: string, v: Record<string, string> = {}) => {
+      const packages: Record<string, unknown> = { "": { version: rootV } };
+      for (const d of Object.keys(NAMES)) packages[`packages/${d}`] = { version: v[d] ?? "0.1.0" };
+      writeFileSync(join(root, "package-lock.json"), JSON.stringify({ packages }));
+      writeFileSync(join(root, "package.json"), JSON.stringify({ name: "root", version: rootV }));
+    };
+    const changeset = (root: string, ...files: string[]) => {
+      mkdirSync(join(root, ".changeset"), { recursive: true });
+      writeFileSync(join(root, ".changeset", "config.json"), "{}");
+      for (const f of files) writeFileSync(join(root, ".changeset", f), "---\n\"@shavin/ui\": minor\n---\n\nNotes.\n");
+    };
+
+    it("passes when the lock, root, SHAVIN_META and every package say 0.1.0 and only config.json is in .changeset", () => {
+      const root = repo({});
+      lock(root, "0.1.0"); meta(root, "0.1.0"); changeset(root);
+      expect(releaseProblems({ root, selected: "all", onNpm: nothingPublished })).toEqual([]);
+    });
+
+    it("blocks a pending changeset before the first publish", () => {
+      const root = repo({});
+      changeset(root, "ai-primitives.md");
+      const [p, ...rest] = releaseProblems({ root, selected: "all", onNpm: nothingPublished });
+      expect(rest).toEqual([]);
+      expect(p).toContain("never been published");
+      expect(p).toContain("ai-primitives.md");
+    });
+
+    it("allows a changeset once the packages are on npm", () => {
+      const root = repo({ ui: "0.1.1" });
+      changeset(root, "fix.md");
+      const onNpm = (spec: string) => (spec.startsWith("@shavin/ui@0.1.1") ? null : "0.1.0");
+      expect(releaseProblems({ root, selected: "ui", onNpm })).toEqual([]);
+    });
+
+    it("blocks a lock entry that differs from its package.json", () => {
+      const root = repo({});
+      lock(root, "0.1.0", { cli: "0.0.9" });
+      const [p, ...rest] = releaseProblems({ root, selected: "all", onNpm: nothingPublished });
+      expect(rest).toEqual([]);
+      expect(p).toContain("@shavin/cli: package.json says 0.1.0 but package-lock.json says 0.0.9");
+    });
+
+    it("blocks a first release whose root or SHAVIN_META version differs from its packages", () => {
+      const root = repo({});
+      lock(root, "0.1.0"); meta(root, "0.2.0");
+      const [p, ...rest] = releaseProblems({ root, selected: "all", onNpm: nothingPublished });
+      expect(rest).toEqual([]);
+      expect(p).toContain("one version everywhere");
+      expect(p).toContain("SHAVIN_META (0.2.0)");
+    });
   });
 });

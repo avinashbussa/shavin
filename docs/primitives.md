@@ -9,7 +9,7 @@ Button/
   index.ts         export * from "./Button";
 ```
 
-Add the folder's exports to `packages/ui/src/index.ts`, the one public entry point.
+Add the folder's exports to `packages/ui/src/index.ts`, the one public entry point. The package builds one ES module per source file, so a bundler drops the primitives a page does not import; consumers import from `@shavin/ui` only, and there is no `@shavin/ui/primitives/*` path, so a primitive that is not exported from the root is unreachable.
 
 ## The component file
 

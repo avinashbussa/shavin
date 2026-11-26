@@ -21,7 +21,7 @@ This is the project's design brief. Read it at the start of every task that touc
 - **Display / Body Font**: `Rethink Sans / Inter`
 - **Neutral Scale**: `zinc`
 - **Theme Mode**: `dark-first`
-- **Scaling / Density**: `95%`
+- **Scaling / Density**: `100%`
 - **Base Radius**: `medium`
 - **Panel Background**: `solid`
 

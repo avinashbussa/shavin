@@ -21,7 +21,7 @@ npx @shavin/skills --target ./apps/web   # install into another project
 |---|---|
 | `core-rules.md` | Always loaded: token compliance, radius roles, typography, icons, anti-slop basics |
 | `visual-compositor/` | Spacing, typography, motion, polish, the AP-01–AP-13 anti-pattern catalogue, audit checklist |
-| `layout-compositions/` | 50+ page and section compositions across 9 families, with selection rules and page recipes |
+| `layout-compositions/` | 57 page and section compositions across 9 families, with selection rules and page recipes |
 | `layout-motion/`, `layout-choreography/` | Restrained UI motion, and cinematic scroll-driven scenes |
 | `shavin-webpage/` | Marketing and landing pages |
 | `shavin-app/` | SaaS apps, dashboards, tables, forms, settings, auth, onboarding (six states) |
@@ -42,6 +42,7 @@ npx -p @shavin/skills shavin-lint-tokens "src/**/*.tsx"
 ## Maintainers
 
 Edit skills here in `packages/skills/`, never in `.agents/` (compiled output). `npm run skills:check` validates cross-references, frontmatter and token budgets; `npm run skills:build` deploys.
+
 ## Licence
 
 MIT © 2026 Avinash Bussa and Shavin contributors. See [LICENSE](./LICENSE).

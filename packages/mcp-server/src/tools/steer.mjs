@@ -16,7 +16,7 @@ function shavinTemplate(targetDir) {
   const found = candidates.find(existsSync);
   const name = basename(targetDir);
   if (found) return readFileSync(found, "utf8").replace("[project name]", name);
-  return `# Shavin Project Design Manifest\n\n## 1. Product & Domain Context\n- **Product Name**: ${name}\n- **Domain**: Web Application\n\n## 2. Design System Configuration\n- **Engine**: \`@shavin/ui\`\n- **Primary Brand**: \`UNSET\`\n- **Display / Body Font**: \`UNSET\`\n- **Neutral Scale**: \`zinc\`\n- **Theme Mode**: \`AUTO\`\n- **Scaling / Density**: \`95%\`\n- **Base Radius**: \`medium\`\n- **Panel Background**: \`solid\`\n\n## 3. Site & Mode Defaults\n- **Site Type**: \`AUTO\`\n- **Default Visual Mode**: \`AUTO\`\n`;
+  return `# Shavin Project Design Manifest\n\n## 1. Product & Domain Context\n- **Product Name**: ${name}\n- **Domain**: Web Application\n\n## 2. Design System Configuration\n- **Engine**: \`@shavin/ui\`\n- **Primary Brand**: \`UNSET\`\n- **Display / Body Font**: \`UNSET\`\n- **Neutral Scale**: \`zinc\`\n- **Theme Mode**: \`AUTO\`\n- **Scaling / Density**: \`100%\`\n- **Base Radius**: \`medium\`\n- **Panel Background**: \`solid\`\n\n## 3. Site & Mode Defaults\n- **Site Type**: \`AUTO\`\n- **Default Visual Mode**: \`AUTO\`\n`;
 }
 
 export function detectDomainIntent(code = "") {
@@ -39,7 +39,7 @@ export function detectDomainIntent(code = "") {
     return {
       mode: "STRUCTURAL (Dashboard / App)",
       skill: "shavin-app",
-      guidance: "Use AppFrame / SidebarLayout, high density (scaling: 95%), concentric panel-p5 nesting, text-fg-subtle for secondary body, and explicit loading Skeleton states.",
+      guidance: "Use AppFrame / SidebarLayout, optionally high density (scaling: 95%; default is 100%), concentric panel-p5 nesting, text-fg-subtle for secondary body, and explicit loading Skeleton states.",
     };
   }
   if (/hero|pricing|faq|testimonial|marquee|bento|landing|cta|feature|pitch|tagline/i.test(lower)) {

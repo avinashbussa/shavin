@@ -28,6 +28,7 @@ import { registerSteerTool } from "./tools/steer.mjs";
 import { registerBridgeTools } from "./tools/bridge.mjs";
 import { registerComposeTools } from "./tools/compose.mjs";
 import { withNextStep } from "./next-steps.mjs";
+import { MCP_VERSION } from "./version.mjs";
 import { themeReminderOnce } from "./context.mjs";
 import { registerArchLintTool } from "./tools/archlint.mjs";
 import { registerStudioRelayTools } from "./tools/studio-relay.mjs";
@@ -212,7 +213,7 @@ export const TOOL_ALIASES = { get_builder_schema: "get_studio_schema" };
 
 export function createMcpServer() {
   const server = new Server(
-    { name: "shavin", title: "Shavin", version: "0.1.0" },
+    { name: "shavin", title: "Shavin", version: MCP_VERSION },
     {
       capabilities: { tools: { listChanged: true } },
       instructions: `You are connected to the @shavin/ui design system MCP server.

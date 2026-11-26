@@ -7,10 +7,14 @@
  * For every package this run would publish (its version is not on npm yet) it checks:
  *   1. packages/<pkg>/CHANGELOG.md has a "## <version>" entry (the GitHub Release notes come from it);
  *   2. for cli, mcp, skills and fx: the @shavin/ui version being published (this run's, or the one already on npm
- *      when ui is not in this run) is inside the package's `shavin.compat` range.
+ *      when ui is not in this run) is inside the package's `shavin.compat` range;
+ *   3. every package.json version matches its entry (and the root's) in package-lock.json;
+ *   4. a FIRST publish (a name that is not on npm at all) has no pending `.changeset/*.md` (the CHANGELOG sections are the
+ *      release notes; a pending changeset would announce the same change again), and its packages, the root package.json
+ *      and SHAVIN_META.version all carry one version.
  * Every message gives the exact recovery step. Exit 0 = ok, 1 = problems.
  */
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { runSync } from "./lib/spawn-cross.mjs";
 import { fileURLToPath } from "node:url";
@@ -49,6 +53,32 @@ export function releaseProblems({ root = ROOT, selected = "all", onNpm = npmView
     const file = `packages/${p.dir}/CHANGELOG.md`;
     if (!existsSync(join(root, file))) problems.push(`${p.name}@${p.version}: ${file} is missing. Run "npm run version-packages" (or add the file) and retry.`);
     else if (!notesFor(p.name, p.version, root)) problems.push(`${p.name}@${p.version}: ${file} has no "## ${p.version}" entry, so the GitHub Release would have no notes. Run "npm run version-packages" (it writes the entry from the pending changesets), commit, and retry.`);
+  }
+
+  // 3. package-lock.json agrees with every package.json (a stale lock makes `npm ci` fail in CI).
+  const lockFile = join(root, "package-lock.json");
+  const rootPkgFile = join(root, "package.json");
+  const rootVersion = existsSync(rootPkgFile) ? readJson(rootPkgFile).version : undefined;
+  if (existsSync(lockFile)) {
+    const lock = readJson(lockFile).packages ?? {};
+    const check = (label, want, entry) => {
+      if (entry && want && entry.version !== want) problems.push(`${label}: package.json says ${want} but package-lock.json says ${entry.version}. Run "npm install --package-lock-only" and commit the lock.`);
+    };
+    check("root package", rootVersion, lock[""]);
+    for (const p of pkgs) check(p.name, p.version, lock[`packages/${p.dir}`]);
+  }
+
+  // 4. A first publish: no pending changesets, and one version everywhere.
+  const first = toPublish.filter((p) => onNpm(p.name) === null);
+  if (first.length) {
+    const csDir = join(root, ".changeset");
+    const pending = existsSync(csDir) ? readdirSync(csDir).filter((f) => f.endsWith(".md") && f.toLowerCase() !== "readme.md") : [];
+    if (pending.length) problems.push(`${first.map((p) => p.name).join(", ")} ${first.length > 1 ? "have" : "has"} never been published, but .changeset/ holds ${pending.join(", ")}. The first release's notes are the CHANGELOG "## <version>" sections; delete the pending changeset(s) so the first Changesets release does not announce the same change again.`);
+    const versions = new Set(first.map((p) => p.version));
+    const metaFile = join(root, "packages", "ui", "src", "lib", "meta.ts");
+    const metaVersion = existsSync(metaFile) ? readFileSync(metaFile, "utf8").match(/\bversion: "([^"]+)"/)?.[1] : undefined;
+    for (const v of [rootVersion, metaVersion]) if (v) versions.add(v);
+    if (versions.size > 1) problems.push(`The first release must carry one version everywhere, but found ${[...versions].join(", ")} across ${first.map((p) => `${p.name}@${p.version}`).join(", ")}${rootVersion ? `, the root package.json (${rootVersion})` : ""}${metaVersion ? ` and SHAVIN_META (${metaVersion})` : ""}. Align them, run "npm run manifest:gen", and retry.`);
   }
 
   const withCompat = toPublish.filter((p) => p.compat?.["@shavin/ui"]);

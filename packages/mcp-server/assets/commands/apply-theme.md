@@ -3,7 +3,7 @@
 Automated recipe to configure theme tokens and mount the `ThemeProvider` in a consumer project.
 
 ## Input Argument
-$ARGUMENTS (Theme Configuration: e.g., `brandColor="monochrome" grayColor="zinc" radius="large" scaling="95%"` — optional; if omitted, reads from `SHAVIN.md`)
+$ARGUMENTS (Theme Configuration: e.g., `brandColor="monochrome" grayColor="zinc" radius="large" scaling="100%"` — optional; if omitted, reads from `SHAVIN.md`)
 
 ## Instructions
 
@@ -30,7 +30,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           brandColor="monochrome"
           grayColor="zinc"
           radius="medium"
-          scaling="95%"
+          scaling="100%"
           panelBackground="solid"
         >
           {children}
@@ -48,7 +48,7 @@ Vite: wrap the app in `src/main.tsx` instead: `<ThemeProvider brandColor="monoch
 - **Brand Colors**: `monochrome` (the default), another named brand colour, or a hex (`#rrggbb`). Take the colour from the brief or `SHAVIN.md`; never invent one.
 - **Gray Colors**: `gray` (pure neutral), `zinc` (cool tech), `slate` (slate blue), `sand` (warm earth), `olive` (earth green).
 - **Radius Presets**: `none` (0px), `small` (subtle), `medium` (standard 16px panel / 8px control), `large` (curved), `full` (pill controls).
-- **Scaling**: `90%`, `95%` (dense SaaS), `100%` (standard), `105%`, `110%`.
+- **Scaling**: `100%` (default), `95%` (dense SaaS), `90%`, `105%`, `110%`.
 - **Panel Background**: `solid` (opaque high performance) | `translucent` (glassmorphism blur).
 
 ### 4. Verify Dark Mode Support

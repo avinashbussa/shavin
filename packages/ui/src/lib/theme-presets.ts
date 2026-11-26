@@ -930,7 +930,7 @@ export type ThemePreset = {
 };
 
 export const THEME_PRESETS: ThemePreset[] = [
-  { name: "Monochrome", brandColor: "Monochrome", grayColor: "Zinc", radius: "medium", scaling: 95, panelBackground: "solid", appearance: "dark", displayFont: "Rethink Sans", bodyFont: "Inter" },
+  { name: "Monochrome", brandColor: "Monochrome", grayColor: "Zinc", radius: "medium", scaling: 100, panelBackground: "solid", appearance: "dark", displayFont: "Rethink Sans", bodyFont: "Inter" },
   { name: "Midnight", brandColor: "Cyan", grayColor: "Zinc", radius: "medium", scaling: 100, panelBackground: "translucent", appearance: "dark", displayFont: "Inter", bodyFont: "Inter" },
   { name: "Neo Tokyo", brandColor: "Ruby", grayColor: "Zinc", radius: "medium", scaling: 100, panelBackground: "translucent", appearance: "dark", displayFont: "Host Grotesk", bodyFont: "Inter" },
   { name: "Terminal", brandColor: "Green", grayColor: "Zinc", radius: "none", scaling: 100, panelBackground: "solid", appearance: "dark", displayFont: "JetBrains Mono", bodyFont: "JetBrains Mono" },

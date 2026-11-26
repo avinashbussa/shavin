@@ -7,7 +7,12 @@
 export const SHAVIN_META = {
   version: "0.1.0",
   primitiveCount: 94,
+  /** Every tool in the registry. A plain install lists fewer until a Studio session or bridge tab connects (see tool-visibility). */
   mcpToolCount: 36,
+  /** Page and section compositions in the layout-compositions skill. */
+  compositionCount: 57,
+  /** Theme presets in THEME_PRESETS (not the brand colours). */
+  themePresetCount: 9,
   skillCount: 9,
   /** Skills a project gets (skillCount minus the maintainer-only ones in packages/skills/internal.json). */
   consumerSkillCount: 7,

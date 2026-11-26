@@ -14,6 +14,8 @@ Agent skills and slash commands for @shavin/ui, installed into a project's `.age
 - `npx @shavin/skills` installs them; `--force` refreshes the marked block in `AGENTS.md`
 - A token linter (`bin/lint-tokens.mjs`) that flags hex and raw palette colours
 - Guidance for what `validate_code` checks and `autofix_code` fixes for concentric radius, the Studio default frame names, and the `brandSolid` and `focusRing` provider settings; a Hero by audience table and a Storefront recipe; the G6 Product Grid composition; navigation bar guidance for dropdown and mega panels (Popover disclosure, skip link, Drawer on phones)
+- Hero titles default to `4xl`; `5xl` is for the type-only hero or a headline of four words or fewer
+- Section labels above headings are optional, and responsive-by-design rules cover tables, button rows, and logo plus quote sections
 
 ### Also in this release
 

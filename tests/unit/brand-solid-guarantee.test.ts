@@ -232,7 +232,7 @@ describe("brand solid: exact reproduces the previous output byte-for-byte", () =
       expect(brandForegroundFor(resolveBrandTriplet(hex, d))).toBe(base.rgb.fg);
     }
   });
-  it("themeCss with brandSolid=exact equals the base first-paint CSS once the new solid tokens are removed (all 16 themes, rgb and oklch)", () => {
+  it("themeCss with brandSolid=exact equals the base first-paint CSS once the new solid tokens are removed (every theme preset, rgb and oklch)", () => {
     let n = 0;
     for (const t of THEME_PRESETS) for (const cs of ["rgb", "oklch"] as const) {
       const css = withoutSolid(themeCss({ theme: t.name, colorSpace: cs, brandSolid: "exact" }));

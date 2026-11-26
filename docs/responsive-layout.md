@@ -35,6 +35,10 @@ For a title and an action on one row, use `Flex wrap="wrap"` rather than switchi
 
 `Heading` sizes `xl` and up are fluid: `xl` 24–30px, `2xl` 30–36px, `3xl` 36–48px, `4xl` 36–60px, `5xl` 36–72px. They grow with the nearest container (an `AppFrame`) or, outside one, the window. Pick the size for the widest layout and let it scale; do not add `md:text-*` steps. A plain size class (`className="text-6xl"`) pins a heading to one size when it must not scale.
 
+## Page width
+
+Body sections of a page use `Container size="lg"` so all content shares one centred column. `xl` is for the nav and footer, and `full` is for media. The MCP `check_page` tool warns when more than about a third of a page's body sections use `xl` or `full`.
+
 ## Checks
 
 `validate_code`, `audit_source` and `check_page` in `@shavin/mcp` warn when code goes back to screen-width tricks for shells or headings. Run `npm test` after touching these rules.

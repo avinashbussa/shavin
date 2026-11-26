@@ -1,4 +1,5 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi, afterEach } from "vitest";
+import { render, cleanup } from "@testing-library/react";
 import { renderToString } from "react-dom/server";
 import { ThemeProvider } from "@shavin/ui";
 import { themeCss, resolveThemeConfig, brandTextFor, hexToTriplet } from "../../packages/ui/src/lib/theme-presets";
@@ -33,6 +34,12 @@ describe("themeCss (first-paint theme)", () => {
 
   it("falls back to the Monochrome preset when nothing is set, like the runtime effect", () => {
     expect(resolveThemeConfig({}).brand).toBe("Monochrome");
+  });
+
+  it("a provider with no props is 100% from the first paint: no root font-size rule", () => {
+    expect(resolveThemeConfig({}).scaling).toBe(100);
+    expect(themeCss({})).not.toContain("font-size");
+    expect(themeCss({ theme: "Monochrome" })).not.toContain("font-size");
   });
 
   it("applies non-default scaling and never lets a value close the style tag", () => {
@@ -76,4 +83,17 @@ describe("subheading font", () => {
     expect(themeCss({ brandColor: "Indigo", subheadingFont: "display" })).toContain("--font-subheading:var(--font-display)");
     expect(themeCss({ brandColor: "Indigo", subheadingFont: "Playfair Display" })).toContain("Playfair Display");
   });
+});
+
+describe("ThemeProvider root scale once mounted", () => {
+  afterEach(() => { cleanup(); document.documentElement.style.fontSize = ""; vi.unstubAllGlobals(); });
+  const mount = (props: Record<string, unknown> = {}) => {
+    vi.stubGlobal("matchMedia", (q: string) => ({ matches: false, media: q, addEventListener() {}, removeEventListener() {}, addListener() {}, removeListener() {}, onchange: null, dispatchEvent: () => false }));
+    render(<ThemeProvider devTools={false} {...props} />);
+    return document.documentElement.style.fontSize;
+  };
+  it("no props: 100%", () => expect(mount()).toBe("100%"));
+  it("theme=Monochrome: 100%", () => expect(mount({ theme: "Monochrome" })).toBe("100%"));
+  it("a single brand prop: no scale written, so 100% from the stylesheet", () => expect(mount({ brandColor: "Violet" })).toBe(""));
+  it("an explicit scaling wins", () => expect(mount({ scaling: "95%" })).toBe("95%"));
 });

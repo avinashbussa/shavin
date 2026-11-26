@@ -17,7 +17,7 @@ $ARGUMENTS (Theme Name, e.g., `emerald-dark`, `cyber-violet`, `minimal-slate`)
 - Specify `brandColor` (`monochrome`, another named brand colour, or a hex).
 - Specify `grayColor` (`gray` (pure neutral), `zinc` (cool tech), `slate` (slate blue), `sand` (warm earth), `olive` (earth green)).
 - Specify `radius` scaling preset (`none` | `small` | `medium` | `large` | `full`).
-- Specify `scaling` (`90%` | `95%` (dense SaaS) | `100%` (standard) | `105%` | `110%`).
+- Specify `scaling` (`100%` (default) | `95%` (dense SaaS) | `90%` | `105%` | `110%`).
 - Specify `panelBackground` (`solid` (opaque high performance) | `translucent` (glassmorphism blur)).
 
 ### 2. Mounting via ThemeProvider
@@ -27,7 +27,7 @@ $ARGUMENTS (Theme Name, e.g., `emerald-dark`, `cyber-violet`, `minimal-slate`)
   brandColor="monochrome"
   grayColor="zinc"
   radius="large"
-  scaling="95%"
+  scaling="100%"
   panelBackground="solid"
 />
 ```

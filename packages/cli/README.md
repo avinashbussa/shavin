@@ -29,11 +29,12 @@ npx @shavin/cli init          # or: npx @shavin/cli init --oklch
 | `list [category] [--community]` | Browse blocks |
 | `check` (alias `doctor`) `[--json] [--target <dir>] [--render <url>]` | Health check: Node, React and version alignment, Tailwind wiring, `@source`, `ThemeProvider`, agent files. `--render <url>` also loads that page headless (needs a running dev server and Playwright) and confirms Shavin renders styled. Exits 1 when a check fails (warnings pass), so it works in CI |
 | `context` | Print a compact (< 300 token) project manifest for AI prompts |
-| `brand [--init] [--check] [--oklch]` | Generate brand colour tokens from the hex values in `brand-tokens.css` |
+| `brand` | With no flags, generate brand colour tokens from the hex values in `brand-tokens.css` (`--init` scaffolds it, `--check` for CI, `--oklch`). With `--color <preset\|#hex> --display-font <name> --body-font <name> --mode <dark-first\|light-first\|system> [--confirm] [--json]`, apply a theme choice in one step: the `ThemeProvider` props, the `SHAVIN.md` lines and `.shavin/config.json` |
+| `findings [--take] [--ack <id>] [--nack <id>] [--state <state>] [--lease <id>] [--target <dir>] [--json]` | Read, take or finish the findings a developer sent from the page, for agents that can run a shell command but have no MCP tools (needs `@shavin/mcp` installed) |
 | `bridge [--port <port>]` | Start the agent–browser bridge and live audit dashboard (default port 7036) |
 | `publish <file>` | Validate a block against the quality gate and package its manifest |
 
-Common options: `--overwrite` (replace files when adding blocks), `--yes` / `-y` (let `add` run `init` and install packages without asking), `--json` (machine-readable output), `--help`.
+Common options: `--overwrite` (replace files when adding blocks), `--yes` / `-y` (let `add` run `init` and install packages without asking), `--json` (machine-readable output), `--version` (also `-v`), `--help`.
 
 ## Related packages
 

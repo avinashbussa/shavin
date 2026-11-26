@@ -17,6 +17,7 @@ The `shavin` command: sets up a project for @shavin/ui and checks it.
 - `shavin add <block>` installs a block into your project
 - `shavin check` / `doctor`, `context`, `brand` (generates brand tokens with contrast checks) and `bridge`
 - Works with npm, pnpm, yarn and bun
+- `shavin --version` (also `-v`) prints the CLI version
 
 ### Also in this release
 

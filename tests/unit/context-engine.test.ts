@@ -306,6 +306,13 @@ export default function Layout({ children }) {
   });
 });
 
+describe("parseShavinManifest — defaults", () => {
+  it("a project with no manifest and no ThemeProvider props reports the default density, 100%", () => {
+    const dir = createTempProject("default-density", { "package.json": '{"name":"plain"}' });
+    expect(contextModule.extractProjectContext({ targetDir: dir }).promptMarkdown).toMatch(/Density: 100%/);
+  });
+});
+
 describe("parseShavinManifest — real project (this repo)", () => {
   it("parses the repo's own SHAVIN.md", () => {
     const result = contextModule.parseShavinManifest(ROOT);

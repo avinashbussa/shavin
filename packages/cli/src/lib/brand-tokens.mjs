@@ -3,7 +3,7 @@
  *
  * Zero-dependency ESM. Shared by:
  *   - scripts/shavin-brand-tokens.mjs (repo root)
- *   - packages/cli/src/commands/brand.mjs (consumer CLI: `npx shavin brand`)
+ *   - packages/cli/src/commands/brand.mjs (consumer CLI: `npx @shavin/cli brand`)
  *
  * Exports the luminance engine, CSS parser, CSS rebuilder, and
  * Tailwind preset generator. Deterministic output (stable key order).

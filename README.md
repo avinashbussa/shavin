@@ -120,9 +120,10 @@ The same block works in `.mcp.json` (Claude Code), `.cursor/mcp.json`, `.vscode/
 | **Compose** | `synthesize_layout`, `shavin_steer` |
 | **Skills** | `list_skills`, `get_skill`, `get_skill_mode`, `install_skills`, `list_commands` |
 | **Live browser audit** | `get_live_audit`, `trigger_live_rescan`, `wait_for_live_clean` |
+| **Findings from the page** | `await_finding`, `list_findings` |
 | **Shavin Studio relay** | `connect_studio`, `compose_to_canvas`, `inject_blocks`, `get_studio_state`, `set_studio_theme`, `clear_studio_canvas`, `duplicate_frame`, `resize_frame`, `export_frame`, `disconnect_studio` |
 
-`shavin_steer` runs high-level design moves — `audit`, `polish`, `harden`, `typeset`, `anti-slop`, `rollback`. Every tool result ends with a short `Next:` line naming the following step, so an agent stays on the workflow even when a host drops the server instructions.
+`shavin_steer` runs high-level design moves — `audit`, `polish`, `harden`, `typeset`, `anti-slop`, `rollback`, `init_brain` (creates `SHAVIN.md` when it is missing). Every tool result ends with a short `Next:` line naming the following step, so an agent stays on the workflow even when a host drops the server instructions.
 
 ### Live browser audit (`:7036`)
 

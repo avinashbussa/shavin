@@ -7,7 +7,7 @@
  * Emits components.json at repo root so the playground, MCP server, and AI agents
  * share a zero-drift contract of every primitive, its variants, and its prompt guidance.
  */
-import { readFileSync, writeFileSync, existsSync, readdirSync } from "node:fs";
+import { readFileSync, writeFileSync, existsSync, readdirSync, statSync } from "node:fs";
 import { join, relative, basename, dirname, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import vm from "node:vm";
@@ -553,6 +553,25 @@ function build() {
   };
 }
 
+/** Page and section compositions: one `### <ID> · <name>` heading per composition in the layout-compositions skill. */
+function countCompositions() {
+  const dir = join(ROOT, "packages", "skills", "skills", "layout-compositions", "references", "compositions");
+  if (!existsSync(dir)) return 0;
+  return readdirSync(dir)
+    .filter((f) => f.endsWith(".md"))
+    .reduce((n, f) => n + (readFileSync(join(dir, f), "utf8").match(/^### [A-Z]{1,3}\d+ · /gm) ?? []).length, 0);
+}
+
+/** Theme presets: one `{ name: "..."` row in THEME_PRESETS. */
+function countThemePresets() {
+  const file = join(ROOT, "packages", "ui", "src", "lib", "theme-presets.ts");
+  if (!existsSync(file)) return 0;
+  const src = readFileSync(file, "utf8");
+  const start = src.indexOf("export const THEME_PRESETS");
+  const end = src.indexOf("\n];", start);
+  return (src.slice(start, end).match(/^\s*\{ name: "/gm) ?? []).length;
+}
+
 function buildMetaTs(primitiveDirCount) {
   let pkgVersion = "0.1.0";
   try {
@@ -631,7 +650,12 @@ function buildMetaTs(primitiveDirCount) {
 export const SHAVIN_META = {
   version: ${JSON.stringify(pkgVersion)},
   primitiveCount: ${primitiveDirCount},
+  /** Every tool in the registry. A plain install lists fewer until a Studio session or bridge tab connects (see tool-visibility). */
   mcpToolCount: ${mcpTools.length},
+  /** Page and section compositions in the layout-compositions skill. */
+  compositionCount: ${countCompositions()},
+  /** Theme presets in THEME_PRESETS (not the brand colours). */
+  themePresetCount: ${countThemePresets()},
   skillCount: ${skills.length},
   /** Skills a project gets (skillCount minus the maintainer-only ones in packages/skills/internal.json). */
   consumerSkillCount: ${skills.filter((s) => !maintainerOnly.includes(s.name)).length},
@@ -701,34 +725,64 @@ function missingDocsPages(components) {
 }
 const metaTs = buildMetaTs(manifestResult.primitiveCount);
 
+/** Files and folders whose prose must agree with SHAVIN_META. Entries that do not exist (e.g. in the public repo) are skipped. */
+const COUNT_GUARD_ROOTS = [
+  "README.md", "AGENTS.md", "CONTRIBUTING.md", "scripts/mirror-public.mjs", "scripts/mirror-public/README.md", "scripts/gen-llms.mjs",
+  ...["ui", "cli", "mcp-server", "skills", "block-schema"].map((p) => `packages/${p}/README.md`),
+  "packages/skills/skills", "docs", "apps/docs/src", "apps/website/src",
+];
+/** Dated snapshots and history say what was true then; they are not checked. */
+const COUNT_GUARD_SKIP = /(^|\/)(node_modules|\.next|out|dist|generated|archive|audits|research|Roadmaps)(\/|$)|(^|\/)CHANGELOG\.md$/;
+const COUNT_GUARD_FILE = /\.(md|mdx|tsx|ts|mjs)$/;
+
 /**
- * Markdown and generator text that state the primitive count ("84 React
- * primitives"). Files that don't exist (e.g. in the public repo) are skipped.
+ * Counts that prose states and SHAVIN_META owns. Each rule finds "<N> ..." and N must equal the named field.
+ * A line that names a competitor is left alone (it states their count).
  */
-function staleCountMentions(count) {
-  const files = [
-    "README.md", "AGENTS.md", "CONTRIBUTING.md", "scripts/mirror-public.mjs", "scripts/mirror-public/README.md",
-    ...["ui", "cli", "mcp-server", "skills", "block-schema"].map((p) => `packages/${p}/README.md`),
-    ...(existsSync(join(ROOT, "packages", "skills", "skills"))
-      ? readdirSync(join(ROOT, "packages", "skills", "skills"), { recursive: true })
-          .filter((f) => String(f).endsWith(".md"))
-          .map((f) => `packages/skills/skills/${f}`)
-      : []),
-    ...(existsSync(join(ROOT, "docs", "architecture"))
-      ? readdirSync(join(ROOT, "docs", "architecture")).filter((f) => f.endsWith(".md")).map((f) => `docs/architecture/${f}`)
-      : []),
-  ];
-  const re = /\b(\d{2,3}) (?:[\w.+-]+ ){0,3}primitives\b/g;
+const COUNT_RULES = [
+  { field: "primitiveCount", re: /\b(\d{2,3}) (?:[\w.+-]+ ){0,3}primitives\b/g },
+  { field: "mcpToolCount", re: /\b(\d+) (?:MCP |Shavin )(?:server )?tools\b/g },
+  { field: "mcpToolCount", re: /\bTools \((\d+)\)/g },
+  { field: "mcpToolCount", re: /MCP-(\d+)%20tools/g },
+  { field: "compositionCount", re: /\b(\d+)\+? (?:[\w-]+ ){0,3}compositions\b/g },
+  { field: "themePresetCount", re: /\b(\d+) (?:[\w-]+ ){0,2}themes\b/g },
+  { field: "themePresetCount", re: /\b(\d+) theme presets\b/g },
+];
+
+function countGuardFiles() {
   const out = [];
-  for (const rel of files) {
+  const walk = (rel) => {
+    if (COUNT_GUARD_SKIP.test(rel)) return;
     const abs = join(ROOT, rel);
-    if (!existsSync(abs)) continue;
-    readFileSync(abs, "utf8").split("\n").forEach((line, i) => {
-      for (const m of line.matchAll(re)) if (Number(m[1]) !== count) out.push(`${rel}:${i + 1}: "${m[0]}"`);
+    if (!existsSync(abs)) return;
+    if (statSync(abs).isDirectory()) {
+      for (const e of readdirSync(abs)) walk(`${rel}/${e}`);
+    } else if (COUNT_GUARD_FILE.test(rel)) out.push(rel);
+  };
+  COUNT_GUARD_ROOTS.forEach(walk);
+  return out;
+}
+
+/** Written counts that differ from SHAVIN_META. `values` maps a SHAVIN_META field to its number. */
+function staleCountMentions(values) {
+  const out = [];
+  for (const rel of countGuardFiles()) {
+    readFileSync(join(ROOT, rel), "utf8").split("\n").forEach((line, i) => {
+      if (/astryx/i.test(line)) return;
+      for (const { field, re } of COUNT_RULES) {
+        for (const m of line.matchAll(re)) {
+          if (Number(m[1]) !== values[field]) out.push(`${rel}:${i + 1}: "${m[0]}" (SHAVIN_META.${field} is ${values[field]})`);
+        }
+      }
     });
   }
   return out;
 }
+
+const metaValues = () =>
+  Object.fromEntries(
+    ["primitiveCount", "mcpToolCount", "compositionCount", "themePresetCount"].map((k) => [k, Number(metaTs.match(new RegExp(`\\b${k}: (\\d+)`))?.[1])]),
+  );
 
 if (check) {
   let currentJson = "";
@@ -774,11 +828,11 @@ if (check) {
     }
   }
 
-  // Prose can't import SHAVIN_META, so check written primitive counts against it.
-  const stale = staleCountMentions(manifestResult.primitiveCount);
+  // Prose can't import SHAVIN_META, so check the counts it states (primitives, tools, compositions, theme presets) against it.
+  const stale = staleCountMentions(metaValues());
   if (stale.length) {
-    console.error(`  ${c.error}${g.stepFail}${c.reset} ${stale.length} written primitive count(s) differ from ${manifestResult.primitiveCount}:\n  ${stale.join("\n  ")}`);
-    console.error("  Update the number (code should use SHAVIN_META.primitiveCount instead).");
+    console.error(`  ${c.error}${g.stepFail}${c.reset} ${stale.length} written count(s) differ from SHAVIN_META:\n  ${stale.join("\n  ")}`);
+    console.error("  Update the number (code should read SHAVIN_META instead of typing it).");
     process.exit(1);
   }
 

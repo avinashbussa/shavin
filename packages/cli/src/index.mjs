@@ -8,9 +8,14 @@ import { bridgeCommand } from "./commands/bridge.mjs";
 import { brandCommand } from "./commands/brand.mjs";
 import { findingsCommand } from "./commands/findings.mjs";
 import { fileURLToPath } from "node:url";
+import { cliVersion, isVersionRequest } from "./version.mjs";
 import { c, fmt, g, printBanner } from "./ui.mjs";
 
 export async function runCli(argv = []) {
+  if (isVersionRequest(argv[0])) {
+    process.stdout.write(`${cliVersion()}\n`);
+    return;
+  }
   // Command Start Padding (2 empty lines when entering any command)
   process.stdout.write("\n\n");
 
@@ -98,6 +103,7 @@ export async function runCli(argv = []) {
     ${c.fgMuted}${"--community".padEnd(20)}${c.reset} ${c.fgSubtle}Query online community creator registry${c.reset}
     ${c.fgMuted}${"--port <port>".padEnd(20)}${c.reset} ${c.fgSubtle}Override the bridge server port${c.reset}
     ${c.fgMuted}${"--json".padEnd(20)}${c.reset} ${c.fgSubtle}Output machine-readable JSON format${c.reset}
+    ${c.fgMuted}${"--version, -v".padEnd(20)}${c.reset} ${c.fgSubtle}Print the CLI version${c.reset}
     ${c.fgMuted}${"--help, -h".padEnd(20)}${c.reset} ${c.fgSubtle}Show this help menu${c.reset}
 `);
       break;

@@ -10,8 +10,10 @@
 | `shavin check` (alias `doctor`) | Read-only health check: environment (Node, React, package versions), setup (stylesheet imports, Tailwind 3 preset or Tailwind 4 theme and `@source`, `ThemeProvider`) and agent files (AGENTS.md, SHAVIN.md, MCP config, skills). Each problem has a fix. `--render <url>` also loads that page headless (needs a running dev server and Playwright) and confirms Shavin renders styled. `--json` prints `{ apiVersion, type: "doctor", data }`; exits 1 when a check fails, so it can run in CI |
 | `shavin context` | Prints the project context agents read |
 | `shavin bridge` | Starts the `:7036` browser bridge |
-| `shavin brand` | Generates brand tokens and the preset from `brand-tokens.css` (`--init` scaffolds it, `--check` for CI) |
-| `shavin publish` | Packaging helper used by maintainers |
+| `shavin brand` | Two flows. **Apply a choice:** `--color <preset\|#hex> --display-font <name> --body-font <name> --mode <dark-first\|light-first\|system> [--confirm] [--json]` writes the `ThemeProvider` props, the `SHAVIN.md` lines and `.shavin/config.json` in one step; a new project starts with the theme `UNSET` until `--confirm`. **Brand tokens:** with no flags it generates brand tokens and the preset from `brand-tokens.css` (`--init` scaffolds it, `--check` for CI, `--oklch` for OKLCH) |
+| `shavin findings` | Reads the findings a developer sent from the page, for an agent that can run a shell command: lists them (`--state pending\|leased\|acked\|withdrawn\|all`), `--take` leases the next one for two minutes, `--ack <id>` marks it done, `--nack <id>` puts it back, `--lease <leaseId>` names the lease, `--target <dir>` picks the project, `--json` for scripts. Needs `@shavin/mcp` installed |
+| `shavin publish <file>` | Validates a block against the quality gate and writes its manifest as `<slug>.block.json` in the current folder |
+| `shavin --version` (`-v`) | Prints the CLI version |
 
 ### Installing blocks with the shadcn CLI
 
@@ -34,7 +36,7 @@ packages/cli/
   bin/shavin.mjs            entry point
   src/index.mjs             command routing
   src/commands/<name>.mjs   one file per command
-  src/templates/            files init writes (CLAUDE.md, VS Code snippets and HTML data)
+  src/templates/            files init writes (AGENTS.md, CLAUDE.md, SHAVIN.md and the vscode/ snippets and HTML data)
   src/ui.mjs                terminal output helpers
 ```
 

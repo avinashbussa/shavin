@@ -21,7 +21,7 @@ This is the project's design brief. Read it at the start of every task that touc
 - **Display / Body Font**: `UNSET` <!-- a pair from the font list; UNSET = the agent picks one from the brief -->
 - **Neutral Scale**: `zinc`
 - **Theme Mode**: `AUTO` <!-- AUTO = follow the brief: light for editorial and content, dark where the product suits it -->
-- **Scaling / Density**: `95%`
+- **Scaling / Density**: `100%`
 - **Base Radius**: `medium`
 - **Panel Background**: `solid`
 

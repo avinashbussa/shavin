@@ -627,7 +627,7 @@ export async function initCommand(args = {}) {
     writeFileSync(targetConfig, JSON.stringify({
       version: "0.1.0",
       engine: "@shavin/ui",
-      presets: { brandColor: "monochrome", grayColor: "zinc", radius: "medium", scaling: "95%" },
+      presets: { brandColor: "monochrome", grayColor: "zinc", radius: "medium", scaling: "100%" },
       brandConfirmed: false,
       initializedAt: new Date().toISOString(),
     }, null, 2), "utf8");

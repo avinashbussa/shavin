@@ -22,6 +22,12 @@ node packages/mcp-server/build.mjs   # refresh assets/ after changing skills, AG
 
 Restart your MCP client after a change; most clients keep the old process running.
 
+## What `tools/list` shows
+
+The server registers 36 tools but lists 22 by default. The nine Studio tools (all but `connect_studio`) appear once a Studio session is connected, and the five live-audit bridge tools (`get_live_audit`, `trigger_live_rescan`, `wait_for_live_clean`, `await_finding`, `list_findings`) appear once a browser tab reports in to the bridge. A hidden tool can still be called. `SHAVIN_MCP_ALL_TOOLS=1` lists all 36; the rule lives in `src/tool-visibility.mjs`.
+
+The bridge only answers this machine: it refuses a Host header that is not `localhost`, `127.0.0.1`, `[::1]` or `*.localhost`, and a browser request from another origin gets 403. Add a dev origin with `SHAVIN_BRIDGE_ALLOWED_ORIGINS`. `await_finding` and `list_findings` read what a developer sent from the page (the same queue `shavin findings` reads).
+
 ## Adding or changing a tool
 
 Each topic file exports a `register…Tool(s)` function that returns `{ schema, handler }` (or a list of them):

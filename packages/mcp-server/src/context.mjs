@@ -65,7 +65,7 @@ export function getAllFiles(dir, maxDepth = 4, currentDepth = 0) {
 // Also resolves `theme="Editorial"` preset props by inlining THEME_PRESETS data.
 
 const THEME_PRESETS_DATA = [
-  { name: "Monochrome", brandColor: "Monochrome", grayColor: "Zinc", radius: "medium", scaling: 95, panelBackground: "solid", appearance: "dark", displayFont: "Rethink Sans", bodyFont: "Inter" },
+  { name: "Monochrome", brandColor: "Monochrome", grayColor: "Zinc", radius: "medium", scaling: 100, panelBackground: "solid", appearance: "dark", displayFont: "Rethink Sans", bodyFont: "Inter" },
   { name: "Midnight", brandColor: "Cyan", grayColor: "Zinc", radius: "medium", scaling: 100, panelBackground: "translucent", appearance: "dark", displayFont: "Inter", bodyFont: "Inter" },
   { name: "Neo Tokyo", brandColor: "Ruby", grayColor: "Zinc", radius: "medium", scaling: 100, panelBackground: "translucent", appearance: "dark", displayFont: "Host Grotesk", bodyFont: "Inter" },
   { name: "Terminal", brandColor: "Green", grayColor: "Zinc", radius: "none", scaling: 100, panelBackground: "solid", appearance: "dark", displayFont: "JetBrains Mono", bodyFont: "JetBrains Mono" },
@@ -186,7 +186,7 @@ export function parseShavinManifest(targetDir) {
     brand: "monochrome",
     neutral: "zinc",
     themeMode: "dark-first",
-    density: "95%",
+    density: "100%",
     radius: "medium",
     panelBackground: "solid",
     raw: null,
@@ -438,7 +438,7 @@ export function extractProjectContext(options = {}) {
   const brand = manifest.brand || alignment.inferredBrand || "monochrome";
   const neutral = manifest.neutral || "zinc";
   const themeMode = manifest.themeMode || "dark-first";
-  const density = manifest.density || "95%";
+  const density = manifest.density || "100%";
   const radius = manifest.radius || "medium";
   const appName = manifest.appName || pkg.name || basename(targetDir);
 
