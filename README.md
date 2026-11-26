@@ -23,7 +23,7 @@
 `@shavin/ui` is a production-grade React design system engineered for teams that build with AI coding agents. It pairs 94 accessible primitives and a strict two-tier token system with a Model Context Protocol server that hands agents the real component APIs, the design rules, and live-DOM auditing. People and agents compose from one source of truth, so generated interfaces come out design-compliant and accessible — built, not improvised.
 
 > [!NOTE]
-> **Beta.** Component APIs and tokens can still change between releases. To try it from source, clone this repo, `npm install`, and `npm run playground`. See [Develop](#develop).
+> **Beta.** Component APIs and tokens can still change between releases. Install with the command under [Get started](#get-started); to work on it from source, see [Develop](#develop).
 
 
 ## Contents
@@ -110,7 +110,13 @@ Add `@shavin/mcp` to your editor (`init` does this for you):
 
 The same block works in `.mcp.json` (Claude Code), `.cursor/mcp.json`, `.vscode/mcp.json` and `claude_desktop_config.json`.
 
-**On Windows** use `cmd /c npx`, because `npx` there is `npx.cmd` and a client that starts it without a shell fails with `spawn npx ENOENT`: `{ "command": "cmd", "args": ["/c", "npx", "-y", "@shavin/mcp"] }`. `init` writes this form on Windows.
+**On Windows,** use this instead. `init` writes it for you.
+
+```json
+{ "command": "cmd", "args": ["/c", "npx", "-y", "@shavin/mcp"] }
+```
+
+Some editors can't start `npx` directly on Windows, so this runs it through `cmd`. If you see `spawn npx ENOENT`, this is the fix.
 
 #### Tools
 
