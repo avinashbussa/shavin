@@ -52,7 +52,7 @@
   },
   "devDependencies": {
     "tsx": "^4.23.13",
-    "tsup": "^8.5.1",
+    "tsup": "^9.0.0",
     "typescript": "^5.7.0"
   },
   "files": [
