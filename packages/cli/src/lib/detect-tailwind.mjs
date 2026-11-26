@@ -8,6 +8,7 @@
  *
  * Zero-dependency ESM.
  */
+import { readJsonFile } from "./json-file.mjs";
 import { existsSync, readFileSync } from "node:fs";
 import { join, resolve, dirname } from "node:path";
 import { relSpec } from "./paths.mjs";
@@ -38,7 +39,7 @@ export function detectTailwindVersion(cwd) {
   const pkgPath = join(cwd, "package.json");
   if (existsSync(pkgPath)) {
     try {
-      const pkg = JSON.parse(readFileSync(pkgPath, "utf8"));
+      const pkg = readJsonFile(pkgPath);
       const allDeps = { ...(pkg.dependencies || {}), ...(pkg.devDependencies || {}) };
       const twDep = allDeps["tailwindcss"] || "";
       if (/^[~^]?4/.test(twDep)) {
@@ -161,7 +162,7 @@ export function detectFramework(cwd) {
   const pkgPath = join(cwd, "package.json");
   if (existsSync(pkgPath)) {
     try {
-      const pkg = JSON.parse(readFileSync(pkgPath, "utf8"));
+      const pkg = readJsonFile(pkgPath);
       const allDeps = { ...(pkg.dependencies || {}), ...(pkg.devDependencies || {}) };
       if (allDeps["next"]) {
         return { framework: "nextjs", source: "package.json" };

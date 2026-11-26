@@ -14,6 +14,22 @@ if (process.argv.includes("--hook")) {
   }
 }
 
+// --help prints the usage and starts nothing (the server would otherwise sit waiting on stdin).
+if (process.argv.includes("--help") || process.argv.includes("-h")) {
+  process.stdout.write(`shavin-mcp: the Shavin MCP server for coding agents
+
+Usage:
+  npx @shavin/mcp                    stdio server (what an MCP client starts)
+  npx @shavin/mcp --bridge [--port <port>]   the browser bridge and dashboard only
+  npx @shavin/mcp --remote           streamable HTTP server
+  npx @shavin/mcp --hybrid           stdio and HTTP together
+  npx @shavin/mcp --help             show this help
+
+SHAVIN_MCP_ALL_TOOLS=1 lists every tool; by default the Studio and live-audit tools appear once they can work.
+`);
+  process.exit(0);
+}
+
 const { startMcpServer, startRemoteServer, globalBridge, BRIDGE_PORT } = await import("../src/index.mjs");
 
 // A stray error in a timer or an unhandled rejection (e.g. a Realtime hiccup)

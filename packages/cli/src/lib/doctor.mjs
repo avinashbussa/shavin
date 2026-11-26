@@ -9,6 +9,8 @@
  *   group  "environment" (runtime and packages) | "wiring" (CSS, Tailwind, ThemeProvider) | "agents" (agent files)
  *   status "pass" | "warn" | "fail" | "info"  (info never counts for or against the score)
  */
+import { parseJson } from "./json-file.mjs";
+import { hasStarterBodyStyle, starterStylesFix } from "./starter-styles.mjs";
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { basename, dirname, join, resolve } from "node:path";
 import { posix, relPosix, relSpec } from "./paths.mjs";
@@ -38,7 +40,7 @@ const LOCKFILES = { "package-lock.json": "npm", "pnpm-lock.yaml": "pnpm", "yarn.
 
 /** The import path from `from`'s folder to `to`, as written in source ("./globals.css", "../styles/globals.css"). */
 const spec = (from, to) => relSpec(dirname(from), to);
-const readJson = (p) => { try { return JSON.parse(readFileSync(p, "utf8")); } catch { return null; } };
+const readJson = (p) => { try { return parseJson(readFileSync(p, "utf8")); } catch { return null; } };
 const read = (p) => { try { return readFileSync(p, "utf8"); } catch { return ""; } };
 const majorMinor = (v) => (String(v || "").match(/(\d+)\.(\d+)/) || []).slice(1, 3).map(Number);
 /** The installed version of `name`, found the way Node resolves it: in this folder's node_modules or a parent's (workspaces hoist). */
@@ -237,6 +239,11 @@ export function runDoctor(cwd = process.cwd(), { skillsSources = [] } = {}) {
     const bad = lowContrastSolidOverrides(css);
     if (bad.length) add("wiring", "brand-solid-override", "warn", "Brand solid override", `${cssName} sets --brand-solid and --brand-fg to a pair under 4.5:1 (${bad.map((b) => `${b.ratio.toFixed(2)}:1 in "${b.selector}"`).join(", ")}), so text on solid brand fills fails WCAG 2 AA`,
       "Pick a --brand-fg with 4.5:1 on --brand-solid (and on --brand-solid-hover), or remove the override and let ThemeProvider brandSolid derive it");
+  }
+
+  if (cssPath && hasStarterBodyStyle(css)) {
+    add("wiring", "starter-styles", "warn", "Starter styles", `${cssName} still has the create-next-app starter body style (Arial on plain white): the Shavin canvas, text and font tokens are not used`,
+      `Run npx @shavin/cli init again (it replaces an unedited starter), or edit by hand, ${starterStylesFix(cssName)}`);
   }
 
   if (cssPath) {

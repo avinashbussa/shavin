@@ -28,6 +28,9 @@ import {
   checkFrameworkSupport,
 } from "../lib/init-detect.mjs";
 import { detectPackageManager } from "../lib/package-manager.mjs";
+import { mcpServerEntry, isPlainNpxDefault } from "../lib/mcp-config.mjs";
+import { parseJson, readJsonFile, invalidJsonMessage } from "../lib/json-file.mjs";
+import { neutraliseStarterStyles, starterStylesAdvice } from "../lib/starter-styles.mjs";
 
 async function askYesNo(question, defaultValue = true) {
   // Non-interactive (CI, piped stdin) — return default without prompting
@@ -239,7 +242,18 @@ function wireViteBridge(cwd) {
   return { status: "manual", file, snippet: `import { shavinBridge } from "@shavin/mcp/vite";\n// add to your Vite config:\nplugins: [shavinBridge(), /* ... */]` };
 }
 
+/** package.json of the project, tolerating a BOM. A file that still does not parse stops init with the way out. */
+function readPackageJson(file) {
+  try {
+    return readJsonFile(file);
+  } catch (err) {
+    throw new Error(invalidJsonMessage(file, err, "init cannot read the project's dependencies"));
+  }
+}
+
 export async function initCommand(args = {}) {
+  // `platform` is a test seam: it picks the MCP server entry written into the IDE configs.
+  const platform = args.platform ?? process.platform;
   const { oklch = false } = args;
   const cwd = process.cwd();
   printBanner("@shavin/cli", "Set up Shavin in this project");
@@ -262,7 +276,7 @@ export async function initCommand(args = {}) {
   const pm = detectPackageManager(cwd);
   const pkgJsonPath = resolve(cwd, "package.json");
   const isAlreadyInstalled = existsSync(pkgJsonPath) &&
-    JSON.parse(readFileSync(pkgJsonPath, "utf8")).dependencies?.["@shavin/ui"];
+    readPackageJson(pkgJsonPath).dependencies?.["@shavin/ui"];
 
   if (!isAlreadyInstalled) {
     const installCmd = pm === "npm"
@@ -432,6 +446,11 @@ export async function initCommand(args = {}) {
     const { src: withImports, added } = addCssImports(cssSrc, lines);
     cssSrc = withImports;
 
+    // The create-next-app starter styles (Arial on plain white) come after Shavin's imports and win over them.
+    const starter = neutraliseStarterStyles(cssSrc);
+    cssSrc = starter.css;
+    if (starter.status === "edited") console.log(fmt.warn(starterStylesAdvice(relPosix(cwd, cssPaths))));
+
     const sourceAdded = [];
     if (isTailwindV4) {
       // v4 skips node_modules when scanning for classes: register @shavin/ui so its components' utilities
@@ -451,10 +470,12 @@ export async function initCommand(args = {}) {
       }
     }
 
-    if (added.length || sourceAdded.length) {
+    if (added.length || sourceAdded.length || starter.status === "fixed") {
       writeFileSync(cssPaths, cssSrc, "utf8");
       const rel = relPosix(cwd, cssPaths);
-      console.log(fmt.success(`Updated ${rel}: ${[...added, ...sourceAdded].map((l) => l.replace(/;$/, "")).join(", ")}`));
+      const parts = [...added, ...sourceAdded].map((l) => l.replace(/;$/, ""));
+      if (starter.status === "fixed") parts.push("replaced the create-next-app starter styles (Arial on white) with the Shavin canvas, text and font tokens");
+      console.log(fmt.success(`Updated ${rel}: ${parts.join(", ")}`));
       modifiedCount++;
     } else {
       console.log(fmt.success(`${relPosix(cwd, cssPaths)} already imports Shavin's CSS`));
@@ -488,7 +509,7 @@ export async function initCommand(args = {}) {
   // the manual scripts are added.
   const wireBrandScripts = (cliLocal) => {
     if (!existsSync(pkgJsonPath)) return;
-    const pkg = JSON.parse(readFileSync(pkgJsonPath, "utf8"));
+    const pkg = readPackageJson(pkgJsonPath);
     pkg.scripts ??= {};
     const before = JSON.stringify(pkg.scripts);
     const oklchFlag = oklch ? " --oklch" : "";
@@ -640,7 +661,7 @@ export async function initCommand(args = {}) {
   const skillsPkgName = "@shavin/skills";
   const cliPkgName = "@shavin/cli";
 
-  const existingPkg = existsSync(pkgJsonPath) ? JSON.parse(readFileSync(pkgJsonPath, "utf8")) : {};
+  const existingPkg = existsSync(pkgJsonPath) ? readPackageJson(pkgJsonPath) : {};
   const allDeps = { ...(existingPkg.dependencies || {}), ...(existingPkg.devDependencies || {}) };
 
   const mcpAlreadyInstalled = Boolean(allDeps[mcpPkgName]);
@@ -771,19 +792,23 @@ export async function initCommand(args = {}) {
   if (existsSync(claudeMcpPath)) {
     try {
       const raw = readFileSync(claudeMcpPath, "utf8");
-      const parsed = JSON.parse(raw);
+      const parsed = parseJson(raw);
       parsed.mcpServers = parsed.mcpServers || {};
       if (!parsed.mcpServers["shavin"]) {
-        parsed.mcpServers["shavin"] = {
-          command: "npx",
-          args: ["-y", "@shavin/mcp"],
-        };
+        parsed.mcpServers["shavin"] = mcpServerEntry(platform);
         writeFileSync(claudeMcpPath, JSON.stringify(parsed, null, 2), "utf8");
         console.log(fmt.success(`Added shavin to .mcp.json (Claude Code)`));
         modifiedCount++;
+      } else if (platform === "win32" && isPlainNpxDefault(parsed.mcpServers["shavin"])) {
+        // What an earlier init wrote: it cannot start on Windows. An edited entry is left alone.
+        parsed.mcpServers["shavin"] = mcpServerEntry(platform);
+        writeFileSync(claudeMcpPath, JSON.stringify(parsed, null, 2), "utf8");
+        console.log(fmt.success(`Updated shavin in .mcp.json to run through cmd /c on Windows`));
+        modifiedCount++;
       }
-    } catch {
-      // Safe fallback
+    } catch (err) {
+      // Never overwrite a file we cannot read, and never fail silently.
+      console.log(fmt.warn(invalidJsonMessage(".mcp.json", err, "init did not add the Shavin server to it")));
     }
   } else {
     writeFileSync(
@@ -791,10 +816,7 @@ export async function initCommand(args = {}) {
       JSON.stringify(
         {
           mcpServers: {
-            "shavin": {
-              command: "npx",
-              args: ["-y", "@shavin/mcp"],
-            },
+            "shavin": mcpServerEntry(platform),
           },
         },
         null,
@@ -808,7 +830,7 @@ export async function initCommand(args = {}) {
 
   // Cursor reads `mcpServers`; VS Code reads a top-level `servers` key with an explicit `type`.
   // https://code.visualstudio.com/docs/agents/reference/mcp-configuration
-  const shavinServer = { command: "npx", args: ["-y", "@shavin/mcp"] };
+  const shavinServer = mcpServerEntry(platform);
   const ideConfigs = [
     { name: "Cursor", dirName: ".cursor", key: "mcpServers", entry: shavinServer },
     { name: "VS Code", dirName: ".vscode", key: "servers", entry: { type: "stdio", ...shavinServer } },
@@ -821,8 +843,9 @@ export async function initCommand(args = {}) {
     if (existsSync(mcpPath)) {
       try {
         const raw = readFileSync(mcpPath, "utf8");
-        const parsed = JSON.parse(raw);
+        const parsed = parseJson(raw);
         let changed = false;
+        let updated = false; // an old default replaced, as opposed to a new entry added
         // Older versions of init wrote VS Code's file with `mcpServers`, which VS Code ignores.
         if (key === "servers" && parsed.mcpServers?.shavin) {
           delete parsed.mcpServers.shavin;
@@ -833,14 +856,22 @@ export async function initCommand(args = {}) {
         if (!parsed[key]["shavin"]) {
           parsed[key]["shavin"] = entry;
           changed = true;
+        } else if (platform === "win32" && isPlainNpxDefault(parsed[key]["shavin"])) {
+          // What an earlier init wrote: it cannot start on Windows. An edited entry is left alone.
+          parsed[key]["shavin"] = { ...(parsed[key]["shavin"].type ? { type: parsed[key]["shavin"].type } : {}), ...shavinServer };
+          changed = true;
+          updated = true;
         }
         if (changed) {
           writeFileSync(mcpPath, JSON.stringify(parsed, null, 2), "utf8");
-          console.log(fmt.success(`Added shavin to ${dirName}/mcp.json`));
+          console.log(fmt.success(updated
+            ? `Updated shavin in ${dirName}/mcp.json to run through cmd /c on Windows`
+            : `Added shavin to ${dirName}/mcp.json`));
           modifiedCount++;
         }
-      } catch {
-        // Safe fallback: do not overwrite corrupted or custom format json
+      } catch (err) {
+        // Never overwrite a file we cannot read, and never fail silently.
+        console.log(fmt.warn(invalidJsonMessage(`${dirName}/mcp.json`, err, "init did not add the Shavin server to it")));
       }
     } else {
       if (!existsSync(ideDir)) mkdirSync(ideDir, { recursive: true });
@@ -872,6 +903,7 @@ export async function initCommand(args = {}) {
 
     // Merge or write settings.json
     const settingsDest = join(vscodeDir, "settings.json");
+    let settingsUnreadable = false;
     let settingsObj = {
       "html.customData": ["./.vscode/vscode.html-custom-data.json"],
       "editor.suggest.snippetPreventQuickSuggestions": false,
@@ -882,7 +914,7 @@ export async function initCommand(args = {}) {
 
     if (existsSync(settingsDest)) {
       try {
-        const rawSettings = JSON.parse(readFileSync(settingsDest, "utf8"));
+        const rawSettings = readJsonFile(settingsDest);
         const customData = Array.isArray(rawSettings["html.customData"]) ? rawSettings["html.customData"] : [];
         if (!customData.includes("./.vscode/vscode.html-custom-data.json")) {
           customData.push("./.vscode/vscode.html-custom-data.json");
@@ -892,13 +924,18 @@ export async function initCommand(args = {}) {
           "html.customData": customData,
           "typescript.suggest.completeFunctionCalls": rawSettings["typescript.suggest.completeFunctionCalls"] ?? true,
         };
-      } catch {
-        // preserve safe fallback
+      } catch (err) {
+        // Editor settings are often JSON with comments. Rewriting one we cannot parse would replace the user's settings
+        // with ours, so leave it alone and say how to finish by hand.
+        settingsUnreadable = true;
+        console.log(fmt.warn(invalidJsonMessage(".vscode/settings.json", err, "init left it alone") + ` To get the Shavin autocomplete, add "html.customData": ["./.vscode/vscode.html-custom-data.json"] to it.`));
       }
     }
-    writeFileSync(settingsDest, JSON.stringify(settingsObj, null, 2), "utf8");
-    console.log(fmt.success(`Configured VS Code / Cursor IDE helpers (.vscode/vscode.html-custom-data.json & snippets)`));
-    modifiedCount++;
+    if (!settingsUnreadable) {
+      writeFileSync(settingsDest, JSON.stringify(settingsObj, null, 2), "utf8");
+      console.log(fmt.success(`Configured VS Code / Cursor IDE helpers (.vscode/vscode.html-custom-data.json & snippets)`));
+      modifiedCount++;
+    }
   }
 
   // 8. Auto-start the dev bridge with the dev server (needs @shavin/mcp)

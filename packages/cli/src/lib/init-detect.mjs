@@ -2,6 +2,7 @@
  * Pure helpers for `shavin init`: finding the files it edits and editing them. Kept separate from
  * the command so each rule can be tested without running an install.
  */
+import { parseJson } from "./json-file.mjs";
 import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { readDeclaredDeps } from "./package-manager.mjs";
@@ -40,7 +41,7 @@ export function isShadcnProject(cwd) {
   if (!existsSync(file)) return false;
   let json;
   try {
-    json = JSON.parse(readFileSync(file, "utf8"));
+    json = parseJson(readFileSync(file, "utf8"));
   } catch {
     return false;
   }
@@ -80,7 +81,7 @@ export const SHAVIN_HOOK_COMMAND = "npx --no-install shavin-mcp --hook";
 export function mergeClaudeHook(text) {
   let json = {};
   if (text && text.trim()) {
-    try { json = JSON.parse(text); } catch { return null; }
+    try { json = parseJson(text); } catch { return null; }
     if (!json || typeof json !== "object" || Array.isArray(json)) return null;
   }
   const hooks = (json.hooks = json.hooks && typeof json.hooks === "object" ? json.hooks : {});

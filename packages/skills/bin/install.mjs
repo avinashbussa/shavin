@@ -30,6 +30,20 @@ const CURSOR_RULE_SRC = resolve(PKG_ROOT, "cursor", "shavin.mdc");
 
 // --- Parse args ---
 const args = process.argv.slice(2);
+
+// --help prints the usage and installs nothing.
+if (args.includes("--help") || args.includes("-h")) {
+  console.log(`@shavin/skills: install the Shavin agent skills and slash commands into a project
+
+Usage:
+  npx @shavin/skills                        install skills and commands into the current folder
+  npx @shavin/skills --force                overwrite existing files
+  npx @shavin/skills --target ./apps/myapp  install into a specific project
+  npx @shavin/skills --no-claude            skip .claude/skills and .claude/commands
+  npx @shavin/skills --no-cursor            skip .cursor/rules/shavin.mdc
+  npx @shavin/skills --help                 show this help`);
+  process.exit(0);
+}
 const force = args.includes("--force") || args.includes("-f");
 const noClaude = args.includes("--no-claude");
 const noCursor = args.includes("--no-cursor");

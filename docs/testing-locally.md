@@ -176,7 +176,7 @@ Check, in this order:
 
 1. `init` finishes without an error and names the files it changed (`SHAVIN.md`, `AGENTS.md`, `.agents/`, `.mcp.json`).
 2. The dev page renders with Shavin styles (a `Button` has its background and radius; Tab shows the focus ring) and the dev inspector tile appears in a corner.
-3. `.mcp.json` starts: run `npx -y @shavin/mcp` in the project (it prints `Standalone MCP server running on stdio with 36 tools` and waits for a client; stop it with Ctrl+C), or open the project in your agent and call `get_project_context`.
+3. `.mcp.json` starts: run `npx -y @shavin/mcp` in the project (it prints `Standalone MCP server running on stdio: 22 of 36 tools listed` and waits for a client; stop it with Ctrl+C), or open the project in your agent and call `get_project_context`.
 4. `npx @shavin/cli check` exits 0, and `npx @shavin/cli findings` runs (it lists nothing yet).
 
 ### Troubleshooting
@@ -186,7 +186,7 @@ Check, in this order:
 | `init` or `npx` installs an old or wrong copy after you republished the same version | npx caches the first copy it resolved. Delete `~/.npm/_npx` (on Windows `%LocalAppData%\npm-cache\_npx`), and unpublish or reset Verdaccio storage before republishing |
 | `E404 ... @shavin/ui` | The project's `.npmrc` line is missing, or a package was not published yet. Check `npm view @shavin/ui version` from inside the project |
 | `EADDRINUSE` when starting Verdaccio | Port 4873 is taken (another Verdaccio). Stop it, or use another port in `--listen` and in every `127.0.0.1:4873` above |
-| Windows: the agent client reports `spawn npx ENOENT` for the server in `.mcp.json` | Windows cannot run `npx` directly without a shell. Change the entry to `"command": "cmd", "args": ["/c", "npx", "-y", "@shavin/mcp"]` |
+| Windows: the agent client reports `spawn npx ENOENT` for the server in `.mcp.json` | `npx` is `npx.cmd` on Windows and cannot be started without a shell. `init` writes `"command": "cmd", "args": ["/c", "npx", "-y", "@shavin/mcp"]` on Windows; if the file was written by an older init or by hand, change the entry to that |
 | `npm publish` asks you to log in | `--userconfig publish.npmrc` was left out, or the `_authToken` line is missing from it |
 
 ### Clean up

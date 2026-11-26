@@ -18,6 +18,8 @@ A Model Context Protocol server that gives AI coding agents (Claude Code, Cursor
 
 `npx @shavin/cli init` writes these files for you.
 
+**On Windows** use `cmd /c npx`: `npx` there is `npx.cmd`, and a client that starts it without a shell fails with `spawn npx ENOENT`. Set `"command": "cmd"` and `"args": ["/c", "npx", "-y", "@shavin/mcp"]`. `init` writes this form on Windows.
+
 ## Tools (36)
 
 | Group | Tools |

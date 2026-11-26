@@ -28,6 +28,9 @@ function validateCode(code) {
   code = code.split(/\r?\n/)
     .filter((l) => !/data-overlay/.test(l))
     .map((l) => l.replace(/\bbg(Overlays|Image|Video)\s*=\s*(?:"[^"]*"|'[^']*'|`[^`]*`)/g, "bg$1=\"\""))
+    // brandColor="#hex" on ThemeProvider / ScopedThemeProvider is where a custom brand colour belongs: the value
+    // `shavin brand` writes into the root layout. Same exemption as validate_code in @shavin/mcp.
+    .map((l) => l.replace(/\bbrandColor\s*=\s*(?:"[^"]*"|'[^']*'|\{\s*(?:"[^"]*"|'[^']*')\s*\})/g, 'brandColor="brand"'))
     .join("\n");
 
   const hexMatches = matchHexColors(code);
@@ -81,6 +84,8 @@ function autofixCode(code) {
     if (/data-overlay/.test(line)) return match;
     // skip hex inside bgOverlays/bgImage/bgVideo prop values — DATA for bg-media
     if (/bg(Overlays|Image|Video)\s*=/.test(line)) return match;
+    // skip the brandColor value of ThemeProvider: that hex is the brand choice itself
+    if (/\bbrandColor\s*=\s*\{?\s*["'][^"']*$/.test(line)) return match;
     if (!colorAt.has(offset)) return match;
     fixesApplied.push("Replaced white hex with bg-surface / text-fg");
     return "var(--bg-surface)";
@@ -93,6 +98,8 @@ function autofixCode(code) {
     if (/data-overlay/.test(line)) return match;
     // skip hex inside bgOverlays/bgImage/bgVideo prop values — DATA for bg-media
     if (/bg(Overlays|Image|Video)\s*=/.test(line)) return match;
+    // skip the brandColor value of ThemeProvider: that hex is the brand choice itself
+    if (/\bbrandColor\s*=\s*\{?\s*["'][^"']*$/.test(line)) return match;
     if (!colorAt.has(offset)) return match;
     fixesApplied.push("Replaced black hex with text-fg");
     return "var(--fg)";

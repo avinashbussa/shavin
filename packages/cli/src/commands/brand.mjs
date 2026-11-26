@@ -35,10 +35,12 @@ import { isThemeInvocation, parseThemeFlags, applyTheme } from "../lib/theme-set
 
 // ── Path detection ──────────────────────────────────────────────────────
 
-function findBrandCSS(cwd) {
+export function findBrandCSS(cwd) {
   const candidates = [
-    // Consumer: alongside global CSS (Next.js app router)
+    // Consumer: alongside global CSS (Next.js app router, with a src folder)
     "src/app/brand-tokens.css",
+    // Consumer: Next.js app router without a src folder (the create-next-app default layout)
+    "app/brand-tokens.css",
     // Consumer: alongside global CSS (Next.js pages router / common)
     "src/styles/brand-tokens.css",
     "styles/brand-tokens.css",

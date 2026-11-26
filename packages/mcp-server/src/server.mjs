@@ -28,6 +28,7 @@ import { registerSteerTool } from "./tools/steer.mjs";
 import { registerBridgeTools } from "./tools/bridge.mjs";
 import { registerComposeTools } from "./tools/compose.mjs";
 import { withNextStep } from "./next-steps.mjs";
+import { walkDirFiles } from "./skill-files.mjs";
 import { MCP_VERSION } from "./version.mjs";
 import { themeReminderOnce } from "./context.mjs";
 import { registerArchLintTool } from "./tools/archlint.mjs";
@@ -104,22 +105,6 @@ function findSkillsDir() {
     if (existsSync(c)) return c;
   }
   return null;
-}
-
-function walkDirFiles(dir, baseDir = dir) {
-  const results = [];
-  if (!existsSync(dir)) return results;
-  const entries = readdirSync(dir, { withFileTypes: true });
-  for (const entry of entries) {
-    const fullPath = resolve(dir, entry.name);
-    if (entry.isDirectory()) {
-      results.push(...walkDirFiles(fullPath, baseDir));
-    } else if (entry.isFile() && entry.name.endsWith(".md")) {
-      const relPath = fullPath.slice(baseDir.length + 1);
-      results.push({ fullPath, relPath, name: entry.name });
-    }
-  }
-  return results;
 }
 
 function loadSkills() {
@@ -270,6 +255,8 @@ Mandatory UI Execution Protocol:
     return Array.from(toolRegistry.values()).filter((t) => isToolVisible(t.schema.name, state));
   };
 
+  createMcpServer.visibleToolCount = () => visibleTools().length;
+
   // Tell the client when the visible set changes (Studio paired, a bridge tab appeared).
   let lastSig = visibleTools().map((t) => t.schema.name).join();
   const notifyIfChanged = () => {
@@ -326,5 +313,11 @@ export async function startMcpServer() {
   const server = createMcpServer();
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  console.error(`[shavin-mcp] Standalone MCP server running on stdio with ${createMcpServer.toolCount ?? "all"} tools.`);
+  const total = createMcpServer.toolCount ?? 0;
+  const listed = createMcpServer.visibleToolCount?.() ?? total;
+  console.error(
+    listed === total
+      ? `[shavin-mcp] Standalone MCP server running on stdio with ${total} tools.`
+      : `[shavin-mcp] Standalone MCP server running on stdio: ${listed} of ${total} tools listed. The Studio tools appear when a Studio session connects and the live-audit tools when a browser tab reports in; set SHAVIN_MCP_ALL_TOOLS=1 to list all ${total}.`
+  );
 }

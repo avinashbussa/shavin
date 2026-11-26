@@ -110,6 +110,8 @@ Add `@shavin/mcp` to your editor (`init` does this for you):
 
 The same block works in `.mcp.json` (Claude Code), `.cursor/mcp.json`, `.vscode/mcp.json` and `claude_desktop_config.json`.
 
+**On Windows** use `cmd /c npx`, because `npx` there is `npx.cmd` and a client that starts it without a shell fails with `spawn npx ENOENT`: `{ "command": "cmd", "args": ["/c", "npx", "-y", "@shavin/mcp"] }`. `init` writes this form on Windows.
+
 #### Tools
 
 | Group | Tools |

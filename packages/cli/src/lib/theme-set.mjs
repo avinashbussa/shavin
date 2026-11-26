@@ -10,6 +10,7 @@
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { relPosix } from "./paths.mjs";
+import { readJsonFile, invalidJsonMessage } from "./json-file.mjs";
 
 export const BRAND_PRESET_NAMES = [
   "monochrome", "tomato", "red", "ruby", "crimson", "pink", "plum", "purple", "violet", "iris", "indigo", "blue",
@@ -158,7 +159,13 @@ export function applyTheme(cwd, values) {
   const cfgPath = join(cwd, ".shavin", "config.json");
   let cfg = {};
   if (existsSync(cfgPath)) {
-    try { cfg = JSON.parse(readFileSync(cfgPath, "utf8")); } catch { cfg = {}; }
+    try {
+      cfg = readJsonFile(cfgPath);
+    } catch (err) {
+      // Writing a fresh file over one we cannot read would throw its other settings away.
+      notes.push(invalidJsonMessage(".shavin/config.json", err, "the choice was not recorded there"));
+      return { changed, paste, notes };
+    }
   }
   cfg.presets = cfg.presets || {};
   if (values.color) cfg.presets.brandColor = values.color;

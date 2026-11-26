@@ -1,3 +1,4 @@
+import { parseJson } from "../json-file.mjs";
 import { fileURLToPath } from "node:url";
 import { readFileSync, writeFileSync, existsSync, readdirSync, mkdirSync } from "node:fs";
 import { resolve, join } from "node:path";
@@ -37,7 +38,7 @@ export function registerEnvironmentTools(server, ROOT) {
             // Inline detection: check if the consuming project has tailwind v4
             const targetPkg = resolve(process.cwd(), "package.json");
             if (existsSync(targetPkg)) {
-              const pkg = JSON.parse(readFileSync(targetPkg, "utf8"));
+              const pkg = parseJson(readFileSync(targetPkg, "utf8"));
               const allDeps = { ...(pkg.dependencies || {}), ...(pkg.devDependencies || {}) };
               twVersion = /^[~^>=\s]*4/.test(allDeps["tailwindcss"] || "") ? "v4" : "v3";
             } else {

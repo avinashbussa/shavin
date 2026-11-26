@@ -17,7 +17,7 @@ npx @shavin/cli init          # or: npx @shavin/cli init --oklch
 5. Wraps your root layout in `<ThemeProvider>`.
 6. Writes `SHAVIN.md`, `AGENTS.md` and `CLAUDE.md` (the project brain for AI agents).
 7. Creates `.shavin/` (config, prompt history, snapshots).
-8. Optionally installs `@shavin/mcp` and `@shavin/skills`, and writes MCP configs for Cursor, VS Code and Claude Code (`.mcp.json`).
+8. Optionally installs `@shavin/mcp` and `@shavin/skills`, and writes MCP configs for Cursor, VS Code and Claude Code (`.mcp.json`). On Windows the server entry runs `npx` through `cmd /c`.
 9. Adds VS Code autocomplete data and snippets.
 
 ## Commands

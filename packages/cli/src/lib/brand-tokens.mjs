@@ -12,6 +12,9 @@
  * and "oklch" (v4-oklch path) output modes.
  */
 
+import { existsSync } from "node:fs";
+import { join } from "node:path";
+
 // ── Import the shared OKLCH conversion engine ──────────────────────────────
 import {
   hexToOklch,
@@ -818,12 +821,11 @@ export const DEFAULT_BRAND_TOKENS_CSS = `/* ====================================
  * Returns { cssPath, presetPath } or null if not found.
  */
 export function detectBrandTokensPath(cwd) {
-  const { existsSync } = require("node:fs");
-  const { join } = require("node:path");
-
   const candidates = [
-    // Next.js app router
+    // Next.js app router (with a src folder)
     { css: "src/app/brand-tokens.css", preset: "src/app/brand-preset.mjs" },
+    // Next.js app router without a src folder (the create-next-app default layout)
+    { css: "app/brand-tokens.css", preset: "app/brand-preset.mjs" },
     // Next.js / common
     { css: "src/styles/brand-tokens.css", preset: "src/styles/brand-preset.mjs" },
     { css: "styles/brand-tokens.css", preset: "styles/brand-preset.mjs" },

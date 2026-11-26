@@ -2,6 +2,7 @@
  * Package-manager helpers shared by `init` and `add`. Pure apart from reading
  * the project folder; no installs happen here.
  */
+import { readJsonFile } from "./json-file.mjs";
 import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
@@ -23,7 +24,7 @@ export function installCommand(pm, specs, { dev = false } = {}) {
 /** Dependencies and devDependencies declared in `cwd/package.json` ({} when unreadable). */
 export function readDeclaredDeps(cwd) {
   try {
-    const pkg = JSON.parse(readFileSync(resolve(cwd, "package.json"), "utf8"));
+    const pkg = readJsonFile(resolve(cwd, "package.json"));
     return { ...(pkg.devDependencies || {}), ...(pkg.dependencies || {}) };
   } catch {
     return {};

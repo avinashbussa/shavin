@@ -9,6 +9,8 @@
 import { readFileSync, writeFileSync, existsSync, readdirSync, mkdirSync, unlinkSync } from "node:fs";
 import { matchHexColors } from "@shavin/block-schema/hex-policy";
 import { createHash } from "node:crypto";
+import { toPosix } from "./posix-path.mjs";
+import { parseJson } from "./json-file.mjs";
 import { resolve, dirname, join, basename } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -18,7 +20,7 @@ const ROOT = resolve(__dirname, "..", "..", "..");
 
 export function loadJSON(path) {
   try {
-    if (existsSync(path)) return JSON.parse(readFileSync(path, "utf8"));
+    if (existsSync(path)) return parseJson(readFileSync(path, "utf8"));
   } catch {}
   return null;
 }
@@ -340,7 +342,7 @@ export function detectProjectArchetype(targetDir) {
 }
 
 export function scanCodebaseAlignment(targetDir) {
-  const srcFiles = getAllFiles(targetDir, 4).filter((f) =>
+  const srcFiles = getAllFiles(targetDir, 4).map(toPosix).filter((f) => // forward slashes: Windows paths have backslashes
     /\.(tsx|jsx|ts|js|html|css|vue|svelte)$/i.test(f) &&
     !f.includes(".test.") &&
     !f.includes(".spec.") &&

@@ -8,6 +8,7 @@
  * This module compares those ranges with what is installed. Pure: reads package.json files, writes nothing.
  * Small on purpose (no semver dependency); a range it cannot read counts as satisfied, so it never nags.
  */
+import { parseJson } from "./json-file.mjs";
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { installCommand } from "./package-manager.mjs";
@@ -18,7 +19,7 @@ export const COMPAT_TARGET = "@shavin/ui";
 /** A runtime dependency of the app (not a dev tool): its upgrade command must not use -D. */
 export const FX = "@shavin/fx";
 
-const readJson = (p) => { try { return JSON.parse(readFileSync(p, "utf8")); } catch { return null; } };
+const readJson = (p) => { try { return parseJson(readFileSync(p, "utf8")); } catch { return null; } };
 
 /** "1.2.3" or "1.2.3-beta.1" → { n: [1,2,3], pre: "beta.1" }, or null. */
 function parse(v) {

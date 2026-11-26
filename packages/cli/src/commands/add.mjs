@@ -1,5 +1,6 @@
 import { existsSync, writeFileSync, mkdirSync, readFileSync } from "node:fs";
 import { relPosix } from "../lib/paths.mjs";
+import { readJsonFile, invalidJsonMessage } from "../lib/json-file.mjs";
 import { execSync } from "node:child_process";
 import { join, resolve } from "node:path";
 import { ALL_BLOCKS, COMMUNITY_BLOCKS, BLOCK_TEMPLATES } from "@shavin/block-schema";
@@ -45,11 +46,11 @@ export async function addCommand(rawTarget, options = {}) {
 
   if (existsSync(pkgJsonPath)) {
     try {
-      const pkg = JSON.parse(readFileSync(pkgJsonPath, "utf8"));
+      const pkg = readJsonFile(pkgJsonPath);
       const allDeps = { ...(pkg.dependencies || {}), ...(pkg.devDependencies || {}) };
       hasShavinUI = Boolean(allDeps["@shavin/ui"]);
-    } catch {
-      // Malformed package.json — proceed and let the import fail naturally
+    } catch (err) {
+      console.log(fmt.warn(invalidJsonMessage("package.json", err, "add could not tell whether @shavin/ui is installed")));
     }
   }
 
