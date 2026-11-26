@@ -180,7 +180,7 @@ const MCP_TOOL_DESC: Record<ShavinMcpTool, string> = {
   list_skills: "The agent skills and their sections",
   get_skill: "One skill, or one section of it",
   get_skill_mode: "Structural, marketing, editorial or hybrid mode for a task",
-  install_skills: `Installs the ${SHAVIN_META.skillCount} skills into .agents/skills`,
+  install_skills: `Installs the ${SHAVIN_META.consumerSkillCount} skills into .agents/skills`,
   list_commands: "The slash commands in .agents/commands",
   shavin_steer: "Audit, polish, harden or roll back a design",
   connect_studio: "Pairs with a Studio canvas using its 6-character code",
