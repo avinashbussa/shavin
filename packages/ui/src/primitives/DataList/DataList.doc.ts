@@ -2,7 +2,7 @@ import type { ComponentDoc } from "../../authoring/types";
 
 export const docs: ComponentDoc = {
   name: "DataList",
-  description: "Semantic key-value definition list primitive built on HTML <dl>, <dt>, and <dd> elements.",
+  description: "Shows labelled values, such as the fields of a record, as a list of label and value pairs. Labels sit above the values or beside them.",
   features: [
     "Orientations: vertical (default stacked) and horizontal (inline justify-between rows)",
     "Semantic <dl> / <dt> / <dd> HTML structure",

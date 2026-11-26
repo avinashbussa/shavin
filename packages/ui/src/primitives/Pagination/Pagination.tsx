@@ -90,11 +90,11 @@ export function Pagination({
             }}
             className="group block rounded-[var(--radius-panel)] border border-hairline bg-surface-hover/60 hover:bg-surface-hover hover:border-hairline-strong p-4 transition cursor-pointer"
           >
-            <div className="flex items-center gap-1.5 text-xs font-medium text-fg-subtle group-hover:text-accent transition">
+            <div className="flex items-center gap-1.5 text-xs font-medium text-fg-subtle group-hover:text-brand-text transition">
               <span aria-hidden>←</span>
               <span>{prevLabel}</span>
             </div>
-            <div className="mt-1 text-base font-semibold text-fg group-hover:text-accent transition">
+            <div className="mt-1 text-base font-semibold text-fg group-hover:text-brand-text transition">
               {prevTitle}
             </div>
           </a>
@@ -113,11 +113,11 @@ export function Pagination({
             }}
             className="group block rounded-[var(--radius-panel)] border border-hairline bg-surface-hover/60 hover:bg-surface-hover hover:border-hairline-strong p-4 transition cursor-pointer sm:text-right"
           >
-            <div className="flex items-center gap-1.5 justify-end text-xs font-medium text-fg-subtle group-hover:text-accent transition sm:justify-end">
+            <div className="flex items-center gap-1.5 justify-end text-xs font-medium text-fg-subtle group-hover:text-brand-text transition sm:justify-end">
               <span>{nextLabel === "Next" ? "Up next" : nextLabel}</span>
               <span aria-hidden>→</span>
             </div>
-            <div className="mt-1 text-base font-semibold text-fg group-hover:text-accent transition">
+            <div className="mt-1 text-base font-semibold text-fg group-hover:text-brand-text transition">
               {nextTitle}
             </div>
           </a>
@@ -190,7 +190,7 @@ export function Pagination({
             className={cn(
               "flex h-8 min-w-[32px] items-center justify-center rounded-[var(--radius-lg)] px-2 text-xs font-medium transition cursor-pointer",
               isActive
-                ? "bg-accent text-accent-fg font-semibold shadow-card"
+                ? "bg-brand-solid text-brand-fg font-semibold shadow-card"
                 : "border border-hairline bg-surface text-fg hover:bg-surface-hover"
             )}
           >

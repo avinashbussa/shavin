@@ -31,13 +31,13 @@ Every interface should declare its anchor archetype to maintain unified stylisti
 ---
 
 ### Archetype 1: Linear Dark (High-Performance Engineering)
-- **Visual Feel**: Deep charcoal surfaces, razor-sharp hairline borders, luminous accent glows, keyboard-first aesthetic.
+- **Visual Feel**: Deep charcoal surfaces, razor-sharp hairline borders, luminous brand glows, keyboard-first aesthetic.
 - **Token Configuration**:
   - Theme: `.dark`
   - Canvas: `bg-canvas` (`--n-950` / `#09090b`)
   - Surface: `bg-surface` (`--n-900` / `#121215`)
-  - Accent: `grass` or `cyan`
-  - Radius: `large` (`--radius-lg: 8px`, `--radius-panel: 12px`)
+  - Brand: from the brief or `SHAVIN.md` (`monochrome` if none)
+  - Radius: `large` (`--radius-lg: 12px`, `--radius-panel: 24px`)
 - **Key Layout Patterns**:
   - Monospaced keyboard shortcut badges (`<Kbd>⌘K</Kbd>`).
   - Asymmetric bento grid with thin hairline borders (`border-hairline/60`).
@@ -52,7 +52,7 @@ Every interface should declare its anchor archetype to maintain unified stylisti
   - Theme: `:root` (light) or `.dark`
   - Canvas: `bg-canvas` (`#ffffff` light / `#000000` dark)
   - Surface: `bg-surface` (`#f5f5f7` light / `#1c1c1e` dark)
-  - Accent: `sky` or `neutral`
+  - Brand: `sky` or `neutral`
   - Radius: `full` or `large`
 - **Key Layout Patterns**:
   - Centered headlines with extreme measure discipline (`max-w-3xl mx-auto`).
@@ -67,12 +67,12 @@ Every interface should declare its anchor archetype to maintain unified stylisti
 - **Token Configuration**:
   - Theme: `:root` (light)
   - Canvas: `bg-canvas` (`#ffffff`)
-  - Accent: `iris` or `indigo`
+  - Brand: `iris` or `indigo`
   - Radius: `medium` (`--radius-panel: 16px`)
 - **Key Layout Patterns**:
   - Multi-stop chromatic mesh backdrops with soft directional scrims.
   - Interactive multi-tab code showcase with live API response panels.
-  - Dense trust matrix: verified enterprise customer logos, uptime SLA counters, compliance certifications (SOC2, ISO, WCAG AAA).
+  - Dense trust matrix: verified enterprise customer logos, uptime SLA counters, compliance certifications (SOC2, ISO, WCAG 2.2 AA).
 
 ---
 
@@ -82,7 +82,7 @@ Every interface should declare its anchor archetype to maintain unified stylisti
   - Theme: Both Light and Dark
   - Canvas: `bg-canvas`
   - Surface: `bg-surface`
-  - Accent: `amber` or `bronze`
+  - Brand: `amber` or `bronze`
   - Radius: `small` or `none` (`rounded-none` or `rounded-sm`)
 - **Key Layout Patterns**:
   - Corner crosshairs (`+`) on card boundaries.
@@ -98,8 +98,8 @@ Every interface should declare its anchor archetype to maintain unified stylisti
   - Theme: Both Light and Dark
   - Canvas: `bg-canvas` (`#000000` dark / `#ffffff` light)
   - Surface: `bg-surface` (`#111111` dark / `#fafafa` light)
-  - Accent: `neutral` (black/white high contrast)
-  - Radius: `medium` (`--radius-panel: 12px`, `--radius-lg: 6px`)
+  - Brand: `neutral` (black/white high contrast)
+  - Radius: `medium` (`--radius-panel: 16px`, `--radius-lg: 8px`)
 - **Key Layout Patterns**:
   - Geometric isometric deployment pipelines.
   - Tabular monospace numbers with zero letter-spacing drift (`tabular-nums font-mono`).

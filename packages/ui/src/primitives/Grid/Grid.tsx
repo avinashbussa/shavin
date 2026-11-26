@@ -1,9 +1,9 @@
 import type { HTMLAttributes, ElementType } from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "../../lib/cn";
-import { concentricContainerStyle, withConcentricStyle } from "../../lib/concentric";
+import { concentricContainerStyle, paddingScaleFromClassName, withConcentricStyle } from "../../lib/concentric";
 import { surfaceClass, type Surface } from "../../lib/surface";
-import { bgMediaLayer, type BgMediaProps } from "../../lib/media-overlays";
+import { bgMediaLayer, resolveBgReadability, type BgMediaProps } from "../../lib/media-overlays";
 
 export const gridVariants = cva("grid", {
   variants: {
@@ -106,18 +106,20 @@ export function Grid({
   ...props
 }: GridProps) {
   const concentricStyle = translucent
-    ? concentricContainerStyle("4")
+    ? // Padding comes from className (p-6, px-4 py-8): the real value, not a guess.
+      concentricContainerStyle(paddingScaleFromClassName(className), false, { border: true })
     : {};
   const layoutClass = gridVariants({ columns, minWidth, maxColumns, rows, align, gap, stack });
-  const { hasMedia, media, content } = bgMediaLayer({ bgVideo, bgImage, bgSize, bgOverlays, bgVideoPaused, bgPoster }, layoutClass);
+  const bg = resolveBgReadability({ surface, bgVideo, bgImage, bgOverlays });
+  const { hasMedia, media, content } = bgMediaLayer({ bgVideo, bgImage, bgSize, bgOverlays: bg.bgOverlays, bgVideoPaused, bgPoster }, layoutClass);
   return (
     <Tag
       data-panel={translucent || undefined}
-      data-surface={surface || undefined}
+      data-surface={bg.surface || undefined}
       className={cn(
         hasMedia ? "relative overflow-hidden" : layoutClass,
         translucent && "rounded-[var(--radius-panel)] border border-hairline shadow-card",
-        surfaceClass(surface),
+        surfaceClass(bg.surface),
         className
       )}
       style={withConcentricStyle(style, concentricStyle)}

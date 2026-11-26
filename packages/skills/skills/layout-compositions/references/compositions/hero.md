@@ -1,8 +1,10 @@
-# Hero compositions (H1–H5)
+# Hero compositions (H1–H6)
 
 The hero is the first thing anyone sees, so it should open with the most characteristic thing in the subject's world (a product, a piece of work, a voice), not a default. Choose by the assets you really have: product UI, photography, mesh, or video backdrop → H1/H2; strong photography or video → H3/H4; only words → H5. Photography (Lummi/Unsplash/user), mesh gradients, and video backdrops behind a scrim (`bgImage` / `bgVideo` + `bgPoster` / `bgOverlays`) are first-class hero media; 3D renders are decoration only.
 
-Contents: H1 Centered Statement · H2 Split · H3 Asymmetric 7/5 · H4 Full-Bleed Media · H5 Type-Led Statement
+The `overline` slot in these hero compositions is optional: leave it empty unless a label adds information.
+
+Contents: H1 Centered Statement · H2 Split · H3 Asymmetric 7/5 · H4 Full-Bleed Media · H5 Type-Led Statement · H6 Floating Elements
 
 ---
 
@@ -36,7 +38,7 @@ motion: tier1
 │                                               │
 └───────────────────────────────────────────────┘
 ```
-**Contract:** Headline ≤ 12 words. Sub ≤ 30 words. ≤ 2 CTAs (primary + secondary). Media is curated photography, a mesh gradient, a video backdrop (behind a scrim via `bgImage` / `bgVideo` + `bgPoster` / `bgOverlays`), or a real product artifact with explicit `width`/`height`. Overline only if it carries information (category, version).
+**Contract:** Headline ≤ 12 words. Sub ≤ 30 words. ≤ 2 CTAs (primary + secondary). Media is curated photography, a mesh gradient, a video backdrop (behind a scrim via `bgImage` / `bgVideo` + `bgPoster` / `bgOverlays`), or a real product artifact with explicit `width`/`height`. Overline only if it carries information (category, version). A product panel is built from real Shavin components (`Card`, `Table`, `StatCard`, `Badge`, `Tabs`) with believable content for this product. Never a hand-drawn mockup or an image of a UI. Let it run past the fold edge so the page invites a scroll. Headline in `Heading size="5xl"` on marketing pages.
 **Watch:** The media is usually the LCP element: load it eagerly with high fetch priority. On phones the primary CTA must stay above the fold, so cap media height or push it below. No autoplay video with sound. Use `text-wrap: balance` on the headline so localized strings wrap evenly.
 
 ### H2 · Split Hero
@@ -64,7 +66,7 @@ motion: tier1
 │ [CTA]  [CTA]          │                       │
 └───────────────────────┴───────────────────────┘
 ```
-**Contract:** Headline ≤ 10 words. Sub ≤ 35 words. Media (photo, mesh panel, product artifact, or code) has a fixed aspect ratio (4:3 or 16:10). Any live playground has a static screenshot fallback.
+**Contract:** Headline ≤ 10 words. Sub ≤ 35 words. Media (photo, mesh panel, product artifact, or code) has a fixed aspect ratio (4:3 or 16:10). Any live playground has a static screenshot fallback. A product panel is built from real Shavin components (`Card`, `Table`, `StatCard`, `Badge`, `Tabs`) with believable content for this product. Never a hand-drawn mockup or an image of a UI. Let it run past the fold edge so the page invites a scroll.
 **Watch:** Test at 1366×768: media beyond the fold weakens the hero. Code samples ≤ 12 lines and must not force horizontal scroll on mobile. "Interactive" media must be keyboard operable. On mobile, media must not push the CTA off screen.
 
 ### H3 · Asymmetric Hero (7/5)
@@ -151,5 +153,32 @@ motion: choreography-ok
 │               │ [Single CTA]                  │
 └───────────────┴───────────────────────────────┘
 ```
-**Contract:** Real text (an `<h1>`), 3–12 words, with deliberate line breaks. One CTA.
+**Contract:** Real text (an `<h1>`), 3–12 words, with deliberate line breaks. One CTA. Set it in `Heading size="5xl"` (fluid, up to 72px) when the headline is four words or fewer, otherwise `size="4xl"` (up to 60px): a type-only hero needs scale to carry the page, but never more than twice the size of a section title. For larger display type use X2.
 **Watch:** Never render the headline as an image. Handle long words with `overflow-wrap`/`hyphens`. Cap height at 100svh so type doesn't push the CTA away. Check contrast on coloured grounds.
+
+### H6 · Floating Elements Hero
+```yaml
+id: H6
+name: Floating Elements Hero
+family: hero
+job: attention
+density: low
+styles: [marketing, expressive]
+treatments: [open, full-bleed]
+media: [product-ui, photo]
+items: 3-5
+slots: [overline, headline, sub, cta-primary, floating-elements]
+motion: tier1
+```
+**Best for:** Consumer and prosumer products with a few small recognisable moments (a note card, a status chip, a person) that can sit around a short centred statement.
+**Avoid when:** The product is dense UI (use H2). You would invent content to fill the elements (use H1 or H5). Most visitors are on phones: the elements are hidden there, so little is left.
+**Grid:** `base`: one centred stack, elements hidden. `lg`: centred text block, 3 to 5 elements positioned in the outer thirds, none behind the text, rotated 3° at most.
+```
+┌───────────────────────────────────────────────┐
+│                  Row of text                  │
+│  [Card] │Overline + Headline + Sub …│ [Badge] │
+│ [Avatar]│                           │  [Card] │
+└─────────┴───────────────────────────┴─────────┘
+```
+**Contract:** Headline ≤ 8 words. Each element is a real Shavin component (`Card`, `Badge`, `Avatar`, `StatCard`) with real content from the product, not a drawing of a screen. No element overlaps the headline, sub or CTAs. The elements are decorative: `aria-hidden`, no focus stops, no text the page needs.
+**Watch:** Float motion ≤ 6px on a loop of 6s or more, off under `prefers-reduced-motion`. No glow balls or blurred halos. Check 1366×768 and run `render_check` for overlap.

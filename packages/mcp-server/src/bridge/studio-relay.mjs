@@ -55,7 +55,7 @@ async function getSupabaseClient() {
 
 /**
  * @typedef {Object} StudioTheme
- * @property {string} [accent] - Accent color preset name
+ * @property {string} [brand] - Brand color preset name
  * @property {string} [gray] - Gray color preset name
  * @property {string} [radius] - Radius preset name
  * @property {boolean} [dark] - Dark mode toggle
@@ -87,6 +87,8 @@ export class StudioRelay {
     this._stateTimeout = null;
     this._lastCanvasState = null;
     this._renderResolve = null;
+    // In-flight request/response commands (duplicate_frame, resize_frame, export_frame), keyed by eventId.
+    this._pending = new Map();
 
     // Liveness tracking — updated whenever we receive ANY event from Studio
     this._lastStudioEventTs = null;
@@ -143,7 +145,7 @@ export class StudioRelay {
 
     // Subscribe to Realtime channel
     const channelName = `studio-session:${pairingCode}`;
-    this.channel = this.supabase.channel(channelName);
+    this.channel = this.supabase.channel(channelName, { config: { private: true } });
 
     // Listen for all broadcast events from Studio
     this.channel.on("broadcast", { event: "*" }, this._onBroadcast);
@@ -212,8 +214,8 @@ export class StudioRelay {
    * @param {"replace"|"append"} [mode="replace"] - Injection mode
    * @param {object} [frame] - Optional frame metadata; when provided a new
    *   spatial frame is created on the canvas and blocks are placed in it.
-   * @param {string} [frame.title] - Frame title (default: "AI Frame N")
-   * @param {"desktop"|"mobile"|"tablet"|"auto"|"block"} [frame.device] - Device preset
+   * @param {string} [frame.title] - Frame title (default: named by Studio from type and size, e.g. "Desktop 1440"; numbered when taken)
+   * @param {"desktop"|"mobile"|"tablet"|"auto"|"block"|"social-portrait"|"social-square"|"social-wide"} [frame.device] - Device or social preset (social presets are exact 1080x1350 / 1080x1080 / 1600x900 canvases)
    * @param {number} [frame.width] - Frame width in px (default: 800)
    * @param {number} [frame.height] - Frame height in px (default: 600)
    * @returns {Promise<{injected: boolean, blockCount: number, mode: string, frame?: object}>}
@@ -248,6 +250,12 @@ export class StudioRelay {
    */
   async setTheme(theme) {
     await this._ensureLive();
+
+    // Studio stores scaling as a number (95), while the tool accepts "95%".
+    if (theme.scaling !== undefined) {
+      const n = Number.parseFloat(String(theme.scaling));
+      theme = Number.isFinite(n) ? { ...theme, scaling: n } : { ...theme, scaling: undefined };
+    }
 
     this._send({
       type: "canvas_theme",
@@ -333,6 +341,103 @@ export class StudioRelay {
     });
 
     return { cleared: true };
+  }
+
+  /**
+   * Send a command that Studio answers with events carrying the same eventId, and wait for the answer.
+   * `onEvent(event, done, fail)` is called for each answer; call `done(value)` or `fail(error)` to settle.
+   * @private
+   */
+  _request(type, payload, onEvent, timeoutMs, timeoutMessage) {
+    this._requireConnected();
+    const eventId = randomUUID();
+    return new Promise((resolve, reject) => {
+      const settle = (fn) => (v) => {
+        clearTimeout(entry.timer);
+        this._pending.delete(eventId);
+        fn(v);
+      };
+      const entry = {
+        onEvent: (ev) => onEvent(ev, settle(resolve), settle((e) => reject(e instanceof Error ? e : new Error(String(e))))),
+        timer: setTimeout(() => {
+          this._pending.delete(eventId);
+          reject(new Error(timeoutMessage));
+        }, timeoutMs),
+      };
+      this._pending.set(eventId, entry);
+      this._send({ type, payload: { ...payload, eventId } });
+    });
+  }
+
+  /**
+   * Duplicate a frame (fresh node ids, placed to its right).
+   *
+   * @param {{frameId?: string, title?: string, count?: number}} [opts] - frameId defaults to the selected / main frame
+   * @returns {Promise<{frames: {id: string, title: string, bounds: object}[]}>}
+   */
+  async duplicateFrame(opts = {}, timeoutMs = 10000) {
+    await this._ensureLive();
+    const { frameId, title, count } = opts;
+    return this._request(
+      "canvas_duplicate_frame",
+      { ...(frameId ? { frameId } : {}), ...(title ? { title } : {}), ...(count ? { count } : {}) },
+      (ev, done, fail) => {
+        if (ev.type === "frame_duplicated") done({ frames: ev.payload.frames || [] });
+        else if (ev.type === "frame_export_error") fail(ev.payload.error);
+      },
+      timeoutMs,
+      `Timed out waiting for Studio to duplicate the frame after ${timeoutMs}ms.`,
+    );
+  }
+
+  /**
+   * Resize a frame to a device preset (social presets are exact) or to a custom width / height.
+   *
+   * @param {{frameId?: string, device?: string, width?: number, height?: number}} [opts]
+   * @returns {Promise<{frame: {id: string, title: string, bounds: object, presetDevice?: string}}>}
+   */
+  async resizeFrame(opts = {}, timeoutMs = 10000) {
+    await this._ensureLive();
+    const { frameId, device, width, height } = opts;
+    return this._request(
+      "canvas_resize_frame",
+      { ...(frameId ? { frameId } : {}), ...(device ? { device } : {}), ...(width !== undefined ? { width } : {}), ...(height !== undefined ? { height } : {}) },
+      (ev, done, fail) => {
+        if (ev.type === "frame_resized") done({ frame: ev.payload.frame });
+        else if (ev.type === "frame_export_error") fail(ev.payload.error);
+      },
+      timeoutMs,
+      `Timed out waiting for Studio to resize the frame after ${timeoutMs}ms. Check the Studio tab is open and shows "AI Connected", then call get_studio_state to see whether the size changed before retrying.`,
+    );
+  }
+
+  /**
+   * Render a frame to an image and return its bytes.
+   *
+   * @param {{frameId?: string, format?: "png"|"jpg"|"webp", scale?: 1|2|3}} [opts]
+   * @returns {Promise<{buffer: Buffer, format: string, mime: string, width: number, height: number, scale: number, frameId: string, title: string}>}
+   */
+  async exportFrame(opts = {}, timeoutMs = 60000) {
+    await this._ensureLive();
+    const { frameId, format = "png", scale = 1 } = opts;
+    const parts = [];
+    let meta = null;
+    return this._request(
+      "canvas_export_frame",
+      { ...(frameId ? { frameId } : {}), format, scale },
+      (ev, done, fail) => {
+        if (ev.type === "frame_export_error") return fail(ev.payload.error);
+        if (ev.type !== "frame_export_chunk") return;
+        const { index, total, data, ...rest } = ev.payload;
+        meta = rest;
+        parts[index] = data;
+        if (parts.filter((p) => p !== undefined).length === total) {
+          done({ buffer: Buffer.from(parts.join(""), "base64"), format: meta.format, mime: meta.mime, width: meta.width, height: meta.height, scale: meta.scale, frameId: meta.frameId, title: meta.title });
+        }
+      },
+      timeoutMs,
+      `Timed out waiting for the exported image after ${timeoutMs}ms. Keep the Studio tab visible (browsers pause rendering in background tabs).`,
+    );
   }
 
   /**
@@ -553,6 +658,15 @@ export class StudioRelay {
         }
         break;
 
+      case "frame_duplicated":
+      case "frame_resized":
+      case "frame_export_chunk":
+      case "frame_export_error": {
+        const entry = this._pending.get(event.payload?.eventId);
+        if (entry) entry.onEvent(event);
+        break;
+      }
+
       case "canvas_rendered":
         // Studio confirmed that the injected blocks have been rendered.
         // This is the render verification signal — the agent now knows
@@ -606,7 +720,7 @@ let globalRelay = null;
  */
 // Defaults point at the hosted studio.shavin.cc Supabase project so that
 // `connect_studio` works out-of-the-box for end users who installed @shavin/mcp
-// (e.g. from a private Verdaccio registry) without manually provisioning keys.
+// without manually provisioning keys.
 // These are publishable (anon) keys — public by design, embedded in the hosted
 // Studio's client bundle, protected by RLS. Override via env to self-host.
 const DEFAULT_SUPABASE_URL = "https://hiahexcutplsrijyjozs.supabase.co";

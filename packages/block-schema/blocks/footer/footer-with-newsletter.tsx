@@ -1,4 +1,4 @@
-import { Button, Card, Container, Flex, Grid, Heading, Icon, Image, Link, Section, Separator, Text, TextField } from "@shavin/ui";
+import { Button, Card, Container, Flex, Grid, Heading, Icon, Image, Link, Section, Separator, Text, TextField, WiseOwlLogo } from "@shavin/ui";
 
 const defaultGroups = [
   {
@@ -67,7 +67,7 @@ export function FooterWithNewsletter({ groups = defaultGroups, legal = defaultLe
           </Card>
           <Grid as="nav" aria-label="Footer" columns="4" gap="6" className="max-lg:grid-cols-3 max-md:grid-cols-2">
             <Flex direction="column" gap="3" className="max-lg:col-span-3 max-md:col-span-2">
-              <Heading as="p" size="md" tracking="tight">WiseOwl</Heading>
+              <WiseOwlLogo />
               <Text size="sm" color="muted">Calm control of your money.</Text>
             </Flex>
             {groups.map((group) => (

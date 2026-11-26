@@ -8,7 +8,8 @@
 
    Usage (Tailwind v4 projects only):
      @import "tailwindcss";
-     @import "@shavin/ui/styles.css";
+     @import "@shavin/ui/tokens.css";
+     @import "@shavin/ui/base.css" layer(base);
      @import "@shavin/ui/theme-v4.css";
 
    The `inline` option inlines var() references directly into generated
@@ -24,19 +25,22 @@
   --color-surface:             rgb(var(--bg-surface));
   --color-surface-hover:       rgb(var(--bg-surface-hover));
   --color-elevated:            rgb(var(--bg-elevated));
+  --color-elevated-hover:      rgb(var(--bg-elevated-hover));
   --color-hairline:            rgb(var(--hairline));
   --color-hairline-strong:     rgb(var(--hairline-strong));
   --color-border-control:      rgb(var(--border-control));
   --color-fg:                  rgb(var(--fg));
   --color-fg-muted:            rgb(var(--fg-muted));
   --color-fg-subtle:           rgb(var(--fg-subtle));
-  --color-accent:              rgb(var(--accent));
-  --color-accent-hover:        rgb(var(--accent-hover));
-  --color-accent-fg:           rgb(var(--accent-fg));
-  --color-accent-contrast:     rgb(var(--accent-contrast));
-  --color-accent-text:         rgb(var(--accent-text));
-  --color-accent-subtle:       rgb(var(--accent) / 0.12);
-  --color-accent-subtle-hover: rgb(var(--accent) / 0.18);
+  --color-brand:              rgb(var(--brand));
+  --color-brand-hover:        rgb(var(--brand-hover));
+  --color-brand-solid:        rgb(var(--brand-solid));
+  --color-brand-solid-hover:  rgb(var(--brand-solid-hover));
+  --color-brand-fg:           rgb(var(--brand-fg));
+  --color-brand-contrast:     rgb(var(--brand-contrast));
+  --color-brand-text:         rgb(var(--brand-text));
+  --color-brand-subtle:       rgb(var(--brand) / 0.12);
+  --color-brand-subtle-hover: rgb(var(--brand) / 0.18);
   --color-success:             rgb(var(--success));
   --color-success-fg:          rgb(var(--success-fg));
   --color-warning:             rgb(var(--warning));
@@ -61,7 +65,7 @@
   --color-code-attr:           rgb(var(--code-attr));
 
   /* ── Fonts → font-display, font-sans ──────────────────────────────── */
-  --font-display:              var(--font-display), "Space Grotesk", sans-serif;
+  --font-display:              var(--font-display), "Rethink Sans", sans-serif;
   --font-subheading:           var(--font-subheading, var(--font-body)), ui-sans-serif, system-ui, sans-serif;
   --font-sans:                 var(--font-body), ui-sans-serif, system-ui, sans-serif;
 
@@ -74,6 +78,8 @@
   --radius-panel-p5:           max(min(var(--radius-lg), calc(var(--radius-panel) / 2)), calc(var(--radius-panel) - 1.25rem));
   --radius-panel-p6:           max(min(var(--radius-lg), calc(var(--radius-panel) / 2)), calc(var(--radius-panel) - 1.5rem));
   --radius-panel-p8:           max(min(var(--radius-lg), calc(var(--radius-panel) / 2)), calc(var(--radius-panel) - 2rem));
+  /* One step inside a control track (SegmentedControl): max(radius-lg / 2, radius-lg - 0.25rem). */
+  --radius-control-inner:      max(calc(var(--radius-lg) / 2), calc(var(--radius-lg) - 0.25rem));
 
   /* ── Shadows → shadow-card, shadow-panel, shadow-modal, shadow-1..6 ─ */
 

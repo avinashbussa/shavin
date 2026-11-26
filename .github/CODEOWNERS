@@ -1,24 +1,2 @@
-# Review requests for the open packages. Last matching rule wins.
+# Review requests for the open packages.
 *                                   @avinashbussa
-
-# Tokens and styles
-/packages/ui/src/styles/            @avinashbussa
-/packages/ui/tailwind-preset.ts     @avinashbussa
-/tokens.json                        @avinashbussa
-
-# Primitives
-/packages/ui/src/primitives/        @avinashbussa
-
-# Agent tooling
-/packages/mcp-server/               @avinashbussa
-/packages/skills/                   @avinashbussa
-/packages/cli/                      @avinashbussa
-/AGENTS.md                          @avinashbussa
-
-# Blocks
-/packages/block-schema/             @avinashbussa
-
-# Build, CI and generators
-/scripts/                           @avinashbussa
-/.github/                           @avinashbussa
-/package.json                       @avinashbussa

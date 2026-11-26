@@ -249,13 +249,10 @@ export function oklchLuminance(o) {
   return o.L;
 }
 
-// WCAG 2.x contrast is defined on sRGB luminance, so OKLCH accents are measured
+// WCAG 2.x contrast is defined on sRGB luminance, so OKLCH brand colours are measured
 // after conversion and get the same guarantees as the RGB path (theme-presets.ts).
 const OK_WHITE = { L: 1, C: 0, H: 0 };
 const OK_INK = { L: 0.18, C: 0, H: 0 };
-const OK_LIGHT_SURFACES = ["255 255 255", "244 244 245"];
-const OK_DARK_SURFACES = ["24 24 27", "10 10 12", "30 30 33"];
-
 function tripletLuminance(triplet) {
   const [r, g, b] = triplet.split(" ").map((c) => Number(c) / 255);
   const lin = (c) => (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
@@ -268,8 +265,57 @@ function tripletContrast(a, b) {
   return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05);
 }
 
+// Text colour target. 4.6 gives 0.1 of headroom over WCAG AA (4.5:1) for rounding in the sRGB
+// round-trip and for the browser quantising tint alpha.
+export const BRAND_TEXT_CONTRAST = 4.6;
+// Fills brand text, links and focus rings sit on, for every gray preset (Zinc, Slate, Gray,
+// Neutral, Stone): light = white surface and n-100 canvas; dark = n-950 canvas, n-900 surface,
+// n-850 hover/elevated (midpoint of n-800 and n-900, plus Zinc's stylesheet value) and n-800
+// (elevated-hover).
+const LIGHT_TEXT_SURFACES = ["255 255 255", "244 244 245", "241 245 249", "243 244 246", "245 245 245", "245 245 244"];
+const DARK_TEXT_SURFACES = [
+  "24 24 27", "10 10 12", "30 30 33", "32 32 35", "39 39 42", // Zinc
+  "15 23 42", "2 6 23", "23 32 51", "30 41 59", // Slate
+  "17 24 39", "3 7 18", "24 33 47", "31 41 55", // Gray
+  "23 23 23", "10 10 10", "31 31 31", "38 38 38", // Neutral
+  "28 25 23", "12 10 9", "35 31 30", "41 37 36", // Stone
+];
+// Brand tints brand text is drawn on: Badge soft 0.08, callout/alert 0.10, Button and IconButton
+// soft 0.12 light / 0.15 dark (hover 0.18 / 0.22), Avatar soft 0.15.
+const LIGHT_TINT_ALPHAS = [0.08, 0.1, 0.12, 0.15, 0.18];
+const DARK_TINT_ALPHAS = [0.08, 0.1, 0.15, 0.18, 0.22];
+
 /**
- * Text on a solid accent fill: white while it clears 4.5:1, otherwise the higher-contrast ink.
+ * Every background brand text must clear BRAND_TEXT_CONTRAST on: the page fills of every gray
+ * preset, plus the brand fill's own translucent tint composited over each of them (browsers
+ * quantise alpha to 8 bits before blending, and so does this). The tint depends on the fill, so
+ * the list does too.
+ */
+export function brandTextSurfaces(fill, isDark) {
+  const base = isDark ? DARK_TEXT_SURFACES : LIGHT_TEXT_SURFACES;
+  const alphas = isDark ? DARK_TINT_ALPHAS : LIGHT_TINT_ALPHAS;
+  const f = fill.split(" ").map(Number);
+  const out = [...base];
+  for (const s of base) {
+    const c = s.split(" ").map(Number);
+    for (const a of alphas) {
+      const q = Math.round(a * 255) / 255;
+      out.push(f.map((v, i) => Math.round(v * q + c[i] * (1 - q))).join(" "));
+    }
+  }
+  return out;
+}
+
+/** Lowest contrast of a text colour over a list of backgrounds. */
+function minContrastOn(rgb, bgLums) {
+  const x = tripletLuminance(rgb);
+  let min = Infinity;
+  for (const y of bgLums) min = Math.min(min, (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05));
+  return min;
+}
+
+/**
+ * Text on a solid brand fill: white while it clears 4.5:1, otherwise the higher-contrast ink.
  * @param {Oklch} o
  * @returns {Oklch}
  */
@@ -287,43 +333,135 @@ export function oklchForegroundFor(o) {
  * @param {number} [amount=0.08] — interpolation factor
  * @returns {Oklch}
  */
+/**
+ * Hover fill for a solid brand. The text colour stays oklchForegroundFor(o) on hover, so the
+ * fill moves the usual way (lighter in dark mode, darker in light mode) only while that keeps
+ * contrast with the text; otherwise it moves away from the text colour.
+ */
 export function oklchHoverFor(o, isDark, amount = 0.08) {
-  const targetL = isDark ? 1 : 0;
-  return {
-    L: o.L + (targetL - o.L) * amount,
-    C: o.C,
-    H: o.H,
-  };
+  const fg = oklchToRgbTriplet(oklchForegroundFor(o));
+  const shift = (targetL) => ({ L: o.L + (targetL - o.L) * amount, C: o.C, H: o.H });
+  const usual = shift(isDark ? 1 : 0);
+  const base = tripletContrast(fg, oklchToRgbTriplet(o));
+  if (tripletContrast(fg, oklchToRgbTriplet(usual)) >= Math.min(4.5, base)) return usual;
+  return shift(fg === "255 255 255" ? 0 : 1);
 }
 
 /**
- * Accent for text, links and focus rings: L is moved toward black (light) or white (dark)
- * until it clears 4.5:1 on every page surface. Mirrors accentTextFor() in theme-presets.ts.
+ * Brand for text, links and focus rings: L is moved toward black (light) or white (dark)
+ * until it clears 4.6:1 on every page surface and brand tint (brandTextSurfaces). Mirrors brandTextFor() in theme-presets.ts.
  * @param {Oklch} o
  * @param {boolean} isDark
  * @returns {Oklch}
  */
 export function oklchTextFor(o, isDark) {
-  const surfaces = isDark ? OK_DARK_SURFACES : OK_LIGHT_SURFACES;
+  const bgs = brandTextSurfaces(oklchToRgbTriplet(o), isDark).map(tripletLuminance);
   for (let step = 0; step <= 50; step++) {
     const candidate = { L: o.L + ((isDark ? 1 : 0) - o.L) * (step / 50), C: o.C, H: o.H };
-    const rgb = oklchToRgbTriplet(candidate);
-    if (Math.min(...surfaces.map((s) => tripletContrast(rgb, s))) >= 4.6) return candidate;
+    if (minContrastOn(oklchToRgbTriplet(candidate), bgs) >= BRAND_TEXT_CONTRAST) return candidate;
   }
   return isDark ? OK_WHITE : { L: 0, C: 0, H: 0 };
 }
 
 /**
- * Achromatic inversion — for near-black or near-white accents that need to
- * flip in dark mode (e.g. Monochrome: #000 in light → #fff in dark).
- * @param {Oklch} o
- * @param {boolean} isDark
- * @returns {Oklch}
+ * The brand fill for one page mode. A fill that would vanish on the page is adjusted:
+ * too dark for a dark page (sRGB luminance < 0.12) or too pale for a light page (> 0.85).
+ * - Grays and near-neutrals (chroma < 0.03) flip to a light gray (dark mode) or near-black
+ *   (light mode), as Radix and Apple do for black and white brand colours.
+ * - chromatic brand colours (navy, burgundy, forest, cream) keep their hue and chroma and move only
+ *   in lightness until the fill reaches 3:1 against the page canvas (WCAG 1.4.11 non-text
+ *   contrast), so a navy brand stays navy in dark mode instead of turning gray.
+ * Any other colour is returned unchanged (the same object).
  */
-export function oklchAchromaticInversion(o, isDark) {
-  if (isDark && o.L < 0.12) return { L: 0.92, C: 0, H: 0 };
-  if (!isDark && o.L > 0.85) return { L: 0.18, C: 0, H: 0 };
-  return o;
+export function oklchBrandForMode(o, isDark) {
+  const lum = tripletLuminance(oklchToRgbTriplet(o));
+  if (isDark ? lum >= 0.12 : lum <= 0.85) return o;
+  const flipped = isDark ? { L: 0.92, C: 0, H: 0 } : { L: 0.18, C: 0, H: 0 };
+  if (o.C < 0.03) return flipped;
+  const canvas = isDark ? "10 10 12" : "255 255 255";
+  for (let step = 1; step <= 100; step++) {
+    const candidate = { L: o.L + ((isDark ? 1 : 0) - o.L) * (step / 100), C: o.C, H: o.H };
+    if (tripletContrast(oklchToRgbTriplet(candidate), canvas) >= 3) return candidate;
+  }
+  return flipped;
+}
+
+// ── Solid brand fills (buttons, badges, selected states, anything with text ON the brand) ────────
+// The raw brand fill is the right colour for the brand's identity, but white text on it often
+// misses 4.5:1 (most presets) and dark text on a mid-tone brand looks wrong. An "accessible"
+// solid fill keeps the hue and chroma and lowers only OKLCH lightness, in 0.001 steps, until white
+// text clears BRAND_SOLID_CONTRAST. A genuinely light brand (white would need a ΔL above
+// BRAND_SOLID_MAX_DL: lime, mint, sky, amber, yellow) keeps its exact fill and dark text instead.
+
+/** Contrast target for white text on a solid fill: 4.5:1 (WCAG AA) plus 0.1 of headroom, like BRAND_TEXT_CONTRAST. */
+export const BRAND_SOLID_CONTRAST = 4.6;
+/** Largest OKLCH lightness drop a solid fill may take; past it the brand is light and keeps its exact fill. */
+export const BRAND_SOLID_MAX_DL = 0.12;
+
+const roundTo = (v, places) => Math.round(v * 10 ** places) / 10 ** places;
+
+/** The colour at lightness L with as much of chroma C as fits in sRGB, rounded the way oklchToCss prints it. */
+function fitChroma(L, C, H) {
+  let c = C;
+  for (let i = 0; i <= 60; i++) {
+    const candidate = { L: roundTo(L, 4), C: roundTo(c, 4), H: roundTo(H, 2) };
+    if (c <= 0 || Math.abs(rgbTripletToOklch(oklchToRgbTriplet(candidate)).C - candidate.C) < 0.004) return candidate;
+    c -= C / 60;
+  }
+  return { L: roundTo(L, 4), C: 0, H: roundTo(H, 2) };
+}
+
+/** @typedef {{ fill: Oklch, changed: boolean, light: boolean, dL: number }} OklchSolid */
+
+/**
+ * Accessible solid fill for a brand already resolved for its page mode (oklchBrandForMode).
+ * Pure and deterministic; the RGB runtime, the OKLCH runtime and the CLI all derive from it.
+ */
+/** @param {Oklch} o @returns {OklchSolid} */
+export function oklchSolidFor(o) {
+  if (tripletContrast("255 255 255", oklchToRgbTriplet(o)) >= BRAND_SOLID_CONTRAST) return { fill: o, changed: false, light: false, dL: 0 };
+  for (let step = 1; step * 0.001 <= BRAND_SOLID_MAX_DL + 1e-9; step++) {
+    const candidate = fitChroma(o.L - step * 0.001, o.C, o.H);
+    if (tripletContrast("255 255 255", oklchToRgbTriplet(candidate)) >= BRAND_SOLID_CONTRAST) {
+      return { fill: candidate, changed: true, light: false, dL: o.L - candidate.L };
+    }
+  }
+  return { fill: o, changed: false, light: true, dL: 0 };
+}
+
+/**
+ * Hover fill for a solid brand. Moves the usual way (lighter on dark pages, darker on light pages)
+ * only while `fg` keeps 4.5:1 on it; otherwise away from `fg`, which always raises the contrast.
+ */
+/** @param {Oklch} fill @param {Oklch} fg @param {boolean} isDark @param {number} [amount] @returns {Oklch} */
+export function oklchSolidHoverFor(fill, fg, isDark, amount = 0.12) {
+  const fgT = oklchToRgbTriplet(fg);
+  const shift = (targetL) => ({ L: roundTo(fill.L + (targetL - fill.L) * amount, 4), C: roundTo(fill.C, 4), H: roundTo(fill.H, 2) });
+  const usual = shift(isDark ? 1 : 0);
+  if (tripletContrast(fgT, oklchToRgbTriplet(usual)) >= 4.5) return usual;
+  return shift(fgT === "255 255 255" ? 0 : 1);
+}
+
+// ── APCA (perceptual contrast, SAPC 0.98G-4g) ────────────────────────────────
+// Used only by brandSolid="perceptual", which picks the text colour the way designers read
+// contrast. APCA is NOT part of WCAG 2: that mode does not make the WCAG 2 AA claim.
+function apcaY(triplet) {
+  const [r, g, b] = triplet.split(" ").map((c) => (Number(c) / 255) ** 2.4);
+  const y = r * 0.2126729 + g * 0.7151522 + b * 0.072175;
+  return y < 0.022 ? y + (0.022 - y) ** 1.414 : y;
+}
+
+/** APCA lightness contrast Lc of text over a background (RGB triplets "R G B"). Positive = dark text on light, negative = light text on dark. */
+export function apcaContrast(text, bg) {
+  const yt = apcaY(text);
+  const yb = apcaY(bg);
+  if (Math.abs(yb - yt) < 0.0005) return 0;
+  if (yb > yt) {
+    const s = (yb ** 0.56 - yt ** 0.57) * 1.14;
+    return s < 0.1 ? 0 : (s - 0.027) * 100;
+  }
+  const s = (yb ** 0.65 - yt ** 0.62) * 1.14;
+  return s > -0.1 ? 0 : (s + 0.027) * 100;
 }
 
 /**

@@ -12,10 +12,12 @@
  * Order and why:
  *   brand:gen         brand-tokens.css → brand preset/theme files
  *   tokens:gen        global.css → tokens.json (+ OKLCH files in the public repo)
- *   tokens:oklch      OKLCH style files (monorepo)
- *   manifest:gen      primitives + .doc.ts → components.json, meta.ts, docs-routes.ts
+ *   tokens:oklch      OKLCH style files
+ *   manifest:gen      primitives + .doc.ts → components.json, meta.ts, docs-routes.ts (maintainers' checkout only)
+ *   icons:gen         installed icon packages → per-icon loaders for <Icon name> (@shavin/ui)
  *   vscode:gen        components.json → VS Code custom data and snippets
  *   llms:gen          components.json + tokens.json → llms.txt / llms-full.txt
+ *   releases:gen      each package CHANGELOG.md → website releases.json (website changelog)
  *   registry:build    open + pro blocks → generated trees, then the website /r registry JSON
  *   skills:build      packages/skills → .agents/
  *   agents:gen        rules + counts (manifest, skills) → AGENTS.md, CLAUDE.md, consumer copies
@@ -39,8 +41,10 @@ const STEPS = [
   { script: "tokens:gen", desc: "tokens.json" },
   { script: "tokens:oklch", desc: "OKLCH style files" },
   { script: "manifest:gen", desc: "components.json, SHAVIN_META, docs routes" },
+  { script: "icons:gen", desc: "Per-icon loaders for <Icon name>" },
   { script: "vscode:gen", desc: "VS Code custom data and snippets" },
   { script: "llms:gen", desc: "llms.txt and llms-full.txt" },
+  { script: "releases:gen", desc: "CHANGELOGs → website releases.json" },
   { script: "registry:build", desc: "Open + pro block trees, website /r registry" },
   { script: "skills:build", desc: "Skills and commands → .agents/" },
   { script: "agents:gen", desc: "AGENTS.md, CLAUDE.md and consumer copies" },

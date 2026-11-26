@@ -10,7 +10,7 @@ export interface SparklineProps extends Omit<HTMLAttributes<HTMLDivElement>, "ch
   data: SparklinePoint[];
   /** Default "line". */
   type?: "line" | "area" | "bar";
-  /** Colour of the line, area or bars. Default accent. */
+  /** Colour of the line, area or bars. Default brand. */
   tone?: ChartTone;
   /** Line and area only. Default "smooth". */
   curve?: "linear" | "smooth";
@@ -28,7 +28,7 @@ export interface SparklineProps extends Omit<HTMLAttributes<HTMLDivElement>, "ch
 const val = (p: SparklinePoint) => (typeof p === "number" ? p : p.value);
 
 /** A tiny, axis-free trend for a card or table cell. It fills its container: size it with className (default h-12 w-full). */
-export function Sparkline({ data, type = "line", tone = "accent", curve = "smooth", barRadius = "sm", barGap = 4, label, className, ...props }: SparklineProps) {
+export function Sparkline({ data, type = "line", tone = "brand", curve = "smooth", barRadius = "sm", barGap = 4, label, className, ...props }: SparklineProps) {
   const ref = useRef<HTMLDivElement>(null);
   const { width, height } = useSize(ref, 48);
   const values = data.map(val);

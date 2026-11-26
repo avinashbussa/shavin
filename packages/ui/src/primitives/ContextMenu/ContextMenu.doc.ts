@@ -2,7 +2,7 @@ import type { ComponentDoc } from "../../authoring/types";
 
 export const docs: ComponentDoc = {
   name: "ContextMenu",
-  description: "Right-click context action menu built on Radix ContextMenu primitive with data-panel surface styling.",
+  description: "A menu of actions that opens when the user right-clicks the area it wraps. Items can be marked as dangerous.",
   features: [
     "Components: ContextMenu and ContextMenuItem",
     "Supports CVA variant='default' and variant='danger' (destructive item)",

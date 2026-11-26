@@ -9,7 +9,7 @@ Button/
   index.ts         export * from "./Button";
 ```
 
-Add the folder's exports to `packages/ui/src/index.ts`, the one public entry point.
+Add the folder's exports to `packages/ui/src/index.ts`, the one public entry point. The package builds one ES module per source file, so a bundler drops the primitives a page does not import; consumers import from `@shavin/ui` only, and there is no `@shavin/ui/primitives/*` path, so a primitive that is not exported from the root is unreachable.
 
 ## The component file
 
@@ -55,4 +55,4 @@ Copy `Button.doc.ts` as a template.
 5. Tests in `tests/unit/`: it renders, passes axe, and its contract cases hold.
 6. `npm run verify` and `npm test` pass.
 
-Maintainers wire the docs-site page and other upstream surfaces after merge.
+Maintainers add the docs-site page and other surfaces after merge.

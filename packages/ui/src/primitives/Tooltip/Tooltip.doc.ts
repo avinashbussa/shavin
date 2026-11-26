@@ -2,7 +2,7 @@ import type { ComponentDoc } from "../../authoring/types";
 
 export const docs: ComponentDoc = {
   name: "Tooltip",
-  description: "Hover or focus label hint built on Radix Tooltip primitive with automatic positioning, arrow indicator, and theme tone overrides.",
+  description: "A short label that appears on hover or keyboard focus, positioned automatically, with an optional arrow.",
   features: [
     "Supports tone: auto (semantic token), dark (high contrast dark), light (light background)",
     "Configurable placement side: top, right, bottom, left",

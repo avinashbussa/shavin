@@ -1,0 +1,3 @@
+/* Resolves @shavin/ui/styles.css for tools that read files instead of package "exports"
+   (the standalone Tailwind 3 CLI and other postcss-import setups). Bundlers use "exports". */
+@import "./dist/styles/global.css";

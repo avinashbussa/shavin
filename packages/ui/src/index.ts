@@ -1,16 +1,17 @@
 "use client";
 // Public export surface for @shavin/ui — enterprise design tokens and UI primitives.
-// Motion runtime self-boots on import (zero-setup legacy-browser reveal fallback + GSAP seam;
-// modern browsers use the pure-CSS scroll-driven path and need no JS). `initMotionRuntime` is the
-// explicit escape hatch for consumers whose bundler tree-shakes the side-effect import.
-import "./lib/motion-runtime";
-export { initMotionRuntime, motionConfig } from "./lib/motion-runtime";
+// Motion runtime (legacy-browser reveal fallback + GSAP seam; modern browsers use the pure-CSS
+// scroll-driven path and need no JS). `ThemeProvider` starts it on mount; call `initMotionRuntime`
+// yourself in an app that does not render a ThemeProvider.
+export { initMotionRuntime, motionConfig, type MotionConfig, type GsapModules } from "./lib/motion-runtime";
 export { cn } from "./lib/cn";
+export { PortalContainerProvider, usePortalContainer } from "./lib/portal-container";
 export { resolveBridgePort, bridgeOrigin, bridgeUrl, bridgeDashboardUrl, DEFAULT_BRIDGE_PORT, BRIDGE_HOST } from "./lib/bridge";
 export { announce, type Politeness } from "./lib/announce";
 export {
   concentricContainerStyle,
-  concentricCompoundStyle,
+  concentricRadius,
+  paddingScaleFromClassName,
   concentricBoundaryResetStyle,
   withConcentricStyle,
   cardPaddingToScale,
@@ -20,6 +21,7 @@ export {
 export {
   isVideoUrl,
   OVERLAY_PRESET_KEYS,
+  OVERLAY_PRESET_STYLES,
   hexToRgb,
   tokenNameToCssColor,
   tokenNameToCssVar,
@@ -34,6 +36,7 @@ export {
   renderOverlayLayers,
   renderOverlays,
   bgMediaLayer,
+  resolveBgReadability,
   type OverlayLayer,
   type BgMediaProps,
 } from "./lib/media-overlays";
@@ -44,7 +47,7 @@ export { surfaceClass, type Surface } from "./lib/surface";
 
 // Theme presets — backs ThemeProvider and the playground's Configurator.
 export {
-  ACCENT_PRESETS,
+  BRAND_PRESETS,
   GRAY_PRESETS,
   GRAY_STEPS,
   RADIUS_PRESETS,
@@ -57,7 +60,7 @@ export {
   THEME_PRESETS,
   type ThemePreset,
   applyThemePreset,
-  applyAccentColor,
+  applyBrandColor,
   applyGrayColor,
   applyRadiusPreset,
   applyScalingPreset,
@@ -67,15 +70,22 @@ export {
   applySubheadingFont,
   hexToTriplet,
   tripletToHex,
-  resolveAccentTriplet,
+  resolveBrandTriplet,
   scopedThemeVars,
-  accentForegroundFor,
-  accentHoverFor,
-  accentTextFor,
-  resolveAccent,
-  accentForegroundForOklch,
-  accentHoverForOklch,
-  accentTextForOklch,
+  brandForegroundFor,
+  brandHoverFor,
+  brandTextFor,
+  resolveBrand,
+  brandForegroundForOklch,
+  brandHoverForOklch,
+  brandTextForOklch,
+  brandSolidFor,
+  brandSolidForOklch,
+  setBrandSolidMode,
+  perceptualAaFailures,
+  BRAND_SOLID_MODES,
+  type BrandSolidMode,
+  type BrandSolid,
 } from "./lib/theme-presets";
 export {
   type Oklch,
@@ -89,7 +99,12 @@ export {
   oklchForegroundFor,
   oklchHoverFor,
   oklchTextFor,
-  oklchAchromaticInversion,
+  oklchBrandForMode,
+  oklchSolidFor,
+  oklchSolidHoverFor,
+  apcaContrast,
+  BRAND_SOLID_CONTRAST,
+  BRAND_SOLID_MAX_DL,
   oklchMix,
   getColorSpace,
   setColorSpace,
@@ -124,14 +139,16 @@ export { DatePicker, type DatePickerTokens } from "./primitives/DatePicker";
 export { TimePicker, TimePickerInput, TimePickerClock } from "./primitives/TimePicker";
 export { ColorPicker, ColorPickerPopover, CanvasColorPickerPopup, type ColorPickerProps, type ColorPickerSwatch } from "./primitives/ColorPicker";
 export { TextField } from "./primitives/TextField";
+export { FormField, formFieldVariants, type FormFieldProps } from "./primitives/FormField";
 export { TextArea } from "./primitives/TextArea";
 export { Checkbox } from "./primitives/Checkbox";
 export { CheckboxGroup, CheckboxGroupItem } from "./primitives/CheckboxGroup";
 export { CheckboxCards, CheckboxCardsItem } from "./primitives/CheckboxCards";
 export { RadioGroup, Radio, type RadioGroupProps, type RadioProps } from "./primitives/RadioGroup";
 export { Switch } from "./primitives/Switch";
-export { Icon, type IconProps, type IconSizeToken, type IconColorToken, iconVariants } from "./primitives/Icon";
-export { IconPicker, ALL_ICONS, ICON_REGISTRY } from "./primitives/IconPicker";
+export { Icon, preloadIcons, type IconProps, type IconSizeToken, type IconColorToken, iconVariants } from "./primitives/Icon";
+export { IconPicker } from "./primitives/IconPicker";
+export { iconExists, ICON_NAMES } from "./primitives/Icon/icon-names";
 export { Combobox } from "./primitives/Combobox";
 export { Slider, CapsuleSlider, type SliderProps, type CapsuleSliderProps } from "./primitives/Slider";
 export { SegmentedControl, SegmentedControlItem } from "./primitives/SegmentedControl";
@@ -182,18 +199,20 @@ export { Rating, NpsScale, SentimentRating, RatingSummary, calculateNps, type Ra
 export { DonutChart, type DonutChartProps, type DonutDatum } from "./primitives/DonutChart";
 export { niceScale, type SeriesSpec } from "./lib/chart-kit";
 export { Badge } from "./primitives/Badge";
-export { Callout } from "./primitives/Callout";
+export { Callout, type CalloutProps } from "./primitives/Callout";
+export { EmptyState, emptyStateVariants, type EmptyStateProps, type EmptyStateKind } from "./primitives/EmptyState";
+export { FormErrorSummary, type FormErrorSummaryProps, type FormErrorSummaryItem } from "./primitives/FormErrorSummary";
 export { Avatar } from "./primitives/Avatar";
 export { Image, type ImageProps } from "./primitives/Image";
 export { Video, type VideoProps } from "./primitives/Video";
 export { MotionPauseButton } from "./primitives/Video/PauseToggle";
 export { ChatBubble, type ChatBubbleProps, type ChatRole, type ChatLayout, type ChatStatus } from "./primitives/ChatBubble";
-export { Murmur, registerMurmurState, MURMUR_STATES, MURMUR_FREE_STATES, type MurmurProps, type MurmurState, type MurmurStateFn, type MurmurDot, type MurmurFrame, type MurmurOut } from "./primitives/Murmur";
+export { Murmur, registerMurmurState, MURMUR_STATES, type MurmurProps, type MurmurState, type MurmurStateFn, type MurmurDot, type MurmurFrame, type MurmurOut } from "./primitives/Murmur";
 export { Backdrop, registerBackdrop, BACKDROP_FREE_VARIANTS, type BackdropProps, type BackdropVariant, type BackdropRenderer } from "./primitives/Backdrop";
 export { Reasoning, type ReasoningProps } from "./primitives/Reasoning";
 export { ToolCall, type ToolCallProps, type ToolCallStatus, type ToolApprovalScope } from "./primitives/ToolCall";
 export { FileOutput, type FileOutputProps, type FileOutputKind, type FileOutputStatus } from "./primitives/FileOutput";
-export { VoiceInput, type VoiceInputProps, type VoiceInputState } from "./primitives/VoiceInput";
+export { VoiceInput, type VoiceInputProps, type VoiceInputState, type VoiceInputMode } from "./primitives/VoiceInput";
 export { Progress } from "./primitives/Progress";
 export { Spinner } from "./primitives/Spinner";
 export { Skeleton, SkeletonMimic } from "./primitives/Skeleton";
@@ -275,17 +294,14 @@ export {
   type MiniPreviewFrameProps,
   type MiniBlockPreviewProps,
 } from "./primitives/BlockPreview";
-
-// Domain & URL resolvers
 export {
-  isLocalhost,
-  getWebsiteUrl,
-  getStudioUrl,
-  getDocsUrl,
-  getCommunityUrl,
-  getKitsUrl,
-  getAssetsUrl,
-} from "./lib/urls";
+  WiseOwlLogo,
+  WiseOwlMark,
+  wiseOwlLogoVariants,
+  wiseOwlMarkVariants,
+  type WiseOwlLogoProps,
+  type WiseOwlMarkProps,
+} from "./primitives/WiseOwlLogo";
 
 // Design System Master Metadata & Statistics
 export {

@@ -3,9 +3,10 @@ import { forwardRef, type ComponentPropsWithoutRef, type ElementRef } from "reac
 import * as RadixSwitch from "@radix-ui/react-switch";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "../../lib/cn";
+import { hitAreaClass, type HitArea } from "../../lib/hit-area";
 
 export const trackVariants = cva(
-  "relative inline-flex shrink-0 items-center rounded-full transition data-[state=checked]:bg-accent data-[state=unchecked]:bg-border-control disabled:opacity-50",
+  "hit-area-touch relative inline-flex shrink-0 items-center rounded-full transition data-[state=checked]:bg-brand-solid data-[state=unchecked]:bg-border-control disabled:opacity-50",
   {
     variants: {
       size: {
@@ -35,14 +36,19 @@ export interface SwitchProps
     VariantProps<typeof trackVariants> {
   /** Visible label; wraps the switch in a <label> so it names it and is clickable. */
   label?: string;
+  /**
+   * Hit-area override (docs: "Target size"). "default": 24px floor, 44px on touch. "none": no hit area
+   * growth (dense toolbars; may go below 24px, yours to own). "touch": always 44px on a coarse pointer.
+   */
+  hitArea?: HitArea;
 }
 
 export const Switch = forwardRef<
   ElementRef<typeof RadixSwitch.Root>,
   SwitchProps
->(function Switch({ className, size, label, ...props }, ref) {
+>(function Switch({ className, size, label, hitArea, ...props }, ref) {
   const control = (
-    <RadixSwitch.Root ref={ref} className={cn(trackVariants({ size }), !label && className)} {...props}>
+    <RadixSwitch.Root ref={ref} className={cn(trackVariants({ size }), hitAreaClass(hitArea, "touch", "Switch"), !label && className)} {...props}>
       <RadixSwitch.Thumb className={thumbVariants({ size })} />
     </RadixSwitch.Root>
   );

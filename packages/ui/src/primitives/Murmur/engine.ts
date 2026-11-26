@@ -214,5 +214,3 @@ export function getMurmurState(name: string): MurmurStateFn {
 
 /** Every built-in state. */
 export const MURMUR_STATES = Object.keys(BUILT_IN);
-/** @deprecated Every state is free now; same as MURMUR_STATES. */
-export const MURMUR_FREE_STATES = MURMUR_STATES;

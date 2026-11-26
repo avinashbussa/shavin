@@ -47,7 +47,7 @@ export function PricingThreeTier({ tiers = defaultTiers }) {
                   <Flex direction="column" gap="2">
                     <Flex direction="row" align="center" justify="between" gap="2">
                       <Heading as="h3" size="md">{tier.name}</Heading>
-                      {tier.featured && <Badge variant="soft" tone="accent" size="sm" radius="full">Most popular</Badge>}
+                      {tier.featured && <Badge variant="soft" tone="brand" size="sm" radius="full">Most popular</Badge>}
                     </Flex>
                     <Text size="sm" color="muted" className="text-pretty">{tier.description}</Text>
                   </Flex>

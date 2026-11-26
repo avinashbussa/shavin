@@ -79,15 +79,15 @@ describe("tokens.json manifest", () => {
 
   it("static semantic tokens have role, light, dark, and tailwind fields", () => {
     const tokens = JSON.parse(readFileSync(resolve(ROOT, "tokens.json"), "utf-8"));
-    // Dynamic tokens (accent, link, code-*, tooltip) are CSS-var-driven and
+    // Dynamic tokens (brand, link, code-*, tooltip) are CSS-var-driven and
     // don't have static light/dark values. They must have role + tailwind.
-    const DYNAMIC_PREFIXES = ["accent", "code-", "bg-tooltip", "fg-tooltip", "link"];
+    const DYNAMIC_PREFIXES = ["brand", "code-", "bg-tooltip", "fg-tooltip", "link"];
     for (const [name, data] of Object.entries<Record<string, unknown>>(tokens.semantic)) {
       const isDynamic = DYNAMIC_PREFIXES.some((p) => name.startsWith(p));
       expect(data, `semantic.${name} missing 'tailwind'`).toHaveProperty("tailwind");
       if (isDynamic) {
         // Dynamic tokens: role is optional for code-* utility tokens,
-        // but accent-* must have role.
+        // but brand-* must have role.
         if (!name.startsWith("code-")) {
           expect(data, `semantic.${name} missing 'role'`).toHaveProperty("role");
         }
@@ -100,12 +100,12 @@ describe("tokens.json manifest", () => {
     }
   });
 
-  it("has at least one accent preset with name and hex", () => {
+  it("has at least one brand preset with name and hex", () => {
     const tokens = JSON.parse(readFileSync(resolve(ROOT, "tokens.json"), "utf-8"));
-    const accents = tokens.presets?.accents ?? [];
-    expect(accents.length).toBeGreaterThan(0);
-    expect(accents[0]).toHaveProperty("name");
-    expect(accents[0]).toHaveProperty("hex");
+    const brands = tokens.presets?.brands ?? [];
+    expect(brands.length).toBeGreaterThan(0);
+    expect(brands[0]).toHaveProperty("name");
+    expect(brands[0]).toHaveProperty("hex");
   });
 });
 
@@ -256,7 +256,7 @@ describe("validate_code: raw Tailwind color scale detection", () => {
 
   it("passes semantic color utilities", () => {
     const violations = validateCode(
-      `<div className="bg-surface text-fg-muted border-hairline bg-accent text-accent-fg" />`
+      `<div className="bg-surface text-fg-muted border-hairline bg-brand text-brand-fg" />`
     );
     expect(violations.some((v) => v.includes("Raw Tailwind color scale"))).toBe(false);
   });
@@ -330,7 +330,7 @@ describe("MCP server wiring", () => {
     const requiredTools = [
       "get_tokens",
       "get_components",
-      "get_builder_schema",
+      "get_studio_schema",
       "get_block_template",
       "validate_code",
       "autofix_code",
@@ -346,6 +346,7 @@ describe("MCP server wiring", () => {
       "get_project_context",
       "shavin_steer",
       "audit_source",
+      "render_check",
       "connect_studio",
       "disconnect_studio",
       "compose_to_canvas",

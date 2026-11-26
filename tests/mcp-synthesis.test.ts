@@ -1,6 +1,7 @@
 import { matchHexColors } from "../packages/block-schema/hex-policy.mjs";
 import { describe, it, expect } from "vitest";
 import { synthesizeLayout } from "../packages/mcp-server/src/tools/synthesize.mjs";
+import { parse } from "@babel/parser";
 
 describe("MCP Layout Synthesis Suite", () => {
   it("synthesizes full-page layout with ThemeProvider and strict token imports", () => {
@@ -38,5 +39,11 @@ describe("MCP Layout Synthesis Suite", () => {
     expect(matchHexColors(res.code)).toEqual([]);
     expect(res.code).not.toMatch(/rgb\(/);
     expect(res.tokenCompliance.score).toBe(100);
+  });
+
+  it("merges each block's imports into one @shavin/ui import, so the page is a valid module", () => {
+    const res = synthesizeLayout({ prompt: "pricing page", category: "pricing", sections: ["pricing-toggle", "faq-accordion-section"] });
+    expect(res.code.match(/from "@shavin\/ui"/g)).toHaveLength(1);
+    expect(() => parse(res.code, { sourceType: "module", plugins: ["jsx", "typescript"] })).not.toThrow();
   });
 });

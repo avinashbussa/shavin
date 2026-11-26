@@ -3,7 +3,7 @@
   "tags": [
     {
       "name": "Accordion",
-      "description": "Collapsible disclosure panels built on Radix Accordion primitive with ChevronDown 180-degree rotation convention.\n\nImport: import { Accordion } from \"@shavin/ui\";",
+      "description": "Sections that expand and collapse under a heading. Allow one open at a time or several, in default, outline or ghost styles.\n\nImport: import { Accordion } from \"@shavin/ui\";",
       "attributes": [
         {
           "name": "className",
@@ -236,10 +236,6 @@
           "description": "Callback fired when an action option is selected (groupKey, value)."
         },
         {
-          "name": "onInsert",
-          "description": "@deprecated use onAction instead"
-        },
-        {
           "name": "ariaLabel",
           "description": "Accessible toolbar label string. Default 'Action Bar'."
         }
@@ -247,7 +243,7 @@
     },
     {
       "name": "AlertDialog",
-      "description": "Explicit destructive confirmation dialog requiring intentional user action. Built on Radix AlertDialog primitive without outside-click dismissal.\n\nImport: import { AlertDialog } from \"@shavin/ui\";",
+      "description": "Asks the user to confirm an important or destructive action before it happens. Clicking outside doesn't close it, and it comes in danger, warning, success and info tones.\n\nImport: import { AlertDialog } from \"@shavin/ui\";",
       "attributes": [
         {
           "name": "className",
@@ -392,7 +388,7 @@
     },
     {
       "name": "AspectRatio",
-      "description": "Ratio layout wrapper primitive built on Radix AspectRatio for reserving media element proportions.\n\nImport: import { AspectRatio } from \"@shavin/ui\";",
+      "description": "Keeps its content at a fixed width-to-height ratio, such as 16:9, so images and video hold their space while they load.\n\nImport: import { AspectRatio } from \"@shavin/ui\";",
       "attributes": [
         {
           "name": "className",
@@ -418,7 +414,7 @@
     },
     {
       "name": "Avatar",
-      "description": "User avatar image with automatic initial-letter fallback built on Radix Avatar primitive.\n\nImport: import { Avatar } from \"@shavin/ui\";",
+      "description": "A picture of a person or team. Without an image it shows initials, an icon or a default person icon, in a neutral or coloured fill.\n\nImport: import { Avatar } from \"@shavin/ui\";",
       "attributes": [
         {
           "name": "className",
@@ -533,7 +529,7 @@
     },
     {
       "name": "Badge",
-      "description": "Status indicator pill component supporting semantic color schemes and control radius (--radius-lg).\n\nImport: import { Badge } from \"@shavin/ui\";",
+      "description": "A small label for status or counts, in the neutral, brand, success, warning or danger colours.\n\nImport: import { Badge } from \"@shavin/ui\";",
       "attributes": [
         {
           "name": "className",
@@ -565,7 +561,7 @@
               "name": "neutral"
             },
             {
-              "name": "accent"
+              "name": "brand"
             },
             {
               "name": "success"
@@ -622,13 +618,13 @@
         },
         {
           "name": "color",
-          "description": "Backward compatible color prop. Maps to tone.",
+          "description": "@deprecated Backward compatible alias of `tone`. Use `tone`.",
           "values": [
             {
               "name": "neutral"
             },
             {
-              "name": "accent"
+              "name": "brand"
             },
             {
               "name": "success"
@@ -871,12 +867,20 @@
           ]
         },
         {
+          "name": "studioKey",
+          "description": "Optional template key to link to Shavin Studio"
+        },
+        {
+          "name": "studioUrl",
+          "description": "Optional direct URL override for the Open in Studio link"
+        },
+        {
           "name": "builderKey",
-          "description": "Optional builder template key to link to Shavin Studio"
+          "description": "@deprecated Renamed to `studioKey`; still accepted."
         },
         {
           "name": "builderUrl",
-          "description": "Optional direct URL override for Studio/Builder"
+          "description": "@deprecated Renamed to `studioUrl`; still accepted."
         },
         {
           "name": "children",
@@ -886,7 +890,7 @@
     },
     {
       "name": "Blockquote",
-      "description": "A quoted passage set off with an accent rule, for testimonials and cited text.\n\nImport: import { Blockquote } from \"@shavin/ui\";",
+      "description": "A quoted passage set off with a brand rule, for testimonials and cited text.\n\nImport: import { Blockquote } from \"@shavin/ui\";",
       "attributes": [
         {
           "name": "className",
@@ -926,7 +930,7 @@
     },
     {
       "name": "Box",
-      "description": "Generic div-based container primitive with translucent panel support and background media props. Useful for media-backed panels and callout boxes.\n\nImport: import { Box } from \"@shavin/ui\";",
+      "description": "A plain container for anything that needs a wrapper. It can render as any HTML tag, become a translucent panel, carry a background image or video, and be resized by the user.\n\nImport: import { Box } from \"@shavin/ui\";",
       "attributes": [
         {
           "name": "className",
@@ -954,7 +958,7 @@
         },
         {
           "name": "bgOverlays",
-          "description": "Comma-separated shorthand for overlay layers. Supports presets (\"dark-50\"), solid colors (#hex or (token)), gradients (linear/radial), and fx backdrops (\"fx:dither-waves\", \"fx:fluid-silk(speed=1.2)\"; needs @shavin/fx registered, else falls back to mesh). JSON array of OverlayLayer[] as fallback for advanced cases. Layers composite top-to-bottom."
+          "description": "Comma-separated shorthand for overlay layers. Supports presets (\"dark-50\"), solid colors (#hex or (token)), gradients (linear/radial), and fx backdrops (\"fx:dither-waves\", \"fx:fluid-silk(speed=1.2)\"; needs `npm i @shavin/fx` (free to use under its own licence) and `registerFxBackdrops()`, else falls back to mesh). JSON array of OverlayLayer[] as fallback for advanced cases. Layers composite top-to-bottom."
         },
         {
           "name": "bgVideoPaused",
@@ -1022,11 +1026,11 @@
         },
         {
           "name": "resizeHandle",
-          "description": "Handle look: \"line\" (accent line on hover), \"grip\" (always-visible pill) or \"invisible\". Default \"line\"."
+          "description": "Handle look: \"line\" (brand line on hover), \"grip\" (always-visible pill) or \"invisible\". Default \"line\"."
         },
         {
           "name": "resizeColor",
-          "description": "Handle colour on hover, focus and drag: \"accent\", \"accent-subtle\" (softer accent) or \"neutral\" (monochrome). Default \"accent-subtle\"."
+          "description": "Handle colour on hover, focus and drag: \"brand\", \"brand-subtle\" (softer brand) or \"neutral\" (monochrome). Default \"brand-subtle\"."
         },
         {
           "name": "as",
@@ -1099,7 +1103,7 @@
           "description": "Button tone style variant.",
           "values": [
             {
-              "name": "accent"
+              "name": "brand"
             },
             {
               "name": "danger"
@@ -1152,12 +1156,36 @@
         {
           "name": "iconRight",
           "description": "Icon rendered after the label."
+        },
+        {
+          "name": "loading",
+          "description": "Pending state while a request runs: a Spinner replaces `iconLeft` (or covers the label when there is no icon), the width does not change, `aria-busy`, clicks are ignored, the button stays focusable and shows the progress cursor. Not dimmed: it is busy, not unavailable.",
+          "values": [
+            {
+              "name": "true"
+            },
+            {
+              "name": "false"
+            }
+          ]
+        },
+        {
+          "name": "loadingLabel",
+          "description": "Optional text shown and announced (polite) while `loading`, e.g. \"Saving…\"."
+        },
+        {
+          "name": "disabledReason",
+          "description": "Why the action is unavailable (\"Upgrade to Pro to export\"). Renders the button `aria-disabled` (not `disabled`) so it stays focusable and hoverable, with the reason in a Tooltip on hover and keyboard focus, on tap for touch, and as its accessible description. Clicks do nothing. Takes precedence over `disabled`."
+        },
+        {
+          "name": "hitArea",
+          "description": "Hit-area override (docs: \"Target size\"). \"default\": 24px floor, 44px on touch. \"none\": no hit area growth (dense toolbars; may go below 24px, yours to own). \"touch\": always 44px on a coarse pointer."
         }
       ]
     },
     {
       "name": "Calendar",
-      "description": "Full-featured schedule and event calendar primitive supporting full month grid and 1-day, 2-day, or 3-day time columns.\n\nImport: import { Calendar } from \"@shavin/ui\";",
+      "description": "A schedule that shows events on a month grid or in one, two or three day columns with hours. Users can switch views and click days or events.\n\nImport: import { Calendar } from \"@shavin/ui\";",
       "attributes": [
         {
           "name": "className",
@@ -1397,7 +1425,7 @@
               "name": "neutral"
             },
             {
-              "name": "accent"
+              "name": "brand"
             },
             {
               "name": "success"
@@ -1441,6 +1469,10 @@
         {
           "name": "icon",
           "description": "Custom icon node override."
+        },
+        {
+          "name": "role",
+          "description": "ARIA role. Default `alert` for `color=\"danger\"` and `status` for the other colours. Pass `role=\"note\"` for a static notice that is on the page from the first load."
         }
       ]
     },
@@ -1526,10 +1558,10 @@
         },
         {
           "name": "color",
-          "description": "Active fill color style: \"accent\" (uses active theme accent token) or \"mono\" (inverting monochrome). Default \"accent\".",
+          "description": "Active fill color style: \"brand\" (uses active theme brand token) or \"mono\" (inverting monochrome). Default \"brand\".",
           "values": [
             {
-              "name": "accent"
+              "name": "brand"
             },
             {
               "name": "mono"
@@ -1561,7 +1593,7 @@
     },
     {
       "name": "Card",
-      "description": "Surface card primitive with padding presets (none to 3xl), interactive hover state, and background media props. Ideal for media-rich product cards and feature tiles.\n\nImport: import { Card } from \"@shavin/ui\";",
+      "description": "A panel that groups related content, with padding presets, an optional hover state and an optional background image or video.\n\nImport: import { Card } from \"@shavin/ui\";",
       "attributes": [
         {
           "name": "className",
@@ -1631,7 +1663,7 @@
         },
         {
           "name": "bgOverlays",
-          "description": "Comma-separated shorthand for overlay layers. Supports presets (\"dark-50\"), solid colors (#hex or (token)), gradients (linear/radial), and fx backdrops (\"fx:dither-waves\", \"fx:fluid-silk(speed=1.2)\"; needs @shavin/fx registered, else falls back to mesh). JSON array of OverlayLayer[] as fallback for advanced cases. Layers composite top-to-bottom."
+          "description": "Comma-separated shorthand for overlay layers. Supports presets (\"dark-50\"), solid colors (#hex or (token)), gradients (linear/radial), and fx backdrops (\"fx:dither-waves\", \"fx:fluid-silk(speed=1.2)\"; needs `npm i @shavin/fx` (free to use under its own licence) and `registerFxBackdrops()`, else falls back to mesh). JSON array of OverlayLayer[] as fallback for advanced cases. Layers composite top-to-bottom."
         },
         {
           "name": "bgVideoPaused",
@@ -1699,11 +1731,11 @@
         },
         {
           "name": "resizeHandle",
-          "description": "Handle look: \"line\" (accent line on hover), \"grip\" (always-visible pill) or \"invisible\". Default \"line\"."
+          "description": "Handle look: \"line\" (brand line on hover), \"grip\" (always-visible pill) or \"invisible\". Default \"line\"."
         },
         {
           "name": "resizeColor",
-          "description": "Handle colour on hover, focus and drag: \"accent\", \"accent-subtle\" (softer accent) or \"neutral\" (monochrome). Default \"accent-subtle\"."
+          "description": "Handle colour on hover, focus and drag: \"brand\", \"brand-subtle\" (softer brand) or \"neutral\" (monochrome). Default \"brand-subtle\"."
         }
       ]
     },
@@ -1755,7 +1787,7 @@
     },
     {
       "name": "Carousel",
-      "description": "A responsive, accessible slider and scroll-track carousel supporting container alignment, edge gradient fades, and pagination.\n\nImport: import { Carousel } from \"@shavin/ui\";",
+      "description": "A horizontal row of items users scroll through, either several cards at a time or one slide per view. Comes with previous and next buttons, dots, faded edges and optional autoplay.\n\nImport: import { Carousel } from \"@shavin/ui\";",
       "attributes": [
         {
           "name": "className",
@@ -1919,6 +1951,21 @@
           ]
         },
         {
+          "name": "sharpCorner",
+          "description": "ChatBubble sharpCorner style variant.",
+          "values": [
+            {
+              "name": "bottom"
+            },
+            {
+              "name": "top"
+            },
+            {
+              "name": "none"
+            }
+          ]
+        },
+        {
           "name": "children",
           "description": "Message content. For AI turns pass the parts in order: Reasoning, ToolCall, text, CodeBlock, FileOutput. Use layout=\"flat\" (the default for role=\"assistant\") so cards and code are not squeezed into a bubble."
         },
@@ -1933,6 +1980,18 @@
         {
           "name": "status",
           "description": "Turn lifecycle. Default \"ready\". submitted shows the pending indicator, streaming a live caret, stopped a label, error a retry row."
+        },
+        {
+          "name": "interim",
+          "description": "Live, unconfirmed text (a speech transcript still being heard). Shown italic and quiet until you drop the flag.",
+          "values": [
+            {
+              "name": "true"
+            },
+            {
+              "name": "false"
+            }
+          ]
         },
         {
           "name": "error",
@@ -1963,6 +2022,18 @@
           "description": "Timestamp / status shown under the bubble."
         },
         {
+          "name": "hoverTimestamp",
+          "description": "If true, the timestamp only appears on hover.",
+          "values": [
+            {
+              "name": "true"
+            },
+            {
+              "name": "false"
+            }
+          ]
+        },
+        {
           "name": "avatarSrc",
           "description": "Avatar image for the message sender."
         },
@@ -1986,7 +2057,7 @@
     },
     {
       "name": "Checkbox",
-      "description": "Boolean selection control built on Radix Checkbox primitive with control radius (--radius-lg) and custom checkmark indicator.\n\nImport: import { Checkbox } from \"@shavin/ui\";",
+      "description": "Turns an option on or off, with an optional label. It also has a mixed state for a parent of partly selected items.\n\nImport: import { Checkbox } from \"@shavin/ui\";",
       "attributes": [
         {
           "name": "className",
@@ -2007,6 +2078,10 @@
         {
           "name": "label",
           "description": "Optional label text placed adjacent to checkbox."
+        },
+        {
+          "name": "hitArea",
+          "description": "Hit-area override (docs: \"Target size\"). \"default\": 24px floor, 44px on touch. \"none\": no hit area growth (dense toolbars; may go below 24px, yours to own). \"touch\": always 44px on a coarse pointer."
         }
       ]
     },
@@ -2336,6 +2411,10 @@
         {
           "name": "title",
           "description": "Optional title displayed in the collapsible footer bar (alias for description)."
+        },
+        {
+          "name": "hitArea",
+          "description": "Hit-area override for the Copy and View-code buttons (docs: \"Target size\")."
         }
       ]
     },
@@ -2486,7 +2565,7 @@
     },
     {
       "name": "ColorPicker",
-      "description": "Color picker control supporting preset swatches, native HTML5 eyedropper pipette, and direct hex or RGB string input.\n\nImport: import { ColorPicker } from \"@shavin/ui\";",
+      "description": "Pick a colour from preset swatches or a colour area, or type a hex or RGB value. It can sit inline or open in a popover, and offers an eyedropper where the browser supports one.\n\nImport: import { ColorPicker } from \"@shavin/ui\";",
       "attributes": [
         {
           "name": "className",
@@ -2545,7 +2624,7 @@
         },
         {
           "name": "presets",
-          "description": "Preset swatch spectrum. Defaults to Shavin UI's 24 accent swatches."
+          "description": "Preset swatch spectrum. Defaults to Shavin UI's 24 brand swatches."
         },
         {
           "name": "swatchLayout",
@@ -2664,7 +2743,7 @@
         },
         {
           "name": "size",
-          "description": "Size variant: \"sm\" (28px height, matching Select sm) or \"md\" (32px height). Default \"md\".",
+          "description": "Size variant: \"sm\" (32px height) or \"md\" (40px height), matching Select sm and md. Default \"md\".",
           "values": [
             {
               "name": "sm"
@@ -2685,6 +2764,10 @@
               "name": "false"
             }
           ]
+        },
+        {
+          "name": "hitArea",
+          "description": "Hit-area override (docs: \"Target size\"). \"default\": 24px floor, 44px on touch. \"none\": no hit area growth (dense toolbars; may go below 24px, yours to own). \"touch\": always 44px on a coarse pointer. Native input: the field itself grows (min-height), there is no invisible area."
         }
       ]
     },
@@ -2742,7 +2825,7 @@
         },
         {
           "name": "bgOverlays",
-          "description": "Comma-separated shorthand for overlay layers. Supports presets (\"dark-50\"), solid colors (#hex or (token)), gradients (linear/radial), and fx backdrops (\"fx:dither-waves\", \"fx:fluid-silk(speed=1.2)\"; needs @shavin/fx registered, else falls back to mesh). JSON array of OverlayLayer[] as fallback for advanced cases. Layers composite top-to-bottom."
+          "description": "Comma-separated shorthand for overlay layers. Supports presets (\"dark-50\"), solid colors (#hex or (token)), gradients (linear/radial), and fx backdrops (\"fx:dither-waves\", \"fx:fluid-silk(speed=1.2)\"; needs `npm i @shavin/fx` (free to use under its own licence) and `registerFxBackdrops()`, else falls back to mesh). JSON array of OverlayLayer[] as fallback for advanced cases. Layers composite top-to-bottom."
         },
         {
           "name": "bgVideoPaused",
@@ -2780,7 +2863,7 @@
     },
     {
       "name": "ContextMenu",
-      "description": "Right-click context action menu built on Radix ContextMenu primitive with data-panel surface styling.\n\nImport: import { ContextMenu } from \"@shavin/ui\";",
+      "description": "A menu of actions that opens when the user right-clicks the area it wraps. Items can be marked as dangerous.\n\nImport: import { ContextMenu } from \"@shavin/ui\";",
       "attributes": [
         {
           "name": "className",
@@ -2868,7 +2951,7 @@
     },
     {
       "name": "DataList",
-      "description": "Semantic key-value definition list primitive built on HTML <dl>, <dt>, and <dd> elements.\n\nImport: import { DataList } from \"@shavin/ui\";",
+      "description": "Shows labelled values, such as the fields of a record, as a list of label and value pairs. Labels sit above the values or beside them.\n\nImport: import { DataList } from \"@shavin/ui\";",
       "attributes": [
         {
           "name": "className",
@@ -2988,10 +3071,6 @@
         {
           "name": "description",
           "description": "Supporting line under the title (also its accessible description)."
-        },
-        {
-          "name": "subtitle",
-          "description": "@deprecated Use `description`."
         },
         {
           "name": "open",
@@ -3169,7 +3248,7 @@
     },
     {
       "name": "Drawer",
-      "description": "Edge-mounted overlay panel that slides in from left or right. Built on Radix Dialog with focus trapping, scroll lock, backdrop dismiss, and directional slide-in/slide-out animations. Use for temporary contextual panels — unlike Sidebar (in-flow layout), Drawer overlays content and dismisses on outside click.\n\nImport: import { Drawer } from \"@shavin/ui\";",
+      "description": "A panel that slides in over the page from the left or right edge, with a title, body and footer. Use it for temporary tasks; unlike Sidebar, it covers the content and closes on a click outside.\n\nImport: import { Drawer } from \"@shavin/ui\";",
       "attributes": [
         {
           "name": "className",
@@ -3219,7 +3298,7 @@
         },
         {
           "name": "open",
-          "description": "Whether the drawer is open.",
+          "description": "Controlled open state. Leave it out for an uncontrolled drawer (see `trigger` and `defaultOpen`).",
           "values": [
             {
               "name": "true"
@@ -3230,8 +3309,28 @@
           ]
         },
         {
+          "name": "defaultOpen",
+          "description": "Initial open state when uncontrolled. Default: closed when `trigger` is set, otherwise open.",
+          "values": [
+            {
+              "name": "true"
+            },
+            {
+              "name": "false"
+            }
+          ]
+        },
+        {
+          "name": "trigger",
+          "description": "Element that opens the drawer, e.g. `<IconButton aria-label=\"Open menu\">…</IconButton>`. Makes the drawer work without state, so it can be used in blocks."
+        },
+        {
+          "name": "onOpenChange",
+          "description": "Called whenever the drawer asks to open or close (trigger, Escape, backdrop, close button)."
+        },
+        {
           "name": "onClose",
-          "description": "Callback fired when drawer requests to close (Escape, backdrop click, close button)."
+          "description": "Callback fired when drawer requests to close (Escape, backdrop click, close button). Required when controlled; optional otherwise."
         },
         {
           "name": "title",
@@ -3285,7 +3384,7 @@
     },
     {
       "name": "Dropdown",
-      "description": "Simple select dropdown supporting both custom styled popup panel and native HTML <select> mobile rendering.\n\nImport: import { Dropdown } from \"@shavin/ui\";",
+      "description": "A simple control for picking one value from a short list. It uses a styled popup, or the browser's own select menu.\n\nImport: import { Dropdown } from \"@shavin/ui\";",
       "attributes": [
         {
           "name": "className",
@@ -3406,6 +3505,10 @@
               "name": "false"
             }
           ]
+        },
+        {
+          "name": "hitArea",
+          "description": "id(s) of hint or error text describing the field. */ \"aria-describedby\"?: string; /** Hit-area override (docs: \"Target size\"). \"default\": 24px floor, 44px on touch. \"none\": no hit area growth (dense toolbars; may go below 24px, yours to own). \"touch\": always 44px on a coarse pointer."
         }
       ]
     },
@@ -3430,6 +3533,131 @@
         {
           "name": "className",
           "description": "Tailwind CSS classes. Always use semantic tokens (e.g. bg-surface, text-fg, border-hairline)."
+        }
+      ]
+    },
+    {
+      "name": "EmptyState",
+      "description": "The one component for 'nothing is shown here yet': first-time, empty, no-results and success result screens. Icon, specific title, one-sentence description and the action that fixes the emptiness.\n\nImport: import { EmptyState } from \"@shavin/ui\";",
+      "attributes": [
+        {
+          "name": "className",
+          "description": "Tailwind CSS classes. Always use semantic tokens (e.g. bg-surface, text-fg, border-hairline)."
+        },
+        {
+          "name": "layout",
+          "description": "EmptyState layout style variant.",
+          "values": [
+            {
+              "name": "centered"
+            },
+            {
+              "name": "inline"
+            }
+          ]
+        },
+        {
+          "name": "size",
+          "description": "EmptyState size style variant.",
+          "values": [
+            {
+              "name": "sm"
+            },
+            {
+              "name": "md"
+            },
+            {
+              "name": "lg"
+            }
+          ]
+        },
+        {
+          "name": "variant",
+          "description": "EmptyState variant style variant.",
+          "values": [
+            {
+              "name": "plain"
+            },
+            {
+              "name": "bordered"
+            }
+          ]
+        },
+        {
+          "name": "kind",
+          "description": "The situation: sets the default icon only (copy always comes from you). first-time = never created one; empty = had items, none now; no-results = a filter or search matched nothing; success = a flow finished (a result screen)."
+        },
+        {
+          "name": "title",
+          "description": "Specific title: \"No invoices yet\", never \"No data\" or \"Nothing here\"."
+        },
+        {
+          "name": "description",
+          "description": "One sentence, at most 25 words: what is missing and how to add it."
+        },
+        {
+          "name": "icon",
+          "description": "Icon override (use `<Icon name>`). Default per kind: inbox, folder-open, search-x, circle-check."
+        },
+        {
+          "name": "illustration",
+          "description": "Monochrome illustration; replaces the icon. Rendered aria-hidden."
+        },
+        {
+          "name": "action",
+          "description": "The one primary action that fixes the emptiness (a Button)."
+        },
+        {
+          "name": "secondaryAction",
+          "description": "A second, quieter action (a ghost Button or Link)."
+        },
+        {
+          "name": "titleAs",
+          "description": "Heading element, independent of size. Default h3.",
+          "values": [
+            {
+              "name": "h2"
+            },
+            {
+              "name": "h3"
+            },
+            {
+              "name": "h4"
+            },
+            {
+              "name": "h5"
+            },
+            {
+              "name": "h6"
+            },
+            {
+              "name": "p"
+            }
+          ]
+        },
+        {
+          "name": "announce",
+          "description": "Announce the title (polite) once on mount, for an empty state that replaces content after the user acts. Default true for no-results, false otherwise.",
+          "values": [
+            {
+              "name": "true"
+            },
+            {
+              "name": "false"
+            }
+          ]
+        },
+        {
+          "name": "focusOnMount",
+          "description": "Move focus to the title on mount. Recommended for kind=\"success\" result screens.",
+          "values": [
+            {
+              "name": "true"
+            },
+            {
+              "name": "false"
+            }
+          ]
         }
       ]
     },
@@ -3481,7 +3709,7 @@
     },
     {
       "name": "Flex",
-      "description": "Flexbox container primitive supporting token gap scale, direction, alignment, justification, polymorphic tag rendering, and background media props (bgVideo, bgImage, bgOverlays, bgSize, bgVideoPaused).\n\nImport: import { Flex } from \"@shavin/ui\";",
+      "description": "Lays children out in a row or column with consistent gaps, alignment and wrapping. It can render as any HTML tag, carry a background image or video, and be resized by the user.\n\nImport: import { Flex } from \"@shavin/ui\";",
       "attributes": [
         {
           "name": "className",
@@ -3587,7 +3815,7 @@
         },
         {
           "name": "bgOverlays",
-          "description": "Comma-separated shorthand for overlay layers. Supports presets (\"dark-50\"), solid colors (#hex or (token)), gradients (linear/radial), and fx backdrops (\"fx:dither-waves\", \"fx:fluid-silk(speed=1.2)\"; needs @shavin/fx registered, else falls back to mesh). JSON array of OverlayLayer[] as fallback for advanced cases. Layers composite top-to-bottom."
+          "description": "Comma-separated shorthand for overlay layers. Supports presets (\"dark-50\"), solid colors (#hex or (token)), gradients (linear/radial), and fx backdrops (\"fx:dither-waves\", \"fx:fluid-silk(speed=1.2)\"; needs `npm i @shavin/fx` (free to use under its own licence) and `registerFxBackdrops()`, else falls back to mesh). JSON array of OverlayLayer[] as fallback for advanced cases. Layers composite top-to-bottom."
         },
         {
           "name": "bgVideoPaused",
@@ -3655,11 +3883,11 @@
         },
         {
           "name": "resizeHandle",
-          "description": "Handle look: \"line\" (accent line on hover), \"grip\" (always-visible pill) or \"invisible\". Default \"line\"."
+          "description": "Handle look: \"line\" (brand line on hover), \"grip\" (always-visible pill) or \"invisible\". Default \"line\"."
         },
         {
           "name": "resizeColor",
-          "description": "Handle colour on hover, focus and drag: \"accent\", \"accent-subtle\" (softer accent) or \"neutral\" (monochrome). Default \"accent-subtle\"."
+          "description": "Handle colour on hover, focus and drag: \"brand\", \"brand-subtle\" (softer brand) or \"neutral\" (monochrome). Default \"brand-subtle\"."
         },
         {
           "name": "as",
@@ -3684,6 +3912,168 @@
         {
           "name": "ref",
           "description": "Ref to the rendered element."
+        }
+      ]
+    },
+    {
+      "name": "FormErrorSummary",
+      "description": "Submit-time error list for forms of three or more fields (WCAG 3.3.1). A danger Callout whose heading takes focus after a failed submit, with a link per invalid field that focuses it.\n\nImport: import { FormErrorSummary } from \"@shavin/ui\";",
+      "attributes": [
+        {
+          "name": "className",
+          "description": "Tailwind CSS classes. Always use semantic tokens (e.g. bg-surface, text-fg, border-hairline)."
+        },
+        {
+          "name": "errors",
+          "description": "One entry per invalid field; each becomes a link that focuses that field."
+        },
+        {
+          "name": "title",
+          "description": "Heading. Default \"Fix 1 field to continue\" / \"Fix N fields to continue\"."
+        },
+        {
+          "name": "focusOnMount",
+          "description": "Move focus to the heading when the summary appears after a failed submit (WCAG 3.3.1). Default true.",
+          "values": [
+            {
+              "name": "true"
+            },
+            {
+              "name": "false"
+            }
+          ]
+        },
+        {
+          "name": "titleAs",
+          "description": "Heading element. Default h2.",
+          "values": [
+            {
+              "name": "h2"
+            },
+            {
+              "name": "h3"
+            },
+            {
+              "name": "h4"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "FormField",
+      "description": "Label, hint and error for any Shavin control that has none of its own: TextArea, Select, Combobox, DatePicker, TimePicker, Checkbox, Switch, RadioGroup, CheckboxGroup. TextField already has label/hint/errorMessage: use it alone.\n\nImport: import { FormField } from \"@shavin/ui\";",
+      "attributes": [
+        {
+          "name": "className",
+          "description": "Tailwind CSS classes. Always use semantic tokens (e.g. bg-surface, text-fg, border-hairline)."
+        },
+        {
+          "name": "orientation",
+          "description": "FormField orientation style variant.",
+          "values": [
+            {
+              "name": "vertical"
+            },
+            {
+              "name": "horizontal"
+            }
+          ]
+        },
+        {
+          "name": "label",
+          "description": "Visible label. Omit it for a single Checkbox or Switch that has its own `label`. Never use a placeholder as the label."
+        },
+        {
+          "name": "hint",
+          "description": "Helper text below the control. Give the reason here when the field is disabled."
+        },
+        {
+          "name": "error",
+          "description": "Error message: marks the control invalid (aria-invalid), replaces the hint, icon + text."
+        },
+        {
+          "name": "status",
+          "description": "`success` shows a check icon and the hint in the success colour (\"Email verified\"). Use sparingly.",
+          "values": [
+            {
+              "name": "default"
+            },
+            {
+              "name": "success"
+            }
+          ]
+        },
+        {
+          "name": "required",
+          "description": "Default true (false for a single Checkbox or Switch, where required means \"must be on\"). Optional fields (false) show \"Optional\" after the label; required ones get no asterisk.",
+          "values": [
+            {
+              "name": "true"
+            },
+            {
+              "name": "false"
+            }
+          ]
+        },
+        {
+          "name": "disabled",
+          "description": "Passes `disabled` to the control (and the fieldset for a group). Say why in `hint`.",
+          "values": [
+            {
+              "name": "true"
+            },
+            {
+              "name": "false"
+            }
+          ]
+        },
+        {
+          "name": "readOnly",
+          "description": "Only for TextArea (and TextField): focusable, selectable, submitted; shows a lock icon by the label.",
+          "values": [
+            {
+              "name": "true"
+            },
+            {
+              "name": "false"
+            }
+          ]
+        },
+        {
+          "name": "announceError",
+          "description": "Announce `error` (polite) once when it first appears. Default true.",
+          "values": [
+            {
+              "name": "true"
+            },
+            {
+              "name": "false"
+            }
+          ]
+        },
+        {
+          "name": "size",
+          "description": "One size for every field in a row; passed to Select and Combobox, ignored by the others.",
+          "values": [
+            {
+              "name": "sm"
+            },
+            {
+              "name": "md"
+            },
+            {
+              "name": "lg"
+            }
+          ]
+        },
+        {
+          "name": "id",
+          "description": "id for the control (default generated). Links the label and the FormErrorSummary item."
+        },
+        {
+          "name": "children",
+          "description": "Exactly one Shavin control: TextArea, Select, Combobox, DatePicker, TimePicker, Checkbox, Switch, RadioGroup or CheckboxGroup."
         }
       ]
     },
@@ -3743,7 +4133,7 @@
     },
     {
       "name": "Grid",
-      "description": "CSS Grid container primitive supporting column/row counts, token gap scale, cross-axis alignment, and background media props (bgVideo, bgImage, bgOverlays, bgSize, bgVideoPaused).\n\nImport: import { Grid } from \"@shavin/ui\";",
+      "description": "Lays children out in columns. Set a count, or let it fit as many as the space allows. It can carry a background image or video.\n\nImport: import { Grid } from \"@shavin/ui\";",
       "attributes": [
         {
           "name": "className",
@@ -3933,7 +4323,7 @@
         },
         {
           "name": "bgOverlays",
-          "description": "Comma-separated shorthand for overlay layers. Supports presets (\"dark-50\"), solid colors (#hex or (token)), gradients (linear/radial), and fx backdrops (\"fx:dither-waves\", \"fx:fluid-silk(speed=1.2)\"; needs @shavin/fx registered, else falls back to mesh). JSON array of OverlayLayer[] as fallback for advanced cases. Layers composite top-to-bottom."
+          "description": "Comma-separated shorthand for overlay layers. Supports presets (\"dark-50\"), solid colors (#hex or (token)), gradients (linear/radial), and fx backdrops (\"fx:dither-waves\", \"fx:fluid-silk(speed=1.2)\"; needs `npm i @shavin/fx` (free to use under its own licence) and `registerFxBackdrops()`, else falls back to mesh). JSON array of OverlayLayer[] as fallback for advanced cases. Layers composite top-to-bottom."
         },
         {
           "name": "bgVideoPaused",
@@ -4125,7 +4515,7 @@
           "description": "Colour of the filled cells (a theme tone).",
           "values": [
             {
-              "name": "accent"
+              "name": "brand"
             },
             {
               "name": "success"
@@ -4178,7 +4568,7 @@
     },
     {
       "name": "HoverCard",
-      "description": "Hover-triggered preview card panel built on Radix HoverCard primitive with open/close intent delays and collision detection.\n\nImport: import { HoverCard } from \"@shavin/ui\";",
+      "description": "A preview panel that opens when the user hovers over a link or name, after a short delay. It stays on screen near edges.\n\nImport: import { HoverCard } from \"@shavin/ui\";",
       "attributes": [
         {
           "name": "className",
@@ -4475,7 +4865,7 @@
               "name": "muted"
             },
             {
-              "name": "accent"
+              "name": "brand"
             },
             {
               "name": "contrast"
@@ -4559,7 +4949,7 @@
     },
     {
       "name": "IconButton",
-      "description": "Square icon-only action button primitive enforcing mandatory aria-label prop and control radius (--radius-lg).\n\nImport: import { IconButton } from \"@shavin/ui\";",
+      "description": "A square button that shows only an icon. It needs a label for screen readers, and comes in solid, soft, outline and ghost styles.\n\nImport: import { IconButton } from \"@shavin/ui\";",
       "attributes": [
         {
           "name": "className",
@@ -4588,7 +4978,7 @@
           "description": "IconButton tone style variant.",
           "values": [
             {
-              "name": "accent"
+              "name": "brand"
             },
             {
               "name": "danger"
@@ -4611,14 +5001,34 @@
           ]
         },
         {
-          "name": "children",
-          "description": "Type: ReactNode"
+          "name": "loading",
+          "description": "Mandatory ARIA accessible label string for screen reader name computation. */ \"aria-label\": string; children: ReactNode; /** Pending state: a Spinner replaces the icon, `aria-busy`, clicks ignored, stays focusable, progress cursor.",
+          "values": [
+            {
+              "name": "true"
+            },
+            {
+              "name": "false"
+            }
+          ]
+        },
+        {
+          "name": "loadingLabel",
+          "description": "Optional text announced (polite) when `loading` starts."
+        },
+        {
+          "name": "disabledReason",
+          "description": "Why the action is unavailable. Renders `aria-disabled` (focusable) with the reason in a Tooltip on hover, focus and tap, and as the accessible description. Takes precedence over `disabled`."
+        },
+        {
+          "name": "hitArea",
+          "description": "Hit-area override (docs: \"Target size\"). \"default\": 24px floor, 44px on touch. \"none\": no hit area growth (dense toolbars; may go below 24px, yours to own). \"touch\": always 44px on a coarse pointer."
         }
       ]
     },
     {
       "name": "IconPicker",
-      "description": "Searchable icon selection popover grid supporting Lucide icons for builder, form customizers, and toolbar triggers.\n\nImport: import { IconPicker } from \"@shavin/ui\";",
+      "description": "Choose an icon from a searchable grid in a popover, with tabs for the Lucide, Phosphor, Radix and Material icon sets.\n\nImport: import { IconPicker } from \"@shavin/ui\";",
       "attributes": [
         {
           "name": "className",
@@ -4683,7 +5093,7 @@
     },
     {
       "name": "Image",
-      "description": "Image primitive with automatic broken-link placeholder fallback, aspect-ratio preservation, object-fit scaling, and overlay layers (scrim / gradient / solid / fx) composited on top.\n\nImport: import { Image } from \"@shavin/ui\";",
+      "description": "Shows an image at a set ratio and fit, with a placeholder when the source is missing or fails to load. Overlays such as a scrim or gradient can sit on top.\n\nImport: import { Image } from \"@shavin/ui\";",
       "attributes": [
         {
           "name": "className",
@@ -5044,7 +5454,7 @@
               "name": "default"
             },
             {
-              "name": "accent"
+              "name": "brand"
             }
           ]
         },
@@ -5065,12 +5475,28 @@
               "name": "lg"
             }
           ]
+        },
+        {
+          "name": "standalone",
+          "description": "The link stands on its own (navigation, footer, table of contents, a list item that is only a link) rather than sitting in a sentence. Gives it a hit area of at least 24x24 (WCAG 2.5.8) without changing its layout. Links inside running text are exempt from the rule: leave this off. Defaults to true when `underline=\"none\"` (a link with no underline is not running text, and every navigation and footer link is written that way), otherwise false. Pass `standalone={false}` to opt out.",
+          "values": [
+            {
+              "name": "true"
+            },
+            {
+              "name": "false"
+            }
+          ]
+        },
+        {
+          "name": "hitArea",
+          "description": "Hit-area override for a `standalone` link: \"none\" removes it, \"touch\" grows to 44px on a coarse pointer. Default 24px floor."
         }
       ]
     },
     {
       "name": "List",
-      "description": "Semantic typography prose list component supporting bulleted, numbered, alpha, and roman numeral markers.\n\nImport: import { List } from \"@shavin/ui\";",
+      "description": "A bulleted or numbered list for body text. Numbers can also be letters or roman numerals.\n\nImport: import { List } from \"@shavin/ui\";",
       "attributes": [
         {
           "name": "className",
@@ -5129,7 +5555,7 @@
     },
     {
       "name": "Menu",
-      "description": "Floating action dropdown menu built on Radix DropdownMenu primitive with full keyboard navigation and nested sub-menu support.\n\nImport: import { Menu } from \"@shavin/ui\";",
+      "description": "A list of actions that opens from a button, with keyboard navigation and nested submenus.\n\nImport: import { Menu } from \"@shavin/ui\";",
       "attributes": [
         {
           "name": "className",
@@ -5728,7 +6154,7 @@
     },
     {
       "name": "Pagination",
-      "description": "Page navigation control across data tables, lists, and editorial documentation supporting numeric pages, simple compact status, and article card variants.\n\nImport: import { Pagination } from \"@shavin/ui\";",
+      "description": "Moves between pages of a table, list or document. Shows page numbers, a compact previous and next with \"Page 2 of 10\", or cards linking to the previous and next article.\n\nImport: import { Pagination } from \"@shavin/ui\";",
       "attributes": [
         {
           "name": "className",
@@ -5818,7 +6244,7 @@
     },
     {
       "name": "PanelGroup",
-      "description": "Resizable split panes that trade space with each other (code / preview / terminal). Import from \"@shavin/ui/panels\", not the root. Built on react-resizable-panels. For one element that resizes itself, use the resizable prop on Box, Flex or Card.\n\nImport: import { PanelGroup } from \"@shavin/ui\";",
+      "description": "Side-by-side or stacked panes the user resizes by dragging the divider between them, such as code, preview and terminal. It can remember the layout. Import it from \"@shavin/ui/panels\", not the root. For one element that resizes itself, use the resizable prop on Box, Flex or Card.\n\nImport: import { PanelGroup } from \"@shavin/ui\";",
       "attributes": [
         {
           "name": "className",
@@ -5844,10 +6270,10 @@
           "description": "PanelGroup color style variant.",
           "values": [
             {
-              "name": "accent"
+              "name": "brand"
             },
             {
-              "name": "accent-subtle"
+              "name": "brand-subtle"
             },
             {
               "name": "neutral"
@@ -5904,10 +6330,10 @@
           "description": "PanelHandle color style variant.",
           "values": [
             {
-              "name": "accent"
+              "name": "brand"
             },
             {
-              "name": "accent-subtle"
+              "name": "brand-subtle"
             },
             {
               "name": "neutral"
@@ -5950,7 +6376,7 @@
     },
     {
       "name": "Popover",
-      "description": "Click-triggered floating panel built on Radix Popover primitive with collision detection and focus trapping.\n\nImport: import { Popover } from \"@shavin/ui\";",
+      "description": "A panel that opens when the user clicks a trigger, for short forms or extra detail. It stays on screen near edges and closes on Escape or a click outside.\n\nImport: import { Popover } from \"@shavin/ui\";",
       "attributes": [
         {
           "name": "className",
@@ -6250,7 +6676,7 @@
     },
     {
       "name": "Progress",
-      "description": "Loading and task progress bar built on Radix Progress primitive supporting determinate percentages and indeterminate loading states.\n\nImport: import { Progress } from \"@shavin/ui\";",
+      "description": "A bar that shows how far a task has got, or a moving bar when the end isn't known. It can show a label and the percentage, or run as a thin bar across the top of the page.\n\nImport: import { Progress } from \"@shavin/ui\";",
       "attributes": [
         {
           "name": "className",
@@ -6401,6 +6827,10 @@
           ]
         },
         {
+          "name": "hitArea",
+          "description": "Hit-area override for this item; defaults to the group's. See RadioGroup."
+        },
+        {
           "name": "children",
           "description": "Custom children element to render inside card or label."
         }
@@ -6408,7 +6838,7 @@
     },
     {
       "name": "RadioGroup",
-      "description": "Single-choice radio selection group built on Radix RadioGroup primitive supporting radio buttons and selectable card grid layouts.\n\nImport: import { RadioGroup } from \"@shavin/ui\";",
+      "description": "Pick one option from a small set, shown as radio buttons or as selectable cards.\n\nImport: import { RadioGroup } from \"@shavin/ui\";",
       "attributes": [
         {
           "name": "className",
@@ -6452,6 +6882,10 @@
               "name": "cards"
             }
           ]
+        },
+        {
+          "name": "hitArea",
+          "description": "Hit-area override (docs: \"Target size\"). \"default\": 24px floor, 44px on touch. \"none\": no hit area growth (dense toolbars; may go below 24px, yours to own). \"touch\": always 44px on a coarse pointer."
         }
       ]
     },
@@ -6468,7 +6902,7 @@
           "description": "Rating tone style variant.",
           "values": [
             {
-              "name": "accent"
+              "name": "brand"
             },
             {
               "name": "warning"
@@ -6631,7 +7065,31 @@
         },
         {
           "name": "duration",
-          "description": "Elapsed time shown when done, e.g. \"4s\"."
+          "description": "Elapsed time shown when done, e.g. \"4s\". Omit it and the component times the thinking itself."
+        },
+        {
+          "name": "autoCollapse",
+          "description": "Fold the text away when status goes from thinking to done (uncontrolled only). Default true; pass false to leave it open.",
+          "values": [
+            {
+              "name": "true"
+            },
+            {
+              "name": "false"
+            }
+          ]
+        },
+        {
+          "name": "maxHeight",
+          "description": "Cap the open text at this height (px or CSS length) and scroll inside it, so a long chain of thought does not push the message down.",
+          "values": [
+            {
+              "name": "number"
+            },
+            {
+              "name": "string"
+            }
+          ]
         },
         {
           "name": "label",
@@ -6664,6 +7122,10 @@
         {
           "name": "onOpenChange",
           "description": "Type: (open: boolean) => void"
+        },
+        {
+          "name": "hitArea",
+          "description": "Hit-area override (docs: \"Target size\"). \"default\": 24px floor (this control stays at 24px on touch). \"none\": no hit area growth (dense toolbars; may go below 24px, yours to own). \"touch\": always 44px on a coarse pointer."
         }
       ]
     },
@@ -6725,10 +7187,10 @@
           "description": "ResizeHandle color style variant.",
           "values": [
             {
-              "name": "accent"
+              "name": "brand"
             },
             {
-              "name": "accent-subtle"
+              "name": "brand-subtle"
             },
             {
               "name": "neutral"
@@ -6759,13 +7221,13 @@
         },
         {
           "name": "color",
-          "description": "Type: \"accent\" | \"accent-subtle\" | \"neutral\"",
+          "description": "Type: \"brand\" | \"brand-subtle\" | \"neutral\"",
           "values": [
             {
-              "name": "accent"
+              "name": "brand"
             },
             {
-              "name": "accent-subtle"
+              "name": "brand-subtle"
             },
             {
               "name": "neutral"
@@ -6807,7 +7269,7 @@
     },
     {
       "name": "Row",
-      "description": "Flexible interactive row primitive with leading slot, middle title, trailing actions, active state, and drag handle icon.\n\nImport: import { Row } from \"@shavin/ui\";",
+      "description": "A clickable line in a list or menu, with an icon or control at the start, a label, and actions at the end. It has an active state, and a drag handle is available for reorderable lists.\n\nImport: import { Row } from \"@shavin/ui\";",
       "attributes": [
         {
           "name": "className",
@@ -6891,8 +7353,8 @@
           ]
         },
         {
-          "name": "accentColor",
-          "description": "One of the 24 named accents (e.g. \"Grass\", \"Ruby\", \"Monochrome\") or raw hex \"#rrggbb\"."
+          "name": "brandColor",
+          "description": "One of the 24 named brand colours (e.g. \"Monochrome\") or raw hex \"#rrggbb\"."
         },
         {
           "name": "grayColor",
@@ -6976,8 +7438,39 @@
           ]
         },
         {
+          "name": "focusRing",
+          "description": "Focus ring weight inside this subtree: \"subtle\" | \"default\" | \"strong\". Unset inherits the parent (ThemeProvider or an outer ScopedThemeProvider).",
+          "values": [
+            {
+              "name": "subtle"
+            },
+            {
+              "name": "default"
+            },
+            {
+              "name": "strong"
+            }
+          ]
+        },
+        {
           "name": "colorSpace",
           "description": "Color space: \"rgb\" | \"oklch\". Defaults to \"rgb\"."
+        },
+        {
+          "name": "touchTargets",
+          "description": "Target size policy for this subtree: \"comfortable\" grows primary controls to 44px under a coarse pointer, \"compact\" does not (the 24px WCAG 2.5.8 floor stays). Sets `data-touch-targets` on the container. **Unset means inherit, not \"comfortable\".** Without this prop the island writes no attribute and keeps the policy of its nearest parent: a compact `ThemeProvider` keeps an unset island compact, and the root default is comfortable only when nothing above says otherwise. Pass `\"comfortable\"` explicitly to override a compact parent. Content portaled out of the container (menus, popovers, dialogs) follows `<html>`, not this value.",
+          "values": [
+            {
+              "name": "comfortable"
+            },
+            {
+              "name": "compact"
+            }
+          ]
+        },
+        {
+          "name": "brandSolid",
+          "description": "How solid brand fills are chosen in this scope: \"accessible\" | \"exact\" | \"perceptual\". Unset inherits the ThemeProvider above (default \"accessible\")."
         },
         {
           "name": "style",
@@ -6991,7 +7484,7 @@
     },
     {
       "name": "ScrollArea",
-      "description": "Custom styled scrollbar viewport primitive built on Radix ScrollArea supporting vertical and horizontal scrolling.\n\nImport: import { ScrollArea } from \"@shavin/ui\";",
+      "description": "A scrolling region with slim, styled scrollbars in place of the browser's own. It scrolls both ways and can be scrolled with the keyboard.\n\nImport: import { ScrollArea } from \"@shavin/ui\";",
       "attributes": [
         {
           "name": "className",
@@ -7009,7 +7502,7 @@
     },
     {
       "name": "Section",
-      "description": "Semantic full-bleed band primitive. No padding by default (size=\"none\") — opt into vertical rhythm with a size preset or a py-* className. Padding presets (1-4), responsive role sizes (compact/strip/body/hero) and background media props. Ideal for full-bleed hero bands with bgVideo or bgImage.\n\nImport: import { Section } from \"@shavin/ui\";",
+      "description": "A full-width band of the page, such as a hero or a content block. It has no padding unless you choose a size, and it can carry a background image or video.\n\nImport: import { Section } from \"@shavin/ui\";",
       "attributes": [
         {
           "name": "className",
@@ -7070,7 +7563,7 @@
         },
         {
           "name": "bgOverlays",
-          "description": "Comma-separated shorthand for overlay layers. Supports presets (\"dark-50\"), solid colors (#hex or (token)), gradients (linear/radial), and fx backdrops (\"fx:dither-waves\", \"fx:fluid-silk(speed=1.2)\"; needs @shavin/fx registered, else falls back to mesh). JSON array of OverlayLayer[] as fallback for advanced cases. Layers composite top-to-bottom."
+          "description": "Comma-separated shorthand for overlay layers. Supports presets (\"dark-50\"), solid colors (#hex or (token)), gradients (linear/radial), and fx backdrops (\"fx:dither-waves\", \"fx:fluid-silk(speed=1.2)\"; needs `npm i @shavin/fx` (free to use under its own licence) and `registerFxBackdrops()`, else falls back to mesh). JSON array of OverlayLayer[] as fallback for advanced cases. Layers composite top-to-bottom."
         },
         {
           "name": "bgVideoPaused",
@@ -7108,7 +7601,7 @@
     },
     {
       "name": "SegmentedControl",
-      "description": "Exclusive single-select toggle group built on Radix ToggleGroup primitive supporting default, pill, subtle, expand, and icon variants, with an animated active indicator that slides between items.\n\nImport: import { SegmentedControl } from \"@shavin/ui\";",
+      "description": "Pick one option from a few, shown side by side with a highlight that slides to the selected one. Comes in default, pill, subtle, expand and icon styles.\n\nImport: import { SegmentedControl } from \"@shavin/ui\";",
       "attributes": [
         {
           "name": "className",
@@ -7148,16 +7641,8 @@
           ]
         },
         {
-          "name": "iconOnly",
-          "description": "@deprecated use `variant=\"expand\"`.",
-          "values": [
-            {
-              "name": "true"
-            },
-            {
-              "name": "false"
-            }
-          ]
+          "name": "hitArea",
+          "description": "Hit-area override (docs: \"Target size\"). \"default\": 24px floor, 44px on touch. \"none\": no hit area growth (dense toolbars; may go below 24px, yours to own). \"touch\": always 44px on a coarse pointer."
         }
       ]
     },
@@ -7196,12 +7681,16 @@
               "name": "false"
             }
           ]
+        },
+        {
+          "name": "hitArea",
+          "description": "Accessible name for icon-only items when `label` is not a string. Falls back to `value`. */ \"aria-label\"?: string; /** Hit-area override for this item; defaults to the control's. See SegmentedControl."
         }
       ]
     },
     {
       "name": "Select",
-      "description": "Accessible dropdown select control built on Radix Select primitive with option grouping and viewport collision positioning.\n\nImport: import { Select } from \"@shavin/ui\";",
+      "description": "Pick one value from a list. Options can be grouped, and the list stays on screen near edges.\n\nImport: import { Select } from \"@shavin/ui\";",
       "attributes": [
         {
           "name": "className",
@@ -7278,6 +7767,10 @@
               "name": "soft"
             }
           ]
+        },
+        {
+          "name": "hitArea",
+          "description": "Hit-area override (docs: \"Target size\"). \"default\": 24px floor, 44px on touch. \"none\": no hit area growth (dense toolbars; may go below 24px, yours to own). \"touch\": always 44px on a coarse pointer."
         },
         {
           "name": "disabled",
@@ -7412,7 +7905,7 @@
     },
     {
       "name": "Separator",
-      "description": "Visual horizontal or vertical divider primitive built on Radix Separator using semantic hairline token styling.\n\nImport: import { Separator } from \"@shavin/ui\";",
+      "description": "A thin line between content, across or down. It comes in several thicknesses and colours.\n\nImport: import { Separator } from \"@shavin/ui\";",
       "attributes": [
         {
           "name": "className",
@@ -7471,7 +7964,7 @@
               "name": "default"
             },
             {
-              "name": "accent"
+              "name": "brand"
             },
             {
               "name": "contrast"
@@ -7512,7 +8005,7 @@
         },
         {
           "name": "position",
-          "description": "Default floating trigger placement on screen. Defaults to \"bottom-right\" (20px token offset).",
+          "description": "Where the inspector bar starts, until it is dragged somewhere else (the new spot is remembered per browser). Defaults to \"bottom-right\".",
           "values": [
             {
               "name": "bottom-left"
@@ -7532,29 +8025,15 @@
     },
     {
       "name": "ShavinDevTools",
-      "description": "Internal: the floating Dev Inspector that ThemeProvider shows during development, with live theme controls, a design audit, the Bridge status and MCP setup.\n\nImport: import { ShavinDevTools } from \"@shavin/ui\";",
+      "description": "Internal: the Dev Inspector that ThemeProvider shows during development: a small control bar with Select, Issues, Theme and Settings tools, a design audit, the Bridge status and MCP setup.\n\nImport: import { ShavinDevTools } from \"@shavin/ui\";",
       "attributes": [
         {
           "name": "className",
           "description": "Tailwind CSS classes. Always use semantic tokens (e.g. bg-surface, text-fg, border-hairline)."
         },
         {
-          "name": "position",
-          "description": "Default floating trigger placement on screen. Defaults to \"bottom-right\" (20px token offset).",
-          "values": [
-            {
-              "name": "bottom-left"
-            },
-            {
-              "name": "bottom-right"
-            },
-            {
-              "name": "top-left"
-            },
-            {
-              "name": "top-right"
-            }
-          ]
+          "name": "bridgePort",
+          "description": "Port the local Agent-Browser bridge listens on. Defaults to `NEXT_PUBLIC_SHAVIN_BRIDGE_PORT` / `VITE_SHAVIN_BRIDGE_PORT`, then the built-in default. Set this when you run `npx"
         },
         {
           "name": "forceShow",
@@ -7569,14 +8048,28 @@
           ]
         },
         {
-          "name": "bridgePort",
-          "description": "Port the local Agent-Browser bridge listens on. Defaults to `NEXT_PUBLIC_SHAVIN_BRIDGE_PORT` / `VITE_SHAVIN_BRIDGE_PORT`, then the built-in default. Set this when you run `npx @shavin/cli bridge --port <n>`."
+          "name": "position",
+          "description": "Where the inspector bar starts, until it is dragged somewhere else (the new spot is remembered per browser). Defaults to \"bottom-right\".",
+          "values": [
+            {
+              "name": "bottom-left"
+            },
+            {
+              "name": "bottom-right"
+            },
+            {
+              "name": "top-left"
+            },
+            {
+              "name": "top-right"
+            }
+          ]
         }
       ]
     },
     {
       "name": "Sidebar",
-      "description": "Comprehensive sidebar layout primitive supporting left/right docking, collapsible modes, resizability, and compound sub-components.\n\nImport: import { Sidebar } from \"@shavin/ui\";",
+      "description": "App navigation down the left or right edge. It can collapse to icons or hide completely, and users can resize it.\n\nImport: import { Sidebar } from \"@shavin/ui\";",
       "attributes": [
         {
           "name": "className",
@@ -7685,7 +8178,7 @@
         },
         {
           "name": "resizeColor",
-          "description": "Resize handle colour on hover, focus and drag. Default \"accent-subtle\"."
+          "description": "Resize handle colour on hover, focus and drag. Default \"brand-subtle\"."
         },
         {
           "name": "children",
@@ -7786,6 +8279,21 @@
         {
           "name": "className",
           "description": "Tailwind CSS classes. Always use semantic tokens (e.g. bg-surface, text-fg, border-hairline)."
+        },
+        {
+          "name": "hitArea",
+          "description": "Hit-area override (docs: \"Target size\"): \"default\" 24px floor and 44px on touch, \"none\", or \"touch\".",
+          "values": [
+            {
+              "name": "none"
+            },
+            {
+              "name": "default"
+            },
+            {
+              "name": "touch"
+            }
+          ]
         }
       ]
     },
@@ -7827,7 +8335,7 @@
     },
     {
       "name": "Slider",
-      "description": "Range slider input primitive supporting standard track/thumb and tactile capsule pill variants, single or dual thumb values, auto/custom track marks, and radius customization.\n\nImport: import { Slider } from \"@shavin/ui\";",
+      "description": "Pick a number, or a range between two handles, by dragging along a track. It can show tick marks, and the capsule style puts the label and value inside the bar.\n\nImport: import { Slider } from \"@shavin/ui\";",
       "attributes": [
         {
           "name": "className",
@@ -7913,10 +8421,10 @@
         },
         {
           "name": "color",
-          "description": "Fill color style in capsule mode: \"accent\" (active theme accent) or \"mono\" (monochrome inverting). Default \"accent\".",
+          "description": "Fill color style in capsule mode: \"brand\" (active theme brand) or \"mono\" (monochrome inverting). Default \"brand\".",
           "values": [
             {
-              "name": "accent"
+              "name": "brand"
             },
             {
               "name": "mono"
@@ -7934,12 +8442,16 @@
               "name": "false"
             }
           ]
+        },
+        {
+          "name": "hitArea",
+          "description": "Hit-area override for the thumbs (default variant) (docs: \"Target size\"). \"default\": 24px floor, 44px on touch. \"none\": no hit area growth (dense toolbars; may go below 24px, yours to own). \"touch\": always 44px on a coarse pointer."
         }
       ]
     },
     {
       "name": "Sortable",
-      "description": "Zero-dependency HTML5 drag-and-drop list re-ordering primitive with render-prop item formatting and grip handle.\n\nImport: import { Sortable } from \"@shavin/ui\";",
+      "description": "A list users reorder by dragging items, or by keyboard with screen reader announcements. Items stack, sit in a row or form a grid.\n\nImport: import { Sortable } from \"@shavin/ui\";",
       "attributes": [
         {
           "name": "className",
@@ -7994,6 +8506,10 @@
         {
           "name": "className",
           "description": "Tailwind CSS classes. Always use semantic tokens (e.g. bg-surface, text-fg, border-hairline)."
+        },
+        {
+          "name": "hitArea",
+          "description": "Hit-area override (docs: \"Target size\"). \"default\": 24px floor (this control stays at 24px on touch). \"none\": no hit area growth (dense toolbars; may go below 24px, yours to own). \"touch\": always 44px on a coarse pointer."
         }
       ]
     },
@@ -8026,7 +8542,7 @@
         },
         {
           "name": "tone",
-          "description": "Colour of the line, area or bars. Default accent."
+          "description": "Colour of the line, area or bars. Default brand."
         },
         {
           "name": "curve",
@@ -8056,7 +8572,7 @@
     },
     {
       "name": "Spinner",
-      "description": "Loading indicator supporting circular spin, pulsing wave dots, Claude-style cycling glyphs, and animated typing ellipsis.\n\nImport: import { Spinner } from \"@shavin/ui\";",
+      "description": "Shows that something is loading. Comes as a spinning ring, pulsing dots, cycling glyphs or animated dots after text.\n\nImport: import { Spinner } from \"@shavin/ui\";",
       "attributes": [
         {
           "name": "className",
@@ -8193,7 +8709,7 @@
         },
         {
           "name": "alert",
-          "description": "Type: boolean",
+          "description": "Marks the card as needing attention: a warning dot before the label and \"Needs attention\" for screen readers. Never underlines the value (an underline reads as a link).",
           "values": [
             {
               "name": "true"
@@ -8309,6 +8825,10 @@
               "name": "all"
             }
           ]
+        },
+        {
+          "name": "hitArea",
+          "description": "Hit-area override for the clickable step chips (pills variant). See docs: \"Target size\"."
         }
       ]
     },
@@ -8328,7 +8848,7 @@
     },
     {
       "name": "Switch",
-      "description": "Toggle switch control built on Radix Switch primitive with pill rounded-full track and animated sliding thumb handle.\n\nImport: import { Switch } from \"@shavin/ui\";",
+      "description": "Turns a setting on or off, with an optional label. The thumb slides across the track when toggled.\n\nImport: import { Switch } from \"@shavin/ui\";",
       "attributes": [
         {
           "name": "className",
@@ -8349,6 +8869,10 @@
         {
           "name": "label",
           "description": "Visible label; wraps the switch in a <label> so it names it and is clickable."
+        },
+        {
+          "name": "hitArea",
+          "description": "Hit-area override (docs: \"Target size\"). \"default\": 24px floor, 44px on touch. \"none\": no hit area growth (dense toolbars; may go below 24px, yours to own). \"touch\": always 44px on a coarse pointer."
         }
       ]
     },
@@ -8359,6 +8883,10 @@
         {
           "name": "className",
           "description": "Tailwind CSS classes. Always use semantic tokens (e.g. bg-surface, text-fg, border-hairline)."
+        },
+        {
+          "name": "scrollLabel",
+          "description": "Accessible name of the scrolling region, announced once the table is wider than its container. Defaults to the table's own `aria-label` or \"Scrollable table\"."
         }
       ]
     },
@@ -8414,7 +8942,7 @@
     },
     {
       "name": "Tabs",
-      "description": "Tabbed navigation and in-page state container built on Radix Tabs primitive supporting line, segmented, pills, and button variants.\n\nImport: import { Tabs } from \"@shavin/ui\";",
+      "description": "Switch between panels on a page, or between routes. Comes in line, segmented, pills and button styles.\n\nImport: import { Tabs } from \"@shavin/ui\";",
       "attributes": [
         {
           "name": "className",
@@ -8487,6 +9015,10 @@
         {
           "name": "children",
           "description": "Type: ReactNode"
+        },
+        {
+          "name": "hitArea",
+          "description": "Names the tab list (states) or the `<nav>` landmark (navigation). */ \"aria-label\"?: string; /** Hit-area override (docs: \"Target size\"). \"default\": 24px floor, 44px on touch. \"none\": no hit area growth (dense toolbars; may go below 24px, yours to own). \"touch\": always 44px on a coarse pointer."
         }
       ]
     },
@@ -8535,6 +9067,21 @@
         {
           "name": "children",
           "description": "Type: ReactNode"
+        },
+        {
+          "name": "hitArea",
+          "description": "Hit-area override for every trigger in this list. See Tabs.",
+          "values": [
+            {
+              "name": "none"
+            },
+            {
+              "name": "default"
+            },
+            {
+              "name": "touch"
+            }
+          ]
         },
         {
           "name": "orientation",
@@ -8604,6 +9151,21 @@
             },
             {
               "name": "false"
+            }
+          ]
+        },
+        {
+          "name": "hitArea",
+          "description": "Hit-area override for this trigger; defaults to the list's. See Tabs.",
+          "values": [
+            {
+              "name": "none"
+            },
+            {
+              "name": "default"
+            },
+            {
+              "name": "touch"
             }
           ]
         },
@@ -8764,7 +9326,7 @@
               "name": "link"
             },
             {
-              "name": "accent"
+              "name": "brand"
             }
           ]
         },
@@ -8909,11 +9471,11 @@
         },
         {
           "name": "separator",
-          "description": "Optional separator element or character rendered midway (e.g. '-' or index=3 for 3-3 split)."
+          "description": "OTP only: separator element or character rendered midway (e.g. '-' or index=3 for 3-3 split)."
         },
         {
           "name": "separatorIndex",
-          "description": "Index position to render the separator (defaults to Math.floor(length / 2))."
+          "description": "OTP only: index position to render the separator (defaults to Math.floor(length / 2))."
         },
         {
           "name": "onComplete",
@@ -8938,12 +9500,28 @@
         {
           "name": "errorMessage",
           "description": "Error message text — when set, the field renders in invalid/error state and shows this message below the input."
+        },
+        {
+          "name": "announceError",
+          "description": "Announce `errorMessage` (polite) once when it first appears, for blur and change validation. Default true. Set false while a form moves focus to its FormErrorSummary after a failed submit (FormErrorSummary also silences it automatically for that render).",
+          "values": [
+            {
+              "name": "true"
+            },
+            {
+              "name": "false"
+            }
+          ]
+        },
+        {
+          "name": "hitArea",
+          "description": "Hit-area override (docs: \"Target size\"). \"default\": 24px floor, 44px on touch. \"none\": no hit area growth (dense toolbars; may go below 24px, yours to own). \"touch\": always 44px on a coarse pointer. The field itself grows (native input); the password toggle gets a hit area."
         }
       ]
     },
     {
       "name": "ThemeProvider",
-      "description": "Global runtime design system theme provider mutating CSS variables on document root for brand accents, radius, and scaling.\n\nImport: import { ThemeProvider } from \"@shavin/ui\";",
+      "description": "Global runtime design system theme provider mutating CSS variables on document root for brand colours, radius, and scaling.\n\nImport: import { ThemeProvider } from \"@shavin/ui\";",
       "attributes": [
         {
           "name": "className",
@@ -8955,7 +9533,7 @@
         },
         {
           "name": "defaultTheme",
-          "description": "Default appearance mode when no stored theme is found. Defaults to \"light\".",
+          "description": "Appearance when nothing is stored yet. Defaults to \"system\" (follows the OS setting).",
           "values": [
             {
               "name": "light"
@@ -8969,8 +9547,8 @@
           ]
         },
         {
-          "name": "accentColor",
-          "description": "One of the Configurator's 24 named accents (e.g. \"Grass\"), or a literal \"#rrggbb\"."
+          "name": "brandColor",
+          "description": "One of the Configurator's 24 named brand colours (e.g. \"Monochrome\"), or a literal \"#rrggbb\"."
         },
         {
           "name": "grayColor",
@@ -9054,8 +9632,35 @@
           "description": "Body font preset family string."
         },
         {
+          "name": "focusRing",
+          "description": "Focus ring weight for the whole page: \"subtle\" (default: 1px ring, 2px offset), \"default\" (2px, the pre-0.1.0 ring) or \"strong\" (3px). Colour is always --focus (brand text colour, >=3:1 on page fills). Sets data-focus-ring on <html>; tune --focus-width / --focus-offset in CSS for anything else.",
+          "values": [
+            {
+              "name": "subtle"
+            },
+            {
+              "name": "default"
+            },
+            {
+              "name": "strong"
+            }
+          ]
+        },
+        {
           "name": "subheadingFont",
           "description": "Font for h3-h6 headings: \"body\" (default), \"display\" (follow the display font), or a font family name."
+        },
+        {
+          "name": "brandSolid",
+          "description": "How the fill under text on the brand (solid Button, Badge, selected states) is chosen. Written to `--brand-solid`, `--brand-solid-hover` and `--brand-fg`. - \"accessible\" (default): the brand's hue with lightness lowered just far enough that white text clears 4.6:1 (WCAG 2 AA with headroom); a genuinely light brand (lime, mint, sky, amber) keeps its exact fill and takes dark text. - \"exact\": the exact brand fill, text white or ink by WCAG 2 contrast (the behaviour before this prop). - \"perceptual\": the exact brand fill, text white wherever APCA prefers it. Does NOT meet WCAG 2 AA on every brand colour; a development-only console warning says which. Inherited by ScopedThemeProvider."
+        },
+        {
+          "name": "neutrals",
+          "description": "Hue of the grey scale. \"neutral\" (default) keeps the plain grey. \"brand\" is opt-in: it tints backgrounds, borders and text greys toward the brand colour at very low chroma, with the same lightness as the plain greys so every contrast pair holds, and wins over a gray preset. Grey and monochrome brands never tint."
+        },
+        {
+          "name": "neutralsAmount",
+          "description": "How much of the brand hue shows in tinted greys: \"subtle\" (default) or \"medium\"."
         },
         {
           "name": "colorSpace",
@@ -9090,6 +9695,18 @@
           "description": "Port the local Agent-Browser bridge listens on. Defaults to the env override, then the built-in default. Pass this when running `npx @shavin/cli bridge --port <n>`."
         },
         {
+          "name": "touchTargets",
+          "description": "Target size policy (docs: \"Target size\"). \"comfortable\" (default): primary controls grow to 44px under a coarse pointer (touch). \"compact\": they do not grow; every control still keeps its 24px WCAG 2.5.8 floor. Sets `data-touch-targets` on <html>; tune the sizes with the `--tap-min` and `--tap-min-touch` CSS variables.",
+          "values": [
+            {
+              "name": "comfortable"
+            },
+            {
+              "name": "compact"
+            }
+          ]
+        },
+        {
           "name": "children",
           "description": "Type: ReactNode"
         }
@@ -9120,6 +9737,21 @@
             },
             {
               "name": "false"
+            }
+          ]
+        },
+        {
+          "name": "focusRing",
+          "description": "Sets data-focus-ring on <html> before first paint (the provider's focusRing).",
+          "values": [
+            {
+              "name": "subtle"
+            },
+            {
+              "name": "default"
+            },
+            {
+              "name": "strong"
             }
           ]
         }
@@ -9201,12 +9833,16 @@
         {
           "name": "system",
           "description": "Type: string"
+        },
+        {
+          "name": "hitArea",
+          "description": "Hit-area override (docs: \"Target size\"). \"default\": 24px floor, 44px on touch. \"none\": no hit area growth (dense toolbars; may go below 24px, yours to own). \"touch\": always 44px on a coarse pointer."
         }
       ]
     },
     {
       "name": "TimePicker",
-      "description": "Time selection primitive supporting interval dropdown (TimePicker), segmented inputs (TimePickerInput), and analog clock face popover (TimePickerClock).\n\nImport: import { TimePicker } from \"@shavin/ui\";",
+      "description": "Choose a time from a list at set intervals, by typing hours and minutes, or on a clock face in a popover.\n\nImport: import { TimePicker } from \"@shavin/ui\";",
       "attributes": [
         {
           "name": "className",
@@ -9227,6 +9863,10 @@
         {
           "name": "intervalMinutes",
           "description": "Minutes between each option in select dropdown — 15, 30, 60, etc. Default 30."
+        },
+        {
+          "name": "id",
+          "description": "id of the group, so FormField can point at it."
         }
       ]
     },
@@ -9241,6 +9881,10 @@
         {
           "name": "ariaLabel",
           "description": "Type: string"
+        },
+        {
+          "name": "id",
+          "description": "id of the group, so FormField can point at it (TimePickerInput)."
         },
         {
           "name": "onChange",
@@ -9265,6 +9909,10 @@
           "description": "Type: string"
         },
         {
+          "name": "id",
+          "description": "id of the group, so FormField can point at it (TimePickerInput)."
+        },
+        {
           "name": "onChange",
           "description": "Type: (d: Date) => void"
         },
@@ -9276,7 +9924,7 @@
     },
     {
       "name": "Toast",
-      "description": "Non-blocking floating notification system with swipe-to-dismiss, hover expansion, and promise lifecycle helpers.\n\nImport: import { Toast } from \"@shavin/ui\";",
+      "description": "Brief notifications that don't block the page. They stack, expand on hover, swipe away, and can track a promise from loading to done.\n\nImport: import { Toast } from \"@shavin/ui\";",
       "attributes": [
         {
           "name": "className",
@@ -9316,7 +9964,27 @@
         },
         {
           "name": "name",
-          "description": "Tool identifier shown in monospace, e.g. \"search_tickets\"."
+          "description": "Tool identifier shown in monospace, e.g. \"search_tickets\". Also names the approval group."
+        },
+        {
+          "name": "title",
+          "description": "Plain-language heading shown instead of `name` (wraps, not monospace): \"Change text\"."
+        },
+        {
+          "name": "compact",
+          "description": "Hide the status badge and keep the icon (the label stays for screen readers). For narrow panels.",
+          "values": [
+            {
+              "name": "true"
+            },
+            {
+              "name": "false"
+            }
+          ]
+        },
+        {
+          "name": "footer",
+          "description": "Row under the result for actions about this call, such as Undo."
         },
         {
           "name": "status",
@@ -9358,7 +10026,7 @@
     },
     {
       "name": "Tooltip",
-      "description": "Hover or focus label hint built on Radix Tooltip primitive with automatic positioning, arrow indicator, and theme tone overrides.\n\nImport: import { Tooltip } from \"@shavin/ui\";",
+      "description": "A short label that appears on hover or keyboard focus, positioned automatically, with an optional arrow.\n\nImport: import { Tooltip } from \"@shavin/ui\";",
       "attributes": [
         {
           "name": "className",
@@ -9410,6 +10078,22 @@
           ]
         },
         {
+          "name": "open",
+          "description": "Controlled open state (optional).",
+          "values": [
+            {
+              "name": "true"
+            },
+            {
+              "name": "false"
+            }
+          ]
+        },
+        {
+          "name": "onOpenChange",
+          "description": "Called when the tooltip wants to open or close (hover, focus, Escape, outside press)."
+        },
+        {
           "name": "data-panel",
           "description": "Enables frosted glass backdrop blur and translucent panel rendering."
         }
@@ -9431,7 +10115,7 @@
     },
     {
       "name": "Video",
-      "description": "Video primitive with poster image support, aspect-ratio preservation, object-fit scaling, and graceful placeholder fallback when src is missing.\n\nImport: import { Video } from \"@shavin/ui\";",
+      "description": "Plays a video at a set ratio and fit, with a poster image and a placeholder when the source is missing. By default it plays muted on a loop, unless the user prefers reduced motion, with a pause button.\n\nImport: import { Video } from \"@shavin/ui\";",
       "attributes": [
         {
           "name": "className",
@@ -9612,7 +10296,19 @@
         },
         {
           "name": "state",
-          "description": "Current state. Default \"idle\"."
+          "description": "Current state. Default \"idle\". processing is the step after transcribing, when the app acts on what was said."
+        },
+        {
+          "name": "mode",
+          "description": "Default \"push-to-send\". hands-free drops the send arrow: one Stop button ends the session, and the layout is a centred stack that fits a side panel."
+        },
+        {
+          "name": "description",
+          "description": "Quiet line under the status, e.g. what the voice command will act on (\"Pointing at Hero heading\")."
+        },
+        {
+          "name": "processingLabel",
+          "description": "Text for the processing state. Default \"Working on it…\"."
         },
         {
           "name": "level",
@@ -9624,7 +10320,7 @@
         },
         {
           "name": "transcript",
-          "description": "Live or final transcript shown while listening or transcribing."
+          "description": "Live or final transcript shown while listening or transcribing. Wraps up to two lines."
         },
         {
           "name": "error",
@@ -9644,7 +10340,131 @@
         },
         {
           "name": "onCancel",
-          "description": "Discard the recording (listening)."
+          "description": "Discard the recording (listening). Also shows a cancel button while requesting, transcribing and processing, so nobody has to wait it out."
+        }
+      ]
+    },
+    {
+      "name": "WiseOwlLogo",
+      "description": "Internal: the logo of WiseOwl, the fictional finance product Shavin's examples and blocks are built around. WiseOwlLogo is the owl mark with the wordmark; WiseOwlMark is the owl on its own.\n\nImport: import { WiseOwlLogo } from \"@shavin/ui\";",
+      "attributes": [
+        {
+          "name": "className",
+          "description": "Tailwind CSS classes. Always use semantic tokens (e.g. bg-surface, text-fg, border-hairline)."
+        },
+        {
+          "name": "size",
+          "description": "WiseOwlLogo size style variant.",
+          "values": [
+            {
+              "name": "sm"
+            },
+            {
+              "name": "md"
+            },
+            {
+              "name": "lg"
+            }
+          ]
+        },
+        {
+          "name": "color",
+          "description": "WiseOwlLogo color style variant.",
+          "values": [
+            {
+              "name": "inherit"
+            },
+            {
+              "name": "default"
+            },
+            {
+              "name": "muted"
+            },
+            {
+              "name": "brand"
+            }
+          ]
+        },
+        {
+          "name": "label",
+          "description": "Accessible name. Default \"WiseOwl\"."
+        },
+        {
+          "name": "decorative",
+          "description": "Hide from assistive tech when the name is already visible next to it.",
+          "values": [
+            {
+              "name": "true"
+            },
+            {
+              "name": "false"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "WiseOwlMark",
+      "description": "@shavin/ui component\n\nImport: import { WiseOwlMark } from \"@shavin/ui\";",
+      "attributes": [
+        {
+          "name": "className",
+          "description": "Tailwind CSS classes. Always use semantic tokens (e.g. bg-surface, text-fg, border-hairline)."
+        },
+        {
+          "name": "size",
+          "description": "WiseOwlMark size style variant.",
+          "values": [
+            {
+              "name": "xs"
+            },
+            {
+              "name": "sm"
+            },
+            {
+              "name": "md"
+            },
+            {
+              "name": "lg"
+            },
+            {
+              "name": "xl"
+            }
+          ]
+        },
+        {
+          "name": "color",
+          "description": "WiseOwlMark color style variant.",
+          "values": [
+            {
+              "name": "inherit"
+            },
+            {
+              "name": "default"
+            },
+            {
+              "name": "muted"
+            },
+            {
+              "name": "brand"
+            }
+          ]
+        },
+        {
+          "name": "label",
+          "description": "Accessible name. Default \"WiseOwl\"."
+        },
+        {
+          "name": "decorative",
+          "description": "Hide from assistive tech when the name is already visible next to it.",
+          "values": [
+            {
+              "name": "true"
+            },
+            {
+              "name": "false"
+            }
+          ]
         }
       ]
     }

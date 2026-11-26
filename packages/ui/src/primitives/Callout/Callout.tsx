@@ -9,7 +9,7 @@ export const calloutVariants = cva(
     variants: {
       color: {
         neutral: "bg-surface-hover/60 text-fg border-hairline",
-        accent: "bg-accent/10 text-fg border-accent/30",
+        brand: "bg-brand/10 text-fg border-brand/30",
         success: "bg-success/10 text-fg border-success/30",
         warning: "bg-warning/10 text-fg border-warning/30",
         danger: "bg-danger/10 text-fg border-danger/30",
@@ -23,7 +23,7 @@ export const calloutVariants = cva(
 
 const defaultIcons: Record<NonNullable<VariantProps<typeof calloutVariants>["color"]>, React.ReactNode> = {
   neutral: <Info className="h-5 w-5 shrink-0 text-fg-muted" />,
-  accent: <Info className="h-5 w-5 shrink-0 text-accent-contrast" />,
+  brand: <Info className="h-5 w-5 shrink-0 text-brand-contrast" />,
   success: <CheckCircle2 className="h-5 w-5 shrink-0 text-success" />,
   warning: <AlertTriangle className="h-5 w-5 shrink-0 text-warning" />,
   danger: <AlertCircle className="h-5 w-5 shrink-0 text-danger" />,
@@ -41,6 +41,11 @@ export interface CalloutProps
   titleAs?: "p" | "h2" | "h3" | "h4" | "h5" | "h6";
   /** Custom icon node override. */
   icon?: React.ReactNode;
+  /**
+   * ARIA role. Default `alert` for `color="danger"` and `status` for the other colours. Pass
+   * `role="note"` for a static notice that is on the page from the first load.
+   */
+  role?: React.AriaRole;
 }
 
 export function Callout({
@@ -56,7 +61,13 @@ export function Callout({
   const iconNode = icon ?? defaultIcons[resolvedColor];
 
   return (
-    <div className={cn(calloutVariants({ color: resolvedColor }), className)} {...props}>
+    // Danger is an alert (announced); other colours are a status. A passed `role` wins: static
+    // notices present on first load pass role="note", FormErrorSummary passes role="group".
+    <div
+      role={resolvedColor === "danger" ? "alert" : "status"}
+      className={cn(calloutVariants({ color: resolvedColor }), className)}
+      {...props}
+    >
       {iconNode}
       <div className="flex-1 min-w-0">
         {title && <TitleTag className="font-semibold leading-none mb-1 text-fg">{title}</TitleTag>}

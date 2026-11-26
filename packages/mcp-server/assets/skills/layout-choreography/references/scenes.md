@@ -10,7 +10,7 @@ Contents: 1 Hero intro · 2 Split-text reveal · 3 Pinned scrollytelling · 4 Ho
 
 ## 1. Hero intro
 
-- **Fits:** H3, H4, H5 (slots: overline, headline, sub, cta, visual)
+- **Fits:** H3, H4, H5 (slots: overline (optional), headline, sub, cta, visual)
 - **Trigger:** load (after fonts and the LCP image are ready)
 - **Beats:** headline lines rise/unmask (0–600ms, staggered 70ms) → sub fades (300–700ms) → CTA (450–850ms) → visual settles (0–900ms, transform only). Total ≤ 1.2s.
 - **Static baseline:** everything visible and in place.

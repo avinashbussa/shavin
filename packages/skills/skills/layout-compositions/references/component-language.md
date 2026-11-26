@@ -4,7 +4,7 @@
 the smaller, more frequent choices inside that container — the ones that get repeated across every
 section of a page, so a bad default here compounds far more than a bad default at the composition
 level. If every hero uses a pill badge for its overline, every parallel-option section uses buttons,
-and every accent is the same shade at the same opacity, the page reads as templated even when the
+and every brand is the same shade at the same opacity, the page reads as templated even when the
 compositions themselves are varied. These choices are decisions per page, not defaults per project:
 re-decide them for each brief the way `distinctiveness.md` re-decides layout knobs.
 
@@ -15,7 +15,7 @@ Contents: 1 Overline / eyebrow · 2 Interactive control choice · 3 Typographic 
 ## 1. Overline / eyebrow
 
 The small element above a headline (category, status, kicker). A pill badge is one option, not the
-default — reaching for it every time is the single most common tell in this library's own audit.
+default — reaching for it every time is the single most common tell in this library's own audit. The same goes for any label: reaching for one on every section is a tell too.
 
 | Form | Looks like | Best for | Avoid when |
 |---|---|---|---|
@@ -26,9 +26,9 @@ default — reaching for it every time is the single most common tell in this li
 | **Icon + label** | Small icon, then text, no container | When the icon adds real information (a category glyph), not as decoration | The icon is generic (a sparkle, an arrow) and could be removed with no loss |
 | **None** | Headline stands alone | Type-led heroes (H5), statement sections, when the headline is already self-explanatory | Reflex omission when a genuine category/status exists and readers would benefit from it |
 
-**Rule:** pick one primary overline form for the page. A second form is allowed only where it
+**Rule:** an overline is optional, and "None" is the default for a section whose heading already says it. Where one is used, pick one primary form for the page. A second form is allowed only where it
 carries a different *kind* of meaning (e.g. chips for status badges in a feature grid, plain label
-for section eyebrows) — never two forms doing the same job on the same page.
+for section eyebrows) — never two forms doing the same job on the same page. Use a label on at most one section or region per page view, never on every section.
 
 ## 2. Interactive control choice
 
@@ -59,7 +59,7 @@ don't default to whatever the last project used.
 |---|---|---|
 | **Single family, weight contrast** | One typeface throughout; personality comes entirely from weight (400 body / 700–900 display) and size ratio | Calm, product-led, SaaS |
 | **Two contrasting families** | A display face for headlines (serif, condensed, or expressive) + a plain grotesk for body/UI | Editorial, brand-led, publications |
-| **Mono accent** | Primary family for prose, monospace for anything data/code/technical (values, labels, timestamps) | Developer tools, technical credibility |
+| **Mono brand** | Primary family for prose, monospace for anything data/code/technical (values, labels, timestamps) | Developer tools, technical credibility |
 | **Fluid oversized display** | One display face pushed to extreme scale (`clamp()`), minimal body copy elsewhere | Expressive, manifesto, campaign (X2, H5) |
 
 **Contrast ratio matters more than family choice.** A 1.25 body-to-display ratio reads as quiet and
@@ -75,19 +75,19 @@ skip this section.
 
 ## 4. Colour application
 
-Tokens (`shavin-ui.md` §3) fix *which* colours exist. This decides how the accent gets *used*
-across a page — the part that most often defaults to "the same accent, same opacity, every time."
+Tokens (`shavin-ui.md` §3) fix *which* colours exist. This decides how the brand gets *used*
+across a page — the part that most often defaults to "the same brand, same opacity, every time."
 
 | Pattern | How it works | Reads as |
 |---|---|---|
-| **Single accent, sparing** | One accent colour, used only for the primary CTA and one other moment (a chip, a link) | Restrained, product-led |
-| **Duotone** | Two accents, each with a defined job (e.g. one for status/proof, one for action) — never both in the same element | Considered, slightly more expressive |
+| **Single brand, sparing** | One brand colour, used only for the primary CTA and one other moment (a chip, a link) | Restrained, product-led |
+| **Duotone** | Two brand colours, each with a defined job (e.g. one for status/proof, one for action) — never both in the same element | Considered, slightly more expressive |
 | **Per-section rotation** | A muted palette rotates across card backgrounds or testimonial cards (see T2, M6-style scroll strips) so no two adjacent items share a colour | Editorial, playful, brand-led |
 | **Monochrome + one break** | Page is entirely neutral (ink/paper) except one deliberately-coloured moment — the single bold moment from `distinctiveness.md` §3 | Quiet, confident, expressive |
 | **Gradient as ground** | Colour lives in a background treatment (hero, CTA), not in individual UI elements, which stay neutral on top of it | Cinematic, full-bleed sections (H4, C3) |
 
 **Rule:** name the pattern before building, the same way you name compositions and treatments. If
-every section reaches for the identical accent at the identical weight, that's the tell — pick one
+every section reaches for the identical brand at the identical weight, that's the tell — pick one
 pattern above and let it justify *why* an element is coloured, not just fill in the brand colour
 wherever there's a button.
 

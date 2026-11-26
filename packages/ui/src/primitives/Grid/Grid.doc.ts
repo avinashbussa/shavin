@@ -3,16 +3,16 @@ import type { ComponentDoc } from "../../authoring/types";
 export const docs: ComponentDoc = {
   name: "Grid",
   group: "layout",
-  description: "CSS Grid container primitive supporting column/row counts, token gap scale, cross-axis alignment, and background media props (bgVideo, bgImage, bgOverlays, bgSize, bgVideoPaused).",
+  description: "Lays children out in columns. Set a count, or let it fit as many as the space allows. It can carry a background image or video.",
   features: [
     "Columns: 1 through 6 equal-width tracks, or \"auto\" for intrinsic tracks that wrap by themselves in any container (width from minWidth: xs 10rem, sm 14rem, md 18rem default, lg 24rem, xl 32rem); maxColumns (2-6) caps the track count so a wide container never adds extra columns",
     "Rows: 1 through 6 equal-height tracks",
     "Alignments: start, center, end, stretch",
     "Token gap scale: 0 through 7",
     "Responsive stack: auto (3+ cols → 2 on tablet → 1 on mobile; 2 cols → 1 on mobile), tablet, mobile, none (default)",
-    "Surface contrast scope via surface prop",
+    "Surface contrast scope via surface prop for media backgrounds. With a photo, video or fx backdrop and no surface it defaults to dark-always plus a dark scrim (dark-30, fx dark-50); meshes and custom gradients need an explicit surface (dark-always or light-always)",
     "Background media: bgVideo, bgImage, bgOverlays (presets, hex, tokens, gradients via comma-separated shorthand), bgSize, bgVideoPaused",
-    "Fx backdrops (needs @shavin/fx registered): bgOverlays=\"fx:dither-waves, gradient-bottom\"; params only when changed: fx:fluid-silk(speed=1.2); quote text values: fx:type-tiles(text='Plan money')"
+    "Fx backdrops (needs `npm i @shavin/fx`, free to use under its own licence, and `registerFxBackdrops()`): bgOverlays=\"fx:dither-waves, gradient-bottom\"; params only when changed: fx:fluid-silk(speed=1.2); quote text values: fx:type-tiles(text='Plan money')"
   ],
   accessibility: [
     "Supports semantic HTML tags via polymorphic as prop"
@@ -49,8 +49,8 @@ export const docs: ComponentDoc = {
     },
     {
       title: "Custom Gradient + Token Overlay",
-      description: "Custom linear gradient with hex stops + semantic accent token — no JSON needed",
-      code: '<Grid columns="2" gap="3" bgImage="https://..." bgOverlays="linear(180deg, #1a1a2e/0%, #1a1a2e/100%)/60, (accent)/15" surface="dark-always"><Text>Custom</Text></Grid>'
+      description: "Custom linear gradient with hex stops + semantic brand token — no JSON needed",
+      code: '<Grid columns="2" gap="3" bgImage="https://..." bgOverlays="linear(180deg, #1a1a2e/0%, #1a1a2e/100%)/60, (brand)/15" surface="dark-always"><Text>Custom</Text></Grid>'
     }
   ]
 };

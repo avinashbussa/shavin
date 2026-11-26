@@ -6,9 +6,9 @@ import { Icon } from "../Icon";
 
 const toneClass = cva("", {
   variants: {
-    tone: { accent: "text-accent", warning: "text-warning", success: "text-success" },
+    tone: { brand: "text-brand-text", warning: "text-warning", success: "text-success" },
   },
-  defaultVariants: { tone: "accent" },
+  defaultVariants: { tone: "brand" },
 });
 
 const sizeClass = cva("", {

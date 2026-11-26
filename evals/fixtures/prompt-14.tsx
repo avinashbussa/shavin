@@ -20,7 +20,7 @@ export function NotificationPopover() {
           <Separator />
           <Flex direction="col" gap="2">
             <Flex direction="row" align="start" gap="3">
-              <Icon name="CheckCircle" size="sm" color="accent" />
+              <Icon name="CheckCircle" size="sm" color="brand" />
               <Flex direction="col" gap="1" className="flex-1">
                 <Text size="sm" weight="medium">Deploy successful</Text>
                 <Text size="xs" color="muted">2 min ago</Text>
@@ -42,7 +42,7 @@ export function NotificationPopover() {
             </Flex>
           </Flex>
           <Separator />
-          <Text size="sm" color="accent" className="text-center cursor-pointer">View all notifications</Text>
+          <Text size="sm" color="brand" className="text-center cursor-pointer">View all notifications</Text>
         </Flex>
       </PopoverContent>
     </Popover>

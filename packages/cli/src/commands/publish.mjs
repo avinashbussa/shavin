@@ -119,7 +119,7 @@ export async function publishCommand(filePath, options = {}) {
         },
         {
           id: "a11y-contrast",
-          name: "WCAG 2.1 AAA Contrast & ARIA Gate",
+          name: "Accessibility heuristics (contrast and ARIA)",
           category: "accessibility",
           passed: a11yScore >= 80,
           score: a11yScore,

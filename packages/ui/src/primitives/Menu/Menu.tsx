@@ -3,6 +3,7 @@ import { forwardRef, type ReactNode, type ButtonHTMLAttributes, type ComponentPr
 import * as RadixMenu from "@radix-ui/react-dropdown-menu";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "../../lib/cn";
+import { usePortalContainer } from "../../lib/portal-container";
 
 export interface MenuProps {
   /** Trigger element slot. */
@@ -21,10 +22,11 @@ export function Menu({
   align = "start",
   onOpenChange,
 }: MenuProps) {
+  const portalContainer = usePortalContainer();
   return (
     <RadixMenu.Root onOpenChange={onOpenChange}>
       <RadixMenu.Trigger asChild>{trigger}</RadixMenu.Trigger>
-      <RadixMenu.Portal>
+      <RadixMenu.Portal container={portalContainer}>
         <RadixMenu.Content
           data-panel
           align={align}
@@ -33,7 +35,7 @@ export function Menu({
           collisionPadding={8}
           className="animate-rise origin-[var(--radix-dropdown-menu-content-transform-origin)] z-[var(--z-floating)] w-52 overflow-hidden rounded-[var(--radius-panel)] border border-hairline shadow-panel focus:outline-none"
         >
-          <div className="max-h-[calc(6.5*2.25rem)] overflow-y-auto py-1">
+          <div className="max-h-[calc(6.5*2.25rem)] overflow-y-auto p-1">
             {children}
           </div>
         </RadixMenu.Content>
@@ -69,7 +71,7 @@ export const MenuTrigger = forwardRef<HTMLButtonElement, ButtonHTMLAttributes<HT
 );
 
 const menuItemVariants = cva(
-  "block w-full cursor-pointer px-3 py-2 text-left text-sm outline-none hover:bg-surface-hover data-[highlighted]:bg-surface-hover",
+  "block w-full cursor-pointer rounded-panel-p1 px-3 py-2 text-left text-sm outline-none hover:bg-elevated-hover data-[highlighted]:bg-elevated-hover",
   {
     variants: {
       variant: {
@@ -101,7 +103,7 @@ export const MenuSubTrigger = forwardRef<
     <RadixMenu.SubTrigger
       ref={ref}
       className={cn(
-        "flex w-full cursor-default select-none items-center justify-between px-3 py-2 text-sm outline-none hover:bg-surface-hover data-[highlighted]:bg-surface-hover data-[state=open]:bg-surface-hover text-fg",
+        "flex w-full cursor-default select-none items-center justify-between rounded-panel-p1 px-3 py-2 text-sm outline-none hover:bg-elevated-hover data-[highlighted]:bg-elevated-hover data-[state=open]:bg-elevated-hover text-fg",
         className
       )}
       {...props}
@@ -118,8 +120,9 @@ export const MenuSubContent = forwardRef<
   HTMLDivElement,
   RadixMenu.DropdownMenuSubContentProps & { className?: string; children: ReactNode }
 >(function MenuSubContent({ className, children, ...props }, ref) {
+  const portalContainer = usePortalContainer();
   return (
-    <RadixMenu.Portal>
+    <RadixMenu.Portal container={portalContainer}>
       <RadixMenu.SubContent
         ref={ref}
         data-panel
@@ -131,7 +134,7 @@ export const MenuSubContent = forwardRef<
         )}
         {...props}
       >
-        <div className="max-h-[calc(6.5*2.25rem)] overflow-y-auto py-1">
+        <div className="max-h-[calc(6.5*2.25rem)] overflow-y-auto p-1">
           {children}
         </div>
       </RadixMenu.SubContent>

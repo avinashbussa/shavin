@@ -1,4 +1,4 @@
-import { AppFrame, Badge, Box, Button, Card, Flex, Grid, Heading, Icon, IconButton, Progress, Sidebar, SidebarBody, SidebarFooter, SidebarHeader, SidebarNavItem, SidebarSection, SidebarTrigger, Table, TableBody, TableCell, TableColumnHeaderCell, TableHeader, TableRow, Text } from "@shavin/ui";
+import { AppFrame, Badge, Box, Button, Card, Flex, Grid, Heading, Icon, IconButton, Progress, Sidebar, SidebarBody, SidebarFooter, SidebarHeader, SidebarNavItem, SidebarSection, SidebarTrigger, Table, TableBody, TableCell, TableColumnHeaderCell, TableHeader, TableRow, Text, WiseOwlMark } from "@shavin/ui";
 
 const defaultNavGroups = [
   {
@@ -43,7 +43,7 @@ export function AppShell({ navGroups = defaultNavGroups, kpis = defaultKpis, tra
         <Sidebar width="w-60">
           <SidebarHeader>
             <Flex direction="row" align="center" gap="2" className="min-w-0">
-              <Icon name="wallet" size="md" color="accent" />
+              <WiseOwlMark size="lg" color="brand" decorative />
               <Flex direction="column" gap="0" className="min-w-0">
                 <Text size="sm" weight="semibold">WiseOwl</Text>
                 <Text size="xs" color="muted" className="truncate">Okafor-Reyes Household</Text>
@@ -92,7 +92,7 @@ export function AppShell({ navGroups = defaultNavGroups, kpis = defaultKpis, tra
             <Button variant="solid" size="md">Add transaction</Button>
           </Flex>
         </Flex>
-        <Grid columns="auto" minWidth="sm" maxColumns="4" gap="3">
+        <Grid columns="auto" minWidth="xs" maxColumns="4" gap="3">
           {kpis.map((kpi) => (
             <Card key={kpi.label} padding="sm">
               <Flex direction="column" gap="2">

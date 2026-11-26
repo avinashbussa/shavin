@@ -3,7 +3,7 @@ import type { ComponentDoc } from "../../authoring/types";
 export const docs: ComponentDoc = {
   name: "Sidebar",
   group: "layout",
-  description: "Comprehensive sidebar layout primitive supporting left/right docking, collapsible modes, resizability, and compound sub-components.",
+  description: "App navigation down the left or right edge. It can collapse to icons or hide completely, and users can resize it.",
   features: [
     "Components: Sidebar, SidebarTrigger, SidebarHeader, SidebarBody, SidebarFooter, SidebarSection, SidebarNavItem",
     "Dock sides: left (Sidenav) or right (Inspector/Configurator)",

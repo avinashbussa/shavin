@@ -2,6 +2,7 @@
 import type { ComponentProps } from "react";
 import * as PopoverPrimitive from "@radix-ui/react-popover";
 import { cn } from "../../lib/cn";
+import { usePortalContainer } from "../../lib/portal-container";
 
 export const Popover = PopoverPrimitive.Root;
 export const PopoverTrigger = PopoverPrimitive.Trigger;
@@ -16,8 +17,9 @@ export function PopoverContent({
   collisionPadding = 8,
   ...props
 }: ComponentProps<typeof PopoverPrimitive.Content>) {
+  const portalContainer = usePortalContainer();
   return (
-    <PopoverPrimitive.Portal>
+    <PopoverPrimitive.Portal container={portalContainer}>
       <PopoverPrimitive.Content
         data-panel
         align={align}

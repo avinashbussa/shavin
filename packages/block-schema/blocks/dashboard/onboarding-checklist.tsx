@@ -21,7 +21,7 @@ export function OnboardingChecklist({ tasks = defaultTasks }) {
               <Flex direction="column" gap="0">
                 {tasks.map((task) => (
                   <Flex key={task.id} direction="row" align="center" gap="3" className="border-b border-hairline py-3 last:border-b-0">
-                    <Icon name={task.done ? "circle-check" : "circle"} size="md" color={task.done ? "accent" : "muted"} />
+                    <Icon name={task.done ? "circle-check" : "circle"} size="md" color={task.done ? "brand" : "muted"} />
                     <Flex direction="column" gap="0" className="min-w-0 flex-1">
                       <Text size="sm" weight="medium" className={task.done ? "text-fg-muted line-through decoration-fg-muted/40" : "text-fg"}>{task.title}</Text>
                       <Text size="xs" color="muted" className="tabular-nums">{task.description}</Text>
@@ -31,7 +31,7 @@ export function OnboardingChecklist({ tasks = defaultTasks }) {
                 ))}
               </Flex>
             </Flex>
-            <Box bgOverlays="mesh-accent" className="rounded-panel-inner p-5 max-md:hidden">
+            <Box bgOverlays="mesh-brand" className="rounded-panel-inner p-5 max-md:hidden">
               <Flex direction="column" justify="between" gap="4" className="h-full">
                 <Text size="overline" color="muted">Setup progress</Text>
                 <Flex direction="column" gap="3">

@@ -50,3 +50,21 @@ export function announce(message: string, politeness: Politeness = "polite") {
     el.textContent = text;
   }, 50);
 }
+
+/* ── Field-error announcements ─────────────────────────────────────────────
+ * A field error that appears from blur or change validation is announced once
+ * (polite). After a failed submit, FormErrorSummary takes focus and that focus
+ * move is the single announcement, so it silences the per-field announcements
+ * of the same render. The summary sets the window in a layout effect, which runs
+ * before the fields' passive effects in the same commit. */
+let fieldErrorsSilencedUntil = 0;
+
+/** Silence field-error announcements for `ms` (FormErrorSummary calls this on mount). */
+export function silenceFieldErrorAnnouncements(ms = 1000) {
+  fieldErrorsSilencedUntil = Date.now() + ms;
+}
+
+/** True while FormErrorSummary has silenced field-error announcements. */
+export function fieldErrorAnnouncementsSilenced() {
+  return Date.now() < fieldErrorsSilencedUntil;
+}

@@ -2,7 +2,7 @@ import type { ComponentDoc } from "../../authoring/types";
 
 export const docs: ComponentDoc = {
   name: "Dropdown",
-  description: "Simple select dropdown supporting both custom styled popup panel and native HTML <select> mobile rendering.",
+  description: "A simple control for picking one value from a short list. It uses a styled popup, or the browser's own select menu.",
   features: [
     "Variants: default (custom theme-styled popup) and native (<select> tag for mobile UX)",
     "Appearances: default (bordered field) and ghost (borderless filter style)",

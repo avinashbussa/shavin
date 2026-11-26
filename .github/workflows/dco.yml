@@ -9,12 +9,27 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   dco:
     name: Check commit sign-offs
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v4
+      - name: Put Git Bash on PATH (Windows)
+        # Git for Windows adds only Git\cmd to PATH; bash.exe lives in Git\bin.
+        if: runner.os == 'Windows'
+        shell: cmd
+        run: '>>"%GITHUB_PATH%" echo %ProgramFiles%\Git\bin'
+
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - name: Verify Signed-off-by on every commit

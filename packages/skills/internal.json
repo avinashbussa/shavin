@@ -1,0 +1,8 @@
+{
+  "description": "Skills that are maintainer-only. They stay in this repo (and the public source) but are never packed into @shavin/skills, installed by `shavin init` / `npx @shavin/skills` / the MCP install_skills tool, or bundled into @shavin/mcp's assets. Keep package.json `files` negations in step (a test checks it).",
+  "maintainerOnly": [
+    { "path": "shavin-core", "reason": "Dispatcher, tool inventory and skill-authoring rules for maintainers. What consumers need is in AGENTS.md (activation matrix), CLAUDE.md, SHAVIN.md and the MCP tool descriptions." },
+    { "path": "shavin-ui-qa-linter", "reason": "QA of @shavin/ui itself with repo scripts (npm run tokens:check, manifest:gen ...). Consumers use validate_code, audit_source, check_page and shavin check." },
+    { "path": "dense-compression-protocol.md", "reason": "How maintainers compress skill text for the dense get_skill output; not guidance for building UI." }
+  ]
+}

@@ -28,6 +28,9 @@ function validateCode(code) {
   code = code.split(/\r?\n/)
     .filter((l) => !/data-overlay/.test(l))
     .map((l) => l.replace(/\bbg(Overlays|Image|Video)\s*=\s*(?:"[^"]*"|'[^']*'|`[^`]*`)/g, "bg$1=\"\""))
+    // brandColor="#hex" on ThemeProvider / ScopedThemeProvider is where a custom brand colour belongs: the value
+    // `shavin brand` writes into the root layout. Same exemption as validate_code in @shavin/mcp.
+    .map((l) => l.replace(/\bbrandColor\s*=\s*(?:"[^"]*"|'[^']*'|\{\s*(?:"[^"]*"|'[^']*')\s*\})/g, 'brandColor="brand"'))
     .join("\n");
 
   const hexMatches = matchHexColors(code);
@@ -46,7 +49,9 @@ function validateCode(code) {
     violations.push(`Direct foundation variable references found: ${foundationVars.join(", ")}. Nothing outside global.css should reference --n-* directly.`);
   }
 
-  const rawRadius = code.match(/\brounded-(sm|md|lg|xl|2xl|3xl|full)\b/g) ?? [];
+  // Standalone copy: the shared engine is packages/mcp-server/src/tools/concentric-lint.mjs. rounded-full is
+  // legitimate (pills, avatars) and is not flagged here, matching the engine.
+  const rawRadius = code.match(/\brounded-(sm|md|lg|xl|2xl|3xl)\b/g) ?? [];
   const radiusInClasses = rawRadius.filter((m) => !/import|type|interface/.test(code));
   if (radiusInClasses.length > 0) {
     violations.push(
@@ -59,7 +64,7 @@ function validateCode(code) {
   ) ?? [];
   if (rawColors.length > 0) {
     violations.push(
-      `Raw Tailwind color scale utilities found: ${rawColors.join(", ")}. Use semantic utilities (bg-surface, text-fg, text-fg-muted, border-hairline, bg-accent, …) instead.`
+      `Raw Tailwind color scale utilities found: ${rawColors.join(", ")}. Use semantic utilities (bg-surface, text-fg, text-fg-muted, border-hairline, bg-brand, …) instead.`
     );
   }
 
@@ -79,6 +84,8 @@ function autofixCode(code) {
     if (/data-overlay/.test(line)) return match;
     // skip hex inside bgOverlays/bgImage/bgVideo prop values — DATA for bg-media
     if (/bg(Overlays|Image|Video)\s*=/.test(line)) return match;
+    // skip the brandColor value of ThemeProvider: that hex is the brand choice itself
+    if (/\bbrandColor\s*=\s*\{?\s*["'][^"']*$/.test(line)) return match;
     if (!colorAt.has(offset)) return match;
     fixesApplied.push("Replaced white hex with bg-surface / text-fg");
     return "var(--bg-surface)";
@@ -91,15 +98,16 @@ function autofixCode(code) {
     if (/data-overlay/.test(line)) return match;
     // skip hex inside bgOverlays/bgImage/bgVideo prop values — DATA for bg-media
     if (/bg(Overlays|Image|Video)\s*=/.test(line)) return match;
+    // skip the brandColor value of ThemeProvider: that hex is the brand choice itself
+    if (/\bbrandColor\s*=\s*\{?\s*["'][^"']*$/.test(line)) return match;
     if (!colorAt.has(offset)) return match;
     fixesApplied.push("Replaced black hex with text-fg");
     return "var(--fg)";
   });
 
-  fixedCode = fixedCode.replace(/\brounded-(lg|xl|2xl|3xl)\b/g, (match) => {
-    fixesApplied.push(`Replaced literal ${match} with rounded-[var(--radius-panel)]`);
-    return "rounded-[var(--radius-panel)]";
-  });
+  // rounded-lg/xl/2xl/3xl are reported but not auto-fixed here: the right replacement depends on role
+  // (control -> --radius-lg, container -> --radius-panel, nested -> rounded-panel-pN), which only the
+  // engine in packages/mcp-server/src/tools/concentric-lint.mjs (validate_code / autofix_code) can judge.
 
   fixedCode = fixedCode.replace(/\brounded-(sm|md)\b/g, (match) => {
     fixesApplied.push(`Replaced literal ${match} with rounded-[var(--radius-lg)]`);

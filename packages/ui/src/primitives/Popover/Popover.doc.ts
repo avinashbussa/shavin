@@ -2,7 +2,7 @@ import type { ComponentDoc } from "../../authoring/types";
 
 export const docs: ComponentDoc = {
   name: "Popover",
-  description: "Click-triggered floating panel built on Radix Popover primitive with collision detection and focus trapping.",
+  description: "A panel that opens when the user clicks a trigger, for short forms or extra detail. It stays on screen near edges and closes on Escape or a click outside.",
   features: [
     "Components: Popover, PopoverTrigger, PopoverAnchor, PopoverContent",
     "Uses data-panel attribute for translucent surface styling",

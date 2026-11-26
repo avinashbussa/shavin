@@ -7,8 +7,8 @@
  * Emits components.json at repo root so the playground, MCP server, and AI agents
  * share a zero-drift contract of every primitive, its variants, and its prompt guidance.
  */
-import { readFileSync, writeFileSync, existsSync, readdirSync } from "node:fs";
-import { join, relative, basename, dirname } from "node:path";
+import { readFileSync, writeFileSync, existsSync, readdirSync, statSync } from "node:fs";
+import { join, relative, basename, dirname, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import vm from "node:vm";
 import ts from "typescript";
@@ -22,7 +22,10 @@ const OUT = join(UI_DIR, "components.json");
 const RESIZABLE_SRC = join(UI_DIR, "src", "primitives", "Resizable", "ResizeHandle.tsx");
 const ROOT_OUT = join(ROOT, "components.json");
 const META_OUT = join(UI_DIR, "src", "lib", "meta.ts");
-const ROUTES_OUT = join(UI_DIR, "src", "lib", "docs-routes.ts");
+// Private: component -> docs page map for the private apps. It lives in @shavin/site-links, which the public
+// repository does not have, so it is generated and checked only when that package is present.
+const ROUTES_OUT = join(ROOT, "packages", "site-links", "src", "docs-routes.ts");
+const ROUTES_ENABLED = existsSync(dirname(ROUTES_OUT));
 // Private: the docs app. When present, --check fails on any docsPath with no page.
 const DOCS_APP = existsSync(join(ROOT, "apps", "docs", "src", "app")) ? join(ROOT, "apps", "docs", "src", "app") : null;
 
@@ -57,6 +60,7 @@ const DOCS_PATH_BY_FOLDER = {
   // Internal tools
   BlockPreview: "/blocks/overview",
   ShavinDevTools: "/start/dev-inspector",
+  WiseOwlLogo: "/blocks/overview",
 };
 /**
  * Primitives shipped on a subpath entry instead of the "@shavin/ui" root (kept out
@@ -68,7 +72,7 @@ const IMPORT_PATH_BY_FOLDER = {
 const kebab = (s) => s.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase();
 const docsPathFor = (folder) => DOCS_PATH_BY_FOLDER[folder] ?? `/components/${kebab(folder)}`;
 // Private: block totals including the pro catalogue, for the marketing site.
-// Skipped when apps/website is absent (the public repo).
+// Skipped when the website app is absent (the public repo).
 const WEBSITE_STATS_OUT = existsSync(join(ROOT, "apps", "website", "src", "lib"))
   ? join(ROOT, "apps", "website", "src", "lib", "block-stats.ts")
   : null;
@@ -215,7 +219,10 @@ function variantsFor(src, name, blocks, isPrimary) {
   const sources = [];
   const header = src.match(new RegExp(`interface\\s+${name}Props\\b[^{]*|type\\s+${name}Props\\s*=[^;{]*`));
   if (header) sources.push(header[0]);
-  const fn = src.match(new RegExp(`function\\s+${name}\\s*(?:<[^>]*>)?\\s*\\(`));
+  // Wrapped components (`const Card = withX(CardBase)`) declare their props on `<Name>Base`.
+  const fn =
+    src.match(new RegExp(`function\\s+${name}\\s*(?:<[^>]*>)?\\s*\\(`)) ??
+    src.match(new RegExp(`function\\s+${name}Base\\s*(?:<[^>]*>)?\\s*\\(`));
   if (fn) {
     const rest = src.slice(fn.index, fn.index + 2000);
     const end = rest.search(/\)\s*(?::[^{=]*)?(?:\{|=>)/);
@@ -256,7 +263,7 @@ function parseProps(src, componentName) {
       { name: "bgVideo", type: "string", required: false, doc: "Background video URL (mp4, webm, etc.). Renders an autoPlay/loop/muted <video> element behind children." },
       { name: "bgImage", type: "string", required: false, doc: "Background image URL. Renders an <img> with object-cover (default) or object-contain." },
       { name: "bgSize", type: '"cover" | "contain"', required: false, doc: "Background media fit. \"cover\" fills the container (default), \"contain\" fits within.", default: "cover" },
-      { name: "bgOverlays", type: "string", required: false, doc: "Comma-separated shorthand for overlay layers. Supports presets (\"dark-50\"), solid colors (#hex or (token)), gradients (linear/radial), and fx backdrops (\"fx:dither-waves\", \"fx:fluid-silk(speed=1.2)\"; needs @shavin/fx registered, else falls back to mesh). JSON array of OverlayLayer[] as fallback for advanced cases. Layers composite top-to-bottom." },
+      { name: "bgOverlays", type: "string", required: false, doc: "Comma-separated shorthand for overlay layers. Supports presets (\"dark-50\"), solid colors (#hex or (token)), gradients (linear/radial), and fx backdrops (\"fx:dither-waves\", \"fx:fluid-silk(speed=1.2)\"; needs `npm i @shavin/fx` (free to use under its own licence) and `registerFxBackdrops()`, else falls back to mesh). JSON array of OverlayLayer[] as fallback for advanced cases. Layers composite top-to-bottom." },
       { name: "bgVideoPaused", type: "boolean", required: false, doc: "When true, pauses the background video (renders a static poster frame instead of autoplay).", default: "false" },
     );
   }
@@ -307,6 +314,32 @@ function exportsOf(src) {
   return [...names].sort();
 }
 
+/**
+ * Names the folder's index.ts really exports from `file` (what `import { X } from "@shavin/ui"`
+ * can reach): everything for `export * from`, only the listed names for `export { a } from`,
+ * nothing when the file is not re-exported. Null when the file is not a direct child of a
+ * folder with an index.ts (no filtering then).
+ */
+function indexVisibleNames(primDir, file) {
+  const dir = dirname(file);
+  if (dirname(dir) !== primDir) return null;
+  const idx = join(dir, "index.ts");
+  if (!existsSync(idx)) return null;
+  const base = basename(file, ".tsx");
+  const src = stripComments(readFileSync(idx, "utf8"));
+  let all = false;
+  const named = new Set();
+  for (const m of src.matchAll(/export\s+(?:type\s+)?(\*|\{[^}]*\})\s+from\s+["']\.\/([^"']+)["']/g)) {
+    if (m[2].replace(/\.(tsx?|js)$/, "") !== base) continue;
+    if (m[1] === "*") all = true;
+    else for (const part of m[1].slice(1, -1).split(",")) {
+      const t = part.trim();
+      if (t && !/^type\s/.test(t)) named.add(t.split(/\s+as\s+/).pop().trim());
+    }
+  }
+  return all ? null : named;
+}
+
 function compressText(text) {
   if (!text) return "";
   return text
@@ -351,12 +384,14 @@ function loadCoLocatedDoc(fileDir, primaryName) {
     description: String(b.description).trim(),
   }));
   const examples = (doc.examples ?? []).map((e) => ({ title: String(e.title).trim(), code: String(e.code).trim() }));
+  // One-line composition notes ("Table > TableHeader > TableRow ...", provider/hook setup) for agents.
+  const structure = (doc.structure ?? []).map((l) => String(l).trim()).filter(Boolean);
   const docsDense = {
     description: compressText(description),
     bestPractices: bestPractices.map((b) => ({ guidance: b.guidance, description: compressText(b.description) })),
   };
 
-  return { description, bestPractices, examples, docsDense };
+  return { description, bestPractices, examples, structure, docsDense };
 }
 
 const LAYOUT_COMPONENTS = new Set(["Flex", "Grid", "Container", "Section", "Box", "AppFrame", "Row", "Sidebar", "SidebarHeader", "SidebarBody", "SidebarFooter", "SidebarSection"]);
@@ -420,7 +455,10 @@ function build() {
     const primaryName = basename(file, ".tsx");
     const radixMatch = src.match(/from\s+["'](@radix-ui\/react-[\w-]+)["']/);
     const blocks = cvaBlocks(src);
-    const exportedSymbols = exportsOf(src).filter((s) => /^[A-Z]/.test(s) && s !== "ALL_ICONS");
+    const allExports = exportsOf(src);
+    const exportedSymbols = allExports.filter((s) => /^[A-Z]/.test(s) && s !== "ALL_ICONS");
+    // Public hooks (useToast ...) are listed in `exports` so agents import them, but are not components.
+    const exportedHooks = allExports.filter((s) => /^use[A-Z]/.test(s));
     const folderDoc = dirDoc.get(basename(fileDir));
 
     // The file name is emitted only when it is a real export or the folder's doc
@@ -446,7 +484,7 @@ function build() {
         ...(internal ? { internal: true } : {}),
         docsPath: docsPathFor(basename(fileDir)),
         ...(IMPORT_PATH_BY_FOLDER[basename(fileDir)] ? { importPath: IMPORT_PATH_BY_FOLDER[basename(fileDir)] } : {}),
-        file: relative(ROOT, file),
+        file: relative(ROOT, file).split(sep).join("/"), // POSIX: same components.json on every OS
         kind: radixMatch ? "radix" : "plain",
         radix: radixMatch ? radixMatch[1] : null,
         radiusOverride: Object.prototype.hasOwnProperty.call(variants, "radius"),
@@ -454,11 +492,15 @@ function build() {
         defaultVariants: defaults,
         props: parsedProps,
         builderMeta: determineBuilderMeta(name, parsedProps),
-        exports: exportedSymbols,
+        exports: (() => {
+          const visible = indexVisibleNames(primDir, file);
+          return [...exportedSymbols, ...exportedHooks].filter((n) => !visible || visible.has(n));
+        })(),
         ...(partOf ? { partOf } : {}),
         description: doc?.description || undefined,
         bestPractices: doc?.bestPractices || undefined,
         examples: doc?.examples || undefined,
+        ...(doc?.structure?.length ? { structure: doc.structure } : {}),
         docsDense: doc?.docsDense || undefined,
       });
     });
@@ -511,6 +553,25 @@ function build() {
   };
 }
 
+/** Page and section compositions: one `### <ID> · <name>` heading per composition in the layout-compositions skill. */
+function countCompositions() {
+  const dir = join(ROOT, "packages", "skills", "skills", "layout-compositions", "references", "compositions");
+  if (!existsSync(dir)) return 0;
+  return readdirSync(dir)
+    .filter((f) => f.endsWith(".md"))
+    .reduce((n, f) => n + (readFileSync(join(dir, f), "utf8").match(/^### [A-Z]{1,3}\d+ · /gm) ?? []).length, 0);
+}
+
+/** Theme presets: one `{ name: "..."` row in THEME_PRESETS. */
+function countThemePresets() {
+  const file = join(ROOT, "packages", "ui", "src", "lib", "theme-presets.ts");
+  if (!existsSync(file)) return 0;
+  const src = readFileSync(file, "utf8");
+  const start = src.indexOf("export const THEME_PRESETS");
+  const end = src.indexOf("\n];", start);
+  return (src.slice(start, end).match(/^\s*\{ name: "/gm) ?? []).length;
+}
+
 function buildMetaTs(primitiveDirCount) {
   let pkgVersion = "0.1.0";
   try {
@@ -526,6 +587,10 @@ function buildMetaTs(primitiveDirCount) {
     ? join(ROOT, "packages", "skills", "skills")
     : join(ROOT, ".agents", "skills");
   const skills = [];
+  const internalPath = join(ROOT, "packages", "skills", "internal.json");
+  const maintainerOnly = existsSync(internalPath) ? JSON.parse(readFileSync(internalPath, "utf8")).maintainerOnly.map((e) => e.path) : [];
+  const commandsDir = join(ROOT, "packages", "skills", "commands");
+  const commandCount = existsSync(commandsDir) ? readdirSync(commandsDir).filter((f) => f.endsWith(".md")).length : 0;
   if (existsSync(skillsDir)) {
     const skillEntries = readdirSync(skillsDir, { withFileTypes: true }).filter(d => d.isDirectory()).sort();
     for (const entry of skillEntries) {
@@ -585,8 +650,17 @@ function buildMetaTs(primitiveDirCount) {
 export const SHAVIN_META = {
   version: ${JSON.stringify(pkgVersion)},
   primitiveCount: ${primitiveDirCount},
+  /** Every tool in the registry. A plain install lists fewer until a Studio session or bridge tab connects (see tool-visibility). */
   mcpToolCount: ${mcpTools.length},
+  /** Page and section compositions in the layout-compositions skill. */
+  compositionCount: ${countCompositions()},
+  /** Theme presets in THEME_PRESETS (not the brand colours). */
+  themePresetCount: ${countThemePresets()},
   skillCount: ${skills.length},
+  /** Skills a project gets (skillCount minus the maintainer-only ones in packages/skills/internal.json). */
+  consumerSkillCount: ${skills.filter((s) => !maintainerOnly.includes(s.name)).length},
+  /** Slash commands a project gets (packages/skills/commands). */
+  commandCount: ${commandCount},
   blockCount: ${blockCount},
   manifestCount: 2,
   tokenPurityTarget: 100,
@@ -620,7 +694,7 @@ const routesTs = buildRoutesTs(manifestResult.components);
 function buildRoutesTs(components) {
   const entries = components.map((c) => `  ${JSON.stringify(c.name)}: ${JSON.stringify(c.docsPath)},`).join("\n");
   return `// Generated by scripts/gen-manifest.mjs -- do not edit by hand (run: npm run manifest:gen).
-// Docs page for every exported component. Import from "@shavin/ui/lib/docs-routes".
+// Docs page for every exported component. Import from "@shavin/site-links".
 
 export const DOCS_BASE_URL = "https://docs.shavin.cc";
 
@@ -640,7 +714,7 @@ export function docsUrl(name: string, base: string = DOCS_BASE_URL): string {
 `;
 }
 
-/** docsPath values with no page in apps/docs (private repo only). */
+/** docsPath values with no page in the docs app (maintainers' checkout only). */
 function missingDocsPages(components) {
   if (!DOCS_APP) return [];
   const bad = new Map();
@@ -651,34 +725,64 @@ function missingDocsPages(components) {
 }
 const metaTs = buildMetaTs(manifestResult.primitiveCount);
 
+/** Files and folders whose prose must agree with SHAVIN_META. Entries that do not exist (e.g. in the public repo) are skipped. */
+const COUNT_GUARD_ROOTS = [
+  "README.md", "AGENTS.md", "CONTRIBUTING.md", "scripts/mirror-public.mjs", "scripts/mirror-public/README.md", "scripts/gen-llms.mjs",
+  ...["ui", "cli", "mcp-server", "skills", "block-schema"].map((p) => `packages/${p}/README.md`),
+  "packages/skills/skills", "docs", "apps/docs/src", "apps/website/src",
+];
+/** Dated snapshots and history say what was true then; they are not checked. */
+const COUNT_GUARD_SKIP = /(^|\/)(node_modules|\.next|out|dist|generated|archive|audits|research|Roadmaps)(\/|$)|(^|\/)CHANGELOG\.md$/;
+const COUNT_GUARD_FILE = /\.(md|mdx|tsx|ts|mjs)$/;
+
 /**
- * Markdown and generator text that state the primitive count ("84 React
- * primitives"). Files that don't exist (e.g. in the public repo) are skipped.
+ * Counts that prose states and SHAVIN_META owns. Each rule finds "<N> ..." and N must equal the named field.
+ * A line that names a competitor is left alone (it states their count).
  */
-function staleCountMentions(count) {
-  const files = [
-    "README.md", "AGENTS.md", "CONTRIBUTING.md", "scripts/mirror-public.mjs", "scripts/mirror-public/README.md",
-    ...["ui", "cli", "mcp-server", "skills", "block-schema"].map((p) => `packages/${p}/README.md`),
-    ...(existsSync(join(ROOT, "packages", "skills", "skills"))
-      ? readdirSync(join(ROOT, "packages", "skills", "skills"), { recursive: true })
-          .filter((f) => String(f).endsWith(".md"))
-          .map((f) => `packages/skills/skills/${f}`)
-      : []),
-    ...(existsSync(join(ROOT, "docs", "architecture"))
-      ? readdirSync(join(ROOT, "docs", "architecture")).filter((f) => f.endsWith(".md")).map((f) => `docs/architecture/${f}`)
-      : []),
-  ];
-  const re = /\b(\d{2,3}) (?:[\w.+-]+ ){0,3}primitives\b/g;
+const COUNT_RULES = [
+  { field: "primitiveCount", re: /\b(\d{2,3}) (?:[\w.+-]+ ){0,3}primitives\b/g },
+  { field: "mcpToolCount", re: /\b(\d+) (?:MCP |Shavin )(?:server )?tools\b/g },
+  { field: "mcpToolCount", re: /\bTools \((\d+)\)/g },
+  { field: "mcpToolCount", re: /MCP-(\d+)%20tools/g },
+  { field: "compositionCount", re: /\b(\d+)\+? (?:[\w-]+ ){0,3}compositions\b/g },
+  { field: "themePresetCount", re: /\b(\d+) (?:[\w-]+ ){0,2}themes\b/g },
+  { field: "themePresetCount", re: /\b(\d+) theme presets\b/g },
+];
+
+function countGuardFiles() {
   const out = [];
-  for (const rel of files) {
+  const walk = (rel) => {
+    if (COUNT_GUARD_SKIP.test(rel)) return;
     const abs = join(ROOT, rel);
-    if (!existsSync(abs)) continue;
-    readFileSync(abs, "utf8").split("\n").forEach((line, i) => {
-      for (const m of line.matchAll(re)) if (Number(m[1]) !== count) out.push(`${rel}:${i + 1}: "${m[0]}"`);
+    if (!existsSync(abs)) return;
+    if (statSync(abs).isDirectory()) {
+      for (const e of readdirSync(abs)) walk(`${rel}/${e}`);
+    } else if (COUNT_GUARD_FILE.test(rel)) out.push(rel);
+  };
+  COUNT_GUARD_ROOTS.forEach(walk);
+  return out;
+}
+
+/** Written counts that differ from SHAVIN_META. `values` maps a SHAVIN_META field to its number. */
+function staleCountMentions(values) {
+  const out = [];
+  for (const rel of countGuardFiles()) {
+    readFileSync(join(ROOT, rel), "utf8").split("\n").forEach((line, i) => {
+      if (/astryx/i.test(line)) return;
+      for (const { field, re } of COUNT_RULES) {
+        for (const m of line.matchAll(re)) {
+          if (Number(m[1]) !== values[field]) out.push(`${rel}:${i + 1}: "${m[0]}" (SHAVIN_META.${field} is ${values[field]})`);
+        }
+      }
     });
   }
   return out;
 }
+
+const metaValues = () =>
+  Object.fromEntries(
+    ["primitiveCount", "mcpToolCount", "compositionCount", "themePresetCount"].map((k) => [k, Number(metaTs.match(new RegExp(`\\b${k}: (\\d+)`))?.[1])]),
+  );
 
 if (check) {
   let currentJson = "";
@@ -700,8 +804,8 @@ if (check) {
   }
   let currentRoutes = "";
   try { currentRoutes = readFileSync(ROUTES_OUT, "utf8"); } catch { /* missing -> stale */ }
-  if (currentRoutes !== routesTs) {
-    console.error(`  ${c.error}${g.stepFail}${c.reset} packages/ui/src/lib/docs-routes.ts is stale -- run \`npm run manifest:gen\` and commit the result.`);
+  if (ROUTES_ENABLED && currentRoutes !== routesTs) {
+    console.error(`  ${c.error}${g.stepFail}${c.reset} packages/site-links/src/docs-routes.ts is stale -- run \`npm run manifest:gen\` and commit the result.`);
     process.exit(1);
   }
   const missing = missingDocsPages(manifestResult.components);
@@ -724,11 +828,11 @@ if (check) {
     }
   }
 
-  // Prose can't import SHAVIN_META, so check written primitive counts against it.
-  const stale = staleCountMentions(manifestResult.primitiveCount);
+  // Prose can't import SHAVIN_META, so check the counts it states (primitives, tools, compositions, theme presets) against it.
+  const stale = staleCountMentions(metaValues());
   if (stale.length) {
-    console.error(`  ${c.error}${g.stepFail}${c.reset} ${stale.length} written primitive count(s) differ from ${manifestResult.primitiveCount}:\n  ${stale.join("\n  ")}`);
-    console.error("  Update the number (code should use SHAVIN_META.primitiveCount instead).");
+    console.error(`  ${c.error}${g.stepFail}${c.reset} ${stale.length} written count(s) differ from SHAVIN_META:\n  ${stale.join("\n  ")}`);
+    console.error("  Update the number (code should read SHAVIN_META instead of typing it).");
     process.exit(1);
   }
 
@@ -741,7 +845,7 @@ if (OUT !== ROOT_OUT) {
   writeFileSync(ROOT_OUT, json);
 }
 writeFileSync(META_OUT, metaTs);
-writeFileSync(ROUTES_OUT, routesTs);
+if (ROUTES_ENABLED) writeFileSync(ROUTES_OUT, routesTs);
 {
   const missing = missingDocsPages(manifestResult.components);
   if (missing.length) console.warn(`  ${c.warning}!${c.reset} docsPath with no page in apps/docs:\n  ${missing.join("\n  ")}`);
@@ -756,7 +860,7 @@ printCard({
     { label: "Total Components:", value: `${c.fg}${manifestResult.count} registered components${c.reset}` },
     { label: "Public Primitives:", value: `${c.fg}${manifestResult.primitiveCount} exported from @shavin/ui${c.reset}` },
     { label: "Internal Utilities:", value: `${c.fg}${manifestResult.internalCount} components${c.reset}` },
-    { label: "Source of Truth:", value: `${c.fg}meta.ts, docs-routes.ts & components.json${c.reset}` },
+    { label: "Source of Truth:", value: `${c.fg}meta.ts & components.json${ROUTES_ENABLED ? " (docs-routes.ts in @shavin/site-links)" : ""}${c.reset}` },
   ],
   footer: `${c.fgSubtle}Target: ${OUT}${c.reset}`,
 });

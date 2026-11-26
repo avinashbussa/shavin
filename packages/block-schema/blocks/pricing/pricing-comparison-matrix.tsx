@@ -58,7 +58,7 @@ export function PricingComparisonMatrix({ plans = defaultPlans, groups = default
                   <Flex key={plan.name} direction="column" align="start" gap="3">
                     <Flex direction="row" align="center" wrap="wrap" gap="2">
                       <Heading as="h3" size="sm">{plan.name}</Heading>
-                      {plan.featured && <Badge variant="soft" tone="accent" size="sm" radius="full">Most popular</Badge>}
+                      {plan.featured && <Badge variant="soft" tone="brand" size="sm" radius="full">Most popular</Badge>}
                     </Flex>
                     <Flex direction="row" align="baseline" gap="1">
                       <Heading as="p" size="lg" className="tabular-nums">{plan.price}</Heading>

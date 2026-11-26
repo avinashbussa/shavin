@@ -15,7 +15,7 @@ export function Blockquote({
   return (
     <blockquote
       cite={cite}
-      className={cn("border-l-2 border-accent pl-4 text-fg-muted", className)}
+      className={cn("border-l-2 border-brand pl-4 text-fg-muted", className)}
     >
       {children}
     </blockquote>

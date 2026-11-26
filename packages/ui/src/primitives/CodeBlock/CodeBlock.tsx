@@ -1,6 +1,7 @@
 import * as React from "react";
 import { useState, type ReactNode } from "react";
 import { cn } from "../../lib/cn";
+import { hitAreaClass, type HitArea } from "../../lib/hit-area";
 import { highlightCode, type SupportedLanguage } from "../../lib/syntax";
 
 export { highlightCode, type SupportedLanguage };
@@ -38,6 +39,8 @@ export interface CodeBlockProps extends React.HTMLAttributes<HTMLDivElement> {
   description?: string;
   /** Optional title displayed in the collapsible footer bar (alias for description). */
   title?: string;
+  /** Hit-area override for the Copy and View-code buttons (docs: "Target size"). */
+  hitArea?: HitArea;
 }
 
 export function CodeBlock({
@@ -57,6 +60,7 @@ export function CodeBlock({
   onStateChange,
   description,
   title,
+  hitArea,
   className,
   ...props
 }: CodeBlockProps): React.JSX.Element {
@@ -134,14 +138,14 @@ export function CodeBlock({
         <button
           type="button"
           onClick={handleCopy}
-          className="absolute right-2 top-2 rounded-[var(--radius-lg)] border border-hairline bg-surface px-2 py-1 text-xs text-fg-subtle transition hover:text-fg hover:bg-surface-hover active:scale-[0.97] md:opacity-0 md:group-hover:opacity-100 focus-visible:opacity-100 z-10 cursor-pointer"
+          className={cn("hit-area-touch absolute right-2 top-2 rounded-[var(--radius-lg)] border border-hairline bg-surface px-2 py-1 text-xs text-fg-subtle transition hover:text-fg hover:bg-surface-hover active:scale-[0.97] md:opacity-0 md:group-hover:opacity-100 focus-visible:opacity-100 z-10 cursor-pointer", hitAreaClass(hitArea, "touch", "CodeBlock"))}
         >
           {copied ? "Copied" : "Copy"}
         </button>
       )}
       {/* Focusable so a keyboard can scroll long lines (WCAG 2.1.1). */}
-      <pre tabIndex={0} role="region" aria-label={footerText || (language ? `${language} code` : "Code")} className={cn("overflow-x-auto p-4 text-xs leading-relaxed text-fg h-full select-text cursor-text selection:bg-accent/20 selection:text-fg", wrap && "whitespace-pre-wrap break-words")}>
-        <code className="font-mono select-text cursor-text selection:bg-accent/20 selection:text-fg">{highlightCode(code, language)}</code>
+      <pre tabIndex={0} role="region" aria-label={footerText || (language ? `${language} code` : "Code")} className={cn("overflow-x-auto p-4 text-xs leading-relaxed text-fg h-full select-text cursor-text selection:bg-brand/20 selection:text-fg", wrap && "whitespace-pre-wrap break-words")}>
+        <code className="font-mono select-text cursor-text selection:bg-brand/20 selection:text-fg">{highlightCode(code, language)}</code>
       </pre>
     </div>
   );
@@ -186,7 +190,7 @@ export function CodeBlock({
               <button
                 type="button"
                 onClick={handleCopy}
-                className="flex items-center justify-center h-7 w-7 rounded-[var(--radius-lg)] border border-hairline bg-surface text-fg-muted hover:text-fg hover:bg-surface-hover transition cursor-pointer"
+                className={cn("hit-area-touch flex items-center justify-center h-7 w-7 rounded-[var(--radius-lg)] border border-hairline bg-surface text-fg-muted hover:text-fg hover:bg-surface-hover transition cursor-pointer", hitAreaClass(hitArea, "touch", "CodeBlock"))}
                 title="Copy source code"
                 aria-label="Copy source code"
               >
@@ -206,7 +210,7 @@ export function CodeBlock({
             <button
               type="button"
               onClick={handleToggleOpen}
-              className="flex items-center gap-1.5 h-7 px-2.5 rounded-[var(--radius-lg)] border border-hairline bg-surface text-xs font-medium text-fg hover:bg-surface-hover transition cursor-pointer"
+              className={cn("hit-area-touch flex items-center gap-1.5 h-7 px-2.5 rounded-[var(--radius-lg)] border border-hairline bg-surface text-xs font-medium text-fg hover:bg-surface-hover transition cursor-pointer", hitAreaClass(hitArea, "touch", "CodeBlock"))}
               aria-expanded={isCollapsibleOpen}
             >
               <svg

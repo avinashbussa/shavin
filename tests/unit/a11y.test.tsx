@@ -61,7 +61,7 @@ describe("a11y: key composed components have no axe violations", () => {
 
   it("Dialog (open) — portaled, audited on document.body", async () => {
     render(
-      <Dialog title="Edit item" subtitle="Update the fields below" onClose={() => {}}>
+      <Dialog title="Edit item" description="Update the fields below" onClose={() => {}}>
         <p>Body content</p>
       </Dialog>,
     );

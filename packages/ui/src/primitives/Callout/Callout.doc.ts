@@ -4,12 +4,12 @@ export const docs: ComponentDoc = {
   name: "Callout",
   description: "High-visibility information container panel built with panel radius (--radius-panel) and semantic colors.",
   features: [
-    "Colors: neutral, accent, success, warning, danger",
+    "Colors: neutral, brand, success, warning, danger",
     "Uses panel radius --radius-panel per AGENTS.md rule section 5",
     "Automatic default icons per semantic color variant (Info, CheckCircle, AlertTriangle, AlertCircle)"
   ],
   accessibility: [
-    "Uses role='note' or role='alert' semantics for contextual warnings",
+    "role='alert' for color='danger' and role='status' for the other colours by default; a passed role wins (role='note' for a static notice present on first load)",
     "Includes semantic icon alongside text for visual accessibility"
   ],
   usage: {

@@ -32,6 +32,16 @@ export interface TimePickerProps {
   ariaLabel?: string;
   /** Minutes between each option in select dropdown — 15, 30, 60, etc. Default 30. */
   intervalMinutes?: number;
+  /** id of the group, so FormField can point at it. */
+  id?: string;
+  /** id of a visible label (FormField passes its label); replaces ariaLabel. */
+  "aria-labelledby"?: string;
+  /** id(s) of hint or error text describing the time. */
+  "aria-describedby"?: string;
+  /** Marks the time invalid (FormField passes it with an error). */
+  "aria-invalid"?: boolean | "true" | "false";
+  /** Marks the time required. */
+  "aria-required"?: boolean | "true" | "false";
 }
 
 export function TimePicker({
@@ -39,6 +49,11 @@ export function TimePicker({
   onChange,
   ariaLabel = "Time",
   intervalMinutes = 30,
+  id,
+  "aria-labelledby": ariaLabelledBy,
+  "aria-describedby": ariaDescribedBy,
+  "aria-invalid": ariaInvalid,
+  "aria-required": ariaRequired,
 }: TimePickerProps) {
   const cur = `${String(value.getHours()).padStart(2, "0")}:${String(
     value.getMinutes(),
@@ -60,7 +75,12 @@ export function TimePicker({
   return (
     <Select
       value={cur}
-      ariaLabel={ariaLabel}
+      id={id}
+      ariaLabel={ariaLabelledBy ? undefined : ariaLabel}
+      aria-labelledby={ariaLabelledBy}
+      aria-describedby={ariaDescribedBy}
+      aria-invalid={ariaInvalid === true || ariaInvalid === "true" || undefined}
+      required={ariaRequired === true || ariaRequired === "true" || undefined}
       options={options}
       onChange={(v) => {
         const [h, m] = v.split(":").map(Number);
@@ -76,6 +96,16 @@ export interface TimeVariantProps {
   value: Date;
   onChange: (d: Date) => void;
   ariaLabel?: string;
+  /** id of the group, so FormField can point at it (TimePickerInput). */
+  id?: string;
+  /** id of a visible label; replaces ariaLabel (TimePickerInput). */
+  "aria-labelledby"?: string;
+  /** id(s) of hint or error text (TimePickerInput). */
+  "aria-describedby"?: string;
+  /** Marks both fields invalid (TimePickerInput). */
+  "aria-invalid"?: boolean | "true" | "false";
+  /** Marks both fields required (TimePickerInput). */
+  "aria-required"?: boolean | "true" | "false";
 }
 
 function to12Hour(h24: number): { h12: number; period: "AM" | "PM" } {
@@ -87,7 +117,19 @@ function to12Hour(h24: number): { h12: number; period: "AM" | "PM" } {
 const segmentClass =
   "w-9 rounded-[var(--radius-lg)] border border-border-control bg-surface-hover px-2 py-1.5 text-center text-sm tabular-nums text-fg placeholder:text-fg-subtle";
 
-export function TimePickerInput({ value, onChange, ariaLabel = "Time" }: TimeVariantProps) {
+export function TimePickerInput({
+  value,
+  onChange,
+  ariaLabel = "Time",
+  id,
+  "aria-labelledby": ariaLabelledBy,
+  "aria-describedby": ariaDescribedBy,
+  "aria-invalid": ariaInvalid,
+  "aria-required": ariaRequired,
+}: TimeVariantProps) {
+  // aria-invalid / aria-required are not allowed on role="group": they go on both spinbuttons.
+  const invalidAttr = ariaInvalid === true || ariaInvalid === "true" || undefined;
+  const requiredAttr = ariaRequired === true || ariaRequired === "true" || undefined;
   const { h12, period } = to12Hour(value.getHours());
   const [hourStr, setHourStr] = useState(String(h12).padStart(2, "0"));
   const [minStr, setMinStr] = useState(String(value.getMinutes()).padStart(2, "0"));
@@ -133,7 +175,14 @@ export function TimePickerInput({ value, onChange, ariaLabel = "Time" }: TimeVar
   }
 
   return (
-    <div role="group" aria-label={ariaLabel} className="inline-flex items-center gap-1.5">
+    <div
+      role="group"
+      id={id}
+      aria-label={ariaLabelledBy ? undefined : ariaLabel}
+      aria-labelledby={ariaLabelledBy}
+      aria-describedby={ariaDescribedBy}
+      className="inline-flex items-center gap-1.5"
+    >
       <input
         value={hourStr}
         onChange={(e) => setHourStr(e.target.value.replace(/\D/g, "").slice(0, 2))}
@@ -146,6 +195,8 @@ export function TimePickerInput({ value, onChange, ariaLabel = "Time" }: TimeVar
         aria-valuemax={12}
         aria-valuenow={hourNum}
         aria-label="Hours"
+        aria-invalid={invalidAttr}
+        aria-required={requiredAttr}
         className={segmentClass}
       />
       <span className="text-fg-muted" aria-hidden="true">:</span>
@@ -161,6 +212,8 @@ export function TimePickerInput({ value, onChange, ariaLabel = "Time" }: TimeVar
         aria-valuemax={59}
         aria-valuenow={minNum}
         aria-label="Minutes"
+        aria-invalid={invalidAttr}
+        aria-required={requiredAttr}
         className={segmentClass}
       />
       <button
@@ -248,8 +301,8 @@ export function TimePickerClock({ value, onChange, ariaLabel = "Time" }: TimeVar
             aria-label={`Hour, ${String(h12).padStart(2, "0")}`}
             className={cn(
               "rounded-[var(--radius-lg)] px-2 py-1 text-3xl font-semibold tabular-nums transition",
-              // ds-lint-disable-next-line no-rgb — accent fill background
-              mode === "hour" ? "bg-[rgb(var(--accent)/0.12)] text-accent" : "text-fg-muted hover:text-fg",
+              // ds-lint-disable-next-line no-rgb — brand fill background
+              mode === "hour" ? "bg-[rgb(var(--brand)/0.12)] text-brand-text" : "text-fg-muted hover:text-fg",
             )}
           >
             {String(h12).padStart(2, "0")}
@@ -262,8 +315,8 @@ export function TimePickerClock({ value, onChange, ariaLabel = "Time" }: TimeVar
             aria-label={`Minutes, ${String(minute).padStart(2, "0")}`}
             className={cn(
               "rounded-[var(--radius-lg)] px-2 py-1 text-3xl font-semibold tabular-nums transition",
-              // ds-lint-disable-next-line no-rgb — accent fill background
-              mode === "minute" ? "bg-[rgb(var(--accent)/0.12)] text-accent" : "text-fg-muted hover:text-fg",
+              // ds-lint-disable-next-line no-rgb — brand fill background
+              mode === "minute" ? "bg-[rgb(var(--brand)/0.12)] text-brand-text" : "text-fg-muted hover:text-fg",
             )}
           >
             {String(minute).padStart(2, "0")}
@@ -296,12 +349,12 @@ export function TimePickerClock({ value, onChange, ariaLabel = "Time" }: TimeVar
         >
           <div
             aria-hidden="true"
-            className="absolute origin-left rounded-full bg-accent"
+            className="absolute origin-left rounded-full bg-brand-solid"
             style={{ left: CLOCK_CENTER, top: CLOCK_CENTER - 1, width: CLOCK_RADIUS - 16, height: 2, transform: `rotate(${handAngle}deg)` }}
           />
           <div
             aria-hidden="true"
-            className="absolute h-2 w-2 rounded-full bg-accent"
+            className="absolute h-2 w-2 rounded-full bg-brand-solid"
             style={{ left: CLOCK_CENTER - 4, top: CLOCK_CENTER - 4 }}
           />
 
@@ -319,7 +372,7 @@ export function TimePickerClock({ value, onChange, ariaLabel = "Time" }: TimeVar
                     onClick={() => pickHour(h)}
                     className={cn(
                       "absolute flex h-8 w-8 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full text-sm transition",
-                      h12 === h ? "bg-accent text-accent-fg" : "text-fg hover:bg-surface",
+                      h12 === h ? "bg-brand-solid text-brand-fg" : "text-fg hover:bg-surface",
                     )}
                     style={{ left: x, top: y }}
                   >
@@ -340,7 +393,7 @@ export function TimePickerClock({ value, onChange, ariaLabel = "Time" }: TimeVar
                     onClick={() => pickMinute(m)}
                     className={cn(
                       "absolute flex h-8 w-8 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full text-sm tabular-nums transition",
-                      minute === m ? "bg-accent text-accent-fg" : "text-fg hover:bg-surface",
+                      minute === m ? "bg-brand-solid text-brand-fg" : "text-fg hover:bg-surface",
                     )}
                     style={{ left: x, top: y }}
                   >

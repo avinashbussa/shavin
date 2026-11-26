@@ -1,9 +1,12 @@
 import { forwardRef, type ButtonHTMLAttributes, type ReactNode } from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "../../lib/cn";
+import { hitAreaClass, type HitArea } from "../../lib/hit-area";
+import { useButtonState } from "../../lib/buttonState";
+import { Spinner } from "../Spinner";
 
 export const iconButtonVariants = cva(
-  "inline-flex shrink-0 items-center justify-center transition active:scale-[0.97] disabled:pointer-events-none disabled:opacity-40 [&_svg]:!text-inherit",
+  "hit-area-touch inline-flex shrink-0 items-center justify-center transition [&:not([data-inert])]:active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-40 data-[inert=reason]:cursor-not-allowed data-[inert=reason]:opacity-40 data-[inert=loading]:cursor-progress [&_svg]:!text-inherit",
   {
     variants: {
       variant: {
@@ -13,7 +16,7 @@ export const iconButtonVariants = cva(
         ghost: "bg-transparent",
       },
       tone: {
-        accent: "",
+        brand: "",
         danger: "",
       },
       size: {
@@ -23,28 +26,28 @@ export const iconButtonVariants = cva(
       },
     },
     compoundVariants: [
-      { variant: "solid", tone: "accent", class: "bg-accent text-accent-fg hover:opacity-90" },
-      { variant: "solid", tone: "danger", class: "bg-danger text-danger-fg hover:opacity-90" },
+      { variant: "solid", tone: "brand", class: "bg-brand-solid text-brand-fg [&:not([data-inert])]:hover:bg-brand-solid-hover" },
+      { variant: "solid", tone: "danger", class: "bg-danger text-danger-fg [&:not([data-inert])]:hover:opacity-90" },
       {
         variant: "soft",
-        tone: "accent",
-        class: "bg-accent-subtle text-accent-contrast hover:bg-accent-subtle-hover",
+        tone: "brand",
+        class: "bg-brand-subtle text-brand-contrast [&:not([data-inert])]:hover:bg-brand-subtle-hover",
       },
       {
         variant: "soft",
         tone: "danger",
-        class: "bg-[rgb(var(--danger)/0.12)] text-danger hover:bg-[rgb(var(--danger)/0.18)]",
+        class: "bg-danger/[0.12] text-danger [&:not([data-inert])]:hover:bg-danger/[0.18]",
       },
-      { variant: "outline", tone: "accent", class: "border-hairline text-fg hover:bg-fg/[0.05]" },
+      { variant: "outline", tone: "brand", class: "border-hairline text-fg [&:not([data-inert])]:hover:bg-fg/[0.05]" },
       {
         variant: "outline",
         tone: "danger",
-        class: "border-danger text-danger hover:bg-[rgb(var(--danger)/0.08)]",
+        class: "border-danger text-danger [&:not([data-inert])]:hover:bg-danger/[0.08]",
       },
-      { variant: "ghost", tone: "accent", class: "text-fg-muted hover:bg-fg/[0.06] hover:text-fg" },
-      { variant: "ghost", tone: "danger", class: "text-danger hover:bg-[rgb(var(--danger)/0.08)]" },
+      { variant: "ghost", tone: "brand", class: "text-fg-muted [&:not([data-inert])]:hover:bg-fg/[0.06] [&:not([data-inert])]:hover:text-fg" },
+      { variant: "ghost", tone: "danger", class: "text-danger [&:not([data-inert])]:hover:bg-danger/[0.08]" },
     ],
-    defaultVariants: { variant: "solid", tone: "accent", size: "md" },
+    defaultVariants: { variant: "solid", tone: "brand", size: "md" },
   },
 );
 
@@ -54,20 +57,68 @@ export interface IconButtonProps
   /** Mandatory ARIA accessible label string for screen reader name computation. */
   "aria-label": string;
   children: ReactNode;
+  /** Pending state: a Spinner replaces the icon, `aria-busy`, clicks ignored, stays focusable, progress cursor. */
+  loading?: boolean;
+  /** Optional text announced (polite) when `loading` starts. */
+  loadingLabel?: string;
+  /**
+   * Why the action is unavailable. Renders `aria-disabled` (focusable) with the reason in a Tooltip
+   * on hover, focus and tap, and as the accessible description. Takes precedence over `disabled`.
+   */
+  disabledReason?: string;
+  /**
+   * Hit-area override (docs: "Target size"). "default": 24px floor, 44px on touch. "none": no hit area
+   * growth (dense toolbars; may go below 24px, yours to own). "touch": always 44px on a coarse pointer.
+   */
+  hitArea?: HitArea;
 }
 
 export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(function IconButton(
-  { className, variant, tone, size, children, type = "button", ...props },
+  {
+    className,
+    variant,
+    tone,
+    size,
+    children,
+    type = "button",
+    loading,
+    loadingLabel,
+    disabledReason,
+    hitArea,
+    disabled,
+    onClick,
+    onPointerDown,
+    style,
+    "aria-describedby": describedBy,
+    ...props
+  },
   ref,
 ) {
-  return (
+  const { inert, buttonProps, wrap } = useButtonState({
+    disabled,
+    loading,
+    loadingLabel,
+    disabledReason,
+    onClick,
+    onPointerDown,
+    "aria-describedby": describedBy,
+    style,
+    ref,
+  });
+  return wrap(
     <button
-      ref={ref}
       type={type}
-      className={cn(iconButtonVariants({ variant, tone, size }), className)}
+      className={cn(iconButtonVariants({ variant, tone, size }), hitAreaClass(hitArea, "touch", "IconButton"), className)}
       {...props}
+      {...buttonProps}
     >
-      {children}
+      {inert === "loading" ? (
+        <span aria-hidden="true" className="inline-flex items-center">
+          <Spinner size={size === "lg" ? "lg" : "md"} label="" />
+        </span>
+      ) : (
+        children
+      )}
     </button>
   );
 });

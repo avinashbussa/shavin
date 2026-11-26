@@ -60,7 +60,7 @@ export function CheckboxCardsItem({
     <label
       className={cn(
         "flex items-center gap-3 rounded-[var(--radius-panel)] border p-3 transition",
-        checked ? "border-accent bg-accent/5" : "border-hairline hover:bg-surface-hover",
+        checked ? "border-brand-text bg-brand/5" : "border-hairline hover:bg-surface-hover",
         disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer",
       )}
       style={withConcentricStyle(style, concentricContainerStyle("3"))}

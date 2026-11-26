@@ -3,16 +3,16 @@ import type { ComponentDoc } from "../../authoring/types";
 export const docs: ComponentDoc = {
   name: "Flex",
   group: "layout",
-  description: "Flexbox container primitive supporting token gap scale, direction, alignment, justification, polymorphic tag rendering, and background media props (bgVideo, bgImage, bgOverlays, bgSize, bgVideoPaused).",
+  description: "Lays children out in a row or column with consistent gaps, alignment and wrapping. It can render as any HTML tag, carry a background image or video, and be resized by the user.",
   features: [
     "Directions: row, column, row-reverse, column-reverse",
     "Alignments: start, center, end, stretch, baseline",
     "Justification: start, center, end, between, around",
     "Token gap scale: 0 through 7 (gap-0 to gap-12)",
     "Polymorphic tag support via as prop",
-    "Surface contrast scope via surface prop (\"dark\" / \"light\") for media backgrounds",
+    "Surface contrast scope via surface prop (\"dark\" / \"light\") for media backgrounds. With a photo, video or fx backdrop and no surface it defaults to dark-always plus a dark scrim (dark-30, fx dark-50); meshes and custom gradients need an explicit surface (dark-always or light-always)",
     "Background media: bgVideo, bgImage, bgOverlays (presets, hex, tokens, gradients via comma-separated shorthand), bgSize, bgVideoPaused",
-    "Fx backdrops (needs @shavin/fx registered): bgOverlays=\"fx:dither-waves, gradient-bottom\"; params only when changed: fx:fluid-silk(speed=1.2); quote text values: fx:type-tiles(text='Plan money')"
+    "Fx backdrops (needs `npm i @shavin/fx`, free to use under its own licence, and `registerFxBackdrops()`): bgOverlays=\"fx:dither-waves, gradient-bottom\"; params only when changed: fx:fluid-silk(speed=1.2); quote text values: fx:type-tiles(text='Plan money')"
   ],
   accessibility: [
     "Supports semantic HTML tags via polymorphic as prop"
@@ -50,8 +50,8 @@ export const docs: ComponentDoc = {
     },
     {
       title: "Custom Gradient + Token Overlay",
-      description: "Linear gradient with hex stops + semantic accent token — no JSON needed",
-      code: '<Flex direction="column" align="center" justify="center" bgVideo="https://..." bgOverlays="linear(180deg, #000/0%, #000/100%)/70, (accent)/15" surface="dark-always"><Heading size="2xl">Gradient + Accent</Heading><Button>Watch</Button></Flex>'
+      description: "Linear gradient with hex stops + semantic brand token — no JSON needed",
+      code: '<Flex direction="column" align="center" justify="center" bgVideo="https://..." bgOverlays="linear(180deg, #000/0%, #000/100%)/70, (brand)/15" surface="dark-always"><Heading size="2xl">Gradient + Brand</Heading><Button>Watch</Button></Flex>'
     }
   ]
 };

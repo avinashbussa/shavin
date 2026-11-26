@@ -59,7 +59,7 @@ Great visual design fails if the copy relies on hollow marketing tropes:
 ### 1. Headline Formulas
 - **Outcome without Friction**: *"Production-grade design systems without design drift."*
 - **Category for Audience**: *"The zero-hallucination React primitive engine for AI-assisted engineering teams."*
-- **Speed to Result**: *"Ship accessible, WCAG AAA compliant interfaces in minutes, not quarters."*
+- **Speed to Result**: *"Ship interfaces that pass WCAG 2.2 AA in minutes, not quarters."*
 
 ### 2. Copy Invariants
 - **Write benefits before features**: Features are what the code does; benefits are what that means for the developer's velocity.

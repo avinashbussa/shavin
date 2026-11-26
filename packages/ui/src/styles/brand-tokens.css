@@ -5,7 +5,7 @@
    system's semantic tokens. Enter ONLY hex values in the INPUT section
    below — the `shavin-brand-tokens` predev script auto-computes every
    derived token (fg, hover, contrast, text, subtle backgrounds) using
-   the same WCAG luminance engine that powers --accent, then writes the
+   the same WCAG luminance engine that powers --brand, then writes the
    results to the GENERATED section.
 
    After the first `npm run dev`, this file stays static in source —
@@ -25,17 +25,18 @@
 .light {
 
   /* ─── INPUT ───────────────────────────────────────────────────────────
-     Enter hex values only. Do not delete --brand-primary.
-     --brand-primary always aliases --accent by default so the system
-     works with zero customization. Override with a #hex to set a
-     custom primary that still gets all derived tokens.
+     Your main brand colour is --brand (bg-brand, text-brand-contrast …),
+     set with <ThemeProvider brandColor>; it is not set here.
+     Add extra colours as hex values, e.g. --brand-coral: #FF6B6B;
+     fg, hover, contrast, text, subtle and on-dark/on-light are reserved
+     names: they belong to --brand itself.
      ──────────────────────────────────────────────────────────────────── */
-  --brand-primary: var(--accent);
+  /* --brand-coral: #FF6B6B; */
 
   /* ─── GENERATED ───────────────────────────────────────────────────────
      Do NOT edit — auto-computed by shavin-brand-tokens.
      ──────────────────────────────────────────────────────────────────── */
-  --brand-primary: var(--accent);
+  /* (no brand colors defined — add hex values in the INPUT section above) */
 
 }
 

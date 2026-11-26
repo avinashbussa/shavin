@@ -247,7 +247,7 @@ const cases: Array<[string, () => ReactElement]> = [
   ["TopBar", () => <UI.TopBar>Bar</UI.TopBar>],
 
   // Theme
-  ["ThemeProvider", () => <UI.ThemeProvider accentColor="grass" />],
+  ["ThemeProvider", () => <UI.ThemeProvider brandColor="grass" />],
 ];
 
 describe("smoke: every primitive renders without throwing", () => {

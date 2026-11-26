@@ -2,7 +2,7 @@ import type { ComponentDoc } from "../../authoring/types";
 
 export const docs: ComponentDoc = {
   name: "Progress",
-  description: "Loading and task progress bar built on Radix Progress primitive supporting determinate percentages and indeterminate loading states.",
+  description: "A bar that shows how far a task has got, or a moving bar when the end isn't known. It can show a label and the percentage, or run as a thin bar across the top of the page.",
   features: [
     "Variants: bar (standard track) and top-bar (fixed top-of-viewport page loader)",
     "Sizes: sm (6px) and md (10px)",

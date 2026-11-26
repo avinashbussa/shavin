@@ -22,6 +22,8 @@ import { resolve, basename, extname } from "path";
 import { evaluateCode } from "./evaluator.mjs";
 import { autofix } from "./autofix.mjs";
 import { c, g, fmt, printBanner, printCard, padEndVisible } from "../../packages/cli/src/ui.mjs";
+import { gradeBadge } from "../../scripts/lib/grade.mjs";
+const PASS_THRESHOLD = 90;
 
 const ROOT = resolve(process.cwd());
 const BENCHMARK_PATH = resolve(ROOT, "evals/benchmarks/prompts.json");
@@ -100,7 +102,7 @@ function runEvals() {
       items: [
         { label: "File:", value: `${c.fg}${sourcePath}${c.reset}` },
         { label: "Autofix:", value: enableAutofix ? `${c.success}ENABLED (${fixesApplied.length} fixes applied)${c.reset}` : `${c.fgMuted}DISABLED${c.reset}` },
-        { label: "Score:", value: `${c.bold}${result.score >= 90 ? c.success : result.score >= 70 ? c.warning : c.error}${result.score}/100${c.reset}` },
+        { label: "Score:", value: `${c.bold}${result.score >= PASS_THRESHOLD ? c.success : result.score >= 70 ? c.warning : c.error}${result.score}/100${c.reset}` },
         { label: "Token Compliance:", value: result.isClean ? `${c.success}CLEAN (Zero Violations)${c.reset}` : `${c.error}${result.violations.length} Violations${c.reset}` },
         { label: "Coverage:", value: `${c.fg}${result.metrics.componentCoverage}%${c.reset}` },
       ],
@@ -161,13 +163,13 @@ function runEvals() {
     if (evalResult.isClean) cleanCount++;
     totalViolations += evalResult.violations.length;
 
-    const statusMark = evalResult.score >= 90
+    const statusMark = evalResult.score >= PASS_THRESHOLD
       ? `${c.success}${g.stepDone}${c.reset}`
       : evalResult.score >= 70
         ? `${c.warning}${g.stepActive}${c.reset}`
         : `${c.error}${g.stepFail}${c.reset}`;
 
-    const scoreStr = evalResult.score >= 90
+    const scoreStr = evalResult.score >= PASS_THRESHOLD
       ? `${c.bold}${c.success}${evalResult.score}/100${c.reset}`
       : evalResult.score >= 70
         ? `${c.bold}${c.warning}${evalResult.score}/100${c.reset}`
@@ -201,11 +203,11 @@ function runEvals() {
   printCard({
     title: `${c.brand}${g.brand} AI Evaluation Summary${c.reset}`,
     items: [
-      { label: "Average Score:", value: `${c.bold}${avgScore >= 90 ? c.success : c.warning}${avgScore}/100${c.reset}` },
+      { label: "Average Score:", value: `${c.bold}${avgScore >= PASS_THRESHOLD ? c.success : c.warning}${avgScore}/100${c.reset}` },
       { label: "Clean Passes:", value: `${c.bold}${c.fg}${cleanCount} / ${evaluatedCount}${c.reset} (${evaluatedCount > 0 ? Math.round((cleanCount / evaluatedCount) * 100) : 0}%)` },
       { label: "Total Violations:", value: `${totalViolations === 0 ? c.success + "0 (Zero token leaks)" : c.error + totalViolations}${c.reset}` },
       { label: "Fixtures Evaluated:", value: `${c.bold}${c.fg}${fixturesFound}${c.reset} (${fixturesMissing} missing)` },
-      { label: "Quality Grade:", value: avgScore >= 90 ? `${fmt.pass("VERIFIED AAA")} ${fmt.badge("GOLD BENCHMARK", c.success)}` : avgScore >= 80 ? `${fmt.pass("PASS")} ${fmt.badge("ACCEPTABLE", c.success)}` : fmt.fail("FAIL") },
+      { label: "Quality Grade:", value: gradeBadge(avgScore, { fmt, c }, { threshold: PASS_THRESHOLD }) },
     ],
     footer: `${c.fgSubtle}All evaluated TSX outputs tested against Shavin token invariants and layout rules.${c.reset}`,
   });

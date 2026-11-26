@@ -25,10 +25,13 @@ export const docs: ComponentDoc = {
       }
     ]
   },
+  structure: [
+    "<Skeleton className=\"h-4 w-32\" /> is one pulsing block (size it with classes); <SkeletonMimic loading={isLoading}>real markup</SkeletonMimic> turns the real children into placeholders.",
+  ],
   examples: [
     {
       title: "Pulsing Card Loading Skeleton",
-      code: '<div className="flex items-center gap-3"><Skeleton className="h-10 w-10 rounded-full" /><div className="space-y-2"><Skeleton className="h-4 w-32" /><Skeleton className="h-3 w-20" /></div></div>'
+      code: '<Flex gap="3" align="center"><Skeleton className="h-10 w-10 rounded-full" /><Skeleton className="h-4 w-32" /></Flex>'
     }
   ]
 };

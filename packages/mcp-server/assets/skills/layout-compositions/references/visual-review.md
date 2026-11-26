@@ -23,7 +23,7 @@ Score each viewport. Any "no" is a defect to fix, not a note.
 | Rhythm | Section heights and densities alternate; no three similar sections in a row |
 | Motion | Scroll through once. Reveals fire, nothing stays hidden, the signature scene (if any) works and reduced motion shows the final state |
 | Copy | Specific to the product, no filler, no invented proof |
-| Mobile | No horizontal scroll, tap targets at least 44px, nothing clipped |
+| Mobile | No horizontal scroll, tap targets at least 24px (Shavin controls reach 44px on touch by themselves), nothing clipped (a wide table scrolls inside its own region) |
 
 Content-sized UI (cards, panels, product mockups) is never forced into a fixed aspect ratio. Fix the height to the tallest state and centre the others, or let each keep its natural height.
 

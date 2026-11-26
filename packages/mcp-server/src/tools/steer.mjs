@@ -5,19 +5,18 @@ import { validateCode, validateCodeDense, autofixCode } from "./validation.mjs";
 import { extractProjectContext } from "../context.mjs";
 
 /**
- * SHAVIN.md starter: the shavin-core template, from the project's @shavin/skills, this
- * package's bundled skills, or the monorepo source (the same file `shavin init` writes).
+ * SHAVIN.md starter: the SHAVIN.md template (shipped in this package's assets, or this repository's source), this
+ * package's bundled skills, or this repository's source (the same file `shavin init` writes).
  */
 function shavinTemplate(targetDir) {
   const candidates = [
-    resolve(targetDir, "node_modules", "@shavin", "skills", "skills", "shavin-core", "SHAVIN.template.md"),
-    fileURLToPath(new URL("../../assets/skills/shavin-core/SHAVIN.template.md", import.meta.url)),
-    fileURLToPath(new URL("../../../skills/skills/shavin-core/SHAVIN.template.md", import.meta.url)),
+    fileURLToPath(new URL("../../assets/SHAVIN.template.md", import.meta.url)),
+    fileURLToPath(new URL("../../../skills/agents/SHAVIN.template.md", import.meta.url)),
   ];
   const found = candidates.find(existsSync);
   const name = basename(targetDir);
   if (found) return readFileSync(found, "utf8").replace("[project name]", name);
-  return `# Shavin Project Design Manifest\n\n## 1. Product & Domain Context\n- **Product Name**: ${name}\n- **Domain**: Web Application\n\n## 2. Design System Configuration\n- **Engine**: \`@shavin/ui\`\n- **Primary Accent**: \`monochrome\`\n- **Neutral Scale**: \`zinc\`\n- **Theme Mode**: \`dark-first\`\n- **Scaling / Density**: \`95%\`\n- **Base Radius**: \`medium\`\n- **Panel Background**: \`solid\`\n\n## 3. Site & Mode Defaults\n- **Site Type**: \`MARKETING\`\n- **Default Visual Mode**: \`MARKETING\`\n`;
+  return `# Shavin Project Design Manifest\n\n## 1. Product & Domain Context\n- **Product Name**: ${name}\n- **Domain**: Web Application\n\n## 2. Design System Configuration\n- **Engine**: \`@shavin/ui\`\n- **Primary Brand**: \`UNSET\`\n- **Display / Body Font**: \`UNSET\`\n- **Neutral Scale**: \`zinc\`\n- **Theme Mode**: \`AUTO\`\n- **Scaling / Density**: \`100%\`\n- **Base Radius**: \`medium\`\n- **Panel Background**: \`solid\`\n\n## 3. Site & Mode Defaults\n- **Site Type**: \`AUTO\`\n- **Default Visual Mode**: \`AUTO\`\n`;
 }
 
 export function detectDomainIntent(code = "") {
@@ -40,7 +39,7 @@ export function detectDomainIntent(code = "") {
     return {
       mode: "STRUCTURAL (Dashboard / App)",
       skill: "shavin-app",
-      guidance: "Use AppFrame / SidebarLayout, high density (scaling: 95%), concentric panel-p5 nesting, text-fg-subtle for secondary body, and explicit loading Skeleton states.",
+      guidance: "Use AppFrame / SidebarLayout, optionally high density (scaling: 95%; default is 100%), concentric panel-p5 nesting, text-fg-subtle for secondary body, and explicit loading Skeleton states.",
     };
   }
   if (/hero|pricing|faq|testimonial|marquee|bento|landing|cta|feature|pitch|tagline/i.test(lower)) {

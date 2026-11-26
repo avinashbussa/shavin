@@ -18,4 +18,4 @@ Start with the root [README](../README.md), then [CONTRIBUTING](../CONTRIBUTING.
 
 ## Not covered here
 
-Proprietary upstream parts of the monorepo and the hosted services are not open source, so they are not documented here. Ideas and bug reports for the open packages go in GitHub issues.
+The proprietary parts of Shavin and the hosted services are not open source, so they are not documented here. Ideas and bug reports for the open packages go in GitHub issues.

@@ -212,7 +212,7 @@ describe("StudioRelay: connect", () => {
 
     // Simulate studio_ready event after a brief delay
     setTimeout(() => {
-      mockChannel._simulateEvent("studio_ready", { blocks: [], theme: { accent: "grass" } });
+      mockChannel._simulateEvent("studio_ready", { blocks: [], theme: { brand: "grass" } });
     }, 50);
 
     const result = await connectPromise;
@@ -420,7 +420,7 @@ describe("StudioRelay: setTheme", () => {
     await connectPromise;
     relay._lastStudioEventTs = Date.now();
 
-    const theme = { accent: "blue", dark: true, radius: "large" };
+    const theme = { brand: "blue", dark: true, radius: "large" };
     const result = await relay.setTheme(theme);
     expect(result.applied).toBe(true);
     expect(result.theme).toEqual(theme);
@@ -459,14 +459,14 @@ describe("StudioRelay: getState", () => {
     setTimeout(() => {
       mockChannel._simulateEvent("canvas_state", {
         blocks: [{ id: "1", type: "Card", props: {}, children: [] }],
-        theme: { accent: "grass" },
+        theme: { brand: "grass" },
       });
     }, 50);
 
     const state = await statePromise;
     expect(state.blocks).toBeDefined();
     expect(state.blocks.length).toBe(1);
-    expect(state.theme.accent).toBe("grass");
+    expect(state.theme.brand).toBe("grass");
   });
 });
 
@@ -713,7 +713,8 @@ describe("StudioRelay: liveness check (_ensureLive)", () => {
     ).rejects.toThrow("Studio connection lost");
 
     expect(relay.connected).toBe(false);
-  });
+    // Waits out the real liveness timeout (about 3 s), so it needs headroom over the 5 s default on a loaded runner.
+  }, 20_000);
 });
 
 describe("StudioRelay: session stays alive (regression)", () => {
@@ -777,6 +778,76 @@ describe("StudioRelay: session stays alive (regression)", () => {
     expect(ids).toHaveLength(2);
     expect(ids.every((i) => typeof i === "string" && i.length > 8)).toBe(true);
     expect(new Set(ids).size).toBe(2);
+    relay._stopHeartbeat();
+  });
+});
+
+describe("StudioRelay: duplicate_frame and export_frame", () => {
+  async function make() {
+    const relay = new relayModule.StudioRelay({ supabaseUrl: "https://test.supabase.co", supabaseKey: "test-key" });
+    const p = relay.connect("K7M2X9", { timeoutMs: 5000 });
+    setTimeout(() => mockChannel._simulateEvent("studio_ready", {}), 20);
+    await p;
+    relay._lastStudioEventTs = Date.now();
+    return relay;
+  }
+  // The command goes out after the liveness check resolves, so wait for it.
+  const lastSent = async (type: string) => {
+    await vi.waitFor(() => expect(mockChannel._sentMessages.some((m: any) => m.payload?.type === type)).toBe(true));
+    return mockChannel._sentMessages.filter((m: any) => m.payload?.type === type).at(-1).payload;
+  };
+
+  it("duplicateFrame sends canvas_duplicate_frame and resolves on frame_duplicated", async () => {
+    const relay = await make();
+    const pending = relay.duplicateFrame({ frameId: "frame-1", title: "Variant", count: 2 });
+    const sent = await lastSent("canvas_duplicate_frame");
+    expect(sent.payload).toMatchObject({ frameId: "frame-1", title: "Variant", count: 2 });
+    mockChannel._simulateEvent("frame_duplicated", { eventId: sent.payload.eventId, frames: [{ id: "frame-9", title: "Variant 1", bounds: { x: 1, y: 2, width: 3, height: 4 } }] });
+    const res = await pending;
+    expect(res.frames[0].id).toBe("frame-9");
+    relay._stopHeartbeat();
+  });
+
+  it("ignores answers for another eventId and rejects on a Studio error", async () => {
+    const relay = await make();
+    const pending = relay.duplicateFrame({});
+    const sent = await lastSent("canvas_duplicate_frame");
+    mockChannel._simulateEvent("frame_duplicated", { eventId: "other", frames: [] });
+    mockChannel._simulateEvent("frame_export_error", { eventId: sent.payload.eventId, error: 'No frame "x" to duplicate.' });
+    await expect(pending).rejects.toThrow("No frame");
+    relay._stopHeartbeat();
+  });
+
+  it("resizeFrame sends canvas_resize_frame and resolves on frame_resized", async () => {
+    const relay = await make();
+    const pending = relay.resizeFrame({ frameId: "frame-1", device: "social-square" });
+    const sent = await lastSent("canvas_resize_frame");
+    expect(sent.payload).toMatchObject({ frameId: "frame-1", device: "social-square" });
+    expect(sent.payload).not.toHaveProperty("width");
+    mockChannel._simulateEvent("frame_resized", { eventId: sent.payload.eventId, frame: { id: "frame-1", title: "Post", bounds: { x: 0, y: 0, width: 1080, height: 1080 }, presetDevice: "social-square" } });
+    expect((await pending).frame.bounds).toMatchObject({ width: 1080, height: 1080 });
+    relay._stopHeartbeat();
+  });
+
+  it("exportFrame reassembles out-of-order chunks into the image bytes", async () => {
+    const relay = await make();
+    const bytes = Buffer.from("PNGDATA-1234567890");
+    const b64 = bytes.toString("base64");
+    const pending = relay.exportFrame({ frameId: "f", format: "png", scale: 2 });
+    const sent = await lastSent("canvas_export_frame");
+    expect(sent.payload).toMatchObject({ frameId: "f", format: "png", scale: 2 });
+    const meta = { eventId: sent.payload.eventId, format: "png", mime: "image/png", width: 2160, height: 2700, scale: 2, frameId: "f", title: "Post" };
+    mockChannel._simulateEvent("frame_export_chunk", { ...meta, index: 1, total: 2, data: b64.slice(10) });
+    mockChannel._simulateEvent("frame_export_chunk", { ...meta, index: 0, total: 2, data: b64.slice(0, 10) });
+    const img = await pending;
+    expect(img.buffer.equals(bytes)).toBe(true);
+    expect(img).toMatchObject({ width: 2160, height: 2700, mime: "image/png" });
+    relay._stopHeartbeat();
+  });
+
+  it("exportFrame times out with a hint about a hidden tab", async () => {
+    const relay = await make();
+    await expect(relay.exportFrame({}, 30)).rejects.toThrow("visible");
     relay._stopHeartbeat();
   });
 });

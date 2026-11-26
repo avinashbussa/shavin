@@ -8,7 +8,8 @@
 
    Usage (Tailwind v4 projects with OKLCH color space):
      @import "tailwindcss";
-     @import "@shavin/ui/global-oklch.css";
+     @import "@shavin/ui/tokens-oklch.css";
+     @import "@shavin/ui/base-oklch.css" layer(base);
      @import "@shavin/ui/theme-v4-oklch.css";
 
    The `inline` option inlines var() references directly into generated
@@ -27,19 +28,22 @@
   --color-surface:             var(--bg-surface);
   --color-surface-hover:       var(--bg-surface-hover);
   --color-elevated:            var(--bg-elevated);
+  --color-elevated-hover:      var(--bg-elevated-hover);
   --color-hairline:            var(--hairline);
   --color-hairline-strong:     var(--hairline-strong);
   --color-border-control:      var(--border-control);
   --color-fg:                  var(--fg);
   --color-fg-muted:            var(--fg-muted);
   --color-fg-subtle:           var(--fg-subtle);
-  --color-accent:              var(--accent);
-  --color-accent-hover:        var(--accent-hover);
-  --color-accent-fg:           var(--accent-fg);
-  --color-accent-contrast:     var(--accent-contrast);
-  --color-accent-text:         var(--accent-text);
-  --color-accent-subtle:       color-mix(in oklch, var(--accent) 12%, transparent);
-  --color-accent-subtle-hover: color-mix(in oklch, var(--accent) 18%, transparent);
+  --color-brand:              var(--brand);
+  --color-brand-hover:        var(--brand-hover);
+  --color-brand-solid:        var(--brand-solid);
+  --color-brand-solid-hover:  var(--brand-solid-hover);
+  --color-brand-fg:           var(--brand-fg);
+  --color-brand-contrast:     var(--brand-contrast);
+  --color-brand-text:         var(--brand-text);
+  --color-brand-subtle:       color-mix(in oklch, var(--brand) 12%, transparent);
+  --color-brand-subtle-hover: color-mix(in oklch, var(--brand) 18%, transparent);
   --color-success:             var(--success);
   --color-success-fg:          var(--success-fg);
   --color-warning:             var(--warning);
@@ -64,7 +68,7 @@
   --color-code-attr:           var(--code-attr);
 
   /* ── Fonts → font-display, font-sans ─────────────────────────────────────── */
-  --font-display:              var(--font-display), "Space Grotesk", sans-serif;
+  --font-display:              var(--font-display), "Rethink Sans", sans-serif;
   --font-subheading:           var(--font-subheading, var(--font-body)), ui-sans-serif, system-ui, sans-serif;
   --font-sans:                 var(--font-body), ui-sans-serif, system-ui, sans-serif;
 
@@ -77,6 +81,8 @@
   --radius-panel-p5:           max(min(var(--radius-lg), calc(var(--radius-panel) / 2)), calc(var(--radius-panel) - 1.25rem));
   --radius-panel-p6:           max(min(var(--radius-lg), calc(var(--radius-panel) / 2)), calc(var(--radius-panel) - 1.5rem));
   --radius-panel-p8:           max(min(var(--radius-lg), calc(var(--radius-panel) / 2)), calc(var(--radius-panel) - 2rem));
+  /* One step inside a control track (SegmentedControl): max(radius-lg / 2, radius-lg - 0.25rem). */
+  --radius-control-inner:      max(calc(var(--radius-lg) / 2), calc(var(--radius-lg) - 0.25rem));
 
   /* ── Shadows → shadow-card, shadow-panel, shadow-modal, shadow-1..6 ── */
 

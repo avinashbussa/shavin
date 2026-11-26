@@ -3,7 +3,7 @@ import type { ComponentDoc } from "../../authoring/types";
 export const docs: ComponentDoc = {
   name: "Carousel",
   description:
-    "A responsive, accessible slider and scroll-track carousel supporting container alignment, edge gradient fades, and pagination.",
+    "A horizontal row of items users scroll through, either several cards at a time or one slide per view. Comes with previous and next buttons, dots, faded edges and optional autoplay.",
   features: [
     "Variants: cards (free-scrolling track of several items) and slider (one item per view, snap paging)",
     "alignToContainer lines the first and last items up with a Shavin container width",

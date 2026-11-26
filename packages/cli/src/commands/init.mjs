@@ -1,4 +1,5 @@
 import { existsSync, writeFileSync, readFileSync, mkdirSync } from "node:fs";
+import { relPosix } from "../lib/paths.mjs";
 import { resolve, join, basename, dirname } from "node:path";
 import { execSync } from "node:child_process";
 import { createInterface } from "node:readline";
@@ -7,6 +8,29 @@ import { fileURLToPath } from "node:url";
 import { DEFAULT_BRAND_TOKENS_CSS, parseBrandTokens, computeBrandTokens, computeBrandTokensOklch, rebuildCSS, rebuildCSOklch, generateTailwindPreset, generateThemeV4CSS, generateThemeV4CSSOklch } from "../lib/brand-tokens.mjs";
 import { detectTailwindVersion, relativeAgentsPath, relativeShavinUiPath, detectFramework } from "../lib/detect-tailwind.mjs";
 import { c, fmt, g, printBanner, printCard, startSpinner } from "../ui.mjs";
+import { SHADCN_BRIDGE_CSS, SHADCN_BRIDGE_FILE } from "../lib/shadcn-bridge.mjs";
+import {
+  GLOBAL_CSS_CANDIDATES,
+  addCssImports,
+  addTailwindPreset,
+  detectOtherUi,
+  mergeClaudeHook,
+  findGlobalCss,
+  isEsmTailwindConfig,
+  addBrandPresetRef,
+  nextTsConfigImportBreaksDev,
+  hasShavinThemeProvider,
+  isShadcnProject,
+  usesNextThemes,
+  wrapRenderCall,
+  addToastProvider,
+  hasToastProvider,
+  checkFrameworkSupport,
+} from "../lib/init-detect.mjs";
+import { detectPackageManager } from "../lib/package-manager.mjs";
+import { mcpServerEntry, isPlainNpxDefault } from "../lib/mcp-config.mjs";
+import { parseJson, readJsonFile, invalidJsonMessage } from "../lib/json-file.mjs";
+import { neutraliseStarterStyles, starterStylesAdvice } from "../lib/starter-styles.mjs";
 
 async function askYesNo(question, defaultValue = true) {
   // Non-interactive (CI, piped stdin) — return default without prompting
@@ -24,10 +48,14 @@ async function askYesNo(question, defaultValue = true) {
   });
 }
 
+const CLAUDE_BLOCK_START = "<!-- @shavin:claude -->";
+const CLAUDE_BLOCK_END = "<!-- @shavin:claude-end -->";
+const CLAUDE_BLOCK_START_RE = /<!-- @shavin:claude -->/;
+
 // ── Patch a root layout file to wrap its JSX return in <ThemeProvider> ──
 function patchLayoutWithThemeProvider(src, oklch = false) {
-  // Already has ThemeProvider — skip
-  if (src.includes("ThemeProvider")) {
+  // Already has Shavin's ThemeProvider — skip
+  if (hasShavinThemeProvider(src)) {
     return { patched: false, reason: "already-wired" };
   }
 
@@ -66,7 +94,11 @@ function patchLayoutWithThemeProvider(src, oklch = false) {
     return { patched: true, src };
   }
 
-  // 2b. Other components: wrap the return JSX
+  // 2b. App entry (Vite, plain React): wrap the JSX handed to createRoot(…).render(…).
+  const rendered = wrapRenderCall(src, providerTag);
+  if (rendered) return { patched: true, src: rendered };
+
+  // 2c. Other components: wrap the return JSX
   // Pattern 1: return ( ... );  — parenthesized return
   const parenReturn = src.match(/return\s*\(/);
   if (parenReturn) {
@@ -156,7 +188,7 @@ function wireBridgeAutoStart(cwd, framework) {
   return { status: "manual" };
 }
 
-function wireNextBridge(cwd) {
+export function wireNextBridge(cwd, nodeVersion = process.versions.node) {
   const esm = ["next.config.mjs", "next.config.ts"];
   const cjs = ["next.config.js", "next.config.cjs"];
   const existing = [...esm, ...cjs].map((f) => join(cwd, f)).find((p) => existsSync(p));
@@ -171,6 +203,14 @@ function wireNextBridge(cwd) {
   const file = basename(existing);
   let src = readFileSync(existing, "utf8");
   if (src.includes("withShavinBridge")) return { status: "already", file };
+
+  if (nextTsConfigImportBreaksDev(file, nodeVersion)) {
+    return {
+      status: "manual", file,
+      note: `Node ${nodeVersion}: Next 15 dev returns 500 on every request when ${file} imports anything on Node 22.12 and 22.13, so init left ${file} alone. Use Node 22.14 or newer, then add the import by hand; until then run the bridge with: npx @shavin/cli bridge`,
+      snippet: `import { withShavinBridge } from "@shavin/mcp/next";\n// then wrap your exported config:\nexport default withShavinBridge(yourNextConfig);`,
+    };
+  }
 
   const isEsm = file.endsWith(".mjs") || file.endsWith(".ts") || /export\s+default/.test(src);
   // Only auto-wrap the common `export default <identifier>;` shape; anything else
@@ -202,25 +242,41 @@ function wireViteBridge(cwd) {
   return { status: "manual", file, snippet: `import { shavinBridge } from "@shavin/mcp/vite";\n// add to your Vite config:\nplugins: [shavinBridge(), /* ... */]` };
 }
 
+/** package.json of the project, tolerating a BOM. A file that still does not parse stops init with the way out. */
+function readPackageJson(file) {
+  try {
+    return readJsonFile(file);
+  } catch (err) {
+    throw new Error(invalidJsonMessage(file, err, "init cannot read the project's dependencies"));
+  }
+}
+
 export async function initCommand(args = {}) {
+  // `platform` is a test seam: it picks the MCP server entry written into the IDE configs.
+  const platform = args.platform ?? process.platform;
   const { oklch = false } = args;
   const cwd = process.cwd();
-  printBanner("@shavin/cli", "Design System & AI Agent Ecosystem Initialization");
+  printBanner("@shavin/cli", "Set up Shavin in this project");
 
   let modifiedCount = 0;
 
-  // 0. Install @shavin/ui
-  const detectPM = () => {
-    if (existsSync(resolve(cwd, "pnpm-lock.yaml"))) return "pnpm";
-    if (existsSync(resolve(cwd, "yarn.lock"))) return "yarn";
-    if (existsSync(resolve(cwd, "bun.lockb"))) return "bun";
-    return "npm";
-  };
+  // Framework gate: Next.js and Vite (with React) are supported today. Check before anything is installed or
+  // written, so an unsupported project is left exactly as it was.
+  const fwInfo = detectFramework(cwd);
+  const support = checkFrameworkSupport(cwd, fwInfo);
+  if (!support.ok) {
+    const [head, ...rest] = support.lines;
+    console.error(fmt.error(head));
+    for (const line of rest) console.error(line ? `  ${line}` : "");
+    console.error("");
+    process.exit(1);
+  }
 
-  const pm = detectPM();
+  // 0. Install @shavin/ui
+  const pm = detectPackageManager(cwd);
   const pkgJsonPath = resolve(cwd, "package.json");
   const isAlreadyInstalled = existsSync(pkgJsonPath) &&
-    JSON.parse(readFileSync(pkgJsonPath, "utf8")).dependencies?.["@shavin/ui"];
+    readPackageJson(pkgJsonPath).dependencies?.["@shavin/ui"];
 
   if (!isAlreadyInstalled) {
     const installCmd = pm === "npm"
@@ -245,7 +301,6 @@ export async function initCommand(args = {}) {
   // 0b. Detect Tailwind version + framework
   const twInfo = detectTailwindVersion(cwd);
   const isTailwindV4 = twInfo.version === 4;
-  const fwInfo = detectFramework(cwd);
   console.log(fmt.subtle(`Tailwind CSS v${twInfo.version} detected (via ${twInfo.source})`));
   console.log(fmt.subtle(`Framework: ${fwInfo.framework} (via ${fwInfo.source})`));
 
@@ -258,15 +313,14 @@ export async function initCommand(args = {}) {
 
   if (tailwindPath) {
     let twSrc = readFileSync(tailwindPath, "utf8");
-    if (!twSrc.includes("tailwind-preset") && !twSrc.includes("@shavin/ui/tailwind-preset")) {
-      if (twSrc.includes("presets:")) {
-        twSrc = twSrc.replace(/presets:\s*\[/, `presets: [require("@shavin/ui/tailwind-preset"), `);
-      } else {
-        twSrc = twSrc.replace(/(module\.exports\s*=\s*\{|export\s+default\s*\{)/, `$1\n  presets: [require("@shavin/ui/tailwind-preset")],`);
-      }
-      writeFileSync(tailwindPath, twSrc, "utf8");
+    const preset = addTailwindPreset(twSrc, { esm: isEsmTailwindConfig(tailwindPath, twSrc) });
+    if (preset.changed) {
+      writeFileSync(tailwindPath, preset.src, "utf8");
       console.log(fmt.success(`Added @shavin/ui preset to ${basename(tailwindPath)}`));
       modifiedCount++;
+    } else if (!preset.already) {
+      console.log(fmt.warn(`Couldn't find where to add the preset in ${basename(tailwindPath)}. Add it by hand:`));
+      console.log(fmt.subtle(`  presets: [require("@shavin/ui/tailwind-preset")],`));
     }
     // The preset ships `content: []`; Tailwind must also scan @shavin/ui itself,
     // or the classes used inside its components are never generated.
@@ -288,26 +342,21 @@ export async function initCommand(args = {}) {
     modifiedCount++;
   }
 
-  // 2. Global CSS Stylesheet
-  const cssPaths = [
-    "src/styles/global.css",
-    "src/app/globals.css",
-    "src/index.css",
-    "styles/globals.css",
-    "styles/global.css",
-  ].map((f) => resolve(cwd, f)).find(existsSync);
-
-  if (cssPaths) {
-    let cssSrc = readFileSync(cssPaths, "utf8");
-    const stylesImport = oklch
-      ? '@import "@shavin/ui/global-oklch.css";'
-      : '@import "@shavin/ui/styles.css";';
-    if (!cssSrc.includes(stylesImport)) {
-      cssSrc = `${stylesImport}\n` + cssSrc;
-      writeFileSync(cssPaths, cssSrc, "utf8");
-      console.log(fmt.success(`Imported ${oklch ? '@shavin/ui/global-oklch.css' : '@shavin/ui/styles.css'} in ${basename(cssPaths)}`));
-      modifiedCount++;
-    }
+  // 2. Global CSS Stylesheet. The imports themselves are added in 2c, once brand-tokens.css exists,
+  // so they land together and in the documented order (after Tailwind's own import).
+  const cssPaths = findGlobalCss(cwd);
+  // Tailwind 4 loads the element defaults (body, focus ring, scrollbars) in the base layer, so utilities,
+  // including another library's such as shadcn/ui's, win over them. Tailwind 3 has no native layers:
+  // it takes styles.css, which includes them.
+  const sfx = oklch ? "-oklch" : "";
+  const stylesImport = isTailwindV4
+    ? `@import "@shavin/ui/tokens${sfx}.css";\n@import "@shavin/ui/base${sfx}.css" layer(base);`
+    : `@import "@shavin/ui/${oklch ? "global-oklch" : "styles"}.css";`;
+  if (!cssPaths) {
+    console.log(fmt.warn(`No global stylesheet found (looked for ${GLOBAL_CSS_CANDIDATES.slice(0, 4).join(", ")} and others).`));
+    console.log(fmt.subtle(`  Add these lines to the stylesheet your app loads, after @import "tailwindcss":`));
+    for (const l of stylesImport.split("\n")) console.log(fmt.subtle(`  ${l}`));
+    if (isTailwindV4) console.log(fmt.subtle(`  ${oklch ? '@import "@shavin/ui/theme-v4-oklch.css";' : '@import "@shavin/ui/theme-v4.css";'}`));
   }
 
   // 2b. Scaffold brand-tokens.css + brand-preset.mjs
@@ -327,7 +376,7 @@ export async function initCommand(args = {}) {
   }
 
   const brandCSSPath = join(brandDir, "brand-tokens.css");
-  const relPath = brandCSSPath.replace(cwd + "/", "");
+  const relPath = relPosix(cwd, brandCSSPath);
   const brandPresetPath = join(brandDir, "brand-preset.mjs");
 
   if (!existsSync(brandCSSPath)) {
@@ -356,199 +405,132 @@ export async function initCommand(args = {}) {
       const themeV4FileName = oklch ? "brand-theme-v4-oklch.css" : "brand-theme-v4.css";
       writeFileSync(join(brandDir, themeV4FileName), generatedThemeV4CSS, "utf8");
       console.log(fmt.success(`Created ${relPath} (brand color tokens — edit INPUT section to add colors)`));
-      console.log(fmt.success(`Created ${join(brandDir, themeV4FileName).replace(cwd + "/", "")} (auto-generated @theme inline CSS${oklch ? " — OKLCH" : ""})`));
+      console.log(fmt.success(`Created ${relPosix(cwd, join(brandDir, themeV4FileName))} (auto-generated @theme inline CSS${oklch ? " — OKLCH" : ""})`));
     } else {
       // v3: generate JS preset as before
       const generatedPreset = generateTailwindPreset(tokens.colorNames, tokens.aliasNames);
       writeFileSync(brandPresetPath, generatedPreset, "utf8");
       console.log(fmt.success(`Created ${relPath} (brand color tokens — edit INPUT section to add colors)`));
-      console.log(fmt.success(`Created ${brandPresetPath.replace(cwd + "/", "")} (auto-generated Tailwind preset)`));
+      console.log(fmt.success(`Created ${relPosix(cwd, brandPresetPath)} (auto-generated Tailwind preset)`));
     }
     modifiedCount++;
   } else {
-    console.log(fmt.success(`brand-tokens.css already exists at ${brandCSSPath.replace(cwd + "/", "")}`));
+    console.log(fmt.success(`brand-tokens.css already exists at ${relPosix(cwd, brandCSSPath)}`));
   }
 
-  // Also import brand-tokens.css in the global CSS (before @shavin/ui import
-  // so brand tokens are available to DS components too)
-  if (cssPaths && existsSync(brandCSSPath)) {
-    let cssSrc = readFileSync(cssPaths, "utf8");
-    // The scaffolded file is always brand-tokens.css (it holds OKLCH values in --oklch mode).
-    const brandImport = `@import "./brand-tokens.css";`;
-    const shavinImport = oklch
-      ? '@import "@shavin/ui/global-oklch.css";'
-      : '@import "@shavin/ui/styles.css";';
-    if (!cssSrc.includes(brandImport)) {
-      // Insert before the @shavin/ui import line
-      if (cssSrc.includes(shavinImport)) {
-        cssSrc = cssSrc.replace(
-          shavinImport,
-          `${brandImport}\n${shavinImport}`
-        );
-      } else {
-        // Prepend if no shavin import found
-        cssSrc = `${brandImport}\n` + cssSrc;
-      }
-      writeFileSync(cssPaths, cssSrc, "utf8");
-      console.log(fmt.success(`Imported brand-tokens.css in ${basename(cssPaths)}`));
+  // 2b2. shadcn/ui already in the project (Tailwind 4): map its variables to Shavin's tokens so one brand change restyles both.
+  const shadcnBridge = Boolean(cssPaths) && isTailwindV4 && isShadcnProject(cwd);
+  if (shadcnBridge) {
+    const bridgePath = join(dirname(cssPaths), SHADCN_BRIDGE_FILE);
+    if (!existsSync(bridgePath)) {
+      writeFileSync(bridgePath, SHADCN_BRIDGE_CSS, "utf8");
+      console.log(fmt.success(`Created ${relPosix(cwd, bridgePath)} (shadcn/ui variables follow Shavin's brand)`));
       modifiedCount++;
     }
   }
 
-  // 2c. v4-specific directives: @theme inline import + @source exclusion
-  if (isTailwindV4 && cssPaths) {
+  // 2c. Import Shavin's CSS in the global stylesheet: brand tokens, the DS styles, and on Tailwind 4
+  // the @theme bridge, the generated brand theme and @source lines. Each line is added only if missing.
+  if (cssPaths) {
     let cssSrc = readFileSync(cssPaths, "utf8");
-
-    // Add @import for the v4 theme bridge (OKLCH or RGB variant)
-    const themeV4Import = oklch
-      ? '@import "@shavin/ui/theme-v4-oklch.css";'
-      : '@import "@shavin/ui/theme-v4.css";';
-    const stylesImportStr = oklch
-      ? '@import "@shavin/ui/global-oklch.css";'
-      : '@import "@shavin/ui/styles.css";';
-    if (!cssSrc.includes(themeV4Import)) {
-      if (cssSrc.includes(stylesImportStr)) {
-        cssSrc = cssSrc.replace(
-          stylesImportStr,
-          stylesImportStr + '\n' + themeV4Import
-        );
-      } else {
-        cssSrc = themeV4Import + "\n" + cssSrc;
-      }
-    }
-
-    // Brand colours: the generated @theme inline file must load after the DS theme bridge
     const brandThemeFile = oklch ? "brand-theme-v4-oklch.css" : "brand-theme-v4.css";
-    const brandThemeImport = `@import "./${brandThemeFile}";`;
-    if (existsSync(join(dirname(cssPaths), brandThemeFile)) && !cssSrc.includes(brandThemeImport)) {
-      cssSrc = cssSrc.replace(themeV4Import, themeV4Import + "\n" + brandThemeImport);
-    }
-
-    // v4 skips node_modules when scanning for classes — register @shavin/ui
-    // explicitly so the utilities its components use are generated.
-    const uiRel = relativeShavinUiPath(cssPaths, cwd);
-    const sourceUi = `@source "${uiRel}";`;
-    const hasUiSource = /@source\s+"[^"]*@shavin\/ui[^"]*"/.test(cssSrc);
-
-    // Add @source not for .agents directory (prevents v4 scanner from
-    // reading skill markdown files and generating invalid utilities)
-    const agentsRel = relativeAgentsPath(cssPaths, cwd);
-    const sourceNot = `@source not "${agentsRel}";`;
-    const sourceLines = [
-      ...(hasUiSource ? [] : [sourceUi]),
-      ...(cssSrc.includes("@source not") ? [] : [sourceNot]),
+    const themeV4Import = oklch ? '@import "@shavin/ui/theme-v4-oklch.css";' : '@import "@shavin/ui/theme-v4.css";';
+    const lines = [
+      ...(existsSync(join(dirname(cssPaths), "brand-tokens.css")) ? ['@import "./brand-tokens.css";'] : []),
+      // A project set up before the split keeps its styles.css import; don't add the pieces next to it.
+      ...(/@import\s+["']@shavin\/ui\/(styles|global-oklch)\.css["']/.test(cssSrc) ? [] : stylesImport.split("\n")),
+      ...(isTailwindV4 ? [themeV4Import] : []),
+      ...(isTailwindV4 && existsSync(join(dirname(cssPaths), brandThemeFile)) ? [`@import "./${brandThemeFile}";`] : []),
+      ...(shadcnBridge ? [`@import "./${SHADCN_BRIDGE_FILE}";`] : []),
     ];
-    if (sourceLines.length) {
-      // Add after the last @import line
-      const imports = [...cssSrc.matchAll(/@import\s.+;/g)];
-      if (imports.length > 0) {
+    const { src: withImports, added } = addCssImports(cssSrc, lines);
+    cssSrc = withImports;
+
+    // The create-next-app starter styles (Arial on plain white) come after Shavin's imports and win over them.
+    const starter = neutraliseStarterStyles(cssSrc);
+    cssSrc = starter.css;
+    if (starter.status === "edited") console.log(fmt.warn(starterStylesAdvice(relPosix(cwd, cssPaths))));
+
+    const sourceAdded = [];
+    if (isTailwindV4) {
+      // v4 skips node_modules when scanning for classes: register @shavin/ui so its components' utilities
+      // are generated, and keep the scanner out of .agents/ and .claude/ (skill markdown would produce bogus utilities).
+      const uiRel = relativeShavinUiPath(cssPaths, cwd);
+      const skillDirs = [".agents", ".claude"].map((f) => relativeAgentsPath(cssPaths, cwd, f));
+      const sourceLines = [
+        ...(/@source\s+"[^"]*@shavin\/ui[^"]*"/.test(cssSrc) ? [] : [`@source "${uiRel}";`]),
+        ...skillDirs.filter((rel) => !cssSrc.includes(`@source not "${rel}"`)).map((rel) => `@source not "${rel}";`),
+      ];
+      if (sourceLines.length) {
+        const imports = [...cssSrc.matchAll(/@import\s[^;]+;/g)];
         const last = imports[imports.length - 1];
-        cssSrc = cssSrc.slice(0, last.index + last[0].length) +
-                "\n" + sourceLines.join("\n") +
-                cssSrc.slice(last.index + last[0].length);
-      } else {
-        cssSrc = sourceLines.join("\n") + "\n" + cssSrc;
+        const at = last ? last.index + last[0].length : 0;
+        cssSrc = cssSrc.slice(0, at) + (at ? "\n" : "") + sourceLines.join("\n") + (at ? "" : "\n") + cssSrc.slice(at);
+        sourceAdded.push(...sourceLines);
       }
     }
 
-    writeFileSync(cssPaths, cssSrc, "utf8");
-    console.log(fmt.success(`Added ${oklch ? '@shavin/ui/theme-v4-oklch.css' : '@shavin/ui/theme-v4.css'} import for Tailwind v4`));
-    if (!hasUiSource) console.log(fmt.success(`Added @source "${uiRel}" (v4 skips node_modules — needed for @shavin/ui component classes)`));
-    console.log(fmt.success(`Added @source not "${agentsRel}" (excludes skill docs from v4 scanner)`));
-    modifiedCount++;
-  }
-
-  // Add brand:gen + brand:check scripts to package.json
-  if (existsSync(pkgJsonPath)) {
-    let pkgChanged = false;
-    const pkg = JSON.parse(readFileSync(pkgJsonPath, "utf8"));
-    if (!pkg.scripts) pkg.scripts = {};
-
-    const oklchFlag = oklch ? " --oklch" : "";
-    if (!pkg.scripts["brand:gen"]) {
-      pkg.scripts["brand:gen"] = `npx @shavin/cli brand${oklchFlag}`;
-      pkgChanged = true;
-    }
-    if (!pkg.scripts["brand:check"]) {
-      pkg.scripts["brand:check"] = `npx @shavin/cli brand --check${oklchFlag}`;
-      pkgChanged = true;
-    }
-    // Wire predev hook — fires brand:gen before every `npm run dev`
-    if (!pkg.scripts["predev"]) {
-      pkg.scripts["predev"] = "npm run brand:gen";
-      pkgChanged = true;
-    } else if (!pkg.scripts["predev"].includes("brand:gen")) {
-      // Prepend brand:gen to existing predev
-      pkg.scripts["predev"] = `npm run brand:gen && ${pkg.scripts["predev"]}`;
-      pkgChanged = true;
-    }
-    // Wire prebuild hook — ensures production builds always have fresh tokens
-    if (!pkg.scripts["prebuild"]) {
-      pkg.scripts["prebuild"] = "npm run brand:gen";
-      pkgChanged = true;
-    } else if (!pkg.scripts["prebuild"].includes("brand:gen")) {
-      pkg.scripts["prebuild"] = `npm run brand:gen && ${pkg.scripts["prebuild"]}`;
-      pkgChanged = true;
-    }
-
-    if (pkgChanged) {
-      writeFileSync(pkgJsonPath, JSON.stringify(pkg, null, 2) + "\n", "utf8");
-      console.log(fmt.success(`Added brand:gen + brand:check + predev + prebuild scripts to package.json`));
+    if (added.length || sourceAdded.length || starter.status === "fixed") {
+      writeFileSync(cssPaths, cssSrc, "utf8");
+      const rel = relPosix(cwd, cssPaths);
+      const parts = [...added, ...sourceAdded].map((l) => l.replace(/;$/, ""));
+      if (starter.status === "fixed") parts.push("replaced the create-next-app starter styles (Arial on white) with the Shavin canvas, text and font tokens");
+      console.log(fmt.success(`Updated ${rel}: ${parts.join(", ")}`));
       modifiedCount++;
+    } else {
+      console.log(fmt.success(`${relPosix(cwd, cssPaths)} already imports Shavin's CSS`));
     }
   }
 
   // Merge brand-preset into Tailwind config
   if (tailwindPath && existsSync(brandPresetPath)) {
     let twSrc = readFileSync(tailwindPath, "utf8");
-    const brandPresetImport = tailwindPath.endsWith(".ts")
-      ? `import brandPreset from "./${brandPresetPath.replace(cwd + "/", "")}";`
-      : `const brandPreset = require("./${brandPresetPath.replace(cwd + "/", "")}");`;
+    // brand-preset.mjs is an ES module: import it in TS/ESM configs; in a CommonJS config require()
+    // returns its namespace, so take `.default` (Tailwind does not unwrap it on presets).
+    const brandPresetRel = `./${relPosix(cwd, brandPresetPath)}`;
+    const esm = tailwindPath.endsWith(".ts") || isEsmTailwindConfig(tailwindPath, twSrc);
+    const brandPresetImport = esm
+      ? `import brandPreset from "${brandPresetRel}";`
+      : `const brandPreset = require("${brandPresetRel}").default;`;
 
     if (!twSrc.includes("brand-preset") && !twSrc.includes("brandPreset")) {
-      // Add the import/require after existing imports
-      if (twSrc.includes("import")) {
-        // TS/ESM: add after last import
-        const importRegex = /^import\s.+$/gm;
-        const imports = [...twSrc.matchAll(importRegex)];
-        if (imports.length > 0) {
-          const last = imports[imports.length - 1];
-          twSrc = twSrc.slice(0, last.index + last[0].length) +
-            "\n" + brandPresetImport +
-            twSrc.slice(last.index + last[0].length);
-        }
-      } else {
-        // CJS: add after first require or at top
-        const requireRegex = /^const\s.+require\(.+\);?\s*$/gm;
-        const requires = [...twSrc.matchAll(requireRegex)];
-        if (requires.length > 0) {
-          const last = requires[requires.length - 1];
-          twSrc = twSrc.slice(0, last.index + last[0].length) +
-            "\n" + brandPresetImport +
-            twSrc.slice(last.index + last[0].length);
-        } else {
-          twSrc = brandPresetImport + "\n" + twSrc;
-        }
-      }
-
-      // Add brandPreset to presets array
-      if (twSrc.includes("presets:")) {
-        // Check if shavin preset is already there and add after it
-        if (twSrc.includes("shavin/ui/tailwind-preset") || twSrc.includes("tailwind-preset")) {
-          twSrc = twSrc.replace(
-            /(presets:\s*\[.*?(?:tailwind-preset|shavin\/ui\/tailwind-preset).*?)(\s*\])/,
-            `$1, brandPreset$2`
-          );
-        } else {
-          twSrc = twSrc.replace(/presets:\s*\[/, `presets: [brandPreset, `);
-        }
-      }
+      // The import/require is chosen by the config's real module format, never by the word "import" appearing anywhere
+      // (the stock `tailwindcss init` JSDoc line `@type {import('tailwindcss').Config}` is not an ES import).
+      twSrc = addBrandPresetRef(twSrc, brandPresetImport, { esm });
 
       writeFileSync(tailwindPath, twSrc, "utf8");
       console.log(fmt.success(`Merged brand-preset into ${basename(tailwindPath)}`));
       modifiedCount++;
     }
   }
+
+  // Brand scripts. With @shavin/cli installed locally they run its `shavin` binary, and predev/prebuild
+  // regenerate the brand tokens; without it, builds must not depend on fetching the CLI with npx, so only
+  // the manual scripts are added.
+  const wireBrandScripts = (cliLocal) => {
+    if (!existsSync(pkgJsonPath)) return;
+    const pkg = readPackageJson(pkgJsonPath);
+    pkg.scripts ??= {};
+    const before = JSON.stringify(pkg.scripts);
+    const oklchFlag = oklch ? " --oklch" : "";
+    const bin = cliLocal ? "shavin" : "npx @shavin/cli";
+    pkg.scripts["brand:gen"] ??= `${bin} brand${oklchFlag}`;
+    pkg.scripts["brand:check"] ??= `${bin} brand --check${oklchFlag}`;
+    if (cliLocal) {
+      for (const hook of ["predev", "prebuild"]) {
+        const cur = pkg.scripts[hook];
+        if (!cur) pkg.scripts[hook] = "npm run brand:gen";
+        else if (!cur.includes("brand:gen")) pkg.scripts[hook] = `npm run brand:gen && ${cur}`;
+      }
+    }
+    if (JSON.stringify(pkg.scripts) === before) return;
+    writeFileSync(pkgJsonPath, JSON.stringify(pkg, null, 2) + "\n", "utf8");
+    console.log(fmt.success(cliLocal
+      ? `Added brand:gen and brand:check to package.json, run before dev and build`
+      : `Added brand:gen and brand:check to package.json`));
+    if (!cliLocal) console.log(fmt.subtle(`  Run npm run brand:gen after editing brand-tokens.css, or install @shavin/cli to run it before every dev and build.`));
+    modifiedCount++;
+  };
 
   // 3. Scaffold <ThemeProvider> in root layout (mandatory — activates theme config + ShavinDevInspector)
   const layoutCandidates = [
@@ -571,28 +553,61 @@ export async function initCommand(args = {}) {
   const layoutPath = layoutCandidates.find(existsSync);
   let themeProviderAdded = false;
 
+  const shadcn = isShadcnProject(cwd);
+  if (shadcn) {
+    if (isTailwindV4) {
+      console.log(fmt.subtle(`shadcn/ui detected (components.json). Shavin uses its own variable names and loads its element defaults in Tailwind's base layer, so both libraries work side by side.`));
+    } else {
+      console.log(fmt.warn(`shadcn/ui detected (components.json). On Tailwind 3 Shavin's element defaults are not layered and can override shadcn's base styles.`));
+      console.log(fmt.subtle(`  Review ${cssPaths ? relPosix(cwd, cssPaths) : "your global stylesheet"} before shipping, or move to Tailwind 4.`));
+    }
+  }
+
   if (layoutPath) {
     let layoutSrc = readFileSync(layoutPath, "utf8");
-    if (layoutSrc.includes("ThemeProvider")) {
-      console.log(fmt.success(`\u2713 ThemeProvider already wired in ${basename(layoutPath)}`));
+    if (hasShavinThemeProvider(layoutSrc)) {
+      console.log(fmt.success(`ThemeProvider already wired in ${basename(layoutPath)}`));
       themeProviderAdded = true;
+    } else if (shadcn || usesNextThemes(layoutSrc) || /\bThemeProvider\b/.test(layoutSrc)) {
+      // Another theme provider (next-themes, shadcn's theme-provider) already owns the .dark class;
+      // Shavin's would fight it. Shavin's components follow .dark on their own.
+      console.log(fmt.warn(`${basename(layoutPath)} already has a theme provider, so Shavin's ThemeProvider was not added.`));
+      console.log(fmt.subtle(`  Shavin follows the .dark class your provider sets. To use Shavin's theme settings or the Dev Inspector,`));
+      console.log(fmt.subtle(`  wrap your app in <ThemeProvider> from "@shavin/ui" and remove the other one.`));
     } else {
       const result = patchLayoutWithThemeProvider(layoutSrc, oklch);
       if (result.patched) {
         writeFileSync(layoutPath, result.src, "utf8");
-        console.log(fmt.success(`\u2713 Added <ThemeProvider> to ${basename(layoutPath)}`));
+        console.log(fmt.success(`Added <ThemeProvider> to ${basename(layoutPath)}`));
         console.log(fmt.subtle(`Ensure your entire app sits inside <ThemeProvider> — ShavinDevInspector auto-mounts in dev`));
         themeProviderAdded = true;
         modifiedCount++;
       } else {
-        console.log(fmt.warn(`\u26a0 Could not auto-detect JSX return pattern in ${basename(layoutPath)} (${result.reason})`));
+        console.log(fmt.warn(`Could not auto-detect JSX return pattern in ${basename(layoutPath)} (${result.reason})`));
         console.log(fmt.subtle(`Manually add to ${basename(layoutPath)}:`));
         console.log(fmt.subtle(`1. import { ThemeProvider } from "@shavin/ui"`));
         console.log(fmt.subtle(`2. Wrap your entire app in <ThemeProvider>...</ThemeProvider>`));
       }
     }
+    // 3b. ToastProvider inside ThemeProvider: useToast() works with no setup (success and error states).
+    if (themeProviderAdded) {
+      const current = readFileSync(layoutPath, "utf8");
+      if (hasToastProvider(current)) {
+        console.log(fmt.success(`ToastProvider already wired in ${basename(layoutPath)}`));
+      } else {
+        const toast = addToastProvider(current);
+        if (toast.patched) {
+          writeFileSync(layoutPath, toast.src, "utf8");
+          console.log(fmt.success(`Added <ToastProvider> inside <ThemeProvider> in ${basename(layoutPath)}, so useToast() works anywhere`));
+          modifiedCount++;
+        } else {
+          console.log(fmt.warn(`Could not add <ToastProvider> to ${basename(layoutPath)} (${toast.reason})`));
+          console.log(fmt.subtle(`  Add it yourself: import { ToastProvider } from "@shavin/ui" and render <ToastProvider>{children}</ToastProvider> directly inside <ThemeProvider>.`));
+        }
+      }
+    }
   } else {
-    console.log(fmt.warn(`\u26a0 No root layout file found (checked app/layout, pages/_app, src/App, app/root)`));
+    console.log(fmt.warn(`No root layout file found (checked app/layout, pages/_app, src/App, app/root)`));
     console.log(fmt.subtle(`Manually add to your root layout:`));
     console.log(fmt.subtle(`1. import { ThemeProvider } from "@shavin/ui"`));
     console.log(fmt.subtle(`2. Wrap your entire app in <ThemeProvider>...</ThemeProvider>`));
@@ -601,12 +616,16 @@ export async function initCommand(args = {}) {
   // 4. SHAVIN.md Project Brain
   const targetShavinMd = resolve(cwd, "SHAVIN.md");
   if (!existsSync(targetShavinMd)) {
-    // Generated by scripts/gen-agents.mjs from @shavin/skills' shavin-core/SHAVIN.template.md,
+    // Generated by scripts/gen-agents.mjs from packages/skills/agents/SHAVIN.template.md,
     // the same template the MCP shavin_steer init_brain action uses.
     const shavinTemplatePath = fileURLToPath(new URL("../templates/SHAVIN.md", import.meta.url));
-    const defaultShavinMd = readFileSync(shavinTemplatePath, "utf8").replace("[project name]", basename(cwd));
+    const other = detectOtherUi(cwd);
+    const defaultShavinMd = readFileSync(shavinTemplatePath, "utf8")
+      .replace("[project name]", basename(cwd))
+      .replace("- **Other UI library**: `none`", `- **Other UI library**: \`${other.libs.length ? other.libs.join(", ") : "none"}\``)
+      .replace("- **Legacy paths**: `none`", `- **Legacy paths**: \`${other.legacyPaths.length ? other.legacyPaths.join(", ") : "none"}\``);
     writeFileSync(targetShavinMd, defaultShavinMd, "utf8");
-    console.log(fmt.success(`Created SHAVIN.md (Persistent Project Design Brain)`));
+    console.log(fmt.success(`Created SHAVIN.md (your project's design brief for agents)`));
     modifiedCount++;
   }
 
@@ -629,19 +648,20 @@ export async function initCommand(args = {}) {
     writeFileSync(targetConfig, JSON.stringify({
       version: "0.1.0",
       engine: "@shavin/ui",
-      presets: { accentColor: "monochrome", grayColor: "zinc", radius: "medium", scaling: "95%" },
+      presets: { brandColor: "monochrome", grayColor: "zinc", radius: "medium", scaling: "100%" },
+      brandConfirmed: false,
       initializedAt: new Date().toISOString(),
     }, null, 2), "utf8");
     console.log(fmt.success(`Initialized .shavin/config.json`));
     modifiedCount++;
   }
 
-  // 6. Install AI Agent Ecosystem (@shavin/mcp + @shavin/skills + @shavin/cli)
+  // 6. Install the agent tools (@shavin/mcp + @shavin/skills)
   const mcpPkgName = "@shavin/mcp";
   const skillsPkgName = "@shavin/skills";
   const cliPkgName = "@shavin/cli";
 
-  const existingPkg = existsSync(pkgJsonPath) ? JSON.parse(readFileSync(pkgJsonPath, "utf8")) : {};
+  const existingPkg = existsSync(pkgJsonPath) ? readPackageJson(pkgJsonPath) : {};
   const allDeps = { ...(existingPkg.dependencies || {}), ...(existingPkg.devDependencies || {}) };
 
   const mcpAlreadyInstalled = Boolean(allDeps[mcpPkgName]);
@@ -650,13 +670,14 @@ export async function initCommand(args = {}) {
 
   let mcpInstalled = mcpAlreadyInstalled;
   let skillsInstalled = skillsAlreadyInstalled;
+  let cliInstalled = Boolean(allDeps[cliPkgName]);
 
   if (allAiAlreadyInstalled) {
-    console.log(fmt.success(`AI Agent Ecosystem (@shavin/mcp + @shavin/skills) already installed`));
+    console.log(fmt.success(`@shavin/mcp and @shavin/skills already installed`));
   } else {
     console.log(""); // spacing before prompt
     const shouldInstallAi = await askYesNo(
-      "  Install AI Agent Ecosystem (@shavin/mcp + @shavin/skills)? [recommended] — enables IDE MCP tools, context extraction & agent design rules",
+      "  Install the agent tools (@shavin/mcp and @shavin/skills)? Recommended: they give your editor's AI the Shavin MCP server and design rules.",
       true
     );
 
@@ -676,17 +697,20 @@ export async function initCommand(args = {}) {
 
       try {
         execSync(aiInstallCmd, { cwd, stdio: "inherit" });
-        console.log(fmt.success(`Installed AI Agent Ecosystem (${pkgsToInstall.join(", ")})`));
+        console.log(fmt.success(`Installed ${pkgsToInstall.join(", ")}`));
         mcpInstalled = true;
         skillsInstalled = true;
+        if (pkgsToInstall.includes(cliPkgName)) cliInstalled = true;
         modifiedCount++;
       } catch {
         console.error(fmt.error(`Failed to install AI packages. Install manually with:\n    ${aiInstallCmd}`));
       }
     } else {
-      console.log(fmt.warn(`Skipped AI ecosystem. Install it later with:\n    ${pm} install -D ${mcpPkgName} ${skillsPkgName}`));
+      console.log(fmt.warn(`Skipped the agent tools. Install them later with:\n    ${pm} install -D ${mcpPkgName} ${skillsPkgName}`));
     }
   }
+
+  wireBrandScripts(cliInstalled);
 
   // Deploy skills to .agents/skills/ via the package's installer
   let skillsDeployed = false;
@@ -705,6 +729,20 @@ export async function initCommand(args = {}) {
     }
   }
 
+  // Edit hook: Claude Code runs validate_code's rules on every .tsx/.jsx the agent writes (needs the local @shavin/mcp bin).
+  if (mcpInstalled) {
+    const settingsPath = resolve(cwd, ".claude", "settings.json");
+    const merged = mergeClaudeHook(existsSync(settingsPath) ? readFileSync(settingsPath, "utf8") : "");
+    if (!merged) {
+      console.log(fmt.warn(`.claude/settings.json is not valid JSON, so the Shavin edit hook was not added. Add a PostToolUse hook running "npx --no-install shavin-mcp --hook" for Write|Edit|MultiEdit.`));
+    } else if (merged.changed) {
+      mkdirSync(dirname(settingsPath), { recursive: true });
+      writeFileSync(settingsPath, merged.src, "utf8");
+      console.log(fmt.success(`Added the Shavin edit hook to .claude/settings.json (checks every .tsx/.jsx Claude writes)`));
+      modifiedCount++;
+    }
+  }
+
   // 4b. AGENTS.md and CLAUDE.md Scaffolding
   const targetAgentsMd = resolve(cwd, "AGENTS.md");
   // Generated by scripts/gen-agents.mjs (the same rules the MCP install_skills tool writes).
@@ -713,14 +751,16 @@ export async function initCommand(args = {}) {
 
   if (!existsSync(targetAgentsMd)) {
     writeFileSync(targetAgentsMd, defaultAgentsMd, "utf8");
-    console.log(fmt.success(`Created AGENTS.md (Agent Constitution & 3-Step Anti-Slop Protocol)`));
+    console.log(fmt.success(`Created AGENTS.md (rules for AI agents in this repo)`));
     modifiedCount++;
   } else {
     let agentsContent = readFileSync(targetAgentsMd, "utf8");
-    if (!agentsContent.includes("Mandatory 3-Step UI Execution Protocol") && !agentsContent.includes("Anti-Slop Law")) {
+    // The current heading, plus the older ones, so a project set up by an earlier version doesn't get the section twice.
+    const SHAVIN_SECTION_MARKERS = ["UI workflow: look up, build to the rules, validate", "Mandatory 3-Step UI Execution Protocol", "Anti-Slop Law"];
+    if (!SHAVIN_SECTION_MARKERS.some((m) => agentsContent.includes(m))) {
       agentsContent = defaultAgentsMd + "\n\n" + agentsContent;
       writeFileSync(targetAgentsMd, agentsContent, "utf8");
-      console.log(fmt.success(`Injected Mandatory 3-Step Protocol into existing AGENTS.md`));
+      console.log(fmt.success(`Added the Shavin section to your existing AGENTS.md`));
       modifiedCount++;
     }
   }
@@ -734,8 +774,17 @@ export async function initCommand(args = {}) {
 
   if (!existsSync(targetClaudeMd)) {
     writeFileSync(targetClaudeMd, defaultClaudeMd, "utf8");
-    console.log(fmt.success(`Created CLAUDE.md (Claude Code CLI Directives)`));
+    console.log(fmt.success(`Created CLAUDE.md (instructions for Claude Code)`));
     modifiedCount++;
+  } else {
+    // The project already has a CLAUDE.md: keep it, add the Shavin block (with the SHAVIN.md / AGENTS.md imports) once.
+    const current = readFileSync(targetClaudeMd, "utf8");
+    if (!CLAUDE_BLOCK_START_RE.test(current) && !/^@SHAVIN\.md\s*$/m.test(current)) {
+      const body = defaultClaudeMd.slice(defaultClaudeMd.indexOf("\n") + 1).trim();
+      writeFileSync(targetClaudeMd, `${current.trimEnd()}\n\n${CLAUDE_BLOCK_START}\n${body}\n${CLAUDE_BLOCK_END}\n`, "utf8");
+      console.log(fmt.success(`Added the Shavin section to your existing CLAUDE.md (imports SHAVIN.md and AGENTS.md)`));
+      modifiedCount++;
+    }
   }
 
   // 8. IDE MCP Integration (.cursor/mcp.json, .vscode/mcp.json, and root .mcp.json for Claude Code)
@@ -743,19 +792,23 @@ export async function initCommand(args = {}) {
   if (existsSync(claudeMcpPath)) {
     try {
       const raw = readFileSync(claudeMcpPath, "utf8");
-      const parsed = JSON.parse(raw);
+      const parsed = parseJson(raw);
       parsed.mcpServers = parsed.mcpServers || {};
       if (!parsed.mcpServers["shavin"]) {
-        parsed.mcpServers["shavin"] = {
-          command: "npx",
-          args: ["-y", "@shavin/mcp"],
-        };
+        parsed.mcpServers["shavin"] = mcpServerEntry(platform);
         writeFileSync(claudeMcpPath, JSON.stringify(parsed, null, 2), "utf8");
         console.log(fmt.success(`Added shavin to .mcp.json (Claude Code)`));
         modifiedCount++;
+      } else if (platform === "win32" && isPlainNpxDefault(parsed.mcpServers["shavin"])) {
+        // What an earlier init wrote: it cannot start on Windows. An edited entry is left alone.
+        parsed.mcpServers["shavin"] = mcpServerEntry(platform);
+        writeFileSync(claudeMcpPath, JSON.stringify(parsed, null, 2), "utf8");
+        console.log(fmt.success(`Updated shavin in .mcp.json to run through cmd /c on Windows`));
+        modifiedCount++;
       }
-    } catch {
-      // Safe fallback
+    } catch (err) {
+      // Never overwrite a file we cannot read, and never fail silently.
+      console.log(fmt.warn(invalidJsonMessage(".mcp.json", err, "init did not add the Shavin server to it")));
     }
   } else {
     writeFileSync(
@@ -763,10 +816,7 @@ export async function initCommand(args = {}) {
       JSON.stringify(
         {
           mcpServers: {
-            "shavin": {
-              command: "npx",
-              args: ["-y", "@shavin/mcp"],
-            },
+            "shavin": mcpServerEntry(platform),
           },
         },
         null,
@@ -774,55 +824,59 @@ export async function initCommand(args = {}) {
       ),
       "utf8"
     );
-    console.log(fmt.success(`Created .mcp.json (Claude Code AI tooling)`));
+    console.log(fmt.success(`Created .mcp.json (MCP server for Claude Code)`));
     modifiedCount++;
   }
 
+  // Cursor reads `mcpServers`; VS Code reads a top-level `servers` key with an explicit `type`.
+  // https://code.visualstudio.com/docs/agents/reference/mcp-configuration
+  const shavinServer = mcpServerEntry(platform);
   const ideConfigs = [
-    { name: "Cursor", dirName: ".cursor" },
-    { name: "VS Code", dirName: ".vscode" },
+    { name: "Cursor", dirName: ".cursor", key: "mcpServers", entry: shavinServer },
+    { name: "VS Code", dirName: ".vscode", key: "servers", entry: { type: "stdio", ...shavinServer } },
   ];
 
-  for (const { name, dirName } of ideConfigs) {
+  for (const { name, dirName, key, entry } of ideConfigs) {
     const ideDir = resolve(cwd, dirName);
     const mcpPath = resolve(ideDir, "mcp.json");
 
     if (existsSync(mcpPath)) {
       try {
         const raw = readFileSync(mcpPath, "utf8");
-        const parsed = JSON.parse(raw);
-        parsed.mcpServers = parsed.mcpServers || {};
-        if (!parsed.mcpServers["shavin"]) {
-          parsed.mcpServers["shavin"] = {
-            command: "npx",
-            args: ["-y", "@shavin/mcp"],
-          };
+        const parsed = parseJson(raw);
+        let changed = false;
+        let updated = false; // an old default replaced, as opposed to a new entry added
+        // Older versions of init wrote VS Code's file with `mcpServers`, which VS Code ignores.
+        if (key === "servers" && parsed.mcpServers?.shavin) {
+          delete parsed.mcpServers.shavin;
+          if (Object.keys(parsed.mcpServers).length === 0) delete parsed.mcpServers;
+          changed = true;
+        }
+        parsed[key] = parsed[key] || {};
+        if (!parsed[key]["shavin"]) {
+          parsed[key]["shavin"] = entry;
+          changed = true;
+        } else if (platform === "win32" && isPlainNpxDefault(parsed[key]["shavin"])) {
+          // What an earlier init wrote: it cannot start on Windows. An edited entry is left alone.
+          parsed[key]["shavin"] = { ...(parsed[key]["shavin"].type ? { type: parsed[key]["shavin"].type } : {}), ...shavinServer };
+          changed = true;
+          updated = true;
+        }
+        if (changed) {
           writeFileSync(mcpPath, JSON.stringify(parsed, null, 2), "utf8");
-          console.log(fmt.success(`Added shavin to ${dirName}/mcp.json`));
+          console.log(fmt.success(updated
+            ? `Updated shavin in ${dirName}/mcp.json to run through cmd /c on Windows`
+            : `Added shavin to ${dirName}/mcp.json`));
           modifiedCount++;
         }
-      } catch {
-        // Safe fallback: do not overwrite corrupted or custom format json
+      } catch (err) {
+        // Never overwrite a file we cannot read, and never fail silently.
+        console.log(fmt.warn(invalidJsonMessage(`${dirName}/mcp.json`, err, "init did not add the Shavin server to it")));
       }
     } else {
       if (!existsSync(ideDir)) mkdirSync(ideDir, { recursive: true });
-      writeFileSync(
-        mcpPath,
-        JSON.stringify(
-          {
-            mcpServers: {
-              "shavin": {
-                command: "npx",
-                args: ["-y", "@shavin/mcp"],
-              },
-            },
-          },
-          null,
-          2
-        ),
-        "utf8"
-      );
-      console.log(fmt.success(`Created ${dirName}/mcp.json (${name} AI tooling)`));
+      writeFileSync(mcpPath, JSON.stringify({ [key]: { shavin: entry } }, null, 2), "utf8");
+      console.log(fmt.success(`Created ${dirName}/mcp.json (MCP server for ${name})`));
       modifiedCount++;
     }
   }
@@ -849,6 +903,7 @@ export async function initCommand(args = {}) {
 
     // Merge or write settings.json
     const settingsDest = join(vscodeDir, "settings.json");
+    let settingsUnreadable = false;
     let settingsObj = {
       "html.customData": ["./.vscode/vscode.html-custom-data.json"],
       "editor.suggest.snippetPreventQuickSuggestions": false,
@@ -859,7 +914,7 @@ export async function initCommand(args = {}) {
 
     if (existsSync(settingsDest)) {
       try {
-        const rawSettings = JSON.parse(readFileSync(settingsDest, "utf8"));
+        const rawSettings = readJsonFile(settingsDest);
         const customData = Array.isArray(rawSettings["html.customData"]) ? rawSettings["html.customData"] : [];
         if (!customData.includes("./.vscode/vscode.html-custom-data.json")) {
           customData.push("./.vscode/vscode.html-custom-data.json");
@@ -869,13 +924,18 @@ export async function initCommand(args = {}) {
           "html.customData": customData,
           "typescript.suggest.completeFunctionCalls": rawSettings["typescript.suggest.completeFunctionCalls"] ?? true,
         };
-      } catch {
-        // preserve safe fallback
+      } catch (err) {
+        // Editor settings are often JSON with comments. Rewriting one we cannot parse would replace the user's settings
+        // with ours, so leave it alone and say how to finish by hand.
+        settingsUnreadable = true;
+        console.log(fmt.warn(invalidJsonMessage(".vscode/settings.json", err, "init left it alone") + ` To get the Shavin autocomplete, add "html.customData": ["./.vscode/vscode.html-custom-data.json"] to it.`));
       }
     }
-    writeFileSync(settingsDest, JSON.stringify(settingsObj, null, 2), "utf8");
-    console.log(fmt.success(`Configured VS Code / Cursor IDE helpers (.vscode/vscode.html-custom-data.json & snippets)`));
-    modifiedCount++;
+    if (!settingsUnreadable) {
+      writeFileSync(settingsDest, JSON.stringify(settingsObj, null, 2), "utf8");
+      console.log(fmt.success(`Configured VS Code / Cursor IDE helpers (.vscode/vscode.html-custom-data.json & snippets)`));
+      modifiedCount++;
+    }
   }
 
   // 8. Auto-start the dev bridge with the dev server (needs @shavin/mcp)
@@ -892,6 +952,7 @@ export async function initCommand(args = {}) {
       console.log(fmt.success(`Bridge auto-start already wired in ${bridgeWiring.file}`));
     } else if (bridgeWiring.status === "manual") {
       console.log(fmt.warn(`Add bridge auto-start to your ${fwInfo.framework === "vite" ? "Vite" : fwInfo.framework === "nextjs" ? "Next" : "dev-server"} config:`));
+      if (bridgeWiring.note) console.log(fmt.warn(bridgeWiring.note));
       if (bridgeWiring.snippet) console.log(`${c.fgMuted}    ${bridgeWiring.snippet.split("\n").join("\n    ")}${c.reset}`);
       else console.log(`${c.fgMuted}    Run the bridge with: npx @shavin/cli bridge${c.reset}`);
     }
@@ -902,12 +963,13 @@ export async function initCommand(args = {}) {
     { label: "Tailwind:", value: `${fmt.pass(`v${twInfo.version}`)} ${c.fgMuted}(${isTailwindV4 ? "CSS-first @theme inline" : "JS preset (tailwind-preset)"}${oklch ? " · OKLCH" : ""})${c.reset}` },
     { label: "Framework:", value: `${fmt.pass(fwInfo.framework)}${c.fgMuted}(${fwInfo.source})${c.reset}` },
     { label: "Primitives:", value: `${c.fg}import { Button, Card } from '@shavin/ui'${c.reset}` },
+    { label: "Stylesheet:", value: cssPaths ? fmt.pass(relPosix(cwd, cssPaths)) : fmt.warn("Not found: add Shavin's imports by hand") },
   ];
 
   if (themeProviderAdded) {
     summaryItems.push({ label: "ThemeProvider:", value: fmt.pass("Wired (DevInspector auto-mounts)") });
   } else if (layoutPath) {
-    summaryItems.push({ label: "ThemeProvider:", value: fmt.warn("Add <ThemeProvider> to root layout") });
+    summaryItems.push({ label: "ThemeProvider:", value: fmt.warn("Not added: see the note above") });
   } else {
     summaryItems.push({ label: "ThemeProvider:", value: fmt.warn("No root layout found") });
   }
@@ -940,13 +1002,13 @@ export async function initCommand(args = {}) {
   const footerLines = [
     `${c.fgSubtle}Next steps:${c.reset}`,
     ``,
-    `  ${fmt.code("npm run dev")}         ${c.fgMuted}→ Start dev server (predev hook auto-generates brand tokens)${c.reset}`,
+    `  ${fmt.code("npm run dev")}         ${c.fgMuted}→ Start the dev server${c.reset}`,
     `  ${fmt.code("npx @shavin/cli add hero-centered-media")}  ${c.fgMuted}→ Add a block${c.reset}`,
-    `  ${fmt.code("npx @shavin/cli check")}                  ${c.fgMuted}→ Audit token discipline${c.reset}`,
+    `  ${fmt.code("npx @shavin/cli check")}                  ${c.fgMuted}→ Check the setup${c.reset}`,
   ];
 
   printCard({
-    title: `${c.brand}${g.brand} @shavin/ui Setup Complete${c.reset}`,
+    title: `${c.brand}${g.brand} ${cssPaths ? "@shavin/ui is set up" : "@shavin/ui is installed: finish the stylesheet step"}${c.reset}`,
     items: summaryItems,
     footer: footerLines.join("\n"),
     border: c.brandMuted,

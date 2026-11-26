@@ -4,7 +4,7 @@ const defaultPoints = ["Read-only bank connections", "Owner, Editor and Viewer r
 
 export function HeroSplitMedia({ points = defaultPoints }) {
   return (
-    <Section size="hero" bgOverlays="mesh-accent">
+    <Section size="hero" bgOverlays="mesh-brand">
       <Container size="lg">
         <Grid columns="2" gap="7" align="center" stack="auto">
           <Flex direction="column" gap="6">
@@ -22,7 +22,7 @@ export function HeroSplitMedia({ points = defaultPoints }) {
             <Flex direction="column" gap="2">
               {points.map((point) => (
                 <Flex key={point} direction="row" align="center" gap="2">
-                  <Icon name="check" size="sm" color="accent" />
+                  <Icon name="check" size="sm" color="brand" />
                   <Text size="sm" color="muted">{point}</Text>
                 </Flex>
               ))}

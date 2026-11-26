@@ -10,7 +10,7 @@
  *                               radius roles, elevation shadows, motion easings
  *   - tailwind-preset.ts      → the PUBLIC list of semantic token names + their
  *                               Tailwind color keys
- *   - src/lib/theme-presets.ts → accent / gray / radius / scaling preset lists
+ *   - src/lib/theme-presets.ts → brand / gray / radius / scaling preset lists
  *
  * Usage:
  *   node scripts/gen-tokens.mjs           # (re)write tokens.json
@@ -39,19 +39,22 @@ const ROLES = {
   "bg-surface": "Default surface (cards, inputs, panels) sitting on the canvas.",
   "bg-surface-hover": "Hover / active fill for interactive surfaces and list rows.",
   "bg-elevated": "Floating-surface fill (Dialog, Menu, Popover, Select).",
+  "bg-elevated-hover": "Highlighted or hovered row inside a floating surface (menu items, select options). Distinct from bg-elevated in both themes.",
   "hairline": "Default 1px border / divider color.",
   "hairline-strong": "Higher-contrast border for emphasis or nested edges.",
   "border-control": "Boundary of form controls (inputs, checkboxes, radios, switches, slider thumbs): >=3:1 against surface and canvas (WCAG 1.4.11).",
   "fg": "Primary text / icon color (maximum contrast).",
   "fg-muted": "Secondary text — labels, descriptions, less prominent copy.",
   "fg-subtle": "Tertiary text — placeholders, disabled, metadata.",
-  "accent": "Primary brand / action color (buttons, selected states).",
-  "accent-hover": "Hover / active variant of the accent.",
-  "accent-fg": "Foreground (text / icon) rendered on top of an accent fill.",
-  "accent-contrast": "WCAG contrast-safe accent color for foreground text, glyphs, and soft buttons.",
-  "accent-text": "Alias for accent-contrast (contrast-safe accent text on light/soft surfaces).",
-  "accent-subtle": "Subtle transparent accent background fill for soft buttons and badges.",
-  "accent-subtle-hover": "Hover background fill for subtle/soft accent components.",
+  "brand": "The exact brand colour: identity fills with no text on them (logos, dots, bars, borders, rings). Set by ThemeProvider brandColor.",
+  "brand-hover": "Hover / active variant of the exact brand colour.",
+  "brand-solid": "Fill under text on the brand (solid Button, Badge, selected states). Accessible by default: the brand's hue with white text >= 4.6:1; a genuinely light brand keeps its exact fill. ThemeProvider brandSolid.",
+  "brand-solid-hover": "Hover fill of brand-solid; the foreground keeps >= 4.5:1 on it.",
+  "brand-fg": "Foreground (text / icon) rendered on top of brand-solid.",
+  "brand-contrast": "WCAG contrast-safe brand colour for foreground text, glyphs, and soft buttons.",
+  "brand-text": "Alias for brand-contrast (contrast-safe brand text on light/soft surfaces).",
+  "brand-subtle": "Subtle transparent brand background fill for soft buttons and badges.",
+  "brand-subtle-hover": "Hover background fill for subtle/soft brand components.",
   "success": "Positive / completed status color.",
   "success-fg": "Foreground rendered on top of a success fill.",
   "warning": "Caution / attention status color.",
@@ -209,11 +212,11 @@ function build() {
   // --- presets from theme-presets.ts (parsed, not executed) ---
   const themeSrc = readFileSync(THEME, "utf8");
 
-  const accents = [];
-  const accentRe = /\{\s*name:\s*"([^"]+)",\s*hex:\s*"([^"]+)"\s*\}/g;
+  const brands = [];
+  const brandRe = /\{\s*name:\s*"([^"]+)",\s*hex:\s*"([^"]+)"\s*\}/g;
   let am;
-  while ((am = accentRe.exec(arrayLiteral(themeSrc, "ACCENT_PRESETS")))) {
-    accents.push({ name: am[1], hex: am[2] });
+  while ((am = brandRe.exec(arrayLiteral(themeSrc, "BRAND_PRESETS")))) {
+    brands.push({ name: am[1], hex: am[2] });
   }
 
   const grays = [];
@@ -243,7 +246,7 @@ function build() {
     duration,
     distance,
     stagger,
-    presets: { accents, grays, radius: radiusPresets, scaling },
+    presets: { brands, grays, radius: radiusPresets, scaling },
   };
 }
 
@@ -288,7 +291,7 @@ if (OUT !== ROOT_OUT) {
 
 const semanticCount = Object.keys(manifest.semantic || {}).length;
 const foundationCount = Object.keys(manifest.foundation || {}).length;
-const accentsCount = manifest.presets?.accents?.length ?? 0;
+const brandsCount = manifest.presets?.brands?.length ?? 0;
 const graysCount = manifest.presets?.grays?.length ?? 0;
 
 spinner?.succeed(`Compiled ${semanticCount} semantic tokens & ${foundationCount} foundation scales`);
@@ -298,7 +301,7 @@ printCard({
   items: [
     { label: "Semantic Tokens:", value: `${c.fg}${semanticCount} active role tokens${c.reset}` },
     { label: "Foundation Scale:", value: `${c.fg}${foundationCount} neutral steps (--n-*)${c.reset}` },
-    { label: "Presets:", value: `${c.fg}${accentsCount} accents, ${graysCount} neutral scales${c.reset}` },
+    { label: "Presets:", value: `${c.fg}${brandsCount} brand colours, ${graysCount} neutral scales${c.reset}` },
     { label: "Geometry & Motion:", value: `${c.fg}Radius, shadows, easings & durations synced${c.reset}` },
   ],
   footer: `${c.fgSubtle}Target: ${OUT}${c.reset}`,

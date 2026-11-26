@@ -1,4 +1,7 @@
 import { existsSync, writeFileSync, mkdirSync, readFileSync } from "node:fs";
+import { relPosix } from "../lib/paths.mjs";
+import { readJsonFile, invalidJsonMessage } from "../lib/json-file.mjs";
+import { execSync } from "node:child_process";
 import { join, resolve } from "node:path";
 import { ALL_BLOCKS, COMMUNITY_BLOCKS, BLOCK_TEMPLATES } from "@shavin/block-schema";
 import * as blockSchema from "@shavin/block-schema";
@@ -9,6 +12,7 @@ import { createInterface } from "node:readline";
 import { c, fmt, g, printCard, startSpinner } from "../ui.mjs";
 import { inspectSetup } from "../lib/inspect-setup.mjs";
 import { initCommand } from "./init.mjs";
+import { detectPackageManager, importedPackages, installCommand, planDependencies, readDeclaredDeps } from "../lib/package-manager.mjs";
 
 /** Ask a yes/no question on the terminal; resolves the raw answer. */
 function ask(question) {
@@ -36,16 +40,17 @@ export async function addCommand(rawTarget, options = {}) {
 
   // ── Pre-setup gate: verify @shavin/ui is installed in this project ──
   const cwd = process.cwd();
+  const interactive = Boolean(process.stdin.isTTY && process.stdout.isTTY) && !process.env.CI;
   const pkgJsonPath = resolve(cwd, "package.json");
   let hasShavinUI = false;
 
   if (existsSync(pkgJsonPath)) {
     try {
-      const pkg = JSON.parse(readFileSync(pkgJsonPath, "utf8"));
+      const pkg = readJsonFile(pkgJsonPath);
       const allDeps = { ...(pkg.dependencies || {}), ...(pkg.devDependencies || {}) };
       hasShavinUI = Boolean(allDeps["@shavin/ui"]);
-    } catch {
-      // Malformed package.json — proceed and let the import fail naturally
+    } catch (err) {
+      console.log(fmt.warn(invalidJsonMessage("package.json", err, "add could not tell whether @shavin/ui is installed")));
     }
   }
 
@@ -58,14 +63,30 @@ export async function addCommand(rawTarget, options = {}) {
         `${c.fgSubtle}Blocks are pre-built components that import from ${c.reset}${fmt.code("@shavin/ui")}${c.fgSubtle}.${c.reset}`,
         `${c.fgSubtle}Without the design system installed, the block file will crash on import.${c.reset}`,
         ``,
-        { label: "Next step:", value: `${fmt.code("npx @shavin/cli init")}` },
+        { label: "Fix:", value: `${fmt.code("npx @shavin/cli init")}` },
         ``,
-        `${c.fgMuted}This will install @shavin/ui, wire Tailwind, scaffold ThemeProvider,${c.reset}`,
-        `${c.fgMuted}and set up the full AI agent ecosystem. Then re-run your add command.${c.reset}`,
+        `${c.fgMuted}Init installs @shavin/ui, wires Tailwind, scaffolds ThemeProvider${c.reset}`,
+        `${c.fgMuted}and sets up the AI agent files. It can run now, then add the block.${c.reset}`,
       ],
       border: c.error,
     });
-    process.exit(1);
+
+    let runInit = Boolean(options.yes);
+    if (!runInit && interactive) {
+      const answer = await ask(`\n  ${c.fg}Run ${fmt.code("shavin init")} now and then add the block? ${c.fgMuted}[Y/n]${c.reset} `);
+      runInit = !/^\s*n/i.test(answer);
+    }
+    if (!runInit) {
+      console.log(`\n  ${fmt.subtle("Run")} ${fmt.code("npx @shavin/cli init")} ${fmt.subtle("(or re-run add with")} ${fmt.code("--yes")}${fmt.subtle("), then add the block.")}\n`);
+      process.exit(1);
+    }
+
+    await initCommand(options.oklch ? { oklch: true } : {});
+    if (!readDeclaredDeps(cwd)["@shavin/ui"]) {
+      console.error(`\n${fmt.error("Init did not install @shavin/ui, so the block was not added.")}\n`);
+      process.exit(1);
+    }
+    console.log(`\n${fmt.success("Project set up. Adding the block.")}\n`);
   }
 
   // ── Wiring gate: @shavin/ui is installed, but is the project set up so the
@@ -83,9 +104,10 @@ export async function addCommand(rawTarget, options = {}) {
       border: c.warning,
     });
 
-    const interactive = Boolean(process.stdin.isTTY && process.stdout.isTTY) && !process.env.CI;
-    if (interactive) {
-      const answer = await ask(`\n  ${c.fg}Repair the setup with ${fmt.code("shavin init")} before adding the block? ${c.fgMuted}[Y/n]${c.reset} `);
+    if (interactive || options.yes) {
+      const answer = options.yes
+        ? "y"
+        : await ask(`\n  ${c.fg}Repair the setup with ${fmt.code("shavin init")} before adding the block? ${c.fgMuted}[Y/n]${c.reset} `);
       if (!/^\s*n/i.test(answer)) {
         await initCommand(options.oklch ? { oklch: true } : {});
         console.log(`\n${fmt.success("Setup repaired — continuing with the block.")}\n`);
@@ -93,7 +115,7 @@ export async function addCommand(rawTarget, options = {}) {
         console.log(`\n${fmt.warn("Continuing without repair. Run `npx @shavin/cli init` later if the block looks unstyled.")}\n`);
       }
     } else {
-      console.log(`\n${fmt.warn("Non-interactive: continuing without repair. Run `npx @shavin/cli init` to fix the wiring.")}\n`);
+      console.log(`\n${fmt.warn("Non-interactive: continuing without repair. Run `npx @shavin/cli init` (or add with --yes) to fix the wiring.")}\n`);
     }
   }
 
@@ -232,7 +254,38 @@ export async function addCommand(rawTarget, options = {}) {
 
   writeFileSync(targetFile, codeToWrite, "utf8");
 
-  const displayPath = targetFile.replace(cwd + "/", "");
+  // ── npm dependencies: install what the block imports but the project lacks,
+  // and bump packages declared below the block's minimum (e.g. @shavin/ui). ──
+  const npmDependencies = block.npmDependencies || importedPackages(codeToWrite);
+  const depPlan = planDependencies(cwd, npmDependencies);
+  const toInstall = [...depPlan.missing, ...depPlan.outdated.map((o) => o.spec)];
+  let packagesLine = null;
+  if (toInstall.length > 0) {
+    const pm = detectPackageManager(cwd);
+    const cmd = installCommand(pm, toInstall);
+    console.log(`\n  ${c.fg}This block needs packages the project doesn't have yet:${c.reset}`);
+    for (const spec of depPlan.missing) console.log(`    ${c.warning}${g.bullet}${c.reset} ${c.fg}${spec}${c.reset} ${c.fgMuted}(missing)${c.reset}`);
+    for (const o of depPlan.outdated) console.log(`    ${c.warning}${g.bullet}${c.reset} ${c.fg}${o.spec}${c.reset} ${c.fgMuted}(project has ${o.have})${c.reset}`);
+
+    let doInstall = Boolean(options.yes);
+    if (!doInstall && interactive) {
+      const answer = await ask(`\n  ${c.fg}Install with ${fmt.code(cmd)}? ${c.fgMuted}[Y/n]${c.reset} `);
+      doInstall = !/^\s*n/i.test(answer);
+    }
+    if (doInstall) {
+      try {
+        execSync(cmd, { cwd, stdio: "inherit" });
+        packagesLine = { label: "Packages:", value: fmt.pass(`installed ${toInstall.join(", ")}`) };
+      } catch {
+        console.error(`\n${fmt.error(`Package install failed. Run it yourself: ${cmd}`)}\n`);
+        packagesLine = { label: "Packages:", value: `${c.warning}install failed, run ${cmd}${c.reset}` };
+      }
+    } else {
+      packagesLine = { label: "Packages:", value: `${c.warning}not installed, run ${cmd}${c.reset}` };
+    }
+  }
+
+  const displayPath = relPosix(cwd, targetFile);
   const importPath = displayPath.replace(/\.tsx$/, "");
 
   printCard({
@@ -240,6 +293,7 @@ export async function addCommand(rawTarget, options = {}) {
     items: [
       { label: "Status:", value: fmt.pass("Installed & ready to use") },
       { label: "Location:", value: `${c.fg}${displayPath}${c.reset}` },
+      packagesLine,
       "", // extra space after location
       { label: "Origin:", value: `${c.fgSubtle}${resolvedSourceUrl}${c.reset}` },
       block.author?.name
@@ -248,7 +302,10 @@ export async function addCommand(rawTarget, options = {}) {
       block.dependencies && block.dependencies.length > 0
         ? { label: "Primitives:", value: `${c.fg}${block.dependencies.join(", ")}${c.reset}` }
         : null,
-      { label: "Quality Gate:", value: `${fmt.pass("100 / 100")} ${fmt.badge("VERIFIED AAA", c.success)}` },
+      // Only show a score the block actually earned in the registry's quality gate.
+      block.qualityGate
+        ? { label: "Quality gate:", value: fmt.pass(`${block.qualityGate.overallScore} / 100`) }
+        : null,
       block.category ? { label: "Category:", value: fmt.tag(block.category) } : null,
     ].filter(Boolean),
     footer: `${c.fgSubtle}Usage snippet:${c.reset}\n\n  ${fmt.importTsx(componentName, importPath)}`,

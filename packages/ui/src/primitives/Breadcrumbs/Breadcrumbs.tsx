@@ -21,7 +21,7 @@ export function Breadcrumbs({
   className,
 }: BreadcrumbsProps) {
   return (
-    <nav aria-label="Breadcrumb" className={cn("min-w-0 max-w-full overflow-hidden", className)}>
+    <nav aria-label="Breadcrumb" className={cn("min-w-0 max-w-full overflow-x-clip [overflow-clip-margin:16px]", className)}>
       {/* An ordered list keeps the trail's position and length available to screen readers. */}
       <ol className="flex items-center gap-1.5 text-xs text-fg-subtle select-none whitespace-nowrap min-w-0">
         {items.map((item, idx) => {
@@ -34,7 +34,7 @@ export function Breadcrumbs({
                 <a
                   href={item.href}
                   aria-current={current ? "page" : undefined}
-                  className="hover:text-fg transition font-medium cursor-pointer truncate max-w-[140px] shrink-0 text-xs"
+                  className="-m-1 p-1 [@media(pointer:coarse)]:-m-3.5 [@media(pointer:coarse)]:p-3.5 hover:text-fg transition font-medium cursor-pointer truncate max-w-[140px] shrink-0 text-xs"
                 >
                   {item.label}
                 </a>

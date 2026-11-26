@@ -8,9 +8,9 @@ export function registerBuilderTools(server) {
   return [
     {
       schema: {
-        name: "get_builder_schema",
+        name: "get_studio_schema",
         description:
-          "List block registry metadata (key, name, category, tier, description) for visual canvas and layout synthesis. Optionally filter by category.",
+          "List the Studio block registry (key, name, category, tier, description) for canvas and layout synthesis. Formerly get_builder_schema (still accepted). Optionally filter by category.",
         inputSchema: {
           type: "object",
           properties: {

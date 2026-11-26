@@ -2,7 +2,7 @@ import type { ComponentDoc } from "../../authoring/types";
 
 export const docs: ComponentDoc = {
   name: "Slider",
-  description: "Range slider input primitive supporting standard track/thumb and tactile capsule pill variants, single or dual thumb values, auto/custom track marks, and radius customization.",
+  description: "Pick a number, or a range between two handles, by dragging along a track. It can show tick marks, and the capsule style puts the label and value inside the bar.",
   features: [
     "Two visual variants: default (standard track/thumb) and capsule (tactile interactive pill with live active fill, embedded label, and unit formatters)",
     "Supports single value (scalar number 50 or [50]) or dual-thumb range values [20, 80]",

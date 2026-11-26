@@ -2,10 +2,10 @@ import type { ComponentDoc } from "../../authoring/types";
 
 export const docs: ComponentDoc = {
   name: "Calendar",
-  description: "Full-featured schedule and event calendar primitive supporting full month grid and 1-day, 2-day, or 3-day time columns.",
+  description: "A schedule that shows events on a month grid or in one, two or three day columns with hours. Users can switch views and click days or events.",
   features: [
     "Views: full (month grid), 1day, 2days, 3days (time column schedule views)",
-    "Renders event chips (CalendarEventChip) with tone status color accents",
+    "Renders event chips (CalendarEventChip) with tone status color highlights",
     "Uses SegmentedControl view mode switcher",
     "Uses panel radius --radius-panel for container and control radius --radius-lg for day cells"
   ],

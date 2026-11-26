@@ -1,11 +1,11 @@
 /**
  * Transport-aware tool loading.
  *
- * All 30 MCP tools are defined ONCE in their respective modules.
+ * All 36 MCP tools are defined ONCE in their respective modules.
  * This module controls which tools are available based on the transport:
  *
- *   - stdio (Dev Mode):     ALL 30 tools — local dev has full access
- *   - remote (Remote Mode):  26 tools — everything except the local dev bridge and filesystem tools
+ *   - stdio (Dev Mode):     ALL 36 tools — local dev has full access
+ *   - remote (Remote Mode):  28 tools — everything except the local dev bridge and filesystem tools
  *                            (auth via Supabase JWT)
  *   - rest (REST Relay):    LIMITED tools — browser-only AI gets a
  *                            simplified subset via HTTP POST
@@ -23,7 +23,7 @@ export const TOOL_CATEGORIES = {
   KNOWLEDGE: [
     "get_tokens",
     "get_components",
-    "get_builder_schema",
+    "get_studio_schema",
     "get_block_template",
     "get_guidelines",
     "get_setup_instructions",
@@ -62,6 +62,8 @@ export const TOOL_CATEGORIES = {
     "set_studio_theme",
     "get_studio_state",
     "clear_studio_canvas",
+    "duplicate_frame",
+    "resize_frame",
     "disconnect_studio",
   ],
 
@@ -75,6 +77,7 @@ export const TOOL_CATEGORIES = {
   // Environment/skills install — only in stdio mode (filesystem access)
   FILESYSTEM: [
     "install_skills",
+    "export_frame", // writes the image to a local path
   ],
 };
 

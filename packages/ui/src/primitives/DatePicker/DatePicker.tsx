@@ -13,8 +13,9 @@ function sameDay(a: Date, b: Date): boolean {
 }
 
 export interface DatePickerTokens {
-  accent: string;
-  accentFg: string;
+  brand: string;
+  brandFg: string;
+  brandSolid: string;
   field: string;
   elevated: string;
   border: string;
@@ -29,8 +30,9 @@ export interface DatePickerTokens {
 }
 
 const DEFAULT_TOKENS: DatePickerTokens = {
-  accent: "rgb(var(--accent))",
-  accentFg: "rgb(var(--accent-fg))",
+  brand: "rgb(var(--brand))",
+  brandFg: "rgb(var(--brand-fg))",
+  brandSolid: "rgb(var(--brand-solid))",
   field: "rgb(var(--bg-surface-hover))",
   elevated: "rgb(var(--bg-elevated))",
   border: "rgb(var(--hairline))",
@@ -77,6 +79,10 @@ export interface DatePickerProps {
   "aria-labelledby"?: string;
   /** id(s) of hint or error text describing the field. */
   "aria-describedby"?: string;
+  /** Marks the field invalid (FormField passes it with an error). The field also sets it for an unparseable date. */
+  "aria-invalid"?: boolean | "true" | "false";
+  /** Marks the field required (FormField passes it). */
+  "aria-required"?: boolean | "true" | "false";
 }
 
 export function DatePicker({
@@ -90,11 +96,14 @@ export function DatePicker({
   "aria-label": ariaLabel,
   "aria-labelledby": ariaLabelledBy,
   "aria-describedby": ariaDescribedBy,
+  "aria-invalid": ariaInvalid,
+  "aria-required": ariaRequired,
 }: DatePickerProps) {
   const t = { ...DEFAULT_TOKENS, ...tokens };
   const vars = {
-    "--dp-accent": t.accent,
-    "--dp-accent-fg": t.accentFg,
+    "--dp-brand": t.brand,
+    "--dp-brand-fg": t.brandFg,
+    "--dp-brand-solid": t.brandSolid,
     "--dp-field": t.field,
     "--dp-elevated": t.elevated,
     "--dp-border": t.border,
@@ -259,12 +268,14 @@ export function DatePicker({
                 (e.target as HTMLInputElement).blur();
               }
             }}
-            className="w-full bg-transparent outline-none"
+            // py-2 -my-2: the input fills the field (a 24px+ target) without changing its height.
+            className="-my-2 w-full bg-transparent py-2 outline-none"
             style={{ color: "var(--dp-fg)" }}
             aria-label={ariaLabelledBy ? undefined : (ariaLabel ?? "Date")}
             aria-labelledby={ariaLabelledBy}
             aria-describedby={ariaDescribedBy}
-            aria-invalid={invalid || undefined}
+            aria-invalid={invalid || ariaInvalid === true || ariaInvalid === "true" || undefined}
+            aria-required={ariaRequired === true || ariaRequired === "true" || undefined}
           />
           <PopoverPrimitive.Trigger asChild>
             <button
@@ -365,16 +376,16 @@ export function DatePicker({
                           borderRadius: "var(--dp-cell-radius)",
                           ...(selected
                             ? {
-                                background: "var(--dp-accent)",
-                                color: "var(--dp-accent-fg)",
+                                background: "var(--dp-brand-solid)",
+                                color: "var(--dp-brand-fg)",
                                 fontWeight: 600,
                               }
                             : isToday
                               ? {
-                                  color: "var(--dp-accent)",
+                                  color: "var(--dp-brand)",
                                   fontWeight: 600,
                                   boxShadow:
-                                    "inset 0 0 0 1.5px color-mix(in srgb, var(--dp-accent) 45%, transparent)",
+                                    "inset 0 0 0 1.5px color-mix(in srgb, var(--dp-brand) 45%, transparent)",
                                 }
                               : { color: "var(--dp-fg)" }),
                         }}
@@ -425,8 +436,8 @@ export function DatePicker({
                   type="button"
                   className="ml-auto px-3 py-1 text-xs font-medium"
                   style={{
-                    background: "var(--dp-accent)",
-                    color: "var(--dp-accent-fg)",
+                    background: "var(--dp-brand-solid)",
+                    color: "var(--dp-brand-fg)",
                     borderRadius: "var(--dp-cell-radius)",
                   }}
                 >

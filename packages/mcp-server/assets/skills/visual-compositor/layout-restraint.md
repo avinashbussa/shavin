@@ -43,11 +43,11 @@ Every section, hero, or template block must communicate **exactly one clear idea
 
 | Element | Maximum Allowed | Recommended Treatment |
 |---|---|---|
-| **Top Label** | 1 overline text or badge | Small, subtle, `uppercase tracking-wider text-fg-subtle`. Badge only for stateful labels. |
+| **Top Label** | Optional: 1 overline text or badge, often none | Only where it adds information. Small, subtle, `uppercase tracking-wider text-fg-subtle`. Badge only for stateful labels. |
 | **Headline** | 4 to 8 words | Large (`text-4xl` to `text-6xl`), tight leading, confident. |
 | **Subtitle** | 15 to 25 words (1–2 sentences) | `text-fg-subtle`, clear value proposition, no corporate jargon. |
-| **Call-to-Action** | 2 buttons max | 1 Primary (`bg-accent` or solid `bg-fg`), 1 Secondary (outline or ghost). |
-| **Trust Markers** | 1 horizontal line | Inline checkmarks (`✓ Zero Config   ✓ 100% TypeScript`) or 4–5 subtle monochrome logos. Never a multi-card metric grid inside a hero! |
+| **Call-to-Action** | 2 buttons max | 1 Primary (`bg-brand` or solid `bg-fg`), 1 Secondary (outline or ghost). |
+| **Trust Markers** | 1 horizontal line | Inline `<Icon name="Check" size="xs" />` markers (Zero config, 100% TypeScript) or 4–5 subtle monochrome logos. Never a multi-card metric grid inside a hero! |
 
 ---
 
@@ -75,6 +75,6 @@ Before submitting any layout, block, or screen, audit against these 5 checks:
 
 1. [ ] **Can a user scan the core value in under 3 seconds?** If they have to read a paragraph, cut 50% of the words.
 2. [ ] **Did you add a metric grid inside the hero?** If yes, remove it or move it to a dedicated proof section below the fold.
-3. [ ] **Are there multiple competing badges?** Use overline text instead of badges for section labels. Keep at most 1 `<Badge>` per section (only for stateful labels).
+3. [ ] **Are there multiple competing badges or labels?** Drop labels that add no information; use plain overline text instead of a badge where one is warranted. Keep at most 1 `<Badge>` per section (only for stateful labels).
 4. [ ] **Does the container feel crammed?** Increase `py-*` on the section and `p-*` on the surfaces.
 5. [ ] **Is the layout airy and focused?** Ensure the primary CTA stands out with clear vertical margin (`mt-6` to `mt-8`).

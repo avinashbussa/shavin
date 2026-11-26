@@ -1,7 +1,7 @@
 ---
 name: layout-compositions
 description: >
-  A library of 55 website section and page layout compositions (structural, hero, features,
+  A library of 57 website section and page layout compositions (structural, hero, features,
   proof, conversion, gallery, editorial, documentation, expressive) with content-based selection
   rules, five swappable treatments (carded, ruled, flat, full-bleed, open), a component-language
   guide for typography voice, overline/badge choice, button-vs-tabs and colour application, page
@@ -40,19 +40,19 @@ sections:
     description: "ST1–ST6: nav bar, announcement, footer, page shell, app shell (~3K tokens)"
   - id: compositions-hero
     file: references/compositions/hero.md
-    description: "H1–H5: centered, split, asymmetric, full-bleed, type-led (~3K tokens)"
+    description: "H1–H6: centered, split, asymmetric, full-bleed, type-led, floating elements (~3K tokens)"
   - id: compositions-features
     file: references/compositions/features.md
     description: "F1–F9: grid, bento, alternating, card rail, tabs, sticky scroll, timeline, comparison split, ecosystem diagram (~5K tokens)"
   - id: compositions-proof
     file: references/compositions/proof.md
-    description: "P1–P4, S1–S3, T1–T4: pricing, stats, testimonials, logos (~3K tokens)"
+    description: "S1–S3, T1–T4: stats, testimonials, logos (~3K tokens)"
   - id: compositions-conversion
     file: references/compositions/conversion.md
-    description: "C1–C5, Q1–Q2: CTA banners, contact, newsletter, FAQ (~4K tokens)"
+    description: "C1–C5, P1–P3, Q1–Q2: CTA banners, contact, newsletter, pricing, FAQ (~4K tokens)"
   - id: compositions-gallery
     file: references/compositions/gallery.md
-    description: "G1–G5: masonry, filterable, marquee rows, case study, people (~2.5K tokens)"
+    description: "G1–G6: masonry, filterable, marquee rows, case study, people, product grid (~3K tokens)"
   - id: compositions-editorial
     file: references/compositions/editorial.md
     description: "E1–E4: article, longform, magazine, archive (~2.5K tokens)"
@@ -70,19 +70,10 @@ sections:
     description: "Semantic HTML + Tailwind adapter for non-@shavin/ui projects (~1.5K tokens)"
 ---
 
-- **Token-efficient usage:** This skill is modular. For specific rules, call:
-> - `get_skill({ name: "layout-compositions", section: "selection-guide" })` — decision tables for choosing compositions
-> - `get_skill({ name: "layout-compositions", section: "page-recipes" })` — pre-composed page blueprints
-> - `get_skill({ name: "layout-compositions", section: "compositions-hero" })` — hero family detail (H1–H5)
-> - `get_skill({ name: "layout-compositions", section: "compositions-features" })` — feature family detail (F1–F9)
-> - `get_skill({ name: "layout-compositions", section: "treatments" })` — treatment recipes
-> - `get_skill({ name: "layout-compositions", section: "component-language" })` — overline form, control choice, type voice, colour patterns
-> - `get_skill({ name: "layout-compositions", section: "foundations" })` — measure, radii, accessibility
-> - `get_skill({ name: "layout-compositions", section: "adapter-shavin-ui" })` — @shavin/ui code patterns
->
-> Load a family file only when you use one of its IDs. Loading the whole library wastes context.
->
-> **Core rules (token compliance, radius, typography):** Auto-injected by MCP or see `core-rules.md`.
+- Token-efficient usage: `get_skill({ name: "layout-compositions", section: "<id>" })` with `selection-guide`, `page-recipes`, `compositions-<family>` (structural, hero, features, proof, conversion, gallery, editorial, documentation, expressive), `treatments`, `component-language`, `foundations`, `adapter-shavin-ui`.
+- Load a family file only when you use one of its IDs. Loading the whole library wastes context.
+- Core rules (tokens, radius, typography) are in `.agents/skills/core-rules.md` and are not injected. Read it when you need the full detail.
+- The library has 57 compositions in 9 families (F1–F9 in Features; pricing P1–P3 lives in the conversion file).
 
 # Layout Compositions
 
@@ -105,7 +96,7 @@ Follow these steps in order. Output a short plan (step 2–4) before writing cod
 1. **Frame the brief.** Identify the subject, audience, style (structural · marketing · editorial · hybrid · documentation · expressive), the page's job, and the *real* content available: item counts, copy length, real visuals, numbers, quotes, code. If key content is missing, say so and use clearly marked placeholders. Compositions have content contracts, and fake proof (invented numbers, quotes, logos) undermines the page.
 2. **Pick the section sequence.** Start from the closest recipe in `references/page-recipes.md`, then adjust to the real content.
 3. **Choose a composition per section** using `references/selection-guide.md`. It works from content signals and has tie-breakers. Then read only those entries in `references/compositions/<family>.md`: honour each entry's `Contract`, `Grid`, `Watch` and `Avoid when`.
-4. **Choose the treatment** (`references/treatments.md`): one dominant treatment for the page, at most one accent. Then **vary**: apply at least two knobs from `references/distinctiveness.md`, and separately name the overline form, interactive-control choice, typographic voice and colour application pattern from `references/component-language.md` — these component-level choices are where output goes generic even when the composition and treatment are varied. Name one bold moment.
+4. **Choose the treatment** (`references/treatments.md`): one dominant treatment for the page, at most one brand colour. Then **vary**: apply at least two knobs from `references/distinctiveness.md`, and separately name the overline form, interactive-control choice, typographic voice and colour application pattern from `references/component-language.md` — these component-level choices are where output goes generic even when the composition and treatment are varied. Name one bold moment.
 5. **Read the adapter** for the target stack: `references/adapters/shavin-ui.md` for `@shavin/ui` projects. Never invent component props: check the project's real components.
 6. **Apply the foundations** in `references/foundations.md`: measure, concentric radii, spacing rhythm, responsive behaviour, accessibility, performance, stress tests.
 7. **Decide the motion tier.** Default Tier 0 for utility and documentation pages. Add Tier 1 (`layout-motion`) where it helps comprehension or delight. When the brief asks for a premium, award-level, expressive or brand-led page, plan one signature Tier 2 scene (`layout-choreography`, on a composition marked `choreography-ok`, such as F6) plus at most two supporting scenes; a page like that with no signature moment reads as generic. Build Tier 2 only after the static layout is complete. Expose `data-slot` attributes (from each composition's `slots`) so motion can attach without changing the structure.
@@ -131,12 +122,13 @@ Load a family file only when you use one of its IDs. Loading the whole library w
 
 ## Ground rules
 
+- **Utility screens use `data-composition="none"`:** auth, 404, settings and dashboards are not marketing compositions; build them with `shavin-app`.
 - **Content contract first.** If the real content doesn't fit a composition's contract (item counts, lengths, required media), change the composition, not the content, and never squeeze it in.
 - **One job per section, one primary action per section.**
 - **Rhythm.** No three consecutive sections with the same grid. Adjacent sections differ in at least one of background, alignment, density, or column count.
 - **Reading order is DOM order.** Reorder visually with CSS only where the composition says so.
 - **Nothing depends on motion or JS.** Content is present and complete with animation off.
-- **Don't fabricate** proof: numbers, testimonials, logos and case-study results come from the user or are labelled placeholders.
+- **Placeholder proof is fine.** Numbers, testimonials, logos and case-study results come from the user. When missing, write fictional ones of your own, never copied from a real site or brand. The user replaces them.
 - **Skeletons, not templates.** Adapt copy, proportions and emphasis to the subject; the compositions are starting structures.
 - **Token purity.** All colours use `@shavin/ui` semantic tokens (`bg-surface`, `text-fg`, `text-fg-subtle`, `border-hairline`). Zero hex/rgb/`--n-*`. Container surfaces use `rounded-[var(--radius-panel)]`; controls use `rounded-[var(--radius-lg)]`. Concentric nesting via `rounded-panel-inner` or `rounded-panel-p5`.
 
@@ -144,7 +136,7 @@ Load a family file only when you use one of its IDs. Loading the whole library w
 
 Before handing work back, confirm:
 
-1. Every section maps to a composition ID (or is a documented deviation) and carries `data-composition="<ID>"` (`"none"` only for utility screens such as auth or 404). `check_page({ targetDir })` verifies this.
+1. Every section maps to a composition ID (or is a documented deviation) and carries `data-composition="<ID>"` (`"none"` only for utility screens such as auth, 404, settings and dashboards). `check_page({ targetDir })` verifies this.
 2. Each composition's `Contract` is met by the actual content.
 3. Mobile order equals reading order; nothing scrolls sideways except dedicated scrollers.
 4. One `<h1>`, sequential headings, labelled landmarks, visible focus.
@@ -155,7 +147,3 @@ Before handing work back, confirm:
 9. At least two variation knobs were changed from the recipe and one bold moment is named.
 10. Overline form, interactive-control choice, typographic voice and colour application pattern are each named — not left as whatever the framework's defaults happened to produce.
 11. Long-headline, missing-image and item-count stress tests pass (`foundations.md` §7).
-
-## Maintaining the library
-
-Run `python scripts/validate_library.py` after any edit to `references/`. It checks metadata, wireframe alignment, selection-guide coverage and recipe references. Write new wireframes with the DSL and run `python scripts/render_wireframes.py <file>` to align them.

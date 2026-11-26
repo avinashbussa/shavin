@@ -3,8 +3,14 @@
   "version": "0.1.0",
   "description": "MCP server that grounds coding agents in @shavin/ui components, tokens, layouts and checks",
   "license": "MIT",
-  "author": "Avinash Bussa <avinashbussa1@gmail.com>",
-  "homepage": "https://docs.shavin.cc/start/mcp",
+  "engines": {
+    "node": ">=22"
+  },
+  "author": {
+    "name": "Avinash Bussa",
+    "url": "https://avinashbussa.com"
+  },
+  "homepage": "https://docs.shavin.cc",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/avinashbussa/shavin.git",
@@ -29,8 +35,18 @@
   "exports": {
     ".": "./src/index.mjs",
     "./bridge": "./src/bridge/server.mjs",
-    "./next": "./src/integrations/next.mjs",
-    "./vite": "./src/integrations/vite.mjs"
+    "./next": {
+      "types": {
+        "import": "./src/integrations/next.d.mts",
+        "require": "./src/integrations/next.d.cts"
+      },
+      "import": "./src/integrations/next.mjs",
+      "default": "./src/integrations/next.mjs"
+    },
+    "./vite": {
+      "types": "./src/integrations/vite.d.mts",
+      "default": "./src/integrations/vite.mjs"
+    }
   },
   "bin": {
     "shavin-mcp": "./bin/shavin-mcp.mjs"
@@ -47,6 +63,7 @@
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.31.0",
     "@shavin/block-schema": "^0.1.0",
+    "@shavin/cli": "^0.1.0",
     "@supabase/supabase-js": "^2.45.0"
   },
   "files": [
@@ -54,9 +71,14 @@
     "src",
     "assets",
     "build.mjs",
-    "smithery.yaml",
-    "README.md"
+    "README.md",
+    "CHANGELOG.md"
   ],
+  "shavin": {
+    "compat": {
+      "@shavin/ui": ">=0.1.0 <0.2.0"
+    }
+  },
   "publishConfig": {
     "access": "public"
   }

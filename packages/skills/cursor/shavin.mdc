@@ -1,0 +1,14 @@
+---
+description: Build every UI task with Shavin (@shavin/ui) components, tokens and the six states
+alwaysApply: true
+---
+
+# Shavin
+
+This project uses `@shavin/ui`. A plain request for a page, section, screen or component means Shavin; the user does not need to say so.
+
+- Every UI element is a `@shavin/ui` component. No raw `<button>`, `<input>`, `<select>`, `<textarea>`, `<table>` or `<dialog>`, no hand-styled `<div>` imitating a card, badge, modal, tabs or toast, and no other UI library in new code. Existing code from another library is left alone unless the user asks to migrate it.
+- Every screen covers first-time, empty, loading, error, success and disabled states by default, without being asked (`EmptyState` kind first-time / empty / no-results / success; `Skeleton` for loading content, never a spinner, `Button loading` for actions; `Callout color="danger"` with retry; `TextField errorMessage`, `FormField error`, `FormErrorSummary`; `useToast()`; `Button disabledReason`; `Stepper`; `AlertDialog` for destructive actions). Every site has a not-found page and an error boundary. Never remove focus rings.
+- Colours come from semantic tokens (`bg-surface`, `text-fg`, `border-hairline`); a hex is allowed only as `brandColor="#hex"` on `ThemeProvider`.
+- On every turn that writes UI, including small follow-ups: read `SHAVIN.md`, look components up with the Shavin MCP (`get_components`, `get_tokens`) instead of writing props from memory, plan new pages with `plan_page`, and run `validate_code` on every changed file before answering.
+- Full rules: `AGENTS.md`, `SHAVIN.md` and the skills in `.agents/skills/`.

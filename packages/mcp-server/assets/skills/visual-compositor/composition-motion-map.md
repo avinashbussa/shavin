@@ -1,6 +1,6 @@
 # Composition → Motion Map
 
-> Suggested motion presets per layout composition. Reference: `page-motion-presets.md` for preset recipes. The authoritative composition-motion-map now lives in the `layout-motion` skill (`layout-motion/references/composition-motion-map.md`) — this file remains as a visual-compositor-internal convenience. The 55 compositions are defined in the `layout-compositions` skill. "None" is a valid and often best answer. Pick one or two per page section, not all of them.
+> Suggested motion presets per layout composition. Reference: `page-motion-presets.md` for preset recipes. The authoritative composition-motion-map now lives in the `layout-motion` skill (`layout-motion/references/composition-motion-map.md`) — this file remains as a visual-compositor-internal convenience. The 57 compositions are defined in the `layout-compositions` skill. "None" is a valid and often best answer. Pick one or two per page section, not all of them.
 
 ---
 

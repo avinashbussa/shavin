@@ -2,7 +2,7 @@ import type { ComponentDoc } from "../../authoring/types";
 
 export const docs: ComponentDoc = {
   name: "ScrollArea",
-  description: "Custom styled scrollbar viewport primitive built on Radix ScrollArea supporting vertical and horizontal scrolling.",
+  description: "A scrolling region with slim, styled scrollbars in place of the browser's own. It scrolls both ways and can be scrolled with the keyboard.",
   features: [
     "Built on @radix-ui/react-scroll-area",
     "Custom rounded scrollbar thumbs styled with bg-hairline-strong",

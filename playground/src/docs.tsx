@@ -4,9 +4,9 @@ import type { BestPracticeDoc } from "../../packages/ui/src/authoring/types";
 import type { ManifestComponent } from "./data";
 
 /*
- * The docs site's page building blocks (apps/docs/src/components/Docs.tsx),
+ * The docs site's page building blocks,
  * reproduced here so a primitive looks the same in the playground as it will
- * on the docs site. Keep the class names in step with that file.
+ * on the docs site. Keep the class names in step with the docs site's copy.
  */
 
 export function CodeBlock({ appearance = "dark", ...props }: CodeBlockProps) {

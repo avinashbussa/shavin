@@ -2,13 +2,13 @@ import type { ComponentDoc } from "../../authoring/types";
 
 export const docs: ComponentDoc = {
   name: "Image",
-  description: "Image primitive with automatic broken-link placeholder fallback, aspect-ratio preservation, object-fit scaling, and overlay layers (scrim / gradient / solid / fx) composited on top.",
+  description: "Shows an image at a set ratio and fit, with a placeholder when the source is missing or fails to load. Overlays such as a scrim or gradient can sit on top.",
   features: [
     "Supports radius escape hatch (radius='none|small|medium|large|full|inherit')",
     "Defaults to panel radius --radius-panel per AGENTS.md rules",
     "Zero Layout Shift (CLS) via ratio prop (e.g. ratio='16/9')",
     "Graceful fallback box when src is missing or fails to load",
-    "Overlay layers via bgOverlays — the same layer system layouts use for backgrounds (presets, solid, gradients, fx), composited on top of the image; fx needs @shavin/fx registered, e.g. bgOverlays=\"fx:light-streaks/50, scrim\""
+    "Overlay layers via bgOverlays — the same layer system layouts use for backgrounds (presets, solid, gradients, fx), composited on top of the image; fx needs `npm i @shavin/fx` (free to use under its own licence) and `registerFxBackdrops()`, e.g. bgOverlays=\"fx:light-streaks/50, scrim\""
   ],
   accessibility: [
     "Enforces alt text prop for screen reader image descriptions",

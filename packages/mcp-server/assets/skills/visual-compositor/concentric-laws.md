@@ -1,7 +1,7 @@
 # Concentric Laws — The Mathematical Foundation
 
-> **Load priority:** ALWAYS loaded. These two laws govern every spatial decision.
-> **Token cost:** ~3K tokens.
+> **Load priority:** CORE: load for any nested radius or padding. These two laws govern every spatial decision.
+> **Token cost:** ~1.8K tokens.
 
 Every spatial decision in a layout must satisfy two concentric laws simultaneously. They are not optional and not overridable by aesthetic preference.
 
@@ -21,9 +21,9 @@ Inner radius = outer minus the padding, so both arcs share one center — that i
 
 | Role                        | Token            | Default value        | Use on                                                                                       |
 | --------------------------- | ---------------- | -------------------- | -------------------------------------------------------------------------------------------- |
-| Large surfaces & containers | `--radius-panel` | 12px (medium preset) | Cards, dialogs, modals, dropdowns, section containers, accordions, accordion items, callouts |
+| Large surfaces & containers | `--radius-panel` | 16px (medium preset) | Cards, dialogs, modals, dropdowns, section containers, accordions, accordion items, callouts |
 | Controls                    | `--radius-lg`    | 8px (medium preset)  | Single-line controls: buttons, inputs, badges, chips, avatar frames, switches                |
-| Tight controls              | `--radius-md`    | 6px                  | Dense list rows, inline tags, toolbar items                                                  |
+| Tiny standalone shapes      | `--radius-sm`    | 4px                  | Swatches, carets. Never a nested inner radius: the floor applies                             |
 | Never use on panels         | `rounded-full`   | 9999px               | Only pills (Badge), Avatar, Switch thumb — never panels or container items                   |
 
 > [!CRITICAL]
@@ -38,18 +38,18 @@ Inner radius = outer minus the padding, so both arcs share one center — that i
 ```
 Section (no radius — full-bleed)
   └── Container (max-w, no radius — layout only)
-       └── Card [--radius-panel = 12px, p-5 = 20px]
-            └── Button [--radius-lg = 8px] ✓ (12 - 20 = negative → clamp to 0 → use token directly)
+       └── Card [--radius-panel = 16px, p-5 = 20px]
+            └── Button [--radius-lg = 8px] ✓ (16 - 20 = negative → floor = min(8, 16/2) = 8)
             └── Input  [--radius-lg = 8px] ✓
 
-Card [--radius-panel = 12px, p-4 = 16px]
-  └── Inner chip/badge → 12 - 16 = negative → use --radius-md = 6px ✓
+Card [--radius-panel = 16px, p-4 = 16px]
+  └── Inner chip/badge → 16 - 16 = 0 → floor 8px → rounded-panel-p4 (= --radius-lg) ✓
 
-Popover [--radius-panel = 12px, p-3 = 12px]
-  └── List item row → 12 - 12 = 0 → use rounded-[var(--radius-md)] ✓
+Popover [--radius-panel = 16px, p-3 = 12px]
+  └── List item row → 16 - 12 = 4 → floor 8px → rounded-panel-p3 ✓
 
-Dialog [--radius-panel = 12px, p-6 = 24px]
-  └── Inner card [--radius-lg = 8px] ✓ (padding exceeds radius — inner is just control-sized)
+Dialog [--radius-panel = 16px, p-6 = 24px]
+  └── Inner card → 16 - 24 < 0 → floor 8px → rounded-panel-p6 ✓
 ```
 
 ### Radius Rules
@@ -57,7 +57,17 @@ Dialog [--radius-panel = 12px, p-6 = 24px]
 - **Never use `--radius-panel`** on a control (button, input, badge). It creates a stadium shape at "full" preset.
 - **Never use `--radius-lg` / `rounded-lg` literal** — always `rounded-[var(--radius-lg)]`.
 - **Never use `rounded-2xl`, `rounded-xl`, `rounded-3xl` literals** — they don't track the ThemeProvider.
-- If the concentric formula yields ≤ 0, use `rounded-none` or the next smaller token, not a literal value.
+- If R_outer − P is below the floor, use the floor (`rounded-panel-pN`), never `rounded-none` or a literal.
+
+### What `validate_code` checks (and `autofix_code` fixes)
+
+The lint is conservative: it judges only what it can read from the source.
+
+- Radius written as a token class (`rounded-[var(--radius-panel)]`, `rounded-panel-pN`, `rounded-[var(--radius-lg)]`, `rounded-[calc(var(--radius-panel) - Npx)]`). `rounded-full`, `rounded-none` and `rounded-panel-inner` are never flagged.
+- Padding written as `p-N`, equal `px-N py-N`, `p-[Npx]` or `Card padding="md"`. A component with its own default padding and no explicit value gets no verdict.
+- A transparent wrapper between outer and inner adds its padding. A wrapper with a background or border and no radius ends the check.
+- A literal radius (`rounded-lg`, `rounded-xl`) is always reported. When the role or nesting makes the fix clear, the report names the exact class and `autofix_code` writes it (`rounded-panel-pN`, or an explicit `max(floor, calc(panel - X))` when N is off the scale). Otherwise both options are listed and nothing is changed.
+- Elements marked `data-overlay`, `data-gradient` or `data-scope-theme` are skipped.
 
 ---
 

@@ -1,4 +1,4 @@
-import { Container, Flex, Heading, Icon, Link, Section, Text } from "@shavin/ui";
+import { Container, Flex, Icon, Link, Section, Text, WiseOwlLogo } from "@shavin/ui";
 
 const defaultLinks = [
   { label: "Privacy", href: "/legal/privacy" },
@@ -19,7 +19,7 @@ export function FooterCompactSingleRow({ links = defaultLinks, social = defaultS
       <Container size="lg">
         <Flex direction="column" gap="4" className="lg:flex-row lg:items-center lg:gap-8">
           <Flex direction="row" align="center" justify="between" gap="4" className="lg:contents">
-            <Heading as="p" size="md" tracking="tight" className="lg:order-1">WiseOwl</Heading>
+            <WiseOwlLogo className="lg:order-1" />
             <Flex direction="row" gap="1" className="-mr-2.5 lg:order-3 lg:mr-0">
               {social.map((item) => (
                 <Link key={item.name} href={item.href} aria-label={item.name} className="inline-flex h-10 w-10 items-center justify-center rounded-[var(--radius-lg)] text-fg-muted hover:bg-surface-hover hover:text-fg">

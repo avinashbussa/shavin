@@ -1,152 +1,12 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Popover, PopoverTrigger, PopoverContent } from "../Popover";
 import { TextField } from "../TextField";
 import { cn } from "../../lib/cn";
-import * as LucideIcons from "lucide-react";
-import * as PhosphorIcons from "@phosphor-icons/react";
-import * as RadixIcons from "@radix-ui/react-icons";
-import * as MDIIcons from "@mdi/js";
-import type { LucideIcon } from "lucide-react";
-
-export type IconComponentType = React.ComponentType<any>;
-
-export interface IconItem {
-  id: string;
-  name: string;
-  library: "lucide" | "phosphor" | "radix" | string;
-  component: IconComponentType;
-}
-
-export const ICON_REGISTRY: IconItem[] = [];
-export const ALL_ICONS: Record<string, IconComponentType> = {};
-
-// 1. Populate Lucide icons
-Object.entries(LucideIcons).forEach(([name, comp]) => {
-  if (
-    (typeof comp === "function" || (typeof comp === "object" && comp !== null && "$$typeof" in comp)) &&
-    !name.startsWith("Lucide") &&
-    name !== "createLucideIcon" &&
-    name !== "LucideIcon" &&
-    name !== "default"
-  ) {
-    const camelKey = name.charAt(0).toLowerCase() + name.slice(1);
-    const component = comp as unknown as IconComponentType;
-    ALL_ICONS[camelKey] = component;
-    const lowerKey = name.toLowerCase();
-    if (!ALL_ICONS[lowerKey]) {
-      ALL_ICONS[lowerKey] = component;
-    }
-    if (!ALL_ICONS[name]) {
-      ALL_ICONS[name] = component;
-    }
-
-    ICON_REGISTRY.push({
-      id: `lucide-${camelKey}`,
-      name: camelKey,
-      library: "lucide",
-      component,
-    });
-  }
-});
-
-// 2. Populate Phosphor icons
-Object.entries(PhosphorIcons).forEach(([name, comp]) => {
-  if (
-    (typeof comp === "function" || (typeof comp === "object" && comp !== null && "$$typeof" in comp)) &&
-    !name.endsWith("Icon") &&
-    !name.startsWith("Icon") &&
-    name !== "SSR" &&
-    name !== "default"
-  ) {
-    const camelKey = name.charAt(0).toLowerCase() + name.slice(1);
-    const component = comp as unknown as IconComponentType;
-    if (!ALL_ICONS[camelKey]) {
-      ALL_ICONS[camelKey] = component;
-    }
-    const lowerKey = name.toLowerCase();
-    if (!ALL_ICONS[lowerKey]) {
-      ALL_ICONS[lowerKey] = component;
-    }
-    if (!ALL_ICONS[name]) {
-      ALL_ICONS[name] = component;
-    }
-
-    ICON_REGISTRY.push({
-      id: `phosphor-${camelKey}`,
-      name: camelKey,
-      library: "phosphor",
-      component,
-    });
-  }
-});
-
-// 3. Populate Radix icons
-Object.entries(RadixIcons).forEach(([name, comp]) => {
-  if (
-    (typeof comp === "function" || (typeof comp === "object" && comp !== null && "$$typeof" in comp)) &&
-    name !== "default"
-  ) {
-    const rawName = name.endsWith("Icon") ? name.slice(0, -4) : name;
-    const camelKey = rawName.charAt(0).toLowerCase() + rawName.slice(1);
-    const component = comp as unknown as IconComponentType;
-    if (!ALL_ICONS[camelKey]) {
-      ALL_ICONS[camelKey] = component;
-    }
-    const lowerKey = rawName.toLowerCase();
-    if (!ALL_ICONS[lowerKey]) {
-      ALL_ICONS[lowerKey] = component;
-    }
-    if (!ALL_ICONS[name]) {
-      ALL_ICONS[name] = component;
-    }
-
-    ICON_REGISTRY.push({
-      id: `radix-${camelKey}`,
-      name: camelKey,
-      library: "radix",
-      component,
-    });
-  }
-});
-
-// 4. Populate Material Design icons (@mdi/js — path strings only, no @mdi/react)
-//    @mdi/js exports SVG path strings (e.g. mdiAbTesting). We render them as
-//    inline <svg> elements directly, avoiding the @mdi/react CJS/React-16 dependency.
-Object.entries(MDIIcons).forEach(([key, path]) => {
-  if (typeof path !== "string" || !key.startsWith("mdi")) return;
-  // Strip "mdi" prefix → e.g. "AbTesting" → "abTesting"
-  const rawName = key.slice(3);
-  const camelKey = rawName.charAt(0).toLowerCase() + rawName.slice(1);
-  const lowerKey = camelKey.toLowerCase();
-
-  // Create a wrapper component that renders the MDI path as an inline SVG.
-  // We avoid @mdi/react (CJS/React-16) and render the path directly, which is
-  // all @mdi/react does internally. Strip Lucide-specific props that MDI doesn't understand.
-  const MdiWrapper = ({ strokeWidth: _sw, absoluteStrokeWidth: _asw, size: _sz, ...rest }: any) => (
-    <svg viewBox="0 0 24 24" {...rest}>
-      <path d={path} fill="currentColor" />
-    </svg>
-  );
-
-  // Only add to ALL_ICONS if not already present (Lucide/Phosphor/Radix take priority)
-  if (!ALL_ICONS[camelKey]) {
-    ALL_ICONS[camelKey] = MdiWrapper as unknown as IconComponentType;
-  }
-  if (!ALL_ICONS[lowerKey]) {
-    ALL_ICONS[lowerKey] = MdiWrapper as unknown as IconComponentType;
-  }
-  if (!ALL_ICONS[key]) {
-    ALL_ICONS[key] = MdiWrapper as unknown as IconComponentType;
-  }
-
-  ICON_REGISTRY.push({
-    id: `material-${camelKey}`,
-    name: camelKey,
-    library: "material",
-    component: MdiWrapper as unknown as IconComponentType,
-  });
-});
+import { Ban } from "lucide-react";
+import { Icon } from "../Icon";
+import type { IconItem } from "./registry";
+export type { IconItem, IconComponentType } from "./registry";
 
 export interface IconPickerProps {
   /** Active selected icon name key. */
@@ -180,14 +40,26 @@ export function IconPicker({
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [activeLibrary, setActiveLibrary] = useState<string>("all");
+  // The registry holds every icon of four libraries; load it the first time the picker opens.
+  const [registry, setRegistry] = useState<IconItem[] | null>(null);
+  useEffect(() => {
+    if (!open || registry) return;
+    let live = true;
+    import("./registry").then((m) => live && setRegistry(m.ICON_REGISTRY));
+    return () => {
+      live = false;
+    };
+  }, [open, registry]);
 
   const query = search.trim().toLowerCase();
 
   // 1. Filter by active icon library tab
   const libraryFiltered =
-    activeLibrary === "all"
-      ? ICON_REGISTRY
-      : ICON_REGISTRY.filter(
+    !registry
+      ? []
+      : activeLibrary === "all"
+      ? registry
+      : registry.filter(
           (item) => item.library.toLowerCase() === activeLibrary.toLowerCase()
         );
 
@@ -202,7 +74,10 @@ export function IconPicker({
         .slice(0, 120)
     : libraryFiltered.slice(0, 96);
 
-  const SelectedIcon = ALL_ICONS[value] || (value ? ALL_ICONS[value.toLowerCase()] : undefined);
+  // The selected icon renders through <Icon>, which loads just that one.
+  const SelectedIcon = value
+    ? ({ className: cls }: { className?: string }) => <Icon name={value} size="sm" className={cls} />
+    : undefined;
 
   const defaultTrigger =
     variant === "icon" ? (
@@ -219,7 +94,7 @@ export function IconPicker({
         {SelectedIcon ? (
           <SelectedIcon className={size === "sm" ? "h-3.5 w-3.5" : size === "lg" ? "h-4.5 w-4.5" : "h-4 w-4"} />
         ) : (
-          <LucideIcons.Ban className="h-3.5 w-3.5 text-fg-subtle" />
+          <Ban className="h-3.5 w-3.5 text-fg-subtle" />
         )}
       </button>
     ) : (
@@ -235,7 +110,7 @@ export function IconPicker({
           {SelectedIcon ? (
             <SelectedIcon className={cn("shrink-0 text-fg-muted", size === "sm" ? "h-3.5 w-3.5" : "h-4 w-4")} />
           ) : (
-            <LucideIcons.Ban className={cn("shrink-0 text-fg-subtle", size === "sm" ? "h-3.5 w-3.5" : "h-4 w-4")} />
+            <Ban className={cn("shrink-0 text-fg-subtle", size === "sm" ? "h-3.5 w-3.5" : "h-4 w-4")} />
           )}
           <span className="truncate text-xs text-fg">{value || "none"}</span>
         </span>
@@ -294,7 +169,7 @@ export function IconPicker({
             className="w-full"
           />
           <div role="status" className="sr-only">
-            {filteredIcons.length === 0 ? "No matching icons" : `${filteredIcons.length} icons`}
+            {!registry ? "Loading icons" : filteredIcons.length === 0 ? "No matching icons" : `${filteredIcons.length} icons`}
           </div>
           {availableTabs.length > 1 && (
             <div role="group" aria-label="Icon library" className="flex items-center gap-1 border-b border-hairline pb-1.5 overflow-x-auto">
@@ -307,7 +182,7 @@ export function IconPicker({
                   className={cn(
                     "min-h-6 px-2 text-xs font-medium rounded-[var(--radius-lg)] capitalize transition cursor-pointer shrink-0",
                     activeLibrary.toLowerCase() === lib
-                      ? "bg-accent/15 text-accent font-semibold"
+                      ? "bg-brand/15 text-brand-text font-semibold"
                       : "text-fg-muted hover:text-fg hover:bg-surface-hover"
                   )}
                 >
@@ -337,12 +212,12 @@ export function IconPicker({
                   setOpen(false);
                 }}
                 className={cn(
-                  "flex flex-col items-center justify-center rounded-[var(--radius-md)] h-8 w-8 hover:bg-surface-hover transition border border-transparent shrink-0",
-                  value === "none" && "bg-surface-hover border-accent text-accent"
+                  "flex flex-col items-center justify-center rounded-[var(--radius-lg)] h-8 w-8 hover:bg-surface-hover transition border border-transparent shrink-0",
+                  value === "none" && "bg-surface-hover border-brand-text text-brand-text"
                 )}
                 title="None"
               >
-                <LucideIcons.Ban className="h-4 w-4 text-fg-subtle" aria-hidden />
+                <Ban className="h-4 w-4 text-fg-subtle" aria-hidden />
               </button>
             )}
             {filteredIcons.map((item, i) => {
@@ -361,8 +236,8 @@ export function IconPicker({
                     setOpen(false);
                   }}
                   className={cn(
-                    "flex flex-col items-center justify-center rounded-[var(--radius-md)] h-8 w-8 hover:bg-surface-hover transition border border-transparent text-fg-muted hover:text-fg shrink-0",
-                    isSelected && "bg-surface-hover border-accent text-accent hover:text-accent font-semibold"
+                    "flex flex-col items-center justify-center rounded-[var(--radius-lg)] h-8 w-8 hover:bg-surface-hover transition border border-transparent text-fg-muted hover:text-fg shrink-0",
+                    isSelected && "bg-surface-hover border-brand-text text-brand-text hover:text-brand-text font-semibold"
                   )}
                   title={`${item.name} (${item.library})`}
                 >
@@ -370,7 +245,9 @@ export function IconPicker({
                 </button>
               );
             })}
-            {filteredIcons.length === 0 && (
+            {!registry ? (
+              <div className="col-span-8 py-4 text-center text-xs text-fg-subtle">Loading icons…</div>
+            ) : filteredIcons.length === 0 && (
               <div className="col-span-8 py-4 text-center text-xs text-fg-subtle">
                 No matching icons in {activeLibrary} library.
               </div>

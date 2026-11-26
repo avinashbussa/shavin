@@ -3,7 +3,7 @@
  * build.mjs — Shavin Skills Build & Deploy Script
  *
  * Lives at packages/skills/build.mjs. Validates the skill .md files in
- * packages/skills/skills/ and deploys them to .agents/skills/ (monorepo
+ * packages/skills/skills/ and deploys them to .agents/skills/ (repository
  * consumption). The skills/ directory is both the source of truth AND the
  * published npm content — no separate source/output split.
  *
@@ -27,6 +27,7 @@ import { resolve, join, relative, dirname, basename } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createHash } from "node:crypto";
 import { c, g, fmt, printBanner, printCard } from "../../scripts/lib/term-ui.mjs";
+import { relPosix } from "./posix-path.mjs";
 
 // Parse CLI flags
 const args = process.argv.slice(2);
@@ -40,7 +41,7 @@ const targetOverride = targetIdx !== -1 && args[targetIdx + 1] ? args[targetIdx 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);        // packages/skills/
 const SKILLS_SRC = join(__dirname, "skills"); // packages/skills/skills/ — source of truth + npm content
-const REPO_ROOT = resolve(__dirname, "..", ".."); // monorepo root (2 levels up)
+const REPO_ROOT = resolve(__dirname, "..", ".."); // repository root (2 levels up)
 const AGENTS_DIR = targetOverride || join(REPO_ROOT, ".agents", "skills");
 
 // ── Helpers ──
@@ -155,11 +156,11 @@ console.log(bold("\n── Step 1: Cross-Reference Validation ──\n"));
 
 // Build a set of all known filenames
 const allFilenames = new Set(allFiles.map(f => basename(f)));
-const allRelPaths = new Set(allFiles.map(f => relative(SKILLS_SRC, f)));
+const allRelPaths = new Set(allFiles.map(f => relPosix(SKILLS_SRC, f)));
 
 for (const file of allFiles) {
   const content = readFileSync(file, "utf8");
-  const relFile = relative(SKILLS_SRC, file);
+  const relFile = relPosix(SKILLS_SRC, file);
 
   // Find all `filename.md` references in backticks
   const refPattern = /`([a-zA-Z0-9_\-\/]+\.md)`/g;
@@ -257,7 +258,7 @@ for (const skillDir of skillDirs) {
   // Check for orphan files (files in skill dir not in frontmatter and not SKILL.md)
   const dirFiles = walkDir(skillDir.path)
     .filter(f => basename(f) !== "SKILL.md" && f.endsWith(".md"))
-    .map(f => relative(skillDir.path, f));
+    .map(f => relPosix(skillDir.path, f));
 
   for (const dirFile of dirFiles) {
     if (!filesInSection.includes(dirFile)) {
@@ -280,7 +281,7 @@ function measureTokens() {
   const fileData = [];
   for (const file of allFiles) {
     const content = readFileSync(file, "utf8");
-    const relPath = relative(SKILLS_SRC, file);
+    const relPath = relPosix(SKILLS_SRC, file);
     fileData.push({
       path: relPath,
       file: basename(file),
@@ -364,10 +365,10 @@ if (!existsSync(AGENTS_DIR)) {
   const tgtHashes = new Map();
 
   for (const f of allFiles) {
-    srcHashes.set(relative(SKILLS_SRC, f), hashFile(f));
+    srcHashes.set(relPosix(SKILLS_SRC, f), hashFile(f));
   }
   for (const f of targetFiles) {
-    tgtHashes.set(relative(AGENTS_DIR, f), hashFile(f));
+    tgtHashes.set(relPosix(AGENTS_DIR, f), hashFile(f));
   }
 
   let changed = 0, added = 0, removed = 0, unchanged = 0;
@@ -449,7 +450,7 @@ function printSummary(total = alwaysTotal) {
       { label: "Specifications:", value: `${c.fg}${allFiles.length} markdown documents${c.reset}` },
       { label: "Always-Loaded Cap:", value: `${c.fg}${total} / ${budget?.alwaysLoadedBudget || 22000} tokens${c.reset}` },
       { label: "Cross-References:", value: `${fmt.pass("ALL RESOLVED")}` },
-      { label: "Validation Status:", value: errors > 0 ? `${fmt.fail("FAILED")} (${errors} errors)` : `${fmt.pass("VERIFIED AAA")}` },
+      { label: "Validation Status:", value: errors > 0 ? `${fmt.fail("FAILED")} (${errors} errors)` : `${fmt.pass("VERIFIED")}` },
     ],
     footer: isDryRun
       ? `${c.fgSubtle}Dry-run mode: no files were synced to .agents/skills/.${c.reset}`
@@ -469,7 +470,7 @@ if (!isDryRun && errors === 0) {
   const supportFiles = walkDir(SKILLS_SRC, ".py").filter((f) => f.endsWith(".py"));
   let copied = 0;
   for (const file of [...allFiles, ...supportFiles]) {
-    const relPath = relative(SKILLS_SRC, file);
+    const relPath = relPosix(SKILLS_SRC, file);
     const target = join(AGENTS_DIR, relPath);
     const targetDir = dirname(target);
 
@@ -490,7 +491,7 @@ if (!isDryRun && errors === 0) {
   if (existsSync(AGENTS_DIR)) {
     const targetFiles = [...walkDir(AGENTS_DIR), ...walkDir(AGENTS_DIR, ".py").filter((f) => f.endsWith(".py"))];
     for (const f of targetFiles) {
-      const relPath = relative(AGENTS_DIR, f);
+      const relPath = relPosix(AGENTS_DIR, f);
       const srcFile = join(SKILLS_SRC, relPath);
       if (!existsSync(srcFile)) {
         unlinkSync(f);

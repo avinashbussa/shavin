@@ -42,7 +42,7 @@
 | **Single italic/colored word in headline ("AI tell")**         | ALL  | Anti-Slop Design Law            |
 | **Meaningless numbered markers ("01", "02") on non-sequences** | ALL  | Anti-Slop Design Law            |
 | **Status-chip soup (over-badging every card)**                 | ALL  | Distillation & Cognitive Budget (AP-04, AP-08) |
-| **Ambient accent glow ball (blur-3xl saturated orb)**         | ALL  | Atmospheric Depth & Assets (AP-02)      |
+| **Ambient brand glow ball (blur-3xl saturated orb)**         | ALL  | Atmospheric Depth & Assets (AP-02)      |
 | **Context-heavy literal stock photo in block/template**        | ALL  | Atmospheric Depth & Assets (AP-03)      |
 | **Content dumping / layout bloat (metric grid in hero, etc.)** | ALL  | Layout Restraint & Anti-Bloat (AP-05, AP-06, AP-07)   |
 | **Scattered fade-up entrance animations on all cards**         | ALL  | Motion Restraint & Choreography |
@@ -56,7 +56,7 @@
 | Glass effect over a flat solid background (no variation)       |  E   | Glassmorphism Rule              |
 | backdrop-blur without fallback for mobile performance          |  E   | Responsive Atmosphere           |
 | `100vh` instead of `100dvh` on mobile hero                     |  E   | Hero Scale — chrome cut-off     |
-| Video background without a legibility overlay                  |  E   | Contrast — WCAG AA              |
+| Video background without a legibility overlay                  |  E   | Contrast — WCAG 2.2 AA          |
 | Parallax ratio > 0.6                                           |  E   | Parallax — reads mechanical     |
 | Theatrical void section without a stated cognitive purpose     |  E   | Theatrical space rule           |
 | Missing loading states on async content                        | ALL  | Cognitive Layer — State Coverage |
@@ -95,7 +95,7 @@ Run this before finalising any layout. Each item maps to a specific law or chapt
 - [ ] **Center limit:** Is center alignment restricted to ≤ 3 lines of text?
 - [ ] **No centered prose:** Are paragraphs, form labels, and list content left-aligned?
 - [ ] **Consistent alignment:** Within any repeating element set, is alignment identical?
-- [ ] **Section header order:** Overline/Badge → Heading → Text — in that order?
+- [ ] **Section header order:** if a label exists: Label → Heading → Text, in that order. Is the label there because it adds information?
 
 ### Rhythm + Density `[ALL MODES]`
 
@@ -133,14 +133,14 @@ Run this before finalising any layout. Each item maps to a specific law or chapt
 - [ ] **Glass background:** Does any glass element have a non-flat visual layer behind it?
 - [ ] **Mobile backdrop-blur:** Is `backdrop-blur` reduced or removed on mobile?
 - [ ] **Hero uses `100dvh`:** Are editorial heroes using `100dvh` not `100vh`?
-- [ ] **Video contrast:** Does every video/image hero have a legibility overlay achieving WCAG AA?
+- [ ] **Video contrast:** Does every video/image hero have a legibility overlay achieving 4.5:1 (WCAG 2.2 AA)?
 - [ ] **Theatrical void justified:** Can you state what each void section communicates?
 
 ### Atmospheric Depth & Asset Choice `[ALL MODES]`
 
 > See also: `anti-patterns.md` AP-01 (Defensive Minimalism), AP-02 (Glow Balls), AP-03 (Stock Photos).
 
-- [ ] **No AI-slop accent glow balls:** Are garish `bg-accent/20 blur-3xl` saturated glow balls replaced by soft, diffuse pastel meshes?
+- [ ] **No AI-slop brand glow balls:** Are garish `bg-brand/20 blur-3xl` saturated glow balls replaced by soft, diffuse pastel meshes?
 - [ ] **Aesthetic abstraction over literal stock photos:** Are cliché photos (people at laptops, handshakes, office desks) replaced by curated Lummi/Unsplash photography, mesh gradients, video backdrops, or abstract textures (3D only as optional decoration)?
 - [ ] **Directional scrims:** Does any text placed over background textures use a semantic token gradient scrim?
 
@@ -150,7 +150,7 @@ Run this before finalising any layout. Each item maps to a specific law or chapt
 
 - [ ] **Single clear thought:** Does the hero communicate one single punchy value proposition in 4–8 words?
 - [ ] **No metric clutter in hero:** Is telemetry/metric data placed in a dedicated section below the fold, rather than jammed into the hero?
-- [ ] **Distillation budget:** At most 1 badge (or overline label) and 2 action buttons? No badge soup across sections?
+- [ ] **Distillation budget:** At most 1 badge and 2 action buttons per section? No labels above most headings on the page, no badge soup?
 - [ ] **Airy breathing room:** Does the section use generous vertical padding (`py-24 md:py-32` for marketing)?
 
 ### Responsive `[ALL MODES]`

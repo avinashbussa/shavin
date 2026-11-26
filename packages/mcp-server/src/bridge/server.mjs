@@ -4,6 +4,12 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { BRIDGE_PORT, BRIDGE_HOST } from "./constants.mjs";
+import { checkRequest, resolveAllowedOrigins } from "./security.mjs";
+import { readBody, MAX_BODY_BYTES } from "./body.mjs";
+import { sanitizeFindings, isClean } from "./findings-shape.mjs";
+import { createJournal } from "./journal.mjs";
+import { resolveStateDir, resolveStagingDir } from "./state-dir.mjs";
+import { handleFindingsRoute } from "./findings-routes.mjs";
 
 export { BRIDGE_PORT, BRIDGE_HOST } from "./constants.mjs";
 
@@ -14,9 +20,16 @@ export const SHAVIN_FAVICON_SVG = `<svg width="16" height="16" viewBox="0 0 16 1
 </svg>`;
 
 export class ShavinBridgeServer extends EventEmitter {
-  constructor(port = BRIDGE_PORT) {
+  /**
+   * @param {number} [port]
+   * @param {{ allowedOrigins?: string[] }} [options] extra browser origins allowed besides localhost / 127.0.0.1 / [::1]
+   *   (also SHAVIN_BRIDGE_ALLOWED_ORIGINS, comma separated). See ./security.mjs.
+   */
+  constructor(port = BRIDGE_PORT, options = {}) {
     super();
     this.port = port;
+    this.allowedOrigins = options.allowedOrigins ?? [];
+    this.stateDir = options.stateDir;
     this.server = null;
     this.activeSockets = new Set();
     this.sseClients = new Set();
@@ -32,10 +45,23 @@ export class ShavinBridgeServer extends EventEmitter {
       timestamp: new Date().toISOString(),
       stats: { total: 0, errors: 0, warnings: 0, clean: true },
       issues: [],
-      theme: { dark: false, accent: "Monochrome", radius: "medium" },
+      theme: { dark: false, brand: "Monochrome", radius: "medium" },
       connectedTabs: 0,
     };
     this.isRunning = false;
+  }
+
+  /** The findings journal, created on first use in `<project root>/.shavin/` (or the `stateDir` option). */
+  getJournal() {
+    if (!this._journal) {
+      this._journal = createJournal({ dir: resolveStateDir({ stateDir: this.stateDir }) });
+      try {
+        this._journal.compact();
+      } catch {
+        /* an unreadable old journal must not stop the bridge */
+      }
+    }
+    return this._journal;
   }
 
   cleanStaleTabs() {
@@ -84,10 +110,21 @@ export class ShavinBridgeServer extends EventEmitter {
 
     return new Promise((resolve, reject) => {
       this.server = createServer((req, res) => {
-        // Enable CORS
-        res.setHeader("Access-Control-Allow-Origin", "*");
-        res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-        res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+        // Local-only policy (see ./security.mjs): host check against DNS rebinding, strict Origin allowlist instead of `*`.
+        const verdict = checkRequest(req, resolveAllowedOrigins(this.allowedOrigins));
+        res.setHeader("Vary", "Origin");
+        if (!verdict.ok) {
+          res.writeHead(403, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ error: verdict.reason }));
+          return;
+        }
+        if (verdict.allowOrigin) {
+          res.setHeader("Access-Control-Allow-Origin", verdict.allowOrigin);
+          res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+          res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+          // Chrome's Private Network Access preflight, for an allowed https origin calling this loopback server.
+          if (req.headers["access-control-request-private-network"] === "true") res.setHeader("Access-Control-Allow-Private-Network", "true");
+        }
 
         if (req.method === "OPTIONS") {
           res.writeHead(204);
@@ -107,13 +144,15 @@ export class ShavinBridgeServer extends EventEmitter {
           return;
         }
 
+        // Findings the developer sends to the agent (see ./findings-routes.mjs).
+        if (handleFindingsRoute(this, req, res, url)) return;
+
         // 1. POST /api/audit — Browser posts live DOM audit snapshot
         if (req.method === "POST" && url.pathname === "/api/audit") {
-          let body = "";
-          req.on("data", (chunk) => { body += chunk; });
-          req.on("end", () => {
-            try {
+          readBody(req, MAX_BODY_BYTES.audit)
+            .then((body) => {
               const data = JSON.parse(body);
+              if (!data || typeof data !== "object" || Array.isArray(data)) throw new Error("invalid audit payload");
               this.updateSnapshot(data);
               res.writeHead(200, { "Content-Type": "application/json" });
               res.end(JSON.stringify({
@@ -122,11 +161,11 @@ export class ShavinBridgeServer extends EventEmitter {
                 projectsCount: this.projectSnapshots.size,
                 connectedTabs: this.getActiveTabsCount(),
               }));
-            } catch (err) {
-              res.writeHead(400, { "Content-Type": "application/json" });
+            })
+            .catch((err) => {
+              res.writeHead(err?.status === 413 ? 413 : 400, { "Content-Type": "application/json" });
               res.end(JSON.stringify({ error: err.message }));
-            }
-          });
+            });
           return;
         }
 
@@ -138,10 +177,8 @@ export class ShavinBridgeServer extends EventEmitter {
         // lands the change as a reviewable git diff. Daemon binds 127.0.0.1
         // and this route is useless outside the repo checkout.
         if (req.method === "POST" && url.pathname === "/api/write-block") {
-          let body = "";
-          req.on("data", (chunk) => { body += chunk; });
-          req.on("end", () => {
-            try {
+          readBody(req, MAX_BODY_BYTES.findings)
+            .then((body) => {
               const { slug, code } = JSON.parse(body);
               if (typeof slug !== "string" || !/^[a-z0-9-]+$/.test(slug)) {
                 res.writeHead(400, { "Content-Type": "application/json" });
@@ -153,10 +190,10 @@ export class ShavinBridgeServer extends EventEmitter {
                 res.end(JSON.stringify({ error: "invalid code payload" }));
                 return;
               }
-              // Stage relative to the repo this daemon runs in (the checkout),
-              // NOT process.cwd() — npm run bridge runs from repo root.
+              // Stage in this checkout when there is one, else under the project's .shavin folder: never
+              // relative to process.cwd(), and never inside node_modules when the bridge is an installed package.
               const repoRoot = path.join(fileURLToPath(import.meta.url), "..", "..", "..", "..", "..");
-              const pendingDir = path.join(repoRoot, "packages", "block-schema", ".studio-pending");
+              const pendingDir = resolveStagingDir({ repoRoot, stateDir: resolveStateDir({ stateDir: this.stateDir }) });
               fs.mkdirSync(pendingDir, { recursive: true });
               const safeCode = String(code).replace(/\r\n/g, "\n");
               fs.writeFileSync(
@@ -165,11 +202,11 @@ export class ShavinBridgeServer extends EventEmitter {
               );
               res.writeHead(200, { "Content-Type": "application/json" });
               res.end(JSON.stringify({ status: "ok", staged: slug }));
-            } catch (err) {
-              res.writeHead(400, { "Content-Type": "application/json" });
+            })
+            .catch((err) => {
+              res.writeHead(err?.status === 413 ? 413 : 400, { "Content-Type": "application/json" });
               res.end(JSON.stringify({ error: err.message }));
-            }
-          });
+            });
           return;
         }
 
@@ -476,7 +513,7 @@ end tell`;
   <link rel="alternate icon" type="image/svg+xml" href="/favicon.ico">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Rethink+Sans:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
   <style>
     :root {
@@ -495,7 +532,7 @@ end tell`;
       --n-950: 10 10 12;
       --n-1000: 0 0 0;
 
-      --font-display: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+      --font-display: 'Rethink Sans', ui-sans-serif, system-ui, sans-serif;
       --font-body: 'Inter', ui-sans-serif, system-ui, sans-serif;
       --font-mono: 'JetBrains Mono', ui-monospace, monospace;
 
@@ -514,8 +551,8 @@ end tell`;
       --fg: rgb(var(--n-950));
       --fg-muted: rgb(var(--n-600));
       --fg-subtle: rgb(var(--n-500));
-      --accent: rgb(var(--n-900));
-      --accent-fg: rgb(var(--n-0));
+      --brand: rgb(var(--n-900));
+      --brand-fg: rgb(var(--n-0));
       --success: 5 150 105;
       --warning: 217 119 6;
       --danger: 192 57 43;
@@ -531,8 +568,8 @@ end tell`;
       --fg: rgb(var(--n-50));
       --fg-muted: rgb(var(--n-300));
       --fg-subtle: rgb(var(--n-400));
-      --accent: rgb(var(--n-50));
-      --accent-fg: rgb(var(--n-950));
+      --brand: rgb(var(--n-50));
+      --brand-fg: rgb(var(--n-950));
       --success: 52 211 153;
       --warning: 251 191 36;
       --danger: 232 90 79;
@@ -585,7 +622,7 @@ end tell`;
       align-items: center;
       flex-shrink: 0;
     }
-    .brand-logo svg { height: 24px; width: auto; }
+    .brand-logo svg { height: 18px; width: auto; }
 
     .brand-divider {
       width: 1px;
@@ -1055,14 +1092,10 @@ end tell`;
     <div class="header-inner">
       <div class="brand">
         <div class="brand-logo">
-          <svg width="83" height="32" viewBox="0 0 83 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M72.0809 7.36H75.3929L77.9609 17.416H78.0089V7.36H80.3609V24.16H77.6489L74.4809 11.896H74.4329V24.16H72.0809V7.36Z" fill="currentColor"/>
-            <path d="M66.2637 7.36H68.9037V24.16H66.2637V7.36Z" fill="currentColor"/>
-            <path d="M55.2036 7.36H57.8676L59.5956 20.392H59.6436L61.3716 7.36H63.7956L61.2516 24.16H57.7476L55.2036 7.36Z" fill="currentColor"/>
-            <path d="M47.7865 7.36H51.3625L54.0985 24.16H51.4585L50.9785 20.824V20.872H47.9785L47.4985 24.16H45.0505L47.7865 7.36ZM50.6665 18.592L49.4905 10.288H49.4425L48.2905 18.592H50.6665Z" fill="currentColor"/>
-            <path d="M34.4684 7.36H37.1084V14.2H39.9404V7.36H42.5804V24.16H39.9404V16.6H37.1084V24.16H34.4684V7.36Z" fill="currentColor"/>
-            <path d="M27.7707 24.4C26.4907 24.4 25.5227 24.04 24.8667 23.32C24.2107 22.584 23.8827 21.536 23.8827 20.176V19.216H26.3787V20.368C26.3787 21.456 26.8347 22 27.7467 22C28.1947 22 28.5307 21.872 28.7547 21.616C28.9947 21.344 29.1147 20.912 29.1147 20.32C29.1147 19.616 28.9547 19 28.6347 18.472C28.3147 17.928 27.7227 17.28 26.8587 16.528C25.7707 15.568 25.0107 14.704 24.5787 13.936C24.1467 13.152 23.9307 12.272 23.9307 11.296C23.9307 9.968 24.2667 8.944 24.9387 8.224C25.6107 7.488 26.5867 7.12 27.8667 7.12C29.1307 7.12 30.0827 7.488 30.7227 8.224C31.3787 8.944 31.7067 9.984 31.7067 11.344V12.04H29.2107V11.176C29.2107 10.6 29.0987 10.184 28.8747 9.928C28.6507 9.656 28.3227 9.52 27.8907 9.52C27.0107 9.52 26.5707 10.056 26.5707 11.128C26.5707 11.736 26.7307 12.304 27.0507 12.832C27.3867 13.36 27.9867 14 28.8507 14.752C29.9547 15.712 30.7147 16.584 31.1307 17.368C31.5467 18.152 31.7547 19.072 31.7547 20.128C31.7547 21.504 31.4107 22.56 30.7227 23.296C30.0507 24.032 29.0667 24.4 27.7707 24.4Z" fill="currentColor"/>
-            <path d="M10.704 25.6C8.096 25.6 6.16 24.856 4.896 23.368C3.632 21.864 3 19.808 3 17.2C3 15.168 3.328 13.336 3.984 11.704C4.656 10.072 5.656 8.784 6.984 7.84C8.328 6.88 9.952 6.4 11.856 6.4C14.224 6.4 15.928 7.04 16.968 8.32C18.008 9.6 18.528 11.312 18.528 13.456C18.528 15.248 18.28 16.704 17.784 17.824C17.288 18.944 16.68 19.752 15.96 20.248C15.256 20.728 14.552 20.968 13.848 20.968C12.552 20.968 11.856 20.44 11.76 19.384H11.712C11.472 19.88 11.168 20.248 10.8 20.488C10.432 20.712 9.984 20.824 9.456 20.824C8.736 20.824 8.176 20.576 7.776 20.08C7.392 19.568 7.2 18.856 7.2 17.944C7.2 17.752 7.216 17.48 7.248 17.128L7.512 14.704C7.784 12.336 8.744 11.152 10.392 11.152C11.384 11.152 12.04 11.64 12.36 12.616H12.408L12.624 11.248H14.856L14.16 17.944L14.136 18.328C14.136 18.632 14.296 18.784 14.616 18.784C15.24 18.784 15.712 18.24 16.032 17.152C16.368 16.048 16.536 14.832 16.536 13.504C16.536 11.936 16.144 10.704 15.36 9.808C14.576 8.896 13.376 8.44 11.76 8.44C9.648 8.44 8.032 9.224 6.912 10.792C5.808 12.36 5.256 14.536 5.256 17.32C5.256 19.304 5.72 20.848 6.648 21.952C7.592 23.04 8.992 23.584 10.848 23.584C11.808 23.584 12.672 23.464 13.44 23.224C14.224 22.984 15.016 22.56 15.816 21.952L15.624 24.256C14.872 24.752 14.104 25.096 13.32 25.288C12.536 25.496 11.664 25.6 10.704 25.6ZM10.608 18.592C11.392 18.592 11.84 18.088 11.952 17.08L12.192 14.8L12.216 14.512C12.216 14.16 12.12 13.896 11.928 13.72C11.736 13.544 11.48 13.456 11.16 13.456C10.76 13.456 10.448 13.576 10.224 13.816C10 14.04 9.856 14.424 9.792 14.968L9.576 17.008L9.552 17.368C9.552 17.784 9.64 18.096 9.816 18.304C10.008 18.496 10.272 18.592 10.608 18.592Z" fill="currentColor"/>
+          <svg width="82" height="23" viewBox="0 0 86 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M31.0215 3.12012C32.2968 3.12019 33.2575 3.48789 33.9033 4.22363C34.5653 4.94359 34.8964 5.98387 34.8965 7.34375V8.04004H32.3779V7.17578C32.3779 6.59989 32.2641 6.1837 32.0381 5.92773C31.812 5.65594 31.4807 5.51953 31.0449 5.51953C30.1571 5.51969 29.7129 6.05613 29.7129 7.12793C29.7129 7.73589 29.8744 8.30406 30.1973 8.83203C30.5364 9.36003 31.1427 9.99995 32.0146 10.752C33.1287 11.7119 33.8956 12.5842 34.3154 13.3682C34.7352 14.1521 34.9453 15.0721 34.9453 16.1279C34.9453 17.5039 34.5977 18.5599 33.9033 19.2959C33.2251 20.0319 32.2318 20.4004 30.9238 20.4004C29.6322 20.4003 28.6552 20.0402 27.9932 19.3203C27.3311 18.5843 27 17.5358 27 16.1758V15.2158H29.5195V16.3682C29.5196 17.4561 29.98 18 30.9004 18C31.3522 17.9999 31.691 17.872 31.917 17.6162C32.1592 17.3443 32.2802 16.9122 32.2803 16.3203C32.2803 15.6163 32.1189 14.9997 31.7959 14.4717C31.4729 13.9278 30.8756 13.2801 30.0039 12.5283C28.9059 11.5683 28.1391 10.7035 27.7031 9.93555C27.2672 9.15159 27.0488 8.27183 27.0488 7.2959C27.0488 5.96795 27.3882 4.94362 28.0664 4.22363C28.7446 3.48788 29.7299 3.12012 31.0215 3.12012ZM40.3477 10.2002H43.2061V3.36035H45.8711V20.1602H43.2061V12.5996H40.3477V20.1602H37.6836V3.36035H40.3477V10.2002ZM57.4951 20.1602H54.8311L54.3467 16.8242V16.8721H51.3184L50.834 20.1602H48.3633L51.125 3.36035H54.7334L57.4951 20.1602ZM63.043 16.3916H63.0918L64.835 3.36035H67.2822L64.7139 20.1602H61.1777L58.6104 3.36035H61.2988L63.043 16.3916ZM72.4375 20.1602H69.7725V3.36035H72.4375V20.1602ZM81.5781 13.416H81.626V3.36035H84V20.1602H81.2627L78.0654 7.89551H78.0176V20.1602H75.6436V3.36035H78.9863L81.5781 13.416ZM51.6338 14.5918H54.0312L52.8447 6.28809H52.7959L51.6338 14.5918Z" fill="currentColor"/>
+            <path d="M9.25331 12.6868L9.28542 9.61433L9.28542 6.50165L1.76752 6.50165L1.76752 3.60001L20.2325 3.60001L18.0343 6.50165L11.9233 6.50165L11.9233 9.61433L11.8912 10.4886C11.8912 10.4886 10.8726 11.1328 10.4625 11.5187C10.0525 11.9047 9.25331 12.6868 9.25331 12.6868Z" fill="currentColor"/>
+            <path d="M20.4963 16.1266C20.4963 17.5335 20.1006 18.5974 19.3092 19.3184C18.5003 20.0395 17.3484 20.4 15.8536 20.4L12.6003 20.4L14.7985 17.6566L16.0647 17.6566C17.2605 17.6566 17.8584 17.1554 17.8584 16.153C17.8584 15.6606 17.7177 15.2913 17.4364 15.0451C17.1374 14.7813 16.6626 14.6494 16.0119 14.6494C15.2381 14.6494 14.5611 14.8253 13.9808 15.177C13.3829 15.5287 12.6706 16.1794 11.8441 17.129C10.789 18.3248 9.83933 19.1602 8.99521 19.635C8.13351 20.1098 7.1663 20.3472 6.09357 20.3472C4.63395 20.3472 3.50847 19.9779 2.71711 19.2393C1.90816 18.5007 1.50369 17.428 1.50369 16.0211C1.50369 14.6318 1.90816 13.5855 2.71711 12.8821C3.50847 12.161 4.65154 11.8005 6.14632 11.8005L6.91131 11.8005L6.91131 14.5439L5.96168 14.5439C5.32859 14.5439 4.87136 14.667 4.58999 14.9132C4.29103 15.1594 4.14155 15.5199 4.14155 15.9947C4.14155 16.962 4.73067 17.4456 5.90892 17.4456C6.57718 17.4456 7.20147 17.2697 7.7818 16.918C8.36213 16.5487 9.06556 15.8892 9.89209 14.9396C10.9472 13.7262 11.9057 12.8909 12.7674 12.4336C13.6291 11.9764 14.6402 11.7478 15.8009 11.7478C17.3133 11.7478 18.4739 12.1259 19.2829 12.8821C20.0918 13.6207 20.4963 14.7022 20.4963 16.1266Z" fill="currentColor"/>
           </svg>
         </div>
         <div class="brand-divider"></div>
@@ -1587,12 +1620,15 @@ end tell`;
 
       this.server.listen(this.port, BRIDGE_HOST, () => {
         this.isRunning = true;
+        if (this.port === 0) this.port = this.server.address().port; // port 0 = let the OS pick (used by tests)
         resolve(this.port);
       });
     });
   }
 
   updateSnapshot(data) {
+    // `findings` is page-derived data: re-type and cap it before it is stored or read by an agent.
+    if ("findings" in data) data = { ...data, findings: sanitizeFindings(data.findings) };
     const origin = data.origin || data.url || "http://localhost:3100";
     const project = data.project || (origin.includes(":3100") ? "Docs" : origin.includes(":3300") ? "Website" : origin.includes(":3200") ? "Studio" : "App");
     const tabId = data.tabId || (origin + ":" + (data.pathname || "/"));
@@ -1742,7 +1778,7 @@ end tell`;
     const targetTabId = typeof options === "object" ? options.tabId : undefined;
 
     const currentSnap = this.getSnapshot({ path: targetPath, tabId: targetTabId });
-    if (currentSnap?.stats?.clean && currentSnap?.stats?.total === 0) {
+    if (currentSnap && isClean(currentSnap)) {
       return { success: true, snapshot: currentSnap, elapsedMs: 0 };
     }
 
@@ -1755,7 +1791,7 @@ end tell`;
           const cleanTarget = targetPath.replace(/\/$/, "");
           if (snapPath !== cleanTarget) return;
         }
-        if (snap.stats?.clean || snap.stats?.total === 0) {
+        if (isClean(snap)) {
           clearTimeout(timer);
           this.off("audit_update", onUpdate);
           resolve({ success: true, snapshot: snap, elapsedMs: Date.now() - start });
@@ -1766,7 +1802,7 @@ end tell`;
         this.off("audit_update", onUpdate);
         const latest = this.getSnapshot({ path: targetPath, tabId: targetTabId });
         resolve({
-          success: latest?.stats?.total === 0,
+          success: !!latest && isClean(latest),
           snapshot: latest,
           elapsedMs: Date.now() - start,
           timedOut: true,

@@ -10,7 +10,7 @@ export interface HeatmapProps extends Omit<HTMLAttributes<HTMLDivElement>, "chil
   /** `values[row][column]`. Use `null` for cells with no data (they stay empty, like the lower triangle of a cohort table). */
   values: (number | null)[][];
   /** Colour of the filled cells (a theme tone). */
-  tone?: "accent" | "success" | "warning" | "danger";
+  tone?: "brand" | "success" | "warning" | "danger";
   /** Value that maps to full intensity; defaults to the largest value. */
   max?: number;
   format?: ChartYFormat;
@@ -26,7 +26,7 @@ export interface HeatmapProps extends Omit<HTMLAttributes<HTMLDivElement>, "chil
 }
 
 /** A labelled grid of cells shaded by value: cohort retention, activity by hour, correlation. */
-export function Heatmap({ rows, columns, values, tone = "accent", max, format = "number", showValues = true, minColumnWidth = 44, labelWidth = "8rem", rowLabelTitle, title, className, ...props }: HeatmapProps) {
+export function Heatmap({ rows, columns, values, tone = "brand", max, format = "number", showValues = true, minColumnWidth = 44, labelWidth = "8rem", rowLabelTitle, title, className, ...props }: HeatmapProps) {
   const top = max ?? Math.max(0.0001, ...values.flat().map((v) => v ?? 0));
   const color = toneColor(tone);
   const name = title ?? "Heatmap";

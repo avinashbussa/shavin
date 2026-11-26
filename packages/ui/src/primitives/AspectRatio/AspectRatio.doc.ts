@@ -3,7 +3,7 @@ import type { ComponentDoc } from "../../authoring/types";
 export const docs: ComponentDoc = {
   name: "AspectRatio",
   group: "layout",
-  description: "Ratio layout wrapper primitive built on Radix AspectRatio for reserving media element proportions.",
+  description: "Keeps its content at a fixed width-to-height ratio, such as 16:9, so images and video hold their space while they load.",
   features: [
     "Built on @radix-ui/react-aspect-ratio",
     "Prevents Cumulative Layout Shift (CLS) on dynamic image and video loads",

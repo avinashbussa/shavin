@@ -1,6 +1,6 @@
 # Spacing Core — Universal Spatial Composition Rules
 
-> **Load priority:** ALWAYS loaded (alongside `concentric-laws.md` and `cognitive-layer.md`).
+> **Load priority:** CORE: load for any section, flex or grid structure (alongside `concentric-laws.md` and `cognitive-layer.md`).
 > **Token cost:** ~3.4K tokens.
 > **Depends on:** `concentric-laws.md` for the two concentric laws.
 
@@ -16,18 +16,18 @@ Every `<section>` falls into one of two shapes. Choose deliberately before writi
 
 ```jsx
 // Full-bleed (background fills viewport width)
-<section className="bg-surface border-y border-hairline py-16 md:py-24">
+<Section size="body" className="bg-surface border-y border-hairline">
   <Container size="lg" className="px-6 md:px-10">
     {/* content */}
   </Container>
-</section>
+</Section>
 
 // Contained (no background, whitespace section)
-<section className="py-16 md:py-24">
+<Section size="body">
   <Container size="lg" className="px-6 md:px-10">
     {/* content */}
   </Container>
-</section>
+</Section>
 ```
 
 **Rule:** Never put `px-*` on a `<section>`. The section is full-bleed. The `Container` is the gutter. Padding on the section produces misaligned content against other sections' containers.
@@ -44,7 +44,7 @@ Every section that introduces content before it gets a consistent header block s
   <Heading as="h2" size="2xl" className="font-display font-bold text-fg">
     One clear declarative statement.
   </Heading>
-  <Text color="muted" size="md" className="max-w-2xl">
+  <Text color="subtle" size="md" className="max-w-2xl">
     Supporting context in one or two sentences. Never more.
   </Text>
 </Flex>
@@ -52,8 +52,8 @@ Every section that introduces content before it gets a consistent header block s
 
 **Rules:**
 
-- Overline label → Heading → Text. Always this order. Never reversed.
-- **Prefer overline text** (`<Text size="xs" className="uppercase tracking-wider text-fg-subtle">`) over `<Badge>` for section labels. Badges add visual weight (background fill, border, pill shape) that competes with the headline — overline text is structurally lighter and respects reading hierarchy. See `anti-patterns.md` AP-04 (Badge Soup).
+- When a section has a label: Label → Heading → Text, in that order, never reversed. Many sections have no label.
+- When a label is warranted, prefer plain overline text (`<Text size="xs" className="uppercase tracking-wider text-fg-subtle">`) over `<Badge>`: a badge's fill, border and pill shape compete with the headline. See `anti-patterns.md` AP-04 (Badge Soup).
 - Use `<Badge>` only for stateful labels (version tags, success/error states, notification counts), not for marketing adjectives or category markers.
 - `max-w-3xl` on the wrapper, `max-w-2xl` on the Text. The heading is wider than the body.
 - `mb-10 md:mb-12` separates the header from content below. Never less than `mb-8`.
@@ -114,22 +114,22 @@ These are not interchangeable. They communicate different things.
 
 ```jsx
 // ✓ center column is ALWAYS optically centered regardless of side widths
-<header className="flex items-center h-14 px-6">
-  <div className="flex flex-1 items-center justify-start">
+<Flex as="header" align="center" className="h-14 px-6">
+  <Flex align="center" justify="start" className="flex-1">
     <Logo />
-  </div>
-  <div className="flex flex-1 items-center justify-center">
-    <nav className="flex items-center gap-6">
-      <NavLink>Docs</NavLink>
-      <NavLink>Components</NavLink>
-      <NavLink>Blocks</NavLink>
-    </nav>
-  </div>
-  <div className="flex flex-1 items-center justify-end gap-2">
-    <IconButton icon={<Moon />} />
+  </Flex>
+  <Flex align="center" justify="center" className="flex-1">
+    <Flex as="nav" align="center" gap="6">
+      <Link href="/docs">Docs</Link>
+      <Link href="/components">Components</Link>
+      <Link href="/blocks">Blocks</Link>
+    </Flex>
+  </Flex>
+  <Flex align="center" justify="end" gap="2" className="flex-1">
+    <IconButton aria-label="Toggle theme"><Icon name="Moon" size="md" /></IconButton>
     <Button>Get started</Button>
-  </div>
-</header>
+  </Flex>
+</Flex>
 ```
 
 **The rule:** Any horizontal bar where visual center matters — top navigation, modal header, toolbar — **MUST** use three `flex-1` children rather than `justify-between`. `justify-between` is only correct when there are exactly two children.
@@ -207,7 +207,7 @@ Input → helper text / error:                  mt-1
 Form field → next form field:                 space-y-4 or space-y-5
 Section heading → body text:                  gap-3  / space-y-3
 Section body → CTA button:                    mt-6 or mt-8
-Overline/badge → heading (section header):       gap-3 (label above heading)
+Label (if any) → heading (section header):       gap-3 (label above heading)
 Heading → description (card):                 space-y-2
 Card body → card footer divider:              pt-3 border-t border-hairline
 ```
@@ -356,7 +356,7 @@ Correct hierarchy:
   Page background: bg-canvas (no shadow, no border)
     Section: bg-surface border-y border-hairline (light boundary)
       Card: shadow-card border border-hairline rounded-[var(--radius-panel)] (medium boundary)
-        Badge: bg-accent/15 rounded-[var(--radius-lg)] (light inner signal)
+        Badge: bg-brand/15 rounded-[var(--radius-lg)] (light inner signal)
 
 Inverted (wrong):
   Card: shadow-sm border (lighter than its inner element)

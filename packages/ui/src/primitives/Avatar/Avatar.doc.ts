@@ -2,13 +2,13 @@ import type { ComponentDoc } from "../../authoring/types";
 
 export const docs: ComponentDoc = {
   name: "Avatar",
-  description: "User avatar image with automatic initial-letter fallback built on Radix Avatar primitive.",
+  description: "A picture of a person or team. Without an image it shows initials, an icon or a default person icon, in a neutral or coloured fill.",
   features: [
     "Sizes: sm (28px), md (36px), lg (56px), xl (96px)",
     "Supports radius escape hatch (radius='none|small|medium|large|full|inherit')",
     "Defaults to rounded-full shape per Radix Themes avatar design convention",
     "Flicker-free fallback delay handling via Radix Avatar",
-    "Colour fallbacks for projects, workspaces and teams: color='accent|success|warning|danger' with variant='soft|solid', plus fallbackIcon"
+    "Colour fallbacks for projects, workspaces and teams: color='brand|success|warning|danger' with variant='soft|solid', plus fallbackIcon"
   ],
   accessibility: [
     "Provides screen reader accessible alt text",
@@ -33,7 +33,7 @@ export const docs: ComponentDoc = {
     },
     {
       title: "Icon avatar with a colour fill (projects, workspaces)",
-      code: '<Flex gap="3"><Avatar radius="medium" color="accent" variant="solid" fallbackIcon={<Icon name="globe" size="sm" color="inherit" />} /><Avatar radius="medium" color="success" fallbackIcon={<Icon name="smartphone" size="sm" color="inherit" />} /><Avatar radius="medium" color="warning" fallback="DS" /></Flex>'
+      code: '<Flex gap="3"><Avatar radius="medium" color="brand" variant="solid" fallbackIcon={<Icon name="globe" size="sm" color="inherit" />} /><Avatar radius="medium" color="success" fallbackIcon={<Icon name="smartphone" size="sm" color="inherit" />} /><Avatar radius="medium" color="warning" fallback="DS" /></Flex>'
     }
   ]
 };

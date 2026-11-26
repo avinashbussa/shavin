@@ -2,10 +2,10 @@ import type { ComponentDoc } from "../../authoring/types";
 
 export const docs: ComponentDoc = {
   name: "Select",
-  description: "Accessible dropdown select control built on Radix Select primitive with option grouping and viewport collision positioning.",
+  description: "Pick one value from a list. Options can be grouped, and the list stays on screen near edges.",
   features: [
     "Supports flat options and grouped options (OptionGroup)",
-    "Sizes: sm (small trigger), md (standard trigger)",
+    "Sizes: sm (32px trigger), md (40px, default), lg (48px)",
     "Supports onItemHighlight callback for live preview hovering",
     "Controlled (value + onChange/onValueChange) or uncontrolled (defaultValue, optional onChange)",
     "Uses data-panel translucent floating surface styling"

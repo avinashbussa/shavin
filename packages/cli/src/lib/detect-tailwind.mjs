@@ -8,8 +8,10 @@
  *
  * Zero-dependency ESM.
  */
+import { readJsonFile } from "./json-file.mjs";
 import { existsSync, readFileSync } from "node:fs";
-import { join, resolve, relative, dirname } from "node:path";
+import { join, resolve, dirname } from "node:path";
+import { relSpec } from "./paths.mjs";
 
 /**
  * Check whether a tailwind.config.* file exists in the project.
@@ -37,7 +39,7 @@ export function detectTailwindVersion(cwd) {
   const pkgPath = join(cwd, "package.json");
   if (existsSync(pkgPath)) {
     try {
-      const pkg = JSON.parse(readFileSync(pkgPath, "utf8"));
+      const pkg = readJsonFile(pkgPath);
       const allDeps = { ...(pkg.dependencies || {}), ...(pkg.devDependencies || {}) };
       const twDep = allDeps["tailwindcss"] || "";
       if (/^[~^]?4/.test(twDep)) {
@@ -114,15 +116,11 @@ export function detectTailwindVersion(cwd) {
  * @param {string} cwd — project root directory
  * @returns {string} — relative path like "../.agents" or "./.agents"
  */
-export function relativeAgentsPath(cssFilePath, cwd) {
+export function relativeAgentsPath(cssFilePath, cwd, folder = ".agents") {
   const cssDir = dirname(resolve(cssFilePath));
-  const agentsDir = resolve(cwd, ".agents");
-  let rel = relative(cssDir, agentsDir);
-  // Ensure it starts with ./ or ../
-  if (!rel.startsWith(".")) {
-    rel = "./" + rel;
-  }
-  return rel;
+  const agentsDir = resolve(cwd, folder);
+  // Forward slashes on every platform: this string is written into the stylesheet.
+  return relSpec(cssDir, agentsDir);
 }
 
 /**
@@ -133,9 +131,7 @@ export function relativeAgentsPath(cssFilePath, cwd) {
  */
 export function relativeShavinUiPath(cssFilePath, cwd) {
   const cssDir = dirname(resolve(cssFilePath));
-  let rel = relative(cssDir, resolve(cwd, "node_modules", "@shavin", "ui"));
-  if (!rel.startsWith(".")) rel = "./" + rel;
-  return rel;
+  return relSpec(cssDir, resolve(cwd, "node_modules", "@shavin", "ui"));
 }
 
 /**
@@ -148,23 +144,36 @@ export function relativeShavinUiPath(cssFilePath, cwd) {
  * 4. Fallback: "generic"
  *
  * @param {string} cwd — project root directory
- * @returns {{ framework: "nextjs"|"vite"|"remix"|"generic", source: string }}
+ * "other" means a framework Shavin does not support yet (Astro, SvelteKit, Nuxt, Angular, Gatsby, React Router 7 and
+ * the like); `name` says which. These are checked before "vite" because several of them run on Vite and list it as a
+ * dependency, so "has vite" alone would wrongly call them supported.
+ * @returns {{ framework: "nextjs"|"vite"|"remix"|"other"|"generic", source: string, name?: string }}
  */
+/** Frameworks Shavin cannot set up yet: [package that gives it away, display name]. */
+const OTHER_FRAMEWORKS = [
+  ["astro", "Astro"], ["@sveltejs/kit", "SvelteKit"], ["svelte", "Svelte"], ["nuxt", "Nuxt"], ["vue", "Vue"],
+  ["@angular/core", "Angular"], ["gatsby", "Gatsby"], ["@react-router/dev", "React Router 7"],
+  ["@solidjs/start", "SolidStart"], ["solid-js", "Solid"], ["@builder.io/qwik", "Qwik"], ["expo", "Expo (React Native)"],
+  ["react-native", "React Native"], ["@redwoodjs/core", "RedwoodJS"], ["@tanstack/react-start", "TanStack Start"],
+];
+
 export function detectFramework(cwd) {
   // 1. Check package.json dependencies
   const pkgPath = join(cwd, "package.json");
   if (existsSync(pkgPath)) {
     try {
-      const pkg = JSON.parse(readFileSync(pkgPath, "utf8"));
+      const pkg = readJsonFile(pkgPath);
       const allDeps = { ...(pkg.dependencies || {}), ...(pkg.devDependencies || {}) };
       if (allDeps["next"]) {
         return { framework: "nextjs", source: "package.json" };
       }
+      if (allDeps["@remix-run/node"] || allDeps["@remix-run/react"] || allDeps["remix"]) {
+        return { framework: "remix", name: "Remix", source: "package.json" };
+      }
+      const other = OTHER_FRAMEWORKS.find(([dep]) => allDeps[dep]);
+      if (other) return { framework: "other", name: other[1], source: "package.json" };
       if (allDeps["vite"] || allDeps["@vitejs/plugin-react"]) {
         return { framework: "vite", source: "package.json" };
-      }
-      if (allDeps["@remix-run/node"] || allDeps["@remix-run/react"] || allDeps["remix"]) {
-        return { framework: "remix", source: "package.json" };
       }
     } catch {}
   }
@@ -179,7 +188,7 @@ export function detectFramework(cwd) {
     return { framework: "vite", source: "config-file" };
   }
   if (["remix.config.js", "remix.config.ts"].some((f) => existsSync(join(cwd, f)))) {
-    return { framework: "remix", source: "config-file" };
+    return { framework: "remix", name: "Remix", source: "config-file" };
   }
 
   // 3. Directory structure hints

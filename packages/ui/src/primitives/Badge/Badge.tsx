@@ -14,8 +14,8 @@ export const badgeVariants = cva(
       },
       tone: {
         neutral: "text-fg-subtle",
-        // Contrast-safe accent text (raw --accent fails on light surfaces).
-        accent: "text-accent-contrast",
+        // Contrast-safe brand text (raw --brand fails on light surfaces).
+        brand: "text-brand-contrast",
         success: "text-success",
         warning: "text-warning",
         danger: "text-danger",
@@ -37,22 +37,22 @@ export const badgeVariants = cva(
     },
     compoundVariants: [
       { variant: "surface", tone: "neutral", class: "text-fg-subtle border-hairline" },
-      { variant: "surface", tone: "accent", class: "text-accent-contrast border-hairline" },
+      { variant: "surface", tone: "brand", class: "text-brand-contrast border-hairline" },
       { variant: "surface", tone: "success", class: "text-success border-success/30" },
       { variant: "surface", tone: "warning", class: "text-warning border-warning/30" },
       { variant: "surface", tone: "danger", class: "text-danger border-danger/30" },
       { variant: "outline", tone: "neutral", class: "text-fg-subtle border-hairline" },
-      { variant: "outline", tone: "accent", class: "text-accent-contrast border-accent/30" },
+      { variant: "outline", tone: "brand", class: "text-brand-contrast border-brand/30" },
       { variant: "outline", tone: "success", class: "text-success border-success/30" },
       { variant: "outline", tone: "warning", class: "text-warning border-warning/30" },
       { variant: "outline", tone: "danger", class: "text-danger border-danger/30" },
       { variant: "soft", tone: "neutral", class: "bg-fg/[0.04] text-fg border border-fg/[0.08]" },
-      { variant: "soft", tone: "accent", class: "bg-accent/[0.08] text-accent-contrast border border-accent/20" },
-      { variant: "soft", tone: "success", class: "bg-success/10 text-success border border-success/20" },
-      { variant: "soft", tone: "warning", class: "bg-warning/10 text-warning border border-warning/20" },
-      { variant: "soft", tone: "danger", class: "bg-danger/10 text-danger border border-danger/20" },
+      { variant: "soft", tone: "brand", class: "bg-brand/[0.08] text-brand-contrast border border-brand/20" },
+      { variant: "soft", tone: "success", class: "bg-success/[0.08] text-success border border-success/20" },
+      { variant: "soft", tone: "warning", class: "bg-warning/[0.08] text-warning border border-warning/20" },
+      { variant: "soft", tone: "danger", class: "bg-danger/[0.08] text-danger border border-danger/20" },
       { variant: "solid", tone: "neutral", class: "bg-fg text-canvas" },
-      { variant: "solid", tone: "accent", class: "bg-accent text-accent-fg" },
+      { variant: "solid", tone: "brand", class: "bg-brand-solid text-brand-fg" },
       { variant: "solid", tone: "success", class: "bg-success text-canvas" },
       { variant: "solid", tone: "warning", class: "bg-warning text-canvas" },
       { variant: "solid", tone: "danger", class: "bg-danger text-canvas" },
@@ -69,8 +69,8 @@ export const badgeVariants = cva(
 export interface BadgeProps
   extends Omit<React.HTMLAttributes<HTMLSpanElement>, "color">,
     VariantProps<typeof badgeVariants> {
-  /** Backward compatible color prop. Maps to tone. */
-  color?: "neutral" | "accent" | "success" | "warning" | "danger";
+  /** @deprecated Backward compatible alias of `tone`. Use `tone`. */
+  color?: "neutral" | "brand" | "success" | "warning" | "danger";
   /** Optional icon node rendered before label. */
   icon?: React.ReactNode;
 }

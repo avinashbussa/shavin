@@ -32,7 +32,23 @@ Contents: 0 How to decide · 1 Structural · 2 Hero · 3 Features · 4 Proof · 
 | Product UI or code snippet, longer copy | H2 | Copy left-aligned; media 1:1 or 5:7 |
 | One strong portrait/object image, editorial tone | H3 | Needs a real image; else H5 |
 | Cinematic photo/video, mood over explanation | H4 | Needs a scrim plan and a poster; text stays short |
+| A few product moments around a short statement, consumer tone | H6 | Dense UI → H2; invented content → H1 or H5 |
 | Only words, strong voice, no product visual | H5 | 3–12 word headline |
+
+**Pick the hero by what the first screen can show.** If the page has no product UI to show, use a real photo (H3 or H4) before H5: you find the image yourself on Unsplash or Lummi (Pexels for video) and place it with `bgImage` or `bgVideo` behind a scrim. Show no caption, credit line or note about it on the page. If you cannot get one, mark the slot in a code comment only, and never render placeholder text. Use H5 only when the voice is the point.
+
+**Hero by audience.** Start from the first column, then check it against the content you have.
+
+| Page is for | First choice | Fallback |
+|---|---|---|
+| Physical goods, food, lifestyle, hospitality | H4 or H3 with a real photo | H6 for several products |
+| B2B or SaaS product | H1 or H2 on a photo, mesh or video backdrop (`bgImage`, `bgOverlays`, `bgVideo`) | H5 |
+| Developer tool | H2 with a runnable snippet | H5 |
+| Studio, agency, portfolio | H5 at `5xl` (four words or fewer, else `4xl`), or H3 | H4 |
+| Community, nonprofit, retreat, event | H3 or H4 with a real photo | H5 |
+| Docs front door | D4, never a hero | |
+
+Do not rebuild the product's UI from components as the hero visual unless you are highly confident in the result; it reads as a placeholder. Backgrounds: a mesh or gradient overlay (`bgOverlays`) is a valid hero media when no photo fits. Always set `surface="dark-always"` or `"light-always"` on a section with a background, and check the result with `render_check`.
 
 ## 3. Features
 
@@ -59,6 +75,7 @@ Contents: 0 How to decide · 1 Structural · 2 Hero · 3 Features · 4 Proof · 
 | 3 or 6 varied voices | T2 | Very uneven lengths → trim or masonry |
 | ≥ 6 recognisable logos, must be legible | T3 | |
 | ≥ 8 logos, compact ambient strip | T4 | Fewer than 8 → T3 |
+| Logos and quotes both wanted | Two sections: T3 or T4, then T1 or T2 | Never one section. Together the quote loses weight and both get cramped |
 
 ## 5. Conversion
 
@@ -84,6 +101,7 @@ Contents: 0 How to decide · 1 Structural · 2 Hero · 3 Features · 4 Proof · 
 | Ambient ecosystem teaser | G3 | Always link on to G1 or G2 |
 | Selected work with outcomes | G4 | No real outcome → G1 |
 | People / team | G5 | Need consent for photos and names |
+| Priced goods to browse and buy, 4–12 items | G6 | 12+ and filtered → G2; no photos → F1 |
 
 ## 7. Editorial
 
@@ -141,6 +159,7 @@ Motion tier escalation: start at Tier 0. Go to Tier 1 (`layout-motion`) for reve
 | H3 | Asymmetric Hero | desire | medium | photo / illustration |
 | H4 | Full-Bleed Media Hero | attention | low | video / photo |
 | H5 | Type-Led Statement Hero | attention | low | none |
+| H6 | Floating Elements Hero | attention | low | product UI / photo |
 | F1 | 3-Column Feature Grid | understanding | medium | optional |
 | F2 | Bento Grid | desire | high | product UI / data |
 | F3 | Alternating Z-Pattern | understanding | medium | large visuals |
@@ -172,6 +191,7 @@ Motion tier escalation: start at Tier 0. Go to Tier 1 (`layout-motion`) for reve
 | G3 | Marquee Rows | desire | medium | images |
 | G4 | Case Study Index | credibility | medium | photo |
 | G5 | People Grid | credibility | medium | portraits |
+| G6 | Product Grid | desire | medium | photo |
 | E1 | Article Page | reference | medium | optional |
 | E2 | Longform with Margin Notes | reference | high | optional |
 | E3 | Magazine Front | orientation | high | photo |

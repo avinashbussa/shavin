@@ -8,12 +8,12 @@ export const docs: ComponentDoc = {
     "Variants: icon-button (default cycle), segmented (3-way selector), menu (Radix dropdown), and switch (binary toggle)",
     "Includes <ThemeScript /> to inject into <head> for zero-flicker server-rendered hydration",
     "useTheme() hook with cross-tab localStorage synchronization and system prefers-color-scheme listener",
-    "Strictly manages appearance color scheme (light/dark/system), decoupled from accent palette configuration"
+    "Strictly manages appearance color scheme (light/dark/system), decoupled from brand palette configuration"
   ],
   accessibility: [
     "Uses semantic radio / switch ARIA attributes and labels",
     "Full keyboard navigation: Enter/Space to toggle, arrow keys inside segmented and menu modes",
-    "WCAG 2.1 AAA contrast compliance across all themes"
+    "WCAG 2.2 AA contrast (4.5:1 text, 3:1 UI) across all themes"
   ],
   keyboard: "Space / Enter to toggle theme mode, Arrow keys to navigate menu or segmented options",
   usage: {
@@ -24,7 +24,7 @@ export const docs: ComponentDoc = {
       },
       {
         guidance: false,
-        description: "Do not use ThemeSwitcher to configure accent colors — use ThemeProvider or Configurator for branding palette customizations."
+        description: "Do not use ThemeSwitcher to configure brand colors — use ThemeProvider or Configurator for branding palette customizations."
       }
     ]
   },

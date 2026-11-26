@@ -7,7 +7,7 @@
  * animated loaders, and structured cards.
  */
 
-import { existsSync, readFileSync, writeFileSync, mkdirSync, readdirSync, statSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync, mkdirSync, readdirSync, statSync, rmSync } from "node:fs";
 import { resolve, join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { c, g, fmt, printBanner, printCard, printStage, formatDuration, startTaskSpinner } from "../../scripts/lib/term-ui.mjs";
@@ -24,10 +24,14 @@ function copyFile(src, dst) {
   }
 }
 
-function copyDir(src, dst) {
+// Maintainer-only skills (packages/skills/internal.json) are not bundled into the published package.
+const MAINTAINER_ONLY = (() => { try { return JSON.parse(readFileSync(resolve(__dirname, "..", "skills", "internal.json"), "utf8")).maintainerOnly.map((e) => e.path); } catch { return []; } })();
+
+function copyDir(src, dst, top = false) {
   if (!existsSync(src)) return;
   mkdirSync(dst, { recursive: true });
   for (const entry of readdirSync(src)) {
+    if (top && MAINTAINER_ONLY.includes(entry)) continue;
     const srcPath = join(src, entry);
     const dstPath = join(dst, entry);
     if (statSync(srcPath).isDirectory()) {
@@ -65,7 +69,9 @@ async function main() {
   const skillsSrc = existsSync(resolve(ROOT, "packages", "skills", "skills"))
     ? resolve(ROOT, "packages", "skills", "skills")
     : resolve(ROOT, ".agents", "skills");
-  copyDir(skillsSrc, resolve(ASSETS_DIR, "skills"));
+  rmSync(resolve(ASSETS_DIR, "skills"), { recursive: true, force: true }); // no stale copies of skills that are no longer shipped
+  copyDir(skillsSrc, resolve(ASSETS_DIR, "skills"), true);
+  copyFile(resolve(ROOT, "packages", "skills", "agents", "SHAVIN.template.md"), resolve(ASSETS_DIR, "SHAVIN.template.md"));
   spinner3.succeed();
 
   // 4. Slash Commands

@@ -1,10 +1,11 @@
 import { matchHexColors } from "../../packages/block-schema/hex-policy.mjs";
+import { concentricAutofix } from "../../packages/mcp-server/src/tools/concentric-lint.mjs";
 /**
  * @shavin/ui — Native Code Auto-Fix Transformer.
  * Automatically transforms non-compliant TSX into valid @shavin/ui tokenized code.
  *
  * Transformations:
- * 1. Literal radius → token-based radius (rounded-lg → rounded-[var(--radius-lg)])
+ * 1. Literal radius → role-aware token radius (control → lg, container → panel, nested → rounded-panel-pN)
  * 2. Arbitrary pixel radius → token radius
  * 3. Ad-hoc calc() radius → concentric utilities
  * 4. --n-* foundation vars → semantic tokens
@@ -29,8 +30,8 @@ const HEX_TO_TOKEN = {
   "334155": "fg-muted", "374151": "fg-muted",
   "64748b": "fg-subtle", "6b7280": "fg-subtle",
   "94a3b8": "fg-subtle", "9ca3af": "fg-subtle",
-  // Accent blues
-  "3b82f6": "accent", "2563eb": "accent", "0ea5e9": "accent",
+  // Brand blues
+  "3b82f6": "brand", "2563eb": "brand", "0ea5e9": "brand",
   // Danger reds
   "ef4444": "danger", "dc2626": "danger", "e11d48": "danger",
 };
@@ -43,16 +44,16 @@ const TAILWIND_COLOR_TO_TOKEN = {
   neutral: { prefix: "bg", target: "bg-surface" },
   stone: { prefix: "bg", target: "bg-surface" },
   red: { prefix: "bg", target: "bg-danger" },
-  orange: { prefix: "bg", target: "bg-accent" },
-  amber: { prefix: "bg", target: "bg-accent" },
-  yellow: { prefix: "bg", target: "bg-accent" },
-  green: { prefix: "bg", target: "bg-accent" },
-  emerald: { prefix: "bg", target: "bg-accent" },
-  blue: { prefix: "bg", target: "bg-accent" },
-  indigo: { prefix: "bg", target: "bg-accent" },
-  violet: { prefix: "bg", target: "bg-accent" },
-  purple: { prefix: "bg", target: "bg-accent" },
-  pink: { prefix: "bg", target: "bg-accent" },
+  orange: { prefix: "bg", target: "bg-brand" },
+  amber: { prefix: "bg", target: "bg-brand" },
+  yellow: { prefix: "bg", target: "bg-brand" },
+  green: { prefix: "bg", target: "bg-brand" },
+  emerald: { prefix: "bg", target: "bg-brand" },
+  blue: { prefix: "bg", target: "bg-brand" },
+  indigo: { prefix: "bg", target: "bg-brand" },
+  violet: { prefix: "bg", target: "bg-brand" },
+  purple: { prefix: "bg", target: "bg-brand" },
+  pink: { prefix: "bg", target: "bg-brand" },
   rose: { prefix: "bg", target: "bg-danger" },
 };
 
@@ -76,41 +77,29 @@ export function autofix(code) {
   let fixed = code;
   const fixes = [];
 
-  // ── 1. Literal radius → token-based radius ──────────────────────
-  const radiusMap = {
-    "rounded-sm": "rounded-[var(--radius-xs)]",
-    "rounded-md": "rounded-[var(--radius-sm)]",
-    "rounded-lg": "rounded-[var(--radius-sm)]",
-    "rounded-xl": "rounded-[var(--radius-md)]",
-    "rounded-2xl": "rounded-[var(--radius-panel)]",
-    "rounded-3xl": "rounded-[var(--radius-panel)]",
-  };
-  for (const [literal, token] of Object.entries(radiusMap)) {
-    if (new RegExp(`\\b${literal.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`).test(fixed)) {
-      fixed = fixed.replace(new RegExp(`\\b${literal.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`, "g"), token);
-      fixes.push(`${literal} → ${token}`);
-    }
-  }
+  // ── 1. Literal + concentric radius (role-aware, shared with validate_code) ──
+  // Controls -> rounded-[var(--radius-lg)], containers -> rounded-[var(--radius-panel)], nested -> rounded-panel-pN.
+  // An ambiguous role is left alone (validate_code reports it with both exact options).
+  const radius = concentricAutofix(fixed);
+  fixed = radius.fixedCode;
+  for (const f of radius.fixesApplied) fixes.push(f);
 
   // ── 2. Arbitrary pixel radius → token radius ────────────────────
+  // Up to 12px is control-sized (--radius-lg); anything larger is a container (--radius-panel).
   const arbitraryRadiusMatches = fixed.match(/\brounded-\[(\d+)px\]/g) ?? [];
   for (const match of new Set(arbitraryRadiusMatches)) {
     const px = parseInt(match.match(/\d+/)[0]);
-    let token;
-    if (px <= 4) token = "rounded-[var(--radius-xs)]";
-    else if (px <= 8) token = "rounded-[var(--radius-sm)]";
-    else if (px <= 12) token = "rounded-[var(--radius-md)]";
-    else if (px <= 16) token = "rounded-[var(--radius-lg)]";
-    else token = "rounded-[var(--radius-panel)]";
+    const token = px <= 12 ? "rounded-[var(--radius-lg)]" : "rounded-[var(--radius-panel)]";
     fixed = fixed.replace(new RegExp(match.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g"), token);
     fixes.push(`${match} → ${token}`);
   }
 
-  // ── 3. Ad-hoc calc() radius → concentric utilities ──────────────
-  const calcMatches = fixed.match(/calc\s*\(\s*var\s*\(\s*--radius-panel\s*\)\s*-\s*(\d+)px\s*\)/gi) ?? [];
+  // ── 3. calc(panel - Npx) → the rounded-panel-pN utility (N = px / 4, only where one exists) ──
+  const calcMatches = fixed.match(/rounded-\[calc\s*\(\s*var\s*\(\s*--radius-panel\s*\)\s*-\s*\d+px\s*\)\]|calc\s*\(\s*var\s*\(\s*--radius-panel\s*\)\s*-\s*\d+px\s*\)/gi) ?? [];
   for (const match of new Set(calcMatches)) {
     const px = parseInt(match.match(/(\d+)px/)[1]);
-    const concentricToken = `rounded-panel-p${px}`;
+    if (![4, 8, 12, 16, 20, 24, 32].includes(px)) continue;
+    const concentricToken = `rounded-panel-p${px / 4}`;
     fixed = fixed.replace(new RegExp(match.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "gi"), concentricToken);
     fixes.push(`calc(panel - ${px}px) → ${concentricToken}`);
   }
@@ -178,10 +167,10 @@ export function autofix(code) {
       else if (prefix === "text") token = "text-fg";
       else token = "border-hairline";
     } else {
-      // Accent-family colors
-      if (prefix === "bg") token = "bg-accent";
-      else if (prefix === "text") token = "text-accent";
-      else token = "border-accent";
+      // Brand-family colors
+      if (prefix === "bg") token = "bg-brand";
+      else if (prefix === "text") token = "text-brand-text";
+      else token = "border-brand";
     }
     fixed = fixed.replace(new RegExp(match.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g"), token);
     fixes.push(`${match} → ${token}`);
@@ -224,7 +213,7 @@ export function autofix(code) {
       }
       return `<Button${before} variant="ghost"${after}>`;
     });
-    fixes.push("Button tone=\"neutral\" → variant=\"ghost\" (tone only allows accent/danger)");
+    fixes.push("Button tone=\"neutral\" → variant=\"ghost\" (tone only allows brand/danger)");
   }
 
   // ── 11. Glyph characters → <Icon> components ─────────────────────

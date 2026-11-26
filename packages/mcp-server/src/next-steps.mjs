@@ -24,7 +24,7 @@ export const NEXT_STEPS = {
     const n = String(a?.name || "").toLowerCase();
     if (n === "layout-compositions") return 'Use `plan_page({ brief })` to pick compositions per section, then `get_skill({ name: "layout-compositions", section: "<family>" })` for each family you build (hero, features, proof, conversion, …).';
     if (n === "layout-motion" || n === "layout-choreography") return "Motion goes on after the static layout passes `check_page`. Keep each section's tier within its composition's motion ceiling.";
-    if (["shavin-webpage", "visual-compositor", "shavin-ui-builder"].includes(n)) return PLAN_FIRST;
+    if (["shavin-webpage", "visual-compositor"].includes(n)) return PLAN_FIRST;
     return null;
   },
   get_components: () => "Building a page section? Its layout comes from `plan_page` / `get_skill({ name: \"layout-compositions\", section: \"<family>\" })`. Mark it `<Section data-composition=\"<ID>\">`, then run `validate_code`.",

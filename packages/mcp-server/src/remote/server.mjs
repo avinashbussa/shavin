@@ -10,7 +10,7 @@
  *
  * Architecture:
  *   AI Agent (Cursor/Claude Code) → HTTP POST /mcp → StreamableHTTPServerTransport
- *   → MCP Server (30 tools, transport-filtered) → Supabase Realtime → Studio Canvas
+ *   → MCP Server (tools filtered by transport) → Supabase Realtime → Studio Canvas
  *
  * Session management:
  *   Stateful mode — each MCP client gets a sessionId. The StudioRelay
@@ -18,6 +18,7 @@
  *   to different Studio sessions simultaneously.
  */
 
+import { MCP_VERSION } from "../version.mjs";
 import { createServer } from "node:http";
 import { randomUUID } from "node:crypto";
 import { randomBytes } from "node:crypto";
@@ -39,6 +40,7 @@ import { registerValidationTools } from "../tools/validation.mjs";
 import { registerGuidelinesTool } from "../tools/guidelines.mjs";
 import { registerEnvironmentTools } from "../tools/environment.mjs";
 import { registerSkillsTools } from "../tools/skills.mjs";
+import { registerComposeTools } from "../tools/compose.mjs";
 import { registerSynthesizeTool } from "../tools/synthesize.mjs";
 import { registerContextTool } from "../tools/context.mjs";
 import { registerSteerTool } from "../tools/steer.mjs";
@@ -63,12 +65,12 @@ import { globalBridge } from "../bridge/server.mjs";
  * @param {"stdio"|"remote"|"rest"} transport - Transport type for tool filtering
  * @returns {Server}
  */
-function createServerWithTools(transport = "remote") {
+export function createServerWithTools(transport = "remote") {
   const server = new Server(
     {
       name: "shavin",
       title: "Shavin",
-      version: "0.1.0",
+      version: MCP_VERSION,
     },
     {
       capabilities: {
@@ -92,7 +94,7 @@ function createServerWithTools(transport = "remote") {
   // from the project root for tokens, components, etc.
   const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..", "..", "..");
   // Knowledge comes from this package's bundled assets (what consumers get: the consumer
-  // AGENTS.md, packaged skills), falling back to the monorepo sources.
+  // AGENTS.md, packaged skills), falling back to this repository's sources.
   const ASSETS = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..", "assets");
   const TOKENS = loadJSON(ASSETS, "tokens.json") ?? loadJSON(ROOT, "tokens.json");
   const COMPONENTS = loadJSON(ASSETS, "components.json") ?? loadJSON(ROOT, "components.json");
@@ -102,16 +104,18 @@ function createServerWithTools(transport = "remote") {
   register(registerTokensTool(server, TOKENS));
   register(registerComponentsTool(server, COMPONENTS));
   register(registerBuilderTools(server));
-  register(registerValidationTools(server));
+  register(registerValidationTools(server, COMPONENTS));
   register(registerGuidelinesTool(server, AGENTS_MD));
   register(registerEnvironmentTools(server, ROOT));
   register(registerSkillsTools(server, SKILLS, ROOT));
+  // plan_page and check_page (the transport filter lists them for remote, so they must be registered).
+  register(registerComposeTools(server, SKILLS));
   register(registerSynthesizeTool(server));
   register(registerContextTool(server, ROOT));
   register(registerSteerTool(server));
   register(registerBridgeTools(server, globalBridge));
   register(registerArchLintTool(server));
-  register(registerStudioRelayTools(server));
+  register(registerStudioRelayTools(server, COMPONENTS));
 
   // Filter tools by transport
   const filteredRegistry = filterToolRegistry(toolRegistry, transport);
@@ -286,7 +290,7 @@ export async function startRemoteServer(opts = {}) {
           status: "ok",
           server: "shavin",
           transport: "streamable-http",
-          version: "0.1.0",
+          version: MCP_VERSION,
           tools: "use POST /mcp with MCP protocol",
           auth: "Bearer token (Supabase JWT) required for /mcp",
         })

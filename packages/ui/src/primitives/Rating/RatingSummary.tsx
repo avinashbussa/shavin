@@ -37,7 +37,7 @@ export function RatingSummary({ counts, average, onSelect, selected, noun = "rev
             <>
               <span className="inline-flex w-8 shrink-0 items-center gap-0.5 text-sm tabular-nums text-fg-muted">{stars}<Icon name="star" size="xs" color="inherit" className="fill-current" /></span>
               <span className="relative h-2 flex-1 overflow-hidden rounded-full bg-fg/10">
-                <span className="absolute inset-y-0 left-0 rounded-full bg-accent transition-[width] duration-500 ease-out" style={{ width: `${(c / top) * 100}%` }} />
+                <span className="absolute inset-y-0 left-0 rounded-full bg-brand transition-[width] duration-500 ease-out" style={{ width: `${(c / top) * 100}%` }} />
               </span>
               <span className="w-10 shrink-0 text-right text-sm tabular-nums text-fg-muted">{c.toLocaleString("en")}</span>
             </>

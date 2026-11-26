@@ -104,7 +104,7 @@ export function registerSkillsTools(server, SKILLS, ROOT) {
           properties: {
             name: {
               type: "string",
-              description: "Skill directory name (e.g. 'visual-compositor', 'shavin-app', 'shavin-webpage', 'shavin-ui-qa-linter', 'shavin-ui-builder').",
+              description: "Skill directory name (e.g. 'visual-compositor', 'shavin-app', 'shavin-webpage', 'shavin-studio').",
             },
             section: {
               type: "string",

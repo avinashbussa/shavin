@@ -2,7 +2,7 @@ import type { ComponentDoc } from "../../authoring/types";
 
 export const docs: ComponentDoc = {
   name: "Sortable",
-  description: "Zero-dependency HTML5 drag-and-drop list re-ordering primitive with render-prop item formatting and grip handle.",
+  description: "A list users reorder by dragging items, or by keyboard with screen reader announcements. Items stack, sit in a row or form a grid.",
   features: [
     "Components: Sortable and SortableHandle",
     "Orientations: vertical (list), horizontal (strip), grid",

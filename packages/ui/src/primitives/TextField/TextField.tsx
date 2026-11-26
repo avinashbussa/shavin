@@ -1,12 +1,17 @@
 "use client";
 import * as React from "react";
 import { forwardRef, useState, useRef, useId, type InputHTMLAttributes, type ReactNode } from "react";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, CircleAlert } from "lucide-react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "../../lib/cn";
+import { hitAreaClass, type HitArea } from "../../lib/hit-area";
+import { useFieldErrorAnnouncement } from "../../lib/useFieldErrorAnnouncement";
 
 export const textFieldVariants = cva(
-  "w-full rounded-[var(--radius-lg)] border text-fg transition placeholder:text-fg-subtle disabled:cursor-not-allowed disabled:opacity-50",
+  // A native <input> cannot carry the invisible hit-area pseudo-element, so under a coarse pointer the
+  // field itself grows (`hit-area-input`: min-height --tap-min-touch, 44px by default, none when the provider is
+  // compact). 2.5.8 (24px) is met at every size.
+  "w-full rounded-[var(--radius-lg)] border text-fg transition placeholder:text-fg-subtle disabled:cursor-not-allowed disabled:opacity-50 hit-area-input",
   {
     variants: {
       /**
@@ -51,9 +56,9 @@ export interface TextFieldProps
   length?: number | string;
   /** Whether to mask digits with bullet dots (for PIN / password OTP codes) or mask password text. Default false. */
   mask?: boolean;
-  /** Optional separator element or character rendered midway (e.g. '-' or index=3 for 3-3 split). */
+  /** OTP only: separator element or character rendered midway (e.g. '-' or index=3 for 3-3 split). */
   separator?: ReactNode;
-  /** Index position to render the separator (defaults to Math.floor(length / 2)). */
+  /** OTP only: index position to render the separator (defaults to Math.floor(length / 2)). */
   separatorIndex?: number;
   /** Callback fired when all OTP digits have been entered. */
   onComplete?: (code: string) => void;
@@ -63,6 +68,18 @@ export interface TextFieldProps
   showHidePassword?: boolean;
   /** Error message text — when set, the field renders in invalid/error state and shows this message below the input. */
   errorMessage?: string;
+  /**
+   * Announce `errorMessage` (polite) once when it first appears, for blur and change validation.
+   * Default true. Set false while a form moves focus to its FormErrorSummary after a failed submit
+   * (FormErrorSummary also silences it automatically for that render).
+   */
+  announceError?: boolean;
+  /**
+   * Hit-area override (docs: "Target size"). "default": 24px floor, 44px on touch. "none": no hit area
+   * growth (dense toolbars; may go below 24px, yours to own). "touch": always 44px on a coarse pointer.
+   * The field itself grows (native input); the password toggle gets a hit area.
+   */
+  hitArea?: HitArea;
 }
 
 export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function TextField(
@@ -84,6 +101,8 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function T
     onComplete,
     showHidePassword,
     errorMessage,
+    announceError = true,
+    hitArea,
     value,
     defaultValue,
     onChange,
@@ -95,6 +114,7 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function T
 ) {
   const autoId = useId();
   const inputId = customId || autoId;
+  useFieldErrorAnnouncement(errorMessage, announceError);
   const resolvedSize = size ?? "md";
   // Hint and error text are linked to the input so they are read with it (WCAG 1.3.1,
   // 3.3.1); an error message or `invalid` also sets aria-invalid.
@@ -229,7 +249,7 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function T
                     invalid
                       ? "border-danger ring-2 ring-danger/20 text-danger"
                       : isSlotActive
-                      ? "border-transparent outline outline-2 -outline-offset-1 outline-[rgb(var(--focus))] text-fg shadow-1"
+                      ? "border-transparent outline [outline-width:var(--focus-width)] [outline-offset:var(--focus-offset-inset)] outline-[rgb(var(--focus))] text-fg shadow-1"
                       : hasValue
                       ? "border-border-control text-fg"
                       : "border-border-control text-fg-muted",
@@ -243,7 +263,7 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function T
                   ) : null}
                   {isSlotActive && !hasValue && (
                     <span
-                      className="h-4 w-[1.5px] bg-accent rounded-full"
+                      className="h-4 w-[1.5px] bg-brand rounded-full"
                       style={{ animation: "caret-blink 1s steps(2, start) infinite" }} // ds-lint-disable-line no-unknown-class — CSS keyframe animation name
                     />
                   )}
@@ -266,7 +286,8 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function T
         )}
         {otpSlots}
         {errorMessage ? (
-          <span id={errorId} className={cn("text-xs text-danger", resolvedSize === "sm" && "text-[11px]")}>
+          <span id={errorId} className={cn("flex items-start gap-1 text-xs text-danger", resolvedSize === "sm" && "text-[11px]")}>
+            <CircleAlert aria-hidden="true" className="mt-px h-3.5 w-3.5 shrink-0" />
             {errorMessage}
           </span>
         ) : hint ? (
@@ -308,7 +329,8 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function T
       onChange={onChange}
       disabled={disabled}
       className={cn(
-        textFieldVariants({ variant, size, invalid }),
+        textFieldVariants({ variant, size, invalid: invalid || Boolean(errorMessage) }),
+        hitAreaClass(hitArea, "input", "TextField"),
         hasLeading && (resolvedSize === "sm" ? "pl-8" : resolvedSize === "lg" ? "pl-10" : "pl-9"),
         hasTrailing && trailingPad,
         className,
@@ -353,8 +375,9 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function T
           onClick={() => setPwVisible((v) => !v)}
           // At least 24px wide (WCAG 2.5.8); the icon stays where the padding put it.
           className={cn(
-            "absolute inset-y-0 right-0 flex min-w-7 items-center justify-end text-fg-muted hover:text-fg transition-colors",
+            "hit-area-touch absolute inset-y-0 right-0 flex min-w-7 items-center justify-end text-fg-muted hover:text-fg transition-colors",
             resolvedSize === "sm" ? "pr-2.5" : resolvedSize === "lg" ? "pr-3.5" : "pr-3",
+            hitAreaClass(hitArea, "touch", "TextField"),
           )}
         >
           {pwVisible ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -374,7 +397,8 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function T
       )}
       {field}
       {errorMessage ? (
-        <span id={errorId} className={cn("text-xs text-danger", resolvedSize === "sm" && "text-[11px]")}>
+        <span id={errorId} className={cn("flex items-start gap-1 text-xs text-danger", resolvedSize === "sm" && "text-[11px]")}>
+          <CircleAlert aria-hidden="true" className="mt-px h-3.5 w-3.5 shrink-0" />
           {errorMessage}
         </span>
       ) : hint ? (

@@ -90,7 +90,7 @@ export default function Layout({ children }) {
   return (
     <html>
       <body>
-        <ThemeProvider theme="Editorial" accentColor="grass" grayColor="zinc" radius="large" scaling="90" defaultTheme="dark" panelBackground="translucent" displayFont="Inter" bodyFont="Inter">
+        <ThemeProvider theme="Editorial" brandColor="grass" grayColor="zinc" radius="large" scaling="90" defaultTheme="dark" panelBackground="translucent" displayFont="Inter" bodyFont="Inter">
           {children}
         </ThemeProvider>
       </body>
@@ -102,7 +102,7 @@ export default function Layout({ children }) {
     const result = contextModule.parseThemeProviderFromLayout(dir);
     expect(result).not.toBeNull();
     expect(result.theme).toBe("Editorial");
-    expect(result.accentColor).toBe("grass");
+    expect(result.brandColor).toBe("grass");
     expect(result.grayColor).toBe("zinc");
     expect(result.radius).toBe("large");
     expect(result.scaling).toBe("90");
@@ -117,13 +117,13 @@ export default function Layout({ children }) {
       "app/layout.tsx": `
 import { ThemeProvider } from "@shavin/ui";
 export default function Layout({ children }) {
-  return <html><body><ThemeProvider accentColor="blue" /></body></html>;
+  return <html><body><ThemeProvider brandColor="blue" /></body></html>;
 }
 `,
     });
     const result = contextModule.parseThemeProviderFromLayout(dir);
     expect(result).not.toBeNull();
-    expect(result.accentColor).toBe("blue");
+    expect(result.brandColor).toBe("blue");
   });
 
   it("resolves theme preset values when theme=\"Editorial\" is specified", () => {
@@ -138,8 +138,8 @@ export default function Layout({ children }) {
     const result = contextModule.parseThemeProviderFromLayout(dir);
     expect(result).not.toBeNull();
     expect(result.theme).toBe("Editorial");
-    // The preset should fill in accentColor, grayColor, radius, etc.
-    expect(result.accentColor).toBeTruthy();
+    // The preset should fill in brandColor, grayColor, radius, etc.
+    expect(result.brandColor).toBeTruthy();
     expect(result.grayColor).toBeTruthy();
     expect(result.radius).toBeTruthy();
   });
@@ -149,13 +149,13 @@ export default function Layout({ children }) {
       "pages/_app.tsx": `
 import { ThemeProvider } from "@shavin/ui";
 export default function App({ Component, pageProps }) {
-  return <ThemeProvider accentColor="violet"><Component {...pageProps} /></ThemeProvider>;
+  return <ThemeProvider brandColor="violet"><Component {...pageProps} /></ThemeProvider>;
 }
 `,
     });
     const result = contextModule.parseThemeProviderFromLayout(dir);
     expect(result).not.toBeNull();
-    expect(result.accentColor).toBe("violet");
+    expect(result.brandColor).toBe("violet");
     expect(result.source).toBe("pages/_app.tsx");
   });
 });
@@ -174,16 +174,16 @@ describe("parseShavinManifest — priority chain", () => {
       "app/layout.tsx": `
 import { ThemeProvider } from "@shavin/ui";
 export default function Layout({ children }) {
-  return <html><body><ThemeProvider accentColor="blue" grayColor="slate" radius="large">{children}</ThemeProvider></body></html>;
+  return <html><body><ThemeProvider brandColor="blue" grayColor="slate" radius="large">{children}</ThemeProvider></body></html>;
 }
 `,
-      "SHAVIN.md": `**Product Name**: TestApp\n**Domain**: example.com\n**Primary Accent**: \`grass\`\n**Neutral Scale**: \`zinc\`\n**Base Radius**: \`medium\`\n`,
-      ".shavin/config.json": `{"presets":{"accentColor":"monochrome","grayColor":"zinc","radius":"medium","scaling":"95%"}}`,
+      "SHAVIN.md": `**Product Name**: TestApp\n**Domain**: example.com\n**Primary Brand**: \`grass\`\n**Neutral Scale**: \`zinc\`\n**Base Radius**: \`medium\`\n`,
+      ".shavin/config.json": `{"presets":{"brandColor":"monochrome","grayColor":"zinc","radius":"medium","scaling":"95%"}}`,
     });
     const result = contextModule.parseShavinManifest(dir);
     expect(result.hasManifest).toBe(true);
     // ThemeProvider should win over SHAVIN.md and config.json
-    expect(result.accent).toBe("blue");
+    expect(result.brand).toBe("blue");
     expect(result.neutral).toBe("slate");
     expect(result.radius).toBe("large");
     expect(result.themeSource).toBe("ThemeProvider");
@@ -194,13 +194,13 @@ export default function Layout({ children }) {
 
   it("Layer 2 (SHAVIN.md) fills theme fields when ThemeProvider is absent", () => {
     const dir = createTempProject("shavin-md", {
-      "SHAVIN.md": `**Product Name**: MyApp\n**Domain**: myapp.io\n**Primary Accent**: \`grass\`\n**Neutral Scale**: \`zinc\`\n**Theme Mode**: \`dark-first\`\n**Scaling / Density**: \`95%\`\n**Base Radius**: \`medium\`\n**Panel Background**: \`solid\`\n`,
+      "SHAVIN.md": `**Product Name**: MyApp\n**Domain**: myapp.io\n**Primary Brand**: \`grass\`\n**Neutral Scale**: \`zinc\`\n**Theme Mode**: \`dark-first\`\n**Scaling / Density**: \`95%\`\n**Base Radius**: \`medium\`\n**Panel Background**: \`solid\`\n`,
     });
     const result = contextModule.parseShavinManifest(dir);
     expect(result.hasManifest).toBe(true);
     expect(result.appName).toBe("MyApp");
     expect(result.domain).toBe("myapp.io");
-    expect(result.accent).toBe("grass");
+    expect(result.brand).toBe("grass");
     expect(result.neutral).toBe("zinc");
     expect(result.themeMode).toBe("dark-first");
     expect(result.density).toBe("95%");
@@ -210,34 +210,34 @@ export default function Layout({ children }) {
 
   it("SHAVIN.md with single asterisk format also parses", () => {
     const dir = createTempProject("single-asterisk", {
-      "SHAVIN.md": `*Product Name*: SingleStar\n*Domain*: single.test\n*Primary Accent*: \`blue\`\n`,
+      "SHAVIN.md": `*Product Name*: SingleStar\n*Domain*: single.test\n*Primary Brand*: \`blue\`\n`,
     });
     const result = contextModule.parseShavinManifest(dir);
     expect(result.hasManifest).toBe(true);
     expect(result.appName).toBe("SingleStar");
     expect(result.domain).toBe("single.test");
-    expect(result.accent).toBe("blue");
+    expect(result.brand).toBe("blue");
   });
 
   it("SHAVIN.md with no asterisk format also parses", () => {
     const dir = createTempProject("no-asterisk", {
-      "SHAVIN.md": `Product Name: PlainApp\nDomain: plain.test\nPrimary Accent: \`violet\`\n`,
+      "SHAVIN.md": `Product Name: PlainApp\nDomain: plain.test\nPrimary Brand: \`violet\`\n`,
     });
     const result = contextModule.parseShavinManifest(dir);
     expect(result.hasManifest).toBe(true);
     expect(result.appName).toBe("PlainApp");
     expect(result.domain).toBe("plain.test");
-    expect(result.accent).toBe("violet");
+    expect(result.brand).toBe("violet");
   });
 
   it("Layer 3 (config.json) fills theme fields when both TP and SHAVIN.md are absent", () => {
     const dir = createTempProject("config-only", {
       "package.json": `{"name": "config-app"}`,
-      ".shavin/config.json": `{"presets":{"accentColor":"grass","grayColor":"zinc","radius":"medium","scaling":"95%"}}`,
+      ".shavin/config.json": `{"presets":{"brandColor":"grass","grayColor":"zinc","radius":"medium","scaling":"95%"}}`,
     });
     const result = contextModule.parseShavinManifest(dir);
     expect(result.hasManifest).toBe(true);
-    expect(result.accent).toBe("grass");
+    expect(result.brand).toBe("grass");
     expect(result.neutral).toBe("zinc");
     expect(result.radius).toBe("medium");
     expect(result.density).toBe("95%");
@@ -250,14 +250,14 @@ export default function Layout({ children }) {
       "app/layout.tsx": `
 import { ThemeProvider } from "@shavin/ui";
 export default function Layout({ children }) {
-  return <html><body><ThemeProvider theme="Editorial" accentColor="grass">{children}</ThemeProvider></body></html>;
+  return <html><body><ThemeProvider theme="Editorial" brandColor="grass">{children}</ThemeProvider></body></html>;
 }
 `,
     });
     const result = contextModule.parseThemeProviderFromLayout(dir);
     expect(result).not.toBeNull();
-    // theme="Editorial" would set a default accent, but explicit accentColor="grass" overrides
-    expect(result.accentColor).toBe("grass");
+    // theme="Editorial" would set a default brand, but explicit brandColor="grass" overrides
+    expect(result.brandColor).toBe("grass");
     expect(result.theme).toBe("Editorial");
   });
 
@@ -269,25 +269,25 @@ export default function Layout({ children }) {
     expect(result.hasManifest).toBe(true);
     expect(result.appName).toBe("DefaultApp");
     expect(result.domain).toBe("default.test");
-    // Default accent should be monochrome (the system default)
-    expect(result.accent).toBe("monochrome");
+    // Default brand should be monochrome (the system default)
+    expect(result.brand).toBe("monochrome");
     // Default neutral should be zinc
     expect(result.neutral).toBe("zinc");
   });
 
-  it("handles capitalized accentColor from ThemeProvider", () => {
+  it("handles capitalized brandColor from ThemeProvider", () => {
     const dir = createTempProject("capitalized", {
       "app/layout.tsx": `
 import { ThemeProvider } from "@shavin/ui";
 export default function Layout({ children }) {
-  return <html><body><ThemeProvider accentColor="Grass" grayColor="Zinc">{children}</ThemeProvider></body></html>;
+  return <html><body><ThemeProvider brandColor="Grass" grayColor="Zinc">{children}</ThemeProvider></body></html>;
 }
 `,
     });
     const result = contextModule.parseShavinManifest(dir);
     expect(result.hasManifest).toBe(true);
     // Should be normalized to lowercase
-    expect(result.accent).toBe("grass");
+    expect(result.brand).toBe("grass");
     expect(result.neutral).toBe("zinc");
   });
 
@@ -303,6 +303,13 @@ export default function Layout({ children }) {
     const result = contextModule.parseShavinManifest(dir);
     expect(result.hasManifest).toBe(true);
     expect(result.density).toBe("95%");
+  });
+});
+
+describe("parseShavinManifest — defaults", () => {
+  it("a project with no manifest and no ThemeProvider props reports the default density, 100%", () => {
+    const dir = createTempProject("default-density", { "package.json": '{"name":"plain"}' });
+    expect(contextModule.extractProjectContext({ targetDir: dir }).promptMarkdown).toMatch(/Density: 100%/);
   });
 });
 

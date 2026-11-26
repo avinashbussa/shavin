@@ -44,7 +44,7 @@ const strip = ({ replaces: _r, sourcePath: _s, ...b }: AuthoredBlock): BlockTemp
 
 /**
  * Curated public catalog order — the order galleries list blocks in. (Pro
- * blocks keep their own order in the private @shavin/blocks-pro package.) A slug not listed here is placed after the last
+ * blocks are ordered separately and are not part of this package.) A slug not listed here is placed after the last
  * block of its category, so new blocks need no entry to show up.
  */
 export const BLOCK_ORDER: readonly string[] = [
@@ -79,8 +79,7 @@ export function orderBlocks(blocks: readonly AuthoredBlock[], order: readonly st
 
 /**
  * Every block in this package is public (system tier). Pro-tier blocks are
- * proprietary and live in the private `@shavin/blocks-pro` package
- * (packages/blocks-pro) — `blocks:build` rejects `tier: "pro"` files here.
+ * proprietary and ship separately — `blocks:build` rejects `tier: "pro"` files here.
  */
 export const AUTHORED_SYSTEM_BLOCKS: readonly AuthoredBlock[] = AUTHORED_BLOCKS;
 

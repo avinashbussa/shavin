@@ -8,6 +8,8 @@
 /* Brand color tokens — user-customizable colors alongside DS semantic tokens.
    Edit hex values in brand-tokens.css; run `npm run brand:gen` to regenerate. */
 @import "./brand-tokens-oklch.css";
+/* Element defaults (body, focus ring, selection, scrollbars). */
+@import "./base-oklch.css";
 
 :root,
 .light {
@@ -33,6 +35,7 @@
   --bg-surface: var(--n-0);
   --bg-surface-hover: var(--n-100);
   --bg-elevated: var(--n-0);
+  --bg-elevated-hover: var(--n-100);
   --hairline: var(--n-200);
   --hairline-strong: var(--n-300);
   --border-control: var(--n-450);
@@ -47,35 +50,41 @@
   --danger-fg: oklch(1 0 89.88);
 }
 
-/* --- brand/accent tokens — page-level only, NOT in surface scopes ---
+/* --- brand/brand tokens — page-level only, NOT in surface scopes ---
    These are set once on :root (and overridden at :root.dark for dark-mode
    inversion). They must NOT appear in .dark/.light surface-scope blocks
    because surface contrast scoping (surface="dark") would shadow the user's
-   custom accent (set via applyAccentColor() as an inline style on <html>),
-   causing (accent) overlays and accent-colored controls inside a dark
+   custom brand (set via applyBrandColor() as an inline style on <html>),
+   causing (brand) overlays and brand-colored controls inside a dark
    surface to fall back to neutral steps instead of the chosen brand color.
-   Surface scopes therefore never set raw steps: they point --accent at
-   --accent-on-dark / --accent-on-light, which applyAccentColor() derives from
-   the user's accent (so brand hues persist and only achromatic accents flip). */
+   Surface scopes therefore never set raw steps: they point --brand at
+   --brand-on-dark / --brand-on-light, which applyBrandColor() derives from
+   the user's brand (so brand hues persist and only achromatic brand colours flip). */
 :root {
-  --accent: var(--n-900);
-  /* Accent variants for surface scopes (overridden by applyAccentColor). */
-  --accent-on-dark: var(--n-100);
-  --accent-on-dark-hover: var(--n-0);
-  --accent-on-dark-fg: var(--n-950);
-  --accent-on-dark-contrast: var(--n-100);
-  --accent-on-dark-text: var(--n-100);
-  --accent-on-light: var(--n-900);
-  --accent-on-light-hover: var(--n-1000);
-  --accent-on-light-fg: var(--n-0);
-  --accent-on-light-contrast: var(--n-900);
-  --accent-on-light-text: var(--n-900);
-  --accent-hover: var(--n-1000);
-  --accent-fg: var(--n-0);
-  --accent-contrast: var(--n-900);
-  --accent-text: var(--n-900);
-  --accent-subtle: color-mix(in oklch, var(--accent), transparent 88%);
-  --accent-subtle-hover: color-mix(in oklch, var(--accent), transparent 82%);
+  --brand: var(--n-900);
+  /* Brand variants for surface scopes (overridden by applyBrandColor). */
+  --brand-on-dark: var(--n-100);
+  --brand-on-dark-hover: var(--n-0);
+  --brand-on-dark-solid: var(--n-100);
+  --brand-on-dark-solid-hover: var(--n-0);
+  --brand-on-dark-fg: var(--n-950);
+  --brand-on-dark-contrast: var(--n-100);
+  --brand-on-dark-text: var(--n-100);
+  --brand-on-light: var(--n-900);
+  --brand-on-light-hover: var(--n-1000);
+  --brand-on-light-solid: var(--n-900);
+  --brand-on-light-solid-hover: var(--n-1000);
+  --brand-on-light-fg: var(--n-0);
+  --brand-on-light-contrast: var(--n-900);
+  --brand-on-light-text: var(--n-900);
+  --brand-hover: var(--n-1000);
+  --brand-solid: var(--n-900);
+  --brand-solid-hover: var(--n-1000);
+  --brand-fg: var(--n-0);
+  --brand-contrast: var(--n-900);
+  --brand-text: var(--n-900);
+  --brand-subtle: color-mix(in oklch, var(--brand), transparent 88%);
+  --brand-subtle-hover: color-mix(in oklch, var(--brand), transparent 82%);
   --focus: var(--n-900);
   --link: oklch(0.5461 0.2152 262.88); /* blue-600 — hyperlink affordance */
   --bg-tooltip: var(--n-1000);
@@ -100,8 +109,8 @@
   --code-tag: oklch(0.3767 0.1546 29.23);            /* #800000 — deep crimson: HTML/JSX tags */
   --code-attr: oklch(0.5771 0.2152 27.33);         /* #DC2626 — soft red: JSX/HTML attributes */
 
-  /* --- typography tokens (Space Grotesk display + Inter body defaults) --- */
-  --font-display: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+  /* --- typography tokens (Rethink Sans display + Inter body defaults) --- */
+  --font-display: 'Rethink Sans', ui-sans-serif, system-ui, sans-serif;
   --font-body: 'Inter', ui-sans-serif, system-ui, sans-serif;
 
   /* --- radius scale: components reference these, never a literal rounded-* value.
@@ -232,20 +241,21 @@
   --radius-panel-inner: 0px;
 }
 
-
-/* --- dark-mode accent defaults — page-level only (NOT surface scopes) ---
-   Mirrors the .dark block's former accent values but scoped to :root.dark
+/* --- dark-mode brand defaults — page-level only (NOT surface scopes) ---
+   Mirrors the .dark block's former brand values but scoped to :root.dark
    so it only fires when <html> has class="dark", not when a subtree element
-   gets class="dark" via surface="dark". Overridden by applyAccentColor()
-   inline style on <html>. Prevents FOUC of wrong accent before JS hydrates. */
+   gets class="dark" via surface="dark". Overridden by applyBrandColor()
+   inline style on <html>. Prevents FOUC of wrong brand before JS hydrates. */
 :root.dark {
-  --accent: var(--n-200);
-  --accent-hover: var(--n-0);
-  --accent-fg: var(--n-950);
-  --accent-contrast: var(--n-200);
-  --accent-text: var(--n-200);
-  --accent-subtle: color-mix(in oklch, var(--accent), transparent 85%);
-  --accent-subtle-hover: color-mix(in oklch, var(--accent), transparent 78%);
+  --brand: var(--n-200);
+  --brand-hover: var(--n-0);
+  --brand-solid: var(--n-200);
+  --brand-solid-hover: var(--n-0);
+  --brand-fg: var(--n-950);
+  --brand-contrast: var(--n-200);
+  --brand-text: var(--n-200);
+  --brand-subtle: color-mix(in oklch, var(--brand), transparent 85%);
+  --brand-subtle-hover: color-mix(in oklch, var(--brand), transparent 78%);
   --focus: var(--n-200);
   --link: oklch(0.7137 0.1434 254.62); /* blue-400 */
 }
@@ -256,14 +266,15 @@
   --bg-surface: var(--n-900);
   --bg-surface-hover: var(--n-850);
   --bg-elevated: var(--n-850);
+  --bg-elevated-hover: var(--n-800);
   --hairline: var(--n-800);
   --hairline-strong: var(--n-700);
   --border-control: var(--n-500);
   --fg: var(--n-200);
   --fg-muted: var(--n-400);
   --fg-subtle: var(--n-450);
-  /* --accent* tokens are intentionally NOT here — see :root comment above.
-     applyAccentColor() handles dark-mode inversion at <html> inline style. */
+  /* --brand* tokens are intentionally NOT here — see :root comment above.
+     applyBrandColor() handles dark-mode inversion at <html> inline style. */
   --success: oklch(0.7729 0.1535 163.22); /* emerald-400 — positive / done */
   --success-fg: oklch(0.1457 0.0043 285.86);
   --warning: oklch(0.8369 0.1644 84.43); /* amber-400 — caution / attention */
@@ -326,29 +337,32 @@
    specific (attribute + :root pseudo-class), so they win the cascade for
    surface-scoped elements without affecting page-level theming.
 
-   NOTE: accent tokens (--accent, --accent-hover, etc.) are intentionally NOT
+   NOTE: brand tokens (--brand, --brand-hover, etc.) are intentionally NOT
    redefined here.  They are set at :root / :root.dark level and via
-   applyAccentColor() inline style on <html>.  Surface scopes must NOT shadow
-   them — that was the bug where (accent) overlays inside surface="dark"
+   applyBrandColor() inline style on <html>.  Surface scopes must NOT shadow
+   them — that was the bug where (brand) overlays inside surface="dark"
    resolved to n-100 instead of the user's chosen brand color.
    ========================================================================= */
 
 /* --- surface="dark" on a LIGHT page → apply dark contrast tokens --- */
 :root:not(.dark) [data-surface="dark"] {
-  /* Accent follows the surface: achromatic accents flip, brand hues persist. */
-  --accent: var(--accent-on-dark);
-  --accent-hover: var(--accent-on-dark-hover);
-  --accent-fg: var(--accent-on-dark-fg);
-  --accent-contrast: var(--accent-on-dark-contrast);
-  --accent-text: var(--accent-on-dark-text);
-  --accent-subtle: color-mix(in oklch, var(--accent-on-dark), transparent 85%);
-  --accent-subtle-hover: color-mix(in oklch, var(--accent-on-dark), transparent 78%);
-  --focus: var(--accent-on-dark-text);
+  /* Brand follows the surface: achromatic brand colours flip, brand hues persist. */
+  --brand: var(--brand-on-dark);
+  --brand-hover: var(--brand-on-dark-hover);
+  --brand-solid: var(--brand-on-dark-solid);
+  --brand-solid-hover: var(--brand-on-dark-solid-hover);
+  --brand-fg: var(--brand-on-dark-fg);
+  --brand-contrast: var(--brand-on-dark-contrast);
+  --brand-text: var(--brand-on-dark-text);
+  --brand-subtle: color-mix(in oklch, var(--brand-on-dark), transparent 85%);
+  --brand-subtle-hover: color-mix(in oklch, var(--brand-on-dark), transparent 78%);
+  --focus: var(--brand-on-dark-text);
 
   --bg-canvas: var(--n-950);
   --bg-surface: var(--n-900);
   --bg-surface-hover: var(--n-850);
   --bg-elevated: var(--n-850);
+  --bg-elevated-hover: var(--n-800);
   --hairline: var(--n-800);
   --hairline-strong: var(--n-700);
   --border-control: var(--n-500);
@@ -392,6 +406,7 @@
   --bg-surface: var(--n-0);
   --bg-surface-hover: var(--n-100);
   --bg-elevated: var(--n-0);
+  --bg-elevated-hover: var(--n-100);
   --hairline: var(--n-200);
   --hairline-strong: var(--n-300);
   --border-control: var(--n-450);
@@ -435,6 +450,7 @@
   --bg-surface: var(--n-0);
   --bg-surface-hover: var(--n-100);
   --bg-elevated: var(--n-0);
+  --bg-elevated-hover: var(--n-100);
   --hairline: var(--n-200);
   --hairline-strong: var(--n-300);
   --border-control: var(--n-450);
@@ -474,20 +490,23 @@
 
 /* --- surface="light" on a DARK page → INVERT to dark contrast tokens --- */
 :root.dark [data-surface="light"] {
-  /* Accent follows the surface: achromatic accents flip, brand hues persist. */
-  --accent: var(--accent-on-light);
-  --accent-hover: var(--accent-on-light-hover);
-  --accent-fg: var(--accent-on-light-fg);
-  --accent-contrast: var(--accent-on-light-contrast);
-  --accent-text: var(--accent-on-light-text);
-  --accent-subtle: color-mix(in oklch, var(--accent-on-light), transparent 88%);
-  --accent-subtle-hover: color-mix(in oklch, var(--accent-on-light), transparent 82%);
-  --focus: var(--accent-on-light-text);
+  /* Brand follows the surface: achromatic brand colours flip, brand hues persist. */
+  --brand: var(--brand-on-light);
+  --brand-hover: var(--brand-on-light-hover);
+  --brand-solid: var(--brand-on-light-solid);
+  --brand-solid-hover: var(--brand-on-light-solid-hover);
+  --brand-fg: var(--brand-on-light-fg);
+  --brand-contrast: var(--brand-on-light-contrast);
+  --brand-text: var(--brand-on-light-text);
+  --brand-subtle: color-mix(in oklch, var(--brand-on-light), transparent 88%);
+  --brand-subtle-hover: color-mix(in oklch, var(--brand-on-light), transparent 82%);
+  --focus: var(--brand-on-light-text);
 
   --bg-canvas: var(--n-950);
   --bg-surface: var(--n-900);
   --bg-surface-hover: var(--n-850);
   --bg-elevated: var(--n-850);
+  --bg-elevated-hover: var(--n-800);
   --hairline: var(--n-800);
   --hairline-strong: var(--n-700);
   --border-control: var(--n-500);
@@ -529,20 +548,23 @@
 /* Use for dark media backgrounds (video/image) where text must stay light
    regardless of page theme.  No inversion — locked to dark contrast. */
 [data-surface="dark-always"] {
-  /* Accent follows the surface: achromatic accents flip, brand hues persist. */
-  --accent: var(--accent-on-dark);
-  --accent-hover: var(--accent-on-dark-hover);
-  --accent-fg: var(--accent-on-dark-fg);
-  --accent-contrast: var(--accent-on-dark-contrast);
-  --accent-text: var(--accent-on-dark-text);
-  --accent-subtle: color-mix(in oklch, var(--accent-on-dark), transparent 85%);
-  --accent-subtle-hover: color-mix(in oklch, var(--accent-on-dark), transparent 78%);
-  --focus: var(--accent-on-dark-text);
+  /* Brand follows the surface: achromatic brand colours flip, brand hues persist. */
+  --brand: var(--brand-on-dark);
+  --brand-hover: var(--brand-on-dark-hover);
+  --brand-solid: var(--brand-on-dark-solid);
+  --brand-solid-hover: var(--brand-on-dark-solid-hover);
+  --brand-fg: var(--brand-on-dark-fg);
+  --brand-contrast: var(--brand-on-dark-contrast);
+  --brand-text: var(--brand-on-dark-text);
+  --brand-subtle: color-mix(in oklch, var(--brand-on-dark), transparent 85%);
+  --brand-subtle-hover: color-mix(in oklch, var(--brand-on-dark), transparent 78%);
+  --focus: var(--brand-on-dark-text);
 
   --bg-canvas: var(--n-950);
   --bg-surface: var(--n-900);
   --bg-surface-hover: var(--n-850);
   --bg-elevated: var(--n-850);
+  --bg-elevated-hover: var(--n-800);
   --hairline: var(--n-800);
   --hairline-strong: var(--n-700);
   --border-control: var(--n-500);
@@ -584,20 +606,23 @@
 /* Use for light media backgrounds (bright image/video) where text must stay
    dark regardless of page theme.  No inversion — locked to light contrast. */
 [data-surface="light-always"] {
-  /* Accent follows the surface: achromatic accents flip, brand hues persist. */
-  --accent: var(--accent-on-light);
-  --accent-hover: var(--accent-on-light-hover);
-  --accent-fg: var(--accent-on-light-fg);
-  --accent-contrast: var(--accent-on-light-contrast);
-  --accent-text: var(--accent-on-light-text);
-  --accent-subtle: color-mix(in oklch, var(--accent-on-light), transparent 88%);
-  --accent-subtle-hover: color-mix(in oklch, var(--accent-on-light), transparent 82%);
-  --focus: var(--accent-on-light-text);
+  /* Brand follows the surface: achromatic brand colours flip, brand hues persist. */
+  --brand: var(--brand-on-light);
+  --brand-hover: var(--brand-on-light-hover);
+  --brand-solid: var(--brand-on-light-solid);
+  --brand-solid-hover: var(--brand-on-light-solid-hover);
+  --brand-fg: var(--brand-on-light-fg);
+  --brand-contrast: var(--brand-on-light-contrast);
+  --brand-text: var(--brand-on-light-text);
+  --brand-subtle: color-mix(in oklch, var(--brand-on-light), transparent 88%);
+  --brand-subtle-hover: color-mix(in oklch, var(--brand-on-light), transparent 82%);
+  --focus: var(--brand-on-light-text);
 
   --bg-canvas: var(--n-100);
   --bg-surface: var(--n-0);
   --bg-surface-hover: var(--n-100);
   --bg-elevated: var(--n-0);
+  --bg-elevated-hover: var(--n-100);
   --hairline: var(--n-200);
   --hairline-strong: var(--n-300);
   --border-control: var(--n-450);
@@ -635,21 +660,6 @@
   --shadow-6: 0 24px 48px -12px rgb(0 0 0 / 0.24), 0 8px 16px -8px rgb(0 0 0 / 0.12);
 }
 
-html,
-body {
-  height: 100%;
-}
-body {
-  background: var(--bg-canvas);
-  color: var(--fg);
-  font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
-  font-size: 0.875rem;
-  line-height: 1.25rem;
-  font-feature-settings: "ss01", "cv01";
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
-}
-
 .font-display {
   font-family: var(--font-display), Georgia, serif;
   font-optical-sizing: auto;
@@ -659,30 +669,38 @@ body {
   font-family: var(--font-subheading, var(--font-body)), ui-sans-serif, system-ui, sans-serif;
 }
 
-*:focus-visible {
-  outline: 2px solid var(--focus);
-  outline-offset: 2px;
-  /* No fixed border-radius — the outline follows the element's OWN radius, so a
-     pill stays pill-focused and a square stays square-focused (theme/override
-     aware). */
+/* --- focus ring tokens ---------------------------------------------------
+   One ring for the whole system (base.css draws it; every primitive and Studio follows it).
+   Colour is --focus (brand text colour, >=4.6:1 on page fills, so >=3:1 as a ring: WCAG 1.4.11).
+   Width and offset are tunable here, or per subtree with the ThemeProvider / ScopedThemeProvider
+   `focusRing` prop, which sets data-focus-ring. subtle is the default. */
+:root {
+  --focus-width: 1px;
+  --focus-offset: 2px;
+  --focus-offset-inset: -1px; /* text fields: ring sits on the control border */
 }
-/* Menu-like rows show their state with the highlighted background, not an outline
-   (the outline is clipped by the panel and reads as stray bars). */
-[role^="menuitem"]:focus-visible,
-[role="option"]:focus-visible {
-  outline: none;
+[data-focus-ring="subtle"] {
+  --focus-width: 1px;
+  --focus-offset: 2px;
+  --focus-offset-inset: -1px;
 }
-/* Text fields keep the focus ring (WCAG 2.4.7) but draw it over their own
-   border (offset -1px), so it reads as a 2px focus border, not a halo. */
-:where(input, textarea, select):focus-visible {
-  outline-offset: -1px;
+[data-focus-ring="default"] {
+  --focus-width: 2px;
+  --focus-offset: 2px;
+  --focus-offset-inset: -1px;
 }
+[data-focus-ring="strong"] {
+  --focus-width: 3px;
+  --focus-offset: 2px;
+  --focus-offset-inset: -1px;
+}
+
 /* Composite fields whose real <input>/<textarea> is bare inside a styled
    wrapper (DatePicker, ColorPicker hex, CodeEditor): the wrapper draws the
    ring. Only text-entry focus counts, so buttons inside keep their own ring. */
 .focus-ring-within:has(:is(input, textarea):focus-visible) {
-  outline: 2px solid var(--focus);
-  outline-offset: -1px;
+  outline: var(--focus-width, 1px) solid var(--focus);
+  outline-offset: var(--focus-offset-inset, -1px);
 }
 /* ── AppFrame: container-driven app shell ────────────────────────────────────
    The frame measures its own width, not the window's, so it behaves the same on a
@@ -803,34 +821,6 @@ body {
   .shavin-frame[data-compact-below="lg"] .shavin-frame-wide-only {
     display: none;
   }
-}
-
-::selection {
-  background: color-mix(in oklch, var(--accent), transparent 80%);
-}
-* {
-  scrollbar-width: thin;
-  scrollbar-color: var(--hairline) transparent;
-}
-
-/* Custom scrollbars for code pre containers to look dull and secondary */
-pre::-webkit-scrollbar {
-  height: 6px;
-  width: 6px;
-}
-pre::-webkit-scrollbar-track {
-  background: transparent;
-}
-pre::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.3); /* Slate-400 at 30% opacity */
-  border-radius: 9999px;
-}
-pre::-webkit-scrollbar-thumb:hover {
-  background: rgba(148, 163, 184, 0.5);
-}
-pre {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(148, 163, 184, 0.3) transparent;
 }
 
 /* Accordion expand & collapse keyframes (smooth ease-out, no layout jitter) */
@@ -1260,8 +1250,6 @@ body {
 .animate-caret-blink {
   animation: caret-blink 1s steps(2, start) infinite;
 }
-
-
 
 /* ── Forced colors (Windows High Contrast) ─────────────────────────────────
    The OS replaces backgrounds and colours with system colours, so any state

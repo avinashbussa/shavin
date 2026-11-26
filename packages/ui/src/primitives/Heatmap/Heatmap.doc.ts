@@ -5,7 +5,7 @@ export const docs: ComponentDoc = {
   description: "A labelled grid of cells shaded by value: cohort retention, activity by day and hour, correlations.",
   features: [
     "values[row][column], null leaves a cell empty (cohort triangle)",
-    "tone accent | success | warning | danger",
+    "tone brand | success | warning | danger",
     "format number or percent; showValues toggles in-cell numbers",
     "Scrolls sideways instead of squashing columns"
 ],

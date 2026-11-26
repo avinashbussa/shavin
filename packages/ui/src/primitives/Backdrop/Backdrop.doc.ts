@@ -4,7 +4,7 @@ export const docs: ComponentDoc = {
   name: "Backdrop",
   description: "A decorative background that fills its parent: soft mesh, aurora, grid or dots, all drawn from theme tokens. Free and static; for animated shaders see the FX pages.",
   features: [
-    "Free variants: mesh, aurora, grid, dots. Colour follows the accent and the theme, so no hex values",
+    "Free variants: mesh, aurora, grid, dots. Colour follows the brand and the theme, so no hex values",
     "Unknown variant names fall back to mesh",
     "Pure CSS, no canvas, no motion, so it is safe under prefers-reduced-motion",
     "Fills the nearest positioned parent; keep real content above it with relative"

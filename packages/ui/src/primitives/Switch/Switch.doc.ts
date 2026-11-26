@@ -2,7 +2,7 @@ import type { ComponentDoc } from "../../authoring/types";
 
 export const docs: ComponentDoc = {
   name: "Switch",
-  description: "Toggle switch control built on Radix Switch primitive with pill rounded-full track and animated sliding thumb handle.",
+  description: "Turns a setting on or off, with an optional label. The thumb slides across the track when toggled.",
   features: [
     "Sizes: sm (20px track height) and md (24px track height)",
     "Pill-shaped rounded-full handle and track (allowed exception to container panel radius)",

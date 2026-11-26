@@ -3,9 +3,11 @@ import { useState } from "react";
 import * as RadixSelect from "@radix-ui/react-select";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "../../lib/cn";
+import { hitAreaClass, type HitArea } from "../../lib/hit-area";
+import { usePortalContainer } from "../../lib/portal-container";
 
 export const triggerVariants = cva(
-  "w-full appearance-none rounded-[var(--radius-xl)] border text-fg disabled:opacity-50 text-left relative",
+  "hit-area-touch w-full appearance-none rounded-[var(--radius-xl)] border text-fg disabled:opacity-50 text-left relative",
   {
     variants: {
       size: {
@@ -65,6 +67,11 @@ export interface DropdownProps extends VariantProps<typeof triggerVariants> {
   "aria-labelledby"?: string;
   /** id(s) of hint or error text describing the field. */
   "aria-describedby"?: string;
+  /**
+   * Hit-area override (docs: "Target size"). "default": 24px floor, 44px on touch. "none": no hit area
+   * growth (dense toolbars; may go below 24px, yours to own). "touch": always 44px on a coarse pointer.
+   */
+  hitArea?: HitArea;
 }
 
 export function Dropdown({
@@ -76,6 +83,7 @@ export function Dropdown({
   disabled,
   size,
   appearance,
+  hitArea,
   variant = "default",
   placement = "bottom",
   align = "start",
@@ -96,6 +104,7 @@ export function Dropdown({
   };
   const resolvedSize = size ?? "md";
   const selectedOption = options.find((o) => o.value === value) ?? options[0];
+  const portalContainer = usePortalContainer();
 
   if (variant === "default") {
     // Radix Select underneath: listbox/option roles, aria-expanded, arrow keys,
@@ -108,7 +117,7 @@ export function Dropdown({
             aria-label={ariaLabel}
             aria-labelledby={ariaLabelledBy}
             aria-describedby={ariaDescribedBy}
-            className={cn(triggerVariants({ size, appearance }), "group pr-8 cursor-pointer text-left w-full")}
+            className={cn(triggerVariants({ size, appearance }), "group pr-8 cursor-pointer text-left w-full", hitAreaClass(hitArea, "touch", "Dropdown"))}
           >
             <span className="truncate block">
               <RadixSelect.Value>{selectedOption?.label}</RadixSelect.Value>
@@ -128,7 +137,7 @@ export function Dropdown({
             </RadixSelect.Icon>
           </RadixSelect.Trigger>
         </div>
-        <RadixSelect.Portal>
+        <RadixSelect.Portal container={portalContainer}>
           <RadixSelect.Content
             data-panel
             position="popper"
@@ -143,7 +152,7 @@ export function Dropdown({
                 <RadixSelect.Item
                   key={o.value}
                   value={enc(o.value)}
-                  className="w-full cursor-pointer rounded-[var(--radius-lg)] px-2.5 py-1.5 text-left text-xs text-fg-muted outline-none transition-colors hover:bg-surface-hover hover:text-fg data-[highlighted]:bg-surface-hover data-[highlighted]:text-fg data-[state=checked]:bg-surface-hover data-[state=checked]:font-semibold data-[state=checked]:text-fg"
+                  className="w-full cursor-pointer rounded-panel-p1 px-2.5 py-1.5 text-left text-xs text-fg-muted outline-none transition-colors hover:bg-elevated-hover hover:text-fg data-[highlighted]:bg-elevated-hover data-[highlighted]:text-fg data-[state=checked]:bg-elevated-hover data-[state=checked]:font-semibold data-[state=checked]:text-fg"
                 >
                   <RadixSelect.ItemText>{o.label}</RadixSelect.ItemText>
                 </RadixSelect.Item>
@@ -167,7 +176,8 @@ export function Dropdown({
         aria-labelledby={ariaLabelledBy}
         aria-describedby={ariaDescribedBy}
         onChange={(e) => select(e.target.value)}
-        className={cn(triggerVariants({ size, appearance }), "pr-8")}
+        // Native <select> cannot carry the hit-area pseudo-element, so it grows under a coarse pointer (`hit-area-input`).
+        className={cn(triggerVariants({ size, appearance }), "hit-area-input pr-8", hitAreaClass(hitArea, "input", "Dropdown"))}
       >
         {options.map((o) => (
           <option key={o.value} value={o.value}>

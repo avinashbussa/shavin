@@ -138,7 +138,7 @@ The standard 50% content width minimum is suspended in Editorial mode. Content o
 
 - **Grain Texture:** `backgroundImage: svgNoise`, `opacity: 0.03`–`0.05`.
 - **Glassmorphism:** `bg-white/5 backdrop-blur-2xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.3)]`. Needs dynamic backdrop content.
-- **Radial Glow:** `bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,var(--accent)/0.3,transparent)]`.
+- **Radial Glow:** `bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,var(--brand)/0.3,transparent)]`.
 
 ---
 

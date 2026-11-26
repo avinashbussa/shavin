@@ -2,7 +2,7 @@ import type { ComponentDoc } from "../../authoring/types";
 
 export const docs: ComponentDoc = {
   name: "Spinner",
-  description: "Loading indicator supporting circular spin, pulsing wave dots, Claude-style cycling glyphs, and animated typing ellipsis.",
+  description: "Shows that something is loading. Comes as a spinning ring, pulsing dots, cycling glyphs or animated dots after text.",
   features: [
     "Variants: spin (SVG arc rotation), dots (pulsing wave dots), glyph (cycling stars), ellipsis (animated dots)",
     "Sizes: sm (14px), md (16px), lg (28px)",

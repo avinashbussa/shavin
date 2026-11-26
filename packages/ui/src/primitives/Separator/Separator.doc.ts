@@ -2,7 +2,7 @@ import type { ComponentDoc } from "../../authoring/types";
 
 export const docs: ComponentDoc = {
   name: "Separator",
-  description: "Visual horizontal or vertical divider primitive built on Radix Separator using semantic hairline token styling.",
+  description: "A thin line between content, across or down. It comes in several thicknesses and colours.",
   features: [
     "Built on @radix-ui/react-separator",
     "Orientations: horizontal (h-px w-full) and vertical (h-full w-px)",

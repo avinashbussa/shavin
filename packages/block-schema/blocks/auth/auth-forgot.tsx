@@ -1,11 +1,11 @@
-import { Button, Card, Container, Flex, Heading, Icon, Link, Section, Text, TextField } from "@shavin/ui";
+import { Button, Card, Container, Flex, Heading, Icon, Link, Section, Text, TextField, WiseOwlLogo } from "@shavin/ui";
 
 export function AuthForgot() {
   return (
-    <Section size="hero" bgOverlays="mesh-accent" className="flex items-center justify-center">
+    <Section size="hero" bgOverlays="mesh-brand" className="flex items-center justify-center">
       <Container size="xs">
         <Flex direction="column" align="center" gap="6">
-          <Heading as="p" size="sm" tracking="tight">WiseOwl</Heading>
+          <WiseOwlLogo size="sm" />
           <Card padding="lg" className="w-full max-w-[420px]">
             <Flex direction="column" gap="5">
               <Link href="/signin" size="sm" underline="none" className="inline-flex h-10 w-fit items-center gap-1.5 text-fg-muted hover:text-fg">

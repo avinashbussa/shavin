@@ -27,7 +27,7 @@ async function loadMcp(targetDir) {
     if (mod && mod.extractProjectContext) return mod;
   } catch {}
 
-  // 3. Monorepo dev sibling fallback
+  // 3. Sibling fallback when developing in this repository
   try {
     const devPath = resolve(__dirname, "..", "..", "mcp-server", "src", "index.mjs");
     if (existsSync(devPath)) {

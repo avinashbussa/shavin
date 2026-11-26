@@ -3,7 +3,7 @@ import type { ComponentDoc } from "../../authoring/types";
 export const docs: ComponentDoc = {
   name: "List",
   group: "typography",
-  description: "Semantic typography prose list component supporting bulleted, numbered, alpha, and roman numeral markers.",
+  description: "A bulleted or numbered list for body text. Numbers can also be letters or roman numerals.",
   features: [
     "Markers: bullet (disc), number (decimal), lower-roman, upper-roman, lower-alpha, upper-alpha, none",
     "Auto-infers <ul> or <ol> tag based on marker choice",

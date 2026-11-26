@@ -3,7 +3,13 @@
   "version": "0.1.0",
   "description": "Token-driven, agent-readable design system and React primitive library",
   "license": "MIT",
-  "author": "Avinash Bussa <avinashbussa1@gmail.com>",
+  "engines": {
+    "node": ">=18.18"
+  },
+  "author": {
+    "name": "Avinash Bussa",
+    "url": "https://avinashbussa.com"
+  },
   "homepage": "https://docs.shavin.cc",
   "repository": {
     "type": "git",
@@ -32,10 +38,12 @@
   "types": "./dist/index.d.ts",
   "scripts": {
     "build": "node build.mjs",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "node build.mjs"
   },
   "sideEffects": [
-    "*.css"
+    "*.css",
+    "./dist/lib/motion-runtime.js"
   ],
   "style": "./dist/styles/global.css",
   "exports": {
@@ -54,54 +62,61 @@
       "import": "./dist/panels.js",
       "default": "./dist/panels.js"
     },
-    "./primitives/*": {
-      "types": "./src/primitives/*.tsx",
-      "import": "./src/primitives/*.tsx",
-      "default": "./src/primitives/*.tsx"
+    "./icons": {
+      "types": "./dist/icons.d.ts",
+      "import": "./dist/icons.js",
+      "default": "./dist/icons.js"
     },
-    "./lib/*": {
-      "types": "./src/lib/*.ts",
-      "import": "./src/lib/*.ts",
-      "default": "./src/lib/*.ts"
+    "./lib/theme-presets": {
+      "types": "./dist/lib/theme-presets.d.ts",
+      "import": "./dist/lib/theme-presets.js",
+      "default": "./dist/lib/theme-presets.js"
     },
     "./tailwind-preset": {
       "types": "./dist/tailwind-preset.d.ts",
       "import": "./dist/tailwind-preset.js",
+      "require": "./dist/tailwind-preset.cjs",
       "default": "./dist/tailwind-preset.js"
     },
     "./styles.css": "./dist/styles/global.css",
     "./global-oklch.css": "./dist/styles/global-oklch.css",
+    "./tokens.css": "./dist/styles/tokens.css",
+    "./base.css": "./dist/styles/base.css",
+    "./tokens-oklch.css": "./dist/styles/tokens-oklch.css",
+    "./base-oklch.css": "./dist/styles/base-oklch.css",
     "./theme-v4.css": "./dist/styles/theme-v4.css",
     "./theme-v4-oklch.css": "./dist/styles/theme-v4-oklch.css",
-    "./styles/*": "./src/styles/*",
-    "./styles/global.css": "./src/styles/global.css",
-    "./styles/global-oklch.css": "./src/styles/global-oklch.css",
-    "./styles/theme-v4-oklch.css": "./src/styles/theme-v4-oklch.css",
-    "./styles/brand-tokens.css": "./src/styles/brand-tokens.css",
-    "./styles/brand-tokens-oklch.css": "./src/styles/brand-tokens-oklch.css",
-    "./styles/brand-preset.mjs": "./src/styles/brand-preset.mjs",
-    "./styles/brand-theme-v4.css": "./src/styles/brand-theme-v4.css",
-    "./styles/brand-theme-v4-oklch.css": "./src/styles/brand-theme-v4-oklch.css",
-    "./brand-tokens.css": "./src/styles/brand-tokens.css",
-    "./brand-tokens-oklch.css": "./src/styles/brand-tokens-oklch.css",
-    "./brand-preset": "./src/styles/brand-preset.mjs",
-    "./brand-theme-v4.css": "./src/styles/brand-theme-v4.css",
-    "./brand-theme-v4-oklch.css": "./src/styles/brand-theme-v4-oklch.css",
+    "./styles/*": "./dist/styles/*",
+    "./styles/global.css": "./dist/styles/global.css",
+    "./styles/global-oklch.css": "./dist/styles/global-oklch.css",
+    "./styles/theme-v4-oklch.css": "./dist/styles/theme-v4-oklch.css",
+    "./styles/brand-tokens.css": "./dist/styles/brand-tokens.css",
+    "./styles/brand-tokens-oklch.css": "./dist/styles/brand-tokens-oklch.css",
+    "./styles/brand-preset.mjs": "./dist/styles/brand-preset.js",
+    "./styles/brand-theme-v4.css": "./dist/styles/brand-theme-v4.css",
+    "./styles/brand-theme-v4-oklch.css": "./dist/styles/brand-theme-v4-oklch.css",
+    "./brand-tokens.css": "./dist/styles/brand-tokens.css",
+    "./brand-tokens-oklch.css": "./dist/styles/brand-tokens-oklch.css",
+    "./brand-preset": "./dist/styles/brand-preset.js",
+    "./brand-theme-v4.css": "./dist/styles/brand-theme-v4.css",
+    "./brand-theme-v4-oklch.css": "./dist/styles/brand-theme-v4-oklch.css",
     "./tokens.json": "./tokens.json",
     "./components.json": "./components.json"
   },
   "files": [
     "dist",
-    "src",
+    "styles.css",
+    "global-oklch.css",
     "tailwind-preset.ts",
     "tokens.json",
     "components.json",
     "README.md",
+    "CHANGELOG.md",
     "LICENSE"
   ],
   "dependencies": {
     "@mdi/js": "^7.4.47",
-    "@phosphor-icons/react": "^2.1.10",
+    "@phosphor-icons/react": "2.1.10",
     "@radix-ui/react-accordion": "^1.2.18",
     "@radix-ui/react-alert-dialog": "^1.1.19",
     "@radix-ui/react-aspect-ratio": "^1.1.11",
@@ -126,7 +141,7 @@
     "@radix-ui/react-tooltip": "^1.2.12",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "lucide-react": "^1.24.0",
+    "lucide-react": "1.24.0",
     "react-resizable-panels": "4.14.5",
     "tailwind-merge": "^2.6.0"
   },

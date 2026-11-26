@@ -6,7 +6,7 @@ export const docs: ComponentDoc = {
   features: [
     "Components: CheckboxCards and CheckboxCardsItem",
     "Uses panel radius --radius-panel per AGENTS.md section 5 rules",
-    "Card fill and border highlight when checked (border-accent bg-accent/5)"
+    "Card fill and border highlight when checked (border-brand-text bg-brand/5)"
   ],
   accessibility: [
     "Renders native <div role='group'> wrapper",

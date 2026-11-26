@@ -60,6 +60,19 @@ export function useToast() {
   return context;
 }
 
+function useIsMobile() {
+  const [mobile, setMobile] = useState(false);
+  useEffect(() => {
+    if (typeof window === "undefined" || !window.matchMedia) return;
+    const mq = window.matchMedia("(max-width: 767px)");
+    const on = () => setMobile(mq.matches);
+    on();
+    mq.addEventListener?.("change", on);
+    return () => mq.removeEventListener?.("change", on);
+  }, []);
+  return mobile;
+}
+
 let counter = 0;
 const nextId = () => `t${++counter}`;
 
@@ -76,6 +89,8 @@ export function ToastProvider({
   duration = 4000,
 }: ToastProviderProps) {
   const [toasts, setToasts] = useState<ToastItem[]>([]);
+  const toastsRef = useRef<ToastItem[]>([]);
+  toastsRef.current = toasts;
 
   const upsert = useCallback((item: ToastItem) => {
     setToasts((prev) => {
@@ -93,8 +108,15 @@ export function ToastProvider({
 
   const make = useCallback(
     (type: ToastType) => (title: React.ReactNode, options?: ToastOptions) => {
+      // Drop an identical message that is already showing (a double click on Save). Checked in the
+      // state updater too, so two calls in the same tick still produce one toast.
+      const isSame = (t: ToastItem) =>
+        t.type === type && !t.render && typeof title === "string" && t.title === title && t.description === options?.description;
+      const same = toastsRef.current.find(isSame);
+      if (same) return same.id;
       const id = nextId();
-      upsert({ id, title, type, ...options });
+      const item: ToastItem = { id, title, type, ...options };
+      setToasts((prev) => (prev.some(isSame) ? prev : [...prev, item]));
       return id;
     },
     [upsert],
@@ -173,6 +195,10 @@ function Toaster({
 }) {
   const [expanded, setExpanded] = useState(false);
   const [heights, setHeights] = useState<Record<string, number>>({});
+  // Below md the stack is bottom-centre, full width minus 16px, above the safe area (and a
+  // BottomNav that sets --bottom-nav-height).
+  const mobile = useIsMobile();
+  position = mobile ? "bottom-center" : position;
   const isTop = position.startsWith("top");
   const ordered = [...toasts].reverse();
 
@@ -186,7 +212,11 @@ function Toaster({
     <div
       role="region"
       aria-label="Notifications"
-      className={cn("pointer-events-none fixed z-[100] w-[356px] max-w-[calc(100vw-2rem)]", CORNER[position])}
+      className={cn(
+        "pointer-events-none fixed z-[100]",
+        mobile ? "inset-x-2 w-auto" : cn("w-[356px] max-w-[calc(100vw-2rem)]", CORNER[position]),
+      )}
+      style={mobile ? { bottom: "calc(var(--bottom-nav-height, 0px) + env(safe-area-inset-bottom, 0px) + 0.5rem)" } : undefined}
       onMouseEnter={() => setExpanded(true)}
       onMouseLeave={() => setExpanded(false)}
       // Keyboard users pause the timers too (WCAG 2.2.1): focus inside expands the stack.
@@ -201,7 +231,8 @@ function Toaster({
           for (let j = 0; j < i; j++) cum += (heights[ordered[j].id] ?? 64) + GAP;
           const ty = expanded ? dir * cum : dir * i * PEEK;
           const scale = expanded ? 1 : Math.max(1 - i * 0.05, 0.9);
-          const hidden = !expanded && i >= MAX_VISIBLE;
+          // At most three at once, expanded or not; older ones wait behind them.
+          const hidden = i >= MAX_VISIBLE;
           return (
             <ToastCard
               key={t.id}
@@ -229,7 +260,7 @@ const ICON: Record<ToastType, React.ReactNode> = {
   success: <CheckCircle2 className="h-4 w-4 shrink-0 text-success" aria-hidden />,
   error: <AlertCircle className="h-4 w-4 shrink-0 text-danger" aria-hidden />,
   warning: <AlertTriangle className="h-4 w-4 shrink-0 text-warning" aria-hidden />,
-  info: <Info className="h-4 w-4 shrink-0 text-accent" aria-hidden />,
+  info: <Info className="h-4 w-4 shrink-0 text-brand-text" aria-hidden />,
   loading: <Loader2 className="h-4 w-4 shrink-0 animate-spin text-fg-muted" aria-hidden />,
 };
 
@@ -284,7 +315,10 @@ function ToastCard({
   useEffect(() => {
     // A toast with an action stays until dismissed unless a duration is set, so there
     // is time to reach the action (WCAG 2.2.1).
-    const d = toast.duration ?? (toast.action ? Infinity : defaultDuration);
+    // A plain error stays at least 8s: the default 4s is short for something that went wrong.
+    const d =
+      toast.duration ??
+      (toast.action ? Infinity : toast.type === "error" ? Math.max(defaultDuration, 8000) : defaultDuration);
     if (!autoClose || !Number.isFinite(d)) return;
     const timer = setTimeout(() => removeRef.current(toast.id), d);
     return () => clearTimeout(timer);

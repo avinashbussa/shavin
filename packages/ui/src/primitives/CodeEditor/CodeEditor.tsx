@@ -142,7 +142,7 @@ export function CodeEditor({
             {headerLeft || (
               <>
                 {/* Document Icon via Shavin Icon primitive */}
-                <Icon name="fileCode" size={14} color="accent" className="shrink-0" />
+                <Icon name="fileCode" size={14} color="brand" className="shrink-0" />
 
                 {filename && (
                   <span className="text-xs font-mono font-semibold truncate text-fg">
@@ -231,7 +231,7 @@ export function CodeEditor({
           className={cn(
             "relative z-10 block w-full h-full font-mono text-xs p-4 bg-transparent outline-none leading-relaxed resize-y whitespace-pre-wrap break-words border-none",
             value ? "text-transparent" : "text-fg",
-            "caret-accent placeholder:text-fg-subtle selection:bg-accent/20 selection:text-transparent",
+            "caret-brand placeholder:text-fg-subtle selection:bg-brand/20 selection:text-transparent",
             readOnly && "cursor-default"
           )}
         />

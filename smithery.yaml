@@ -1,0 +1,11 @@
+# Smithery listing for @shavin/mcp. Smithery reads this file from the repository root.
+# Deliberately no `version`: the version comes from the published npm package, so this
+# file never drifts from packages/mcp-server/package.json.
+
+startCommand:
+  type: stdio
+  configSchema:
+    type: object
+    properties: {}
+  commandFunction: |-
+    (config) => ({ command: "npx", args: ["-y", "@shavin/mcp"] })

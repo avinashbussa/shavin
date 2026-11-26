@@ -14,6 +14,7 @@
     "types": ["vite/client"],
     "paths": {
       "@shavin/ui": ["../packages/ui/src/index.ts"],
+      "@shavin/ui/panels": ["../packages/ui/src/panels.ts"],
       "@shavin/ui/components.json": ["../packages/ui/components.json"],
       "@/*": ["../packages/ui/src/*"]
     }

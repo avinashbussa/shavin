@@ -36,14 +36,14 @@ Single orphaned words at the end of a sentence destroy visual balance and make l
 
 ```tsx
 // ✅ Headings MUST use text-wrap: balance
-<h1 className="text-5xl font-extrabold tracking-tight text-fg text-balance">
+<Heading as="h1" size="5xl" weight="bold">
   The Intelligent Design System for High-Velocity Teams
-</h1>
+</Heading>
 
 // ✅ Body copy and descriptions MUST use text-wrap: pretty
-<p className="text-base text-fg-subtle leading-relaxed text-pretty max-w-2xl">
+<Text color="subtle" className="leading-relaxed text-pretty max-w-2xl">
   Ship accessible, token-strict React applications with zero design drift across light and dark themes.
-</p>
+</Text>
 ```
 
 - **`text-balance` (`text-wrap: balance`)**: Required on all display headings, hero titles, card titles, and modal headers ($\le 4$ lines).
@@ -57,8 +57,8 @@ Proportional digits have varying character widths (e.g. `1` is much narrower tha
 
 ```tsx
 // ✅ ALWAYS use tabular-nums on numbers, counters, timestamps, latency, and telemetry
-<span className="font-mono text-fg tabular-nums font-semibold">&lt;3.2ms</span>
-<span className="text-3xl font-extrabold text-fg font-mono tabular-nums">1,423,690</span>
+<Text as="span" weight="semibold" className="tabular-nums">&lt;3.2ms</Text>
+<Heading as="p" size="3xl" weight="bold" className="tabular-nums">1,423,690</Heading>
 ```
 
 **Where tabular numbers are mandatory:**
@@ -84,10 +84,10 @@ Never let body text or hero headlines span full-width across a widescreen monito
 Never rely on grey washes that blend together. Establish crisp optical contrast:
 
 ```
-Level 1: Primary Title       →  text-fg          (High contrast, bold/extrabold, tracking-tight)
+Level 1: Primary Title       →  text-fg          (High contrast, bold, tracking-tight)
 Level 2: Paired Description  →  text-fg-subtle   (Readable neutral, leading-relaxed, text-pretty)
 Level 3: Standalone Metadata →  text-fg-muted    (Desaturated secondary metadata, timestamps)
-Level 4: Accent Highlights   →  text-accent      (Semantic highlights, active indicators)
+Level 4: Brand colour      →  text-brand-text (semantic emphasis, active indicators)
 ```
 
 > [!CRITICAL]
@@ -111,4 +111,4 @@ On flagship marketing heroes, a very subtle directional text gradient adds a lux
 **Rules:**
 - Apply ONLY to large display titles (`text-4xl` and above).
 - Never use rainbow or high-saturation electric neon gradients on text.
-- Gradients must stay tonal (`from-fg via-fg to-fg/75`), preserving AAA legibility.
+- Gradients must stay tonal (`from-fg via-fg to-fg/75`), keeping every stop at 4.5:1 or better (WCAG 2.2 AA).

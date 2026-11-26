@@ -1,12 +1,22 @@
 /**
  * @shavin/cli — `brand` command
  *
- *   npx shavin brand           (re)generate derived tokens + Tailwind preset
- *   npx shavin brand --check   exit non-zero if stale (CI)
- *   npx shavin brand --init    scaffold brand-tokens.css into the project
+ *   npx @shavin/cli brand           (re)generate derived tokens + Tailwind preset
+ *   npx @shavin/cli brand --check   exit non-zero if stale (CI)
+ *   npx @shavin/cli brand --init    scaffold brand-tokens.css into the project
+ *   npx @shavin/cli brand --color teal --display-font Fraunces --body-font Inter --mode light-first [--confirm] [--json]
+ *                              apply a theme choice: ThemeProvider props, SHAVIN.md and .shavin/config.json
+ *
+ *                            add --neutrals brand|neutral and --neutrals-amount subtle|medium to choose whether the greys
+ *                            lean toward the brand hue (opt-in; default: neutral, subtle)
+ *
+ * Every extra brand colour gets --brand-<name>-solid / -solid-hover / -fg (the fill under text and its
+ * text colour). `--brand-solid-mode: accessible | exact | perceptual;` in the INPUT section chooses how
+ * they are derived (default accessible: white text >= 4.6:1, light brands keep their exact fill).
  *
  * Zero-dependency ESM. Uses the shared brand-tokens engine from lib/.
  */
+import { relPosix } from "../lib/paths.mjs";
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -21,15 +31,19 @@ import {
   generateThemeV4CSS,
   generateThemeV4CSSOklch,
   DEFAULT_BRAND_TOKENS_CSS,
+  reservedBrandNames,
 } from "../lib/brand-tokens.mjs";
 import { detectTailwindVersion } from "../lib/detect-tailwind.mjs";
+import { isThemeInvocation, parseThemeFlags, applyTheme } from "../lib/theme-set.mjs";
 
 // ── Path detection ──────────────────────────────────────────────────────
 
-function findBrandCSS(cwd) {
+export function findBrandCSS(cwd) {
   const candidates = [
-    // Consumer: alongside global CSS (Next.js app router)
+    // Consumer: alongside global CSS (Next.js app router, with a src folder)
     "src/app/brand-tokens.css",
+    // Consumer: Next.js app router without a src folder (the create-next-app default layout)
+    "app/brand-tokens.css",
     // Consumer: alongside global CSS (Next.js pages router / common)
     "src/styles/brand-tokens.css",
     "styles/brand-tokens.css",
@@ -37,7 +51,7 @@ function findBrandCSS(cwd) {
     "src/brand-tokens.css",
     // Root / flat
     "brand-tokens.css",
-    // Monorepo source
+    // Repository source
     "packages/ui/src/styles/brand-tokens.css",
   ];
 
@@ -103,6 +117,25 @@ export async function brandCommand(args = []) {
   const initMode = args.includes("--init");
   const useOklchFlag = args.includes("--oklch");
 
+  // ── Theme mode: apply a colour / font / mode choice in one step ──
+  if (isThemeInvocation(args)) {
+    const parsed = parseThemeFlags(args);
+    if (parsed.error) {
+      console.error(`  ✗ ${parsed.error}`);
+      process.exit(1);
+    }
+    const result = applyTheme(cwd, parsed.values);
+    if (args.includes("--json")) {
+      console.log(JSON.stringify({ ...result, values: parsed.values }, null, 2));
+      return;
+    }
+    for (const f of result.changed) console.log(`  ✓ Changed: ${f}`);
+    for (const line of result.paste) console.log(`    ${line}`);
+    for (const n of result.notes) console.log(`  ! ${n}`);
+    if (parsed.values.confirm) console.log("  ✓ Theme confirmed.");
+    return;
+  }
+
   // ── Scaffolding mode ──
   if (initMode) {
     const twInfo = detectTailwindVersion(cwd);
@@ -110,7 +143,7 @@ export async function brandCommand(args = []) {
     const existing = findBrandCSS(cwd);
     if (existing) {
       console.log(`  ✓ brand-tokens.css already exists at ${existing.cssPath}`);
-      console.log(`    Run \`npx shavin brand\` to regenerate derived tokens.`);
+      console.log(`    Run \`npx @shavin/cli brand\` to regenerate derived tokens.`);
       return;
     }
 
@@ -127,8 +160,8 @@ export async function brandCommand(args = []) {
     const cssPath = join(scaffoldDir, "brand-tokens.css");
     const result = scaffoldBrandTokens(cssPath, isTailwindV4, useOklch);
 
-    console.log(`  ✓ Created ${result.cssPath.replace(cwd + "/", "")}`);
-    console.log(`  ✓ Created ${result.presetPath.replace(cwd + "/", "")}`);
+    console.log(`  ✓ Created ${relPosix(cwd, result.cssPath)}`);
+    console.log(`  ✓ Created ${relPosix(cwd, result.presetPath)}`);
     console.log(`    Edit the INPUT section to add brand colors, then run \`npm run brand:gen\``);
     return;
   }
@@ -137,10 +170,10 @@ export async function brandCommand(args = []) {
   const paths = findBrandCSS(cwd);
   if (!paths) {
     if (checkMode) {
-      console.error("  ✗ brand-tokens.css not found. Run `npx shavin brand --init` to scaffold it.");
+      console.error("  ✗ brand-tokens.css not found. Run `npx @shavin/cli brand --init` to scaffold it.");
       process.exit(1);
     }
-    console.error("  ✗ brand-tokens.css not found. Run `npx shavin brand --init` to scaffold it.");
+    console.error("  ✗ brand-tokens.css not found. Run `npx @shavin/cli brand --init` to scaffold it.");
     process.exit(1);
   }
 
@@ -166,15 +199,21 @@ export async function brandCommand(args = []) {
       console.error("  ✗ brand-tokens.css not found at:", cssPath);
       process.exit(1);
     }
-    console.error("  ✗ brand-tokens.css not found. Run `npx shavin brand --init` to scaffold it.");
+    console.error("  ✗ brand-tokens.css not found. Run `npx @shavin/cli brand --init` to scaffold it.");
     process.exit(1);
   }
 
   const cssText = readFileSync(cssPath, "utf-8");
-  const { declarations } = parseBrandTokens(cssText);
+  const { declarations, solidMode } = parseBrandTokens(cssText);
+  const clashes = reservedBrandNames(declarations);
+  if (clashes.length) {
+    console.error(`  ✗ ${clashes.map((n) => `--brand-${n}`).join(", ")} ${clashes.length === 1 ? "is" : "are"} reserved for the core brand colour.`);
+    console.error(`    Rename ${clashes.length === 1 ? "it" : "them"} in brand-tokens.css (for example --brand-${clashes[0]}-tone) and run brand:gen again.`);
+    process.exit(1);
+  }
   const tokens = useOklch
-    ? computeBrandTokensOklch(declarations)
-    : computeBrandTokens(declarations);
+    ? computeBrandTokensOklch(declarations, solidMode)
+    : computeBrandTokens(declarations, solidMode);
 
   // Generate outputs
   const newCSS = useOklch
@@ -208,9 +247,10 @@ export async function brandCommand(args = []) {
 
   const hexCount = tokens.colorNames.length;
   const aliasCount = tokens.aliasNames.length;
-  const totalTwColors = aliasCount + hexCount * 7;
+  const totalTwColors = aliasCount + hexCount * 9;
   console.log(`  ✓ brand-tokens: ${hexCount} color${hexCount !== 1 ? "s" : ""}` +
     (aliasCount ? `, ${aliasCount} alias${aliasCount !== 1 ? "es" : ""}` : "") +
-    ` → ${cssPath.replace(cwd + "/", "")}`);
-  console.log(`  ✓ ${isTailwindV4 ? themeV4Name.replace(/\.css$/, "") : "brand-preset"}: ${totalTwColors} Tailwind utilit${totalTwColors !== 1 ? "ies" : "y"} → ${outputPath.replace(cwd + "/", "")}`);
+    ` → ${relPosix(cwd, cssPath)}`);
+  console.log(`  ✓ brand solid: ${solidMode}` + (solidMode === "accessible" ? " (white text >= 4.6:1; light brands keep their exact fill)" : solidMode === "perceptual" ? " (does NOT meet WCAG 2 AA on every brand colour; set --brand-solid-mode: accessible; to restore)" : " (exact fill, WCAG-picked text)"));
+  console.log(`  ✓ ${isTailwindV4 ? themeV4Name.replace(/\.css$/, "") : "brand-preset"}: ${totalTwColors} Tailwind utilit${totalTwColors !== 1 ? "ies" : "y"} → ${relPosix(cwd, outputPath)}`);
 }

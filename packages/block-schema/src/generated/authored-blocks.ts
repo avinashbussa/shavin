@@ -44,7 +44,7 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
   {
     "name": "Forgot Password",
     "slug": "auth-forgot",
-    "description": "Centred password-reset card on an accent mesh with a back-to-sign-in link, a single email field, full-width CTA and a delivery hint.",
+    "description": "Centred password-reset card on a brand mesh with a back-to-sign-in link, a single email field, full-width CTA and a delivery hint.",
     "category": "auth",
     "tier": "system",
     "origin": "both",
@@ -58,7 +58,8 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "Link",
       "Section",
       "Text",
-      "TextField"
+      "TextField",
+      "WiseOwlLogo"
     ],
     "tags": [
       "auth",
@@ -67,13 +68,13 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "form"
     ],
     "version": "1.0.0",
-    "rawCode": "import { Button, Card, Container, Flex, Heading, Icon, Link, Section, Text, TextField } from \"@shavin/ui\";\n\nexport function AuthForgot() {\n  return (\n    <Section size=\"hero\" bgOverlays=\"mesh-accent\" className=\"flex items-center justify-center\">\n      <Container size=\"xs\">\n        <Flex direction=\"column\" align=\"center\" gap=\"6\">\n          <Heading as=\"p\" size=\"sm\" tracking=\"tight\">WiseOwl</Heading>\n          <Card padding=\"lg\" className=\"w-full max-w-[420px]\">\n            <Flex direction=\"column\" gap=\"5\">\n              <Link href=\"/signin\" size=\"sm\" underline=\"none\" className=\"inline-flex h-10 w-fit items-center gap-1.5 text-fg-muted hover:text-fg\">\n                <Icon name=\"arrow-left\" size=\"sm\" color=\"inherit\" />\n                Back to sign in\n              </Link>\n              <Flex direction=\"column\" gap=\"2\">\n                <Heading as=\"h1\" size=\"lg\">Reset your password</Heading>\n                <Text size=\"sm\" color=\"muted\" className=\"text-pretty\">Enter the email on your account and we will send a reset link. It works once and expires in 30 minutes.</Text>\n              </Flex>\n              <form className=\"flex flex-col gap-5\">\n                <TextField label=\"Email\" type=\"email\" placeholder=\"you@example.com\" autoComplete=\"email\" />\n                <Button type=\"submit\" size=\"lg\" className=\"w-full\">Send reset link</Button>\n              </form>\n              <Text size=\"xs\" color=\"muted\" className=\"text-center text-pretty\">The link comes from help@wiseowl.app. Check your spam folder if it has not arrived in a few minutes.</Text>\n            </Flex>\n          </Card>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
+    "rawCode": "import { Button, Card, Container, Flex, Heading, Icon, Link, Section, Text, TextField, WiseOwlLogo } from \"@shavin/ui\";\n\nexport function AuthForgot() {\n  return (\n    <Section size=\"hero\" bgOverlays=\"mesh-brand\" className=\"flex items-center justify-center\">\n      <Container size=\"xs\">\n        <Flex direction=\"column\" align=\"center\" gap=\"6\">\n          <WiseOwlLogo size=\"sm\" />\n          <Card padding=\"lg\" className=\"w-full max-w-[420px]\">\n            <Flex direction=\"column\" gap=\"5\">\n              <Link href=\"/signin\" size=\"sm\" underline=\"none\" className=\"inline-flex h-10 w-fit items-center gap-1.5 text-fg-muted hover:text-fg\">\n                <Icon name=\"arrow-left\" size=\"sm\" color=\"inherit\" />\n                Back to sign in\n              </Link>\n              <Flex direction=\"column\" gap=\"2\">\n                <Heading as=\"h1\" size=\"lg\">Reset your password</Heading>\n                <Text size=\"sm\" color=\"muted\" className=\"text-pretty\">Enter the email on your account and we will send a reset link. It works once and expires in 30 minutes.</Text>\n              </Flex>\n              <form className=\"flex flex-col gap-5\">\n                <TextField label=\"Email\" type=\"email\" placeholder=\"you@example.com\" autoComplete=\"email\" />\n                <Button type=\"submit\" size=\"lg\" className=\"w-full\">Send reset link</Button>\n              </form>\n              <Text size=\"xs\" color=\"muted\" className=\"text-center text-pretty\">The link comes from help@wiseowl.app. Check your spam folder if it has not arrived in a few minutes.</Text>\n            </Flex>\n          </Card>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
     "sourcePath": "packages/block-schema/blocks/auth/auth-forgot.tsx"
   },
   {
     "name": "Magic Link Sign In",
     "slug": "auth-magic-link",
-    "description": "Centred passwordless card on an accent mesh: labelled email field with a check-your-inbox hint, email-link CTA and a password fallback.",
+    "description": "Centred passwordless card on a brand mesh: labelled email field with a check-your-inbox hint, email-link CTA and a password fallback.",
     "category": "auth",
     "tier": "system",
     "origin": "both",
@@ -86,7 +87,8 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "Icon",
       "Section",
       "Text",
-      "TextField"
+      "TextField",
+      "WiseOwlLogo"
     ],
     "tags": [
       "auth",
@@ -95,13 +97,13 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "form"
     ],
     "version": "1.0.0",
-    "rawCode": "import { Button, Card, Container, Flex, Heading, Icon, Section, Text, TextField } from \"@shavin/ui\";\n\nexport function AuthMagicLink() {\n  return (\n    <Section size=\"hero\" bgOverlays=\"mesh-accent\" className=\"flex items-center justify-center\">\n      <Container size=\"xs\">\n        <Flex direction=\"column\" align=\"center\" gap=\"6\">\n          <Heading as=\"p\" size=\"sm\" tracking=\"tight\">WiseOwl</Heading>\n          <Card padding=\"lg\" className=\"w-full max-w-[420px]\">\n            <Flex direction=\"column\" gap=\"5\">\n              <Flex direction=\"column\" gap=\"2\">\n                <Heading as=\"h1\" size=\"lg\">Sign in without a password</Heading>\n                <Text size=\"sm\" color=\"muted\" className=\"text-pretty\">We will email you a secure link that signs you in on this device.</Text>\n              </Flex>\n              <form className=\"flex flex-col gap-5\">\n                <TextField label=\"Email\" type=\"email\" placeholder=\"you@example.com\" autoComplete=\"email\" hint=\"Check your inbox after sending. The link works once and expires in 15 minutes.\" />\n                <Flex direction=\"column\" gap=\"2\">\n                  <Button type=\"submit\" size=\"lg\" className=\"w-full\" iconLeft={<Icon name=\"mail\" size=\"sm\" />}>Email me a link</Button>\n                  <Button size=\"lg\" variant=\"ghost\" className=\"w-full\">Use a password instead</Button>\n                </Flex>\n              </form>\n            </Flex>\n          </Card>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
+    "rawCode": "import { Button, Card, Container, Flex, Heading, Icon, Section, Text, TextField, WiseOwlLogo } from \"@shavin/ui\";\n\nexport function AuthMagicLink() {\n  return (\n    <Section size=\"hero\" bgOverlays=\"mesh-brand\" className=\"flex items-center justify-center\">\n      <Container size=\"xs\">\n        <Flex direction=\"column\" align=\"center\" gap=\"6\">\n          <WiseOwlLogo size=\"sm\" />\n          <Card padding=\"lg\" className=\"w-full max-w-[420px]\">\n            <Flex direction=\"column\" gap=\"5\">\n              <Flex direction=\"column\" gap=\"2\">\n                <Heading as=\"h1\" size=\"lg\">Sign in without a password</Heading>\n                <Text size=\"sm\" color=\"muted\" className=\"text-pretty\">We will email you a secure link that signs you in on this device.</Text>\n              </Flex>\n              <form className=\"flex flex-col gap-5\">\n                <TextField label=\"Email\" type=\"email\" placeholder=\"you@example.com\" autoComplete=\"email\" hint=\"Check your inbox after sending. The link works once and expires in 15 minutes.\" />\n                <Flex direction=\"column\" gap=\"2\">\n                  <Button type=\"submit\" size=\"lg\" className=\"w-full\" iconLeft={<Icon name=\"mail\" size=\"sm\" />}>Email me a link</Button>\n                  <Button size=\"lg\" variant=\"ghost\" className=\"w-full\">Use a password instead</Button>\n                </Flex>\n              </form>\n            </Flex>\n          </Card>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
     "sourcePath": "packages/block-schema/blocks/auth/auth-magic-link.tsx"
   },
   {
     "name": "Sign In",
     "slug": "auth-signin",
-    "description": "Centred sign-in card on an accent mesh: Google and GitHub buttons, an or divider, email and password with remember-me and reset link, full-width CTA.",
+    "description": "Centred sign-in card on a brand mesh: Google and GitHub buttons, an or divider, email and password with remember-me and reset link, full-width CTA.",
     "category": "auth",
     "tier": "system",
     "origin": "both",
@@ -111,14 +113,15 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "Checkbox",
       "Container",
       "Flex",
-      "Grid",
       "Heading",
       "Icon",
+      "Image",
       "Link",
       "Section",
       "Separator",
       "Text",
-      "TextField"
+      "TextField",
+      "WiseOwlLogo"
     ],
     "tags": [
       "auth",
@@ -127,13 +130,13 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "form"
     ],
     "version": "1.0.0",
-    "rawCode": "import { Button, Card, Checkbox, Container, Flex, Grid, Heading, Icon, Link, Section, Separator, Text, TextField } from \"@shavin/ui\";\n\nconst defaultProviders = [\n  { label: \"Google\", icon: \"google-logo\" },\n  { label: \"GitHub\", icon: \"github-logo\" },\n];\n\nexport function AuthSignin({ providers = defaultProviders }) {\n  return (\n    <Section size=\"hero\" bgOverlays=\"mesh-accent\" className=\"flex items-center justify-center\">\n      <Container size=\"xs\">\n        <Flex direction=\"column\" align=\"center\" gap=\"6\">\n          <Heading as=\"p\" size=\"sm\" tracking=\"tight\">WiseOwl</Heading>\n          <Card padding=\"lg\" className=\"w-full max-w-[420px]\">\n            <Flex direction=\"column\" gap=\"5\">\n              <Flex direction=\"column\" gap=\"2\">\n                <Heading as=\"h1\" size=\"lg\">Welcome back</Heading>\n                <Text size=\"sm\" color=\"muted\" className=\"text-pretty\">Sign in to see your accounts, budgets and household.</Text>\n              </Flex>\n              <Grid columns=\"2\" gap=\"3\">\n                {providers.map((provider) => (\n                  <Button key={provider.label} variant=\"outline\" className=\"w-full\" iconLeft={<Icon name={provider.icon} size=\"sm\" />}>{provider.label}</Button>\n                ))}\n              </Grid>\n              <Flex direction=\"row\" align=\"center\" gap=\"3\">\n                <Separator className=\"flex-1\" />\n                <Text size=\"xs\" color=\"muted\">or</Text>\n                <Separator className=\"flex-1\" />\n              </Flex>\n              <form className=\"flex flex-col gap-5\">\n              <Flex direction=\"column\" gap=\"4\">\n                <TextField label=\"Email\" type=\"email\" placeholder=\"you@example.com\" autoComplete=\"email\" />\n                <TextField label=\"Password\" type=\"password\" placeholder=\"Enter your password\" autoComplete=\"current-password\" />\n                <Flex direction=\"row\" align=\"center\" justify=\"between\" gap=\"3\" wrap=\"wrap\">\n                  <Checkbox label=\"Keep me signed in\" />\n                  <Link href=\"/forgot\" size=\"sm\" color=\"accent\">Forgot password?</Link>\n                </Flex>\n              </Flex>\n              <Button type=\"submit\" size=\"lg\" className=\"w-full\">Sign in</Button>\n              </form>\n              <Text size=\"xs\" color=\"muted\" className=\"text-center\">New to WiseOwl? <Link href=\"/signup\" color=\"accent\">Create a free account</Link></Text>\n            </Flex>\n          </Card>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
+    "rawCode": "import { Button, Card, Checkbox, Container, Flex, Heading, Icon, Image, Link, Section, Separator, Text, TextField, WiseOwlLogo } from \"@shavin/ui\";\n\nexport function AuthSignin() {\n  return (\n    <Section size=\"hero\" bgOverlays=\"mesh-brand\" className=\"flex items-center justify-center\">\n      <Container size=\"xs\">\n        <Flex direction=\"column\" align=\"center\" gap=\"6\">\n          <WiseOwlLogo size=\"sm\" />\n          <Card padding=\"lg\" className=\"w-full max-w-[420px]\">\n            <Flex direction=\"column\" gap=\"5\">\n              <Flex direction=\"column\" gap=\"2\">\n                <Heading as=\"h1\" size=\"lg\">Welcome back</Heading>\n                <Text size=\"sm\" color=\"muted\" className=\"text-pretty\">Sign in to see your accounts, budgets and household.</Text>\n              </Flex>\n              <Flex direction=\"column\" gap=\"3\">\n                <Button variant=\"outline\" className=\"w-full\" iconLeft={<Image src=\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cpath fill='%23EA4335' d='M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z'/%3E%3Cpath fill='%234285F4' d='M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z'/%3E%3Cpath fill='%23FBBC05' d='M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z'/%3E%3Cpath fill='%2334A853' d='M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z'/%3E%3C/svg%3E\" fit=\"contain\" radius=\"none\" className=\"size-[18px]\" />}>Continue with Google</Button>\n                <Button variant=\"outline\" className=\"w-full\" iconLeft={<Icon name=\"github-logo\" size=\"sm\" />}>Continue with GitHub</Button>\n              </Flex>\n              <Flex direction=\"row\" align=\"center\" gap=\"3\">\n                <Separator className=\"flex-1\" />\n                <Text size=\"xs\" color=\"muted\">or</Text>\n                <Separator className=\"flex-1\" />\n              </Flex>\n              <form className=\"flex flex-col gap-5\">\n              <Flex direction=\"column\" gap=\"4\">\n                <TextField label=\"Email\" type=\"email\" placeholder=\"you@example.com\" autoComplete=\"email\" />\n                <TextField label=\"Password\" type=\"password\" placeholder=\"Enter your password\" autoComplete=\"current-password\" />\n                <Flex direction=\"row\" align=\"center\" justify=\"between\" gap=\"3\" wrap=\"wrap\">\n                  <Checkbox label=\"Keep me signed in\" />\n                  <Link href=\"/forgot\" size=\"sm\" color=\"brand\">Forgot password?</Link>\n                </Flex>\n              </Flex>\n              <Button type=\"submit\" size=\"lg\" className=\"w-full\">Sign in</Button>\n              </form>\n              <Text size=\"xs\" color=\"muted\" className=\"text-center\">New to WiseOwl? <Link href=\"/signup\" color=\"brand\">Create a free account</Link></Text>\n            </Flex>\n          </Card>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
     "sourcePath": "packages/block-schema/blocks/auth/auth-signin.tsx"
   },
   {
     "name": "Sign Up",
     "slug": "auth-signup",
-    "description": "Centred account-creation card on an accent mesh: SSO buttons, or divider, name, email and password with helper text, full-width CTA and a short legal line.",
+    "description": "Centred account-creation card on a brand mesh: SSO buttons, or divider, name, email and password with helper text, full-width CTA and a short legal line.",
     "category": "auth",
     "tier": "system",
     "origin": "both",
@@ -142,14 +145,15 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "Card",
       "Container",
       "Flex",
-      "Grid",
       "Heading",
       "Icon",
+      "Image",
       "Link",
       "Section",
       "Separator",
       "Text",
-      "TextField"
+      "TextField",
+      "WiseOwlLogo"
     ],
     "tags": [
       "auth",
@@ -158,7 +162,7 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "form"
     ],
     "version": "1.0.0",
-    "rawCode": "import { Button, Card, Container, Flex, Grid, Heading, Icon, Link, Section, Separator, Text, TextField } from \"@shavin/ui\";\n\nconst defaultProviders = [\n  { label: \"Google\", icon: \"google-logo\" },\n  { label: \"GitHub\", icon: \"github-logo\" },\n];\n\nexport function AuthSignup({ providers = defaultProviders }) {\n  return (\n    <Section size=\"hero\" bgOverlays=\"mesh-accent\" className=\"flex items-center justify-center\">\n      <Container size=\"xs\">\n        <Flex direction=\"column\" align=\"center\" gap=\"6\">\n          <Heading as=\"p\" size=\"sm\" tracking=\"tight\">WiseOwl</Heading>\n          <Card padding=\"lg\" className=\"w-full max-w-[420px]\">\n            <Flex direction=\"column\" gap=\"5\">\n              <Flex direction=\"column\" gap=\"2\">\n                <Heading as=\"h1\" size=\"lg\">Create your free account</Heading>\n                <Text size=\"sm\" color=\"muted\" className=\"text-pretty\">Free for one person with two linked accounts. No card required.</Text>\n              </Flex>\n              <Grid columns=\"2\" gap=\"3\">\n                {providers.map((provider) => (\n                  <Button key={provider.label} variant=\"outline\" className=\"w-full\" iconLeft={<Icon name={provider.icon} size=\"sm\" />}>{provider.label}</Button>\n                ))}\n              </Grid>\n              <Flex direction=\"row\" align=\"center\" gap=\"3\">\n                <Separator className=\"flex-1\" />\n                <Text size=\"xs\" color=\"muted\">or</Text>\n                <Separator className=\"flex-1\" />\n              </Flex>\n              <form className=\"flex flex-col gap-5\">\n              <Flex direction=\"column\" gap=\"4\">\n                <TextField label=\"Full name\" placeholder=\"Maya Okafor\" autoComplete=\"name\" />\n                <TextField label=\"Email\" type=\"email\" placeholder=\"you@example.com\" autoComplete=\"email\" />\n                <TextField label=\"Password\" type=\"password\" placeholder=\"At least 12 characters\" hint=\"Use 12+ characters with a number or symbol.\" autoComplete=\"new-password\" />\n              </Flex>\n              <Button type=\"submit\" size=\"lg\" className=\"w-full\">Create account</Button>\n              </form>\n              <Flex direction=\"column\" gap=\"2\">\n                <Text size=\"xs\" color=\"muted\" className=\"text-center text-pretty\">By creating an account you agree to the <Link href=\"/legal/terms\">Terms</Link> and <Link href=\"/legal/privacy\">Privacy Policy</Link>.</Text>\n                <Text size=\"xs\" color=\"muted\" className=\"text-center\">Already have an account? <Link href=\"/signin\" color=\"accent\">Sign in</Link></Text>\n              </Flex>\n            </Flex>\n          </Card>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
+    "rawCode": "import { Button, Card, Container, Flex, Heading, Icon, Image, Link, Section, Separator, Text, TextField, WiseOwlLogo } from \"@shavin/ui\";\n\nexport function AuthSignup() {\n  return (\n    <Section size=\"hero\" bgOverlays=\"mesh-brand\" className=\"flex items-center justify-center\">\n      <Container size=\"xs\">\n        <Flex direction=\"column\" align=\"center\" gap=\"6\">\n          <WiseOwlLogo size=\"sm\" />\n          <Card padding=\"lg\" className=\"w-full max-w-[420px]\">\n            <Flex direction=\"column\" gap=\"5\">\n              <Flex direction=\"column\" gap=\"2\">\n                <Heading as=\"h1\" size=\"lg\">Create your free account</Heading>\n                <Text size=\"sm\" color=\"muted\" className=\"text-pretty\">Free for one person with two linked accounts. No card required.</Text>\n              </Flex>\n              <Flex direction=\"column\" gap=\"3\">\n                <Button variant=\"outline\" className=\"w-full\" iconLeft={<Image src=\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cpath fill='%23EA4335' d='M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z'/%3E%3Cpath fill='%234285F4' d='M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z'/%3E%3Cpath fill='%23FBBC05' d='M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z'/%3E%3Cpath fill='%2334A853' d='M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z'/%3E%3C/svg%3E\" fit=\"contain\" radius=\"none\" className=\"size-[18px]\" />}>Sign up with Google</Button>\n                <Button variant=\"outline\" className=\"w-full\" iconLeft={<Icon name=\"github-logo\" size=\"sm\" />}>Sign up with GitHub</Button>\n              </Flex>\n              <Flex direction=\"row\" align=\"center\" gap=\"3\">\n                <Separator className=\"flex-1\" />\n                <Text size=\"xs\" color=\"muted\">or</Text>\n                <Separator className=\"flex-1\" />\n              </Flex>\n              <form className=\"flex flex-col gap-5\">\n              <Flex direction=\"column\" gap=\"4\">\n                <TextField label=\"Full name\" placeholder=\"Maya Okafor\" autoComplete=\"name\" />\n                <TextField label=\"Email\" type=\"email\" placeholder=\"you@example.com\" autoComplete=\"email\" />\n                <TextField label=\"Password\" type=\"password\" placeholder=\"At least 12 characters\" hint=\"Use 12+ characters with a number or symbol.\" autoComplete=\"new-password\" />\n              </Flex>\n              <Button type=\"submit\" size=\"lg\" className=\"w-full\">Create account</Button>\n              </form>\n              <Flex direction=\"column\" gap=\"2\">\n                <Text size=\"xs\" color=\"muted\" className=\"text-center text-pretty\">By creating an account you agree to the <Link href=\"/legal/terms\">Terms</Link> and <Link href=\"/legal/privacy\">Privacy Policy</Link>.</Text>\n                <Text size=\"xs\" color=\"muted\" className=\"text-center\">Already have an account? <Link href=\"/signin\" color=\"brand\">Sign in</Link></Text>\n              </Flex>\n            </Flex>\n          </Card>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
     "sourcePath": "packages/block-schema/blocks/auth/auth-signup.tsx"
   },
   {
@@ -177,7 +181,8 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "Link",
       "Section",
       "Text",
-      "TextField"
+      "TextField",
+      "WiseOwlLogo"
     ],
     "tags": [
       "auth",
@@ -186,13 +191,13 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "media"
     ],
     "version": "1.0.0",
-    "rawCode": "import { Button, Container, Flex, Grid, Heading, Link, Section, Text, TextField } from \"@shavin/ui\";\n\nexport function AuthSplitScreen() {\n  return (\n    <Section className=\"py-0\">\n      <Grid columns=\"2\" gap=\"0\" stack=\"auto\" className=\"min-h-[100svh]\">\n        <Flex\n          direction=\"column\"\n          justify=\"end\"\n          surface=\"dark-always\"\n          bgImage=\"https://assets.lummi.ai/assets/QmVQ6Y2zm36g3VK9LHzgCKqJEbTbL8GYXtmjuHB3nkgzeX?auto=format&w=1600\"\n          bgOverlays=\"scrim\"\n          className=\"hidden p-10 md:flex lg:p-14\"\n        >\n          <Flex direction=\"column\" gap=\"4\" className=\"max-w-[40ch]\">\n            <Heading as=\"blockquote\" size=\"xl\" weight=\"medium\" className=\"text-pretty\">Sunday money check-ins went from an hour of spreadsheets to fifteen minutes with coffee.</Heading>\n            <Flex direction=\"column\" gap=\"1\">\n              <Text size=\"sm\" weight=\"medium\">Lena Hoffmann</Text>\n              <Text size=\"sm\" color=\"muted\">Household owner · Denver, CO</Text>\n            </Flex>\n          </Flex>\n        </Flex>\n        <Flex direction=\"column\" justify=\"center\" className=\"py-16\">\n          <Container size=\"xs\">\n            <Flex direction=\"column\" gap=\"6\" className=\"mx-auto w-full max-w-[400px]\">\n              <Heading as=\"p\" size=\"sm\" tracking=\"tight\">WiseOwl</Heading>\n              <Flex direction=\"column\" gap=\"2\">\n                <Heading as=\"h1\" size=\"xl\">Sign in to your household</Heading>\n                <Text size=\"sm\" color=\"muted\" className=\"text-pretty\">Pick up where you left off. Your partner sees the same numbers the moment you update a budget.</Text>\n              </Flex>\n              <form className=\"flex flex-col gap-6\">\n              <Flex direction=\"column\" gap=\"4\">\n                <TextField label=\"Email\" type=\"email\" placeholder=\"you@example.com\" autoComplete=\"email\" />\n                <TextField label=\"Password\" type=\"password\" placeholder=\"Enter your password\" autoComplete=\"current-password\" />\n                <Link href=\"/forgot\" size=\"sm\" color=\"accent\" className=\"w-fit\">Forgot password?</Link>\n              </Flex>\n              <Flex direction=\"column\" gap=\"3\">\n                <Button type=\"submit\" size=\"lg\" className=\"w-full\">Sign in</Button>\n                <Button size=\"lg\" variant=\"outline\" className=\"w-full\">Email me a sign-in link</Button>\n              </Flex>\n              </form>\n              <Text size=\"xs\" color=\"muted\">New to WiseOwl? <Link href=\"/signup\" color=\"accent\">Create a free account</Link></Text>\n            </Flex>\n          </Container>\n        </Flex>\n      </Grid>\n    </Section>\n  );\n}\n",
+    "rawCode": "import { Button, Container, Flex, Grid, Heading, Link, Section, Text, TextField, WiseOwlLogo } from \"@shavin/ui\";\n\nexport function AuthSplitScreen() {\n  return (\n    <Section>\n      <Grid columns=\"2\" gap=\"0\" stack=\"auto\" className=\"min-h-[100svh]\">\n        <Flex\n          direction=\"column\"\n          justify=\"end\"\n          surface=\"dark-always\"\n          bgImage=\"https://assets.lummi.ai/assets/QmVQ6Y2zm36g3VK9LHzgCKqJEbTbL8GYXtmjuHB3nkgzeX?auto=format&w=1600\"\n          bgOverlays=\"scrim\"\n          className=\"hidden p-10 md:flex lg:p-14\"\n        >\n          <Flex direction=\"column\" gap=\"4\" className=\"max-w-[40ch]\">\n            <Heading as=\"blockquote\" size=\"xl\" weight=\"medium\" className=\"text-pretty\">Sunday money check-ins went from an hour of spreadsheets to fifteen minutes with coffee.</Heading>\n            <Flex direction=\"column\" gap=\"1\">\n              <Text size=\"sm\" weight=\"medium\">Lena Hoffmann</Text>\n              <Text size=\"sm\" color=\"muted\">Household owner · Denver, CO</Text>\n            </Flex>\n          </Flex>\n        </Flex>\n        <Flex direction=\"column\" justify=\"center\" className=\"py-16\">\n          <Container size=\"xs\">\n            <Flex direction=\"column\" gap=\"6\" className=\"mx-auto w-full max-w-[400px]\">\n              <WiseOwlLogo size=\"sm\" />\n              <Flex direction=\"column\" gap=\"2\">\n                <Heading as=\"h1\" size=\"xl\">Sign in to your household</Heading>\n                <Text size=\"sm\" color=\"muted\" className=\"text-pretty\">Pick up where you left off. Your partner sees the same numbers the moment you update a budget.</Text>\n              </Flex>\n              <form className=\"flex flex-col gap-6\">\n              <Flex direction=\"column\" gap=\"4\">\n                <TextField label=\"Email\" type=\"email\" placeholder=\"you@example.com\" autoComplete=\"email\" />\n                <TextField label=\"Password\" type=\"password\" placeholder=\"Enter your password\" autoComplete=\"current-password\" />\n                <Link href=\"/forgot\" size=\"sm\" color=\"brand\" className=\"w-fit\">Forgot password?</Link>\n              </Flex>\n              <Flex direction=\"column\" gap=\"3\">\n                <Button type=\"submit\" size=\"lg\" className=\"w-full\">Sign in</Button>\n                <Button size=\"lg\" variant=\"outline\" className=\"w-full\">Email me a sign-in link</Button>\n              </Flex>\n              </form>\n              <Text size=\"xs\" color=\"muted\">New to WiseOwl? <Link href=\"/signup\" color=\"brand\">Create a free account</Link></Text>\n            </Flex>\n          </Container>\n        </Flex>\n      </Grid>\n    </Section>\n  );\n}\n",
     "sourcePath": "packages/block-schema/blocks/auth/auth-split-screen.tsx"
   },
   {
     "name": "SSO-First Sign In",
     "slug": "auth-sso-first",
-    "description": "Centred card on an accent mesh that leads with full-width provider buttons, then an or-use-email divider, email field and CTA, and a legal line.",
+    "description": "Centred card on a brand mesh that leads with full-width provider buttons, then an or-use-email divider, email field and CTA, and a legal line.",
     "category": "auth",
     "tier": "system",
     "origin": "both",
@@ -203,11 +208,13 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "Flex",
       "Heading",
       "Icon",
+      "Image",
       "Link",
       "Section",
       "Separator",
       "Text",
-      "TextField"
+      "TextField",
+      "WiseOwlLogo"
     ],
     "tags": [
       "auth",
@@ -216,14 +223,14 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "form"
     ],
     "version": "1.0.0",
-    "rawCode": "import { Button, Card, Container, Flex, Heading, Icon, Link, Section, Separator, Text, TextField } from \"@shavin/ui\";\n\nconst defaultProviders = [\n  { label: \"Continue with Google\", icon: \"google-logo\" },\n  { label: \"Continue with GitHub\", icon: \"github-logo\" },\n  { label: \"Continue with Apple\", icon: \"apple-logo\" },\n];\n\nexport function AuthSsoFirst({ providers = defaultProviders }) {\n  return (\n    <Section size=\"hero\" bgOverlays=\"mesh-accent\" className=\"flex items-center justify-center\">\n      <Container size=\"xs\">\n        <Flex direction=\"column\" align=\"center\" gap=\"6\">\n          <Heading as=\"p\" size=\"sm\" tracking=\"tight\">WiseOwl</Heading>\n          <Card padding=\"lg\" className=\"w-full max-w-[420px]\">\n            <Flex direction=\"column\" gap=\"5\">\n              <Flex direction=\"column\" gap=\"2\">\n                <Heading as=\"h1\" size=\"lg\">Sign in to WiseOwl</Heading>\n                <Text size=\"sm\" color=\"muted\" className=\"text-pretty\">Use the account you already trust. We never see your provider password.</Text>\n              </Flex>\n              <Flex direction=\"column\" gap=\"3\">\n                {providers.map((provider) => (\n                  <Button key={provider.label} size=\"lg\" variant=\"outline\" className=\"w-full\" iconLeft={<Icon name={provider.icon} size=\"sm\" />}>{provider.label}</Button>\n                ))}\n              </Flex>\n              <Flex direction=\"row\" align=\"center\" gap=\"3\">\n                <Separator className=\"flex-1\" />\n                <Text size=\"xs\" color=\"muted\">or use email</Text>\n                <Separator className=\"flex-1\" />\n              </Flex>\n              <form className=\"flex flex-col gap-4\">\n                <TextField label=\"Email\" type=\"email\" placeholder=\"you@example.com\" autoComplete=\"email\" />\n                <Button type=\"submit\" size=\"lg\" className=\"w-full\">Continue with email</Button>\n              </form>\n              <Text size=\"xs\" color=\"muted\" className=\"text-center text-pretty\">By continuing you agree to the <Link href=\"/legal/terms\">Terms of Service</Link> and <Link href=\"/legal/privacy\">Privacy Policy</Link>.</Text>\n            </Flex>\n          </Card>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
+    "rawCode": "import { Button, Card, Container, Flex, Heading, Icon, Image, Link, Section, Separator, Text, TextField, WiseOwlLogo } from \"@shavin/ui\";\n\nexport function AuthSsoFirst() {\n  return (\n    <Section size=\"hero\" bgOverlays=\"mesh-brand\" className=\"flex items-center justify-center\">\n      <Container size=\"xs\">\n        <Flex direction=\"column\" align=\"center\" gap=\"6\">\n          <WiseOwlLogo size=\"sm\" />\n          <Card padding=\"lg\" className=\"w-full max-w-[420px]\">\n            <Flex direction=\"column\" gap=\"5\">\n              <Flex direction=\"column\" gap=\"2\">\n                <Heading as=\"h1\" size=\"lg\">Sign in to WiseOwl</Heading>\n                <Text size=\"sm\" color=\"muted\" className=\"text-pretty\">Use the account you already trust. We never see your provider password.</Text>\n              </Flex>\n              <Flex direction=\"column\" gap=\"3\">\n                <Button size=\"lg\" variant=\"outline\" className=\"w-full\" iconLeft={<Image src=\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cpath fill='%23EA4335' d='M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z'/%3E%3Cpath fill='%234285F4' d='M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z'/%3E%3Cpath fill='%23FBBC05' d='M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z'/%3E%3Cpath fill='%2334A853' d='M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z'/%3E%3C/svg%3E\" fit=\"contain\" radius=\"none\" className=\"size-[18px]\" />}>Continue with Google</Button>\n                <Button size=\"lg\" variant=\"outline\" className=\"w-full\" iconLeft={<Icon name=\"github-logo\" size=\"sm\" />}>Continue with GitHub</Button>\n                <Button size=\"lg\" variant=\"outline\" className=\"w-full\" iconLeft={<Icon name=\"key\" size=\"sm\" />}>Continue with SSO</Button>\n              </Flex>\n              <Flex direction=\"row\" align=\"center\" gap=\"3\">\n                <Separator className=\"flex-1\" />\n                <Text size=\"xs\" color=\"muted\">or use email</Text>\n                <Separator className=\"flex-1\" />\n              </Flex>\n              <form className=\"flex flex-col gap-4\">\n                <TextField label=\"Email\" type=\"email\" placeholder=\"you@example.com\" autoComplete=\"email\" />\n                <Button type=\"submit\" size=\"lg\" className=\"w-full\">Continue with email</Button>\n              </form>\n              <Text size=\"xs\" color=\"muted\" className=\"text-center text-pretty\">By continuing you agree to the <Link href=\"/legal/terms\">Terms of Service</Link> and <Link href=\"/legal/privacy\">Privacy Policy</Link>.</Text>\n            </Flex>\n          </Card>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
     "replaces": "auth-centered-card",
     "sourcePath": "packages/block-schema/blocks/auth/auth-sso-first.tsx"
   },
   {
     "name": "Verify Code",
     "slug": "auth-verify",
-    "description": "Centred one-time-code card on an accent mesh: six full-width OTP slots, verify CTA, resend link with a countdown and a change-email escape.",
+    "description": "Centred one-time-code card on a brand mesh: six full-width OTP slots, verify CTA, resend link with a countdown and a change-email escape.",
     "category": "auth",
     "tier": "system",
     "origin": "both",
@@ -236,7 +243,8 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "Link",
       "Section",
       "Text",
-      "TextField"
+      "TextField",
+      "WiseOwlLogo"
     ],
     "tags": [
       "auth",
@@ -245,7 +253,7 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "form"
     ],
     "version": "1.0.0",
-    "rawCode": "import { Button, Card, Container, Flex, Heading, Link, Section, Text, TextField } from \"@shavin/ui\";\n\nexport function AuthVerify() {\n  return (\n    <Section size=\"hero\" bgOverlays=\"mesh-accent\" className=\"flex items-center justify-center\">\n      <Container size=\"xs\">\n        <Flex direction=\"column\" align=\"center\" gap=\"6\">\n          <Heading as=\"p\" size=\"sm\" tracking=\"tight\">WiseOwl</Heading>\n          <Card padding=\"lg\" className=\"w-full max-w-[420px]\">\n            <Flex direction=\"column\" gap=\"5\">\n              <Flex direction=\"column\" gap=\"2\">\n                <Heading as=\"h1\" size=\"lg\">Enter your verification code</Heading>\n                <Text size=\"sm\" color=\"muted\" className=\"text-pretty\">We sent a 6-digit code to maya.okafor@example.com. It expires in 10 minutes.</Text>\n              </Flex>\n              <form className=\"flex flex-col gap-5\">\n                <TextField type=\"otp\" length={6} label=\"Verification code\" autoComplete=\"one-time-code\" className=\"flex w-full [&>div]:w-full\" slotClassName=\"w-auto min-w-0 flex-1\" />\n                <Button type=\"submit\" size=\"lg\" className=\"w-full\">Verify email</Button>\n              </form>\n              <Flex direction=\"column\" align=\"center\" gap=\"2\">\n                <Text size=\"sm\" color=\"muted\" className=\"tabular-nums\">No code yet? <Link href=\"/verify/resend\" color=\"accent\">Resend code</Link> in 0:42</Text>\n                <Text size=\"xs\" color=\"muted\">Wrong address? <Link href=\"/signup\">Change email</Link></Text>\n              </Flex>\n            </Flex>\n          </Card>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
+    "rawCode": "import { Button, Card, Container, Flex, Heading, Link, Section, Text, TextField, WiseOwlLogo } from \"@shavin/ui\";\n\nexport function AuthVerify() {\n  return (\n    <Section size=\"hero\" bgOverlays=\"mesh-brand\" className=\"flex items-center justify-center\">\n      <Container size=\"xs\">\n        <Flex direction=\"column\" align=\"center\" gap=\"6\">\n          <WiseOwlLogo size=\"sm\" />\n          <Card padding=\"lg\" className=\"w-full max-w-[420px]\">\n            <Flex direction=\"column\" gap=\"5\">\n              <Flex direction=\"column\" gap=\"2\">\n                <Heading as=\"h1\" size=\"lg\">Enter your verification code</Heading>\n                <Text size=\"sm\" color=\"muted\" className=\"text-pretty\">We sent a 6-digit code to maya.okafor@example.com. It expires in 10 minutes.</Text>\n              </Flex>\n              <form className=\"flex flex-col gap-5\">\n                <TextField type=\"otp\" length={6} label=\"Verification code\" autoComplete=\"one-time-code\" className=\"flex w-full [&>div]:w-full\" slotClassName=\"w-auto min-w-0 flex-1\" />\n                <Button type=\"submit\" size=\"lg\" className=\"w-full\">Verify email</Button>\n              </form>\n              <Flex direction=\"column\" align=\"center\" gap=\"2\">\n                <Text size=\"sm\" color=\"muted\" className=\"tabular-nums\">No code yet? <Link href=\"/verify/resend\" color=\"brand\">Resend code</Link> in 0:42</Text>\n                <Text size=\"xs\" color=\"muted\">Wrong address? <Link href=\"/signup\">Change email</Link></Text>\n              </Flex>\n            </Flex>\n          </Card>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
     "sourcePath": "packages/block-schema/blocks/auth/auth-verify.tsx"
   },
   {
@@ -301,7 +309,7 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "form"
     ],
     "version": "1.0.0",
-    "rawCode": "import { Button, Card, Flex, Heading, Link, Text, TextField } from \"@shavin/ui\";\n\nexport function SignInCard() {\n  return (\n    <Card padding=\"lg\" className=\"w-full max-w-[400px]\">\n      <Flex direction=\"column\" gap=\"5\">\n        <Flex direction=\"column\" gap=\"1\">\n          <Heading as=\"h2\" size=\"md\">Sign in</Heading>\n          <Text size=\"sm\" color=\"muted\">Use your WiseOwl email and password.</Text>\n        </Flex>\n        <form className=\"flex flex-col gap-5\">\n        <Flex direction=\"column\" gap=\"4\">\n          <TextField label=\"Email\" type=\"email\" placeholder=\"you@example.com\" autoComplete=\"email\" />\n          <TextField label=\"Password\" type=\"password\" placeholder=\"Enter your password\" autoComplete=\"current-password\" />\n        </Flex>\n        <Button type=\"submit\" className=\"w-full\">Sign in</Button>\n        </form>\n        <Link href=\"/forgot\" size=\"sm\" color=\"accent\" className=\"mx-auto\">Forgot password?</Link>\n      </Flex>\n    </Card>\n  );\n}\n",
+    "rawCode": "import { Button, Card, Flex, Heading, Link, Text, TextField } from \"@shavin/ui\";\n\nexport function SignInCard() {\n  return (\n    <Card padding=\"lg\" className=\"w-full max-w-[400px]\">\n      <Flex direction=\"column\" gap=\"5\">\n        <Flex direction=\"column\" gap=\"1\">\n          <Heading as=\"h2\" size=\"md\">Sign in</Heading>\n          <Text size=\"sm\" color=\"muted\">Use your WiseOwl email and password.</Text>\n        </Flex>\n        <form className=\"flex flex-col gap-5\">\n        <Flex direction=\"column\" gap=\"4\">\n          <TextField label=\"Email\" type=\"email\" placeholder=\"you@example.com\" autoComplete=\"email\" />\n          <TextField label=\"Password\" type=\"password\" placeholder=\"Enter your password\" autoComplete=\"current-password\" />\n        </Flex>\n        <Button type=\"submit\" className=\"w-full\">Sign in</Button>\n        </form>\n        <Link href=\"/forgot\" size=\"sm\" color=\"brand\" className=\"mx-auto\">Forgot password?</Link>\n      </Flex>\n    </Card>\n  );\n}\n",
     "sourcePath": "packages/block-schema/blocks/auth/sign-in-card.tsx"
   },
   {
@@ -333,7 +341,7 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "shop"
     ],
     "version": "1.0.0",
-    "rawCode": "import { Badge, Button, Card, Container, Flex, Grid, Heading, Icon, Image, Rating, Section, Text } from \"@shavin/ui\";\n\nconst defaultProducts = [\n  { name: \"Envelope Budget Kit\", note: \"12 monthly cards and 40 reusable envelopes\", price: \"$24.00\", rating: 4.9, reviews: 612, badge: \"Reordered 3,100 times\", image: \"https://assets.lummi.ai/assets/QmekBZwPh4KM1bLSWAVTRdXotDy2SMyHey3kHHihvoUMKS?auto=format&w=1200\", alt: \"A young pilea plant in a white pot by a window\" },\n  { name: \"Sinking Fund Jar Set\", note: \"Four glass jars with chalk labels\", price: \"$32.00\", rating: 4.8, reviews: 438, badge: \"\", image: \"https://assets.lummi.ai/assets/QmSETVchufAEGoYU15T4nFMVr5EKkqp5ZaM5UJmNe8omSw?auto=format&w=1200\", alt: \"Scattered coins on a peach background\" },\n  { name: \"Household Money Planner\", note: \"Undated, lay-flat, 52 weekly spreads\", price: \"$38.00\", rating: 4.8, reviews: 527, badge: \"New edition\", image: \"https://assets.lummi.ai/assets/QmVQ6Y2zm36g3VK9LHzgCKqJEbTbL8GYXtmjuHB3nkgzeX?auto=format&w=1200\", alt: \"A bright living room with a cream sofa in afternoon sun\" },\n  { name: \"Receipt Catcher Pouch\", note: \"Waxed canvas with a dated tab index\", price: \"$18.00\", rating: 4.7, reviews: 291, badge: \"\", image: \"https://assets.lummi.ai/assets/QmNqSc99v97Dd7Ba2F1aH4snKgMG1SuM6Mb32S7tox2N7p?auto=format&w=1200\", alt: \"A hand holding a printed receipt\" },\n];\n\nexport function CommerceBestsellers({ products = defaultProducts }) {\n  return (\n    <Section size=\"body\">\n      <Container size=\"xl\">\n        <Flex direction=\"column\" gap=\"7\">\n          <Flex direction=\"row\" align=\"end\" justify=\"between\" gap=\"5\" wrap=\"wrap\">\n            <Flex direction=\"column\" gap=\"4\">\n              <Text size=\"overline\" color=\"muted\">Bestsellers</Text>\n              <Heading as=\"h2\" size=\"3xl\" tracking=\"tight\" className=\"max-w-[24ch] text-balance\">The tools households reorder</Heading>\n              <Text size=\"lg\" color=\"muted\" className=\"max-w-[52ch] text-pretty\">The four planners and jars members buy again, rated by the households who use them every week.</Text>\n            </Flex>\n            <Button variant=\"outline\" iconRight={<Icon name=\"arrow-right\" size=\"sm\" />} asChild><a href=\"/products\">See everything</a></Button>\n          </Flex>\n          <Grid columns=\"auto\" minWidth=\"sm\" maxColumns=\"4\" gap=\"5\">\n            {products.map((product, i) => (\n              <Flex key={product.name} direction=\"column\" className={i % 2 === 1 ? \"lg:mt-10\" : undefined}>\n                <Card padding=\"sm\" interactive>\n                  <Flex direction=\"column\" gap=\"4\">\n                    <Image src={product.image} alt={product.alt} ratio=\"1/1\" radius=\"concentric\" />\n                    <Flex direction=\"column\" gap=\"2\" className=\"px-1 pb-1\">\n                      <Flex direction=\"row\" align=\"start\" justify=\"between\" gap=\"3\">\n                        <Heading as=\"h3\" size=\"md\">{product.name}</Heading>\n                        <Text weight=\"semibold\" className=\"tabular-nums\">{product.price}</Text>\n                      </Flex>\n                      <Text size=\"sm\" color=\"muted\" className=\"text-pretty\">{product.note}</Text>\n                      <Rating readOnly size=\"sm\" value={product.rating} count={product.reviews} />\n                      {product.badge && <Badge size=\"sm\" color=\"accent\" className=\"self-start\">{product.badge}</Badge>}\n                    </Flex>\n                  </Flex>\n                </Card>\n              </Flex>\n            ))}\n          </Grid>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
+    "rawCode": "import { Badge, Button, Card, Container, Flex, Grid, Heading, Icon, Image, Rating, Section, Text } from \"@shavin/ui\";\n\nconst defaultProducts = [\n  { name: \"Envelope Budget Kit\", note: \"12 monthly cards and 40 reusable envelopes\", price: \"$24.00\", rating: 4.9, reviews: 612, badge: \"Reordered 3,100 times\", image: \"https://assets.lummi.ai/assets/QmekBZwPh4KM1bLSWAVTRdXotDy2SMyHey3kHHihvoUMKS?auto=format&w=1200\", alt: \"A young pilea plant in a white pot by a window\" },\n  { name: \"Sinking Fund Jar Set\", note: \"Four glass jars with chalk labels\", price: \"$32.00\", rating: 4.8, reviews: 438, badge: \"\", image: \"https://assets.lummi.ai/assets/QmSETVchufAEGoYU15T4nFMVr5EKkqp5ZaM5UJmNe8omSw?auto=format&w=1200\", alt: \"Scattered coins on a peach background\" },\n  { name: \"Household Money Planner\", note: \"Undated, lay-flat, 52 weekly spreads\", price: \"$38.00\", rating: 4.8, reviews: 527, badge: \"New edition\", image: \"https://assets.lummi.ai/assets/QmVQ6Y2zm36g3VK9LHzgCKqJEbTbL8GYXtmjuHB3nkgzeX?auto=format&w=1200\", alt: \"A bright living room with a cream sofa in afternoon sun\" },\n  { name: \"Receipt Catcher Pouch\", note: \"Waxed canvas with a dated tab index\", price: \"$18.00\", rating: 4.7, reviews: 291, badge: \"\", image: \"https://assets.lummi.ai/assets/QmNqSc99v97Dd7Ba2F1aH4snKgMG1SuM6Mb32S7tox2N7p?auto=format&w=1200\", alt: \"A hand holding a printed receipt\" },\n];\n\nexport function CommerceBestsellers({ products = defaultProducts }) {\n  return (\n    <Section size=\"body\">\n      <Container size=\"xl\">\n        <Flex direction=\"column\" gap=\"7\">\n          <Flex direction=\"row\" align=\"end\" justify=\"between\" gap=\"5\" wrap=\"wrap\">\n            <Flex direction=\"column\" gap=\"4\">\n              <Text size=\"overline\" color=\"muted\">Bestsellers</Text>\n              <Heading as=\"h2\" size=\"3xl\" tracking=\"tight\" className=\"max-w-[24ch] text-balance\">The tools households reorder</Heading>\n              <Text size=\"lg\" color=\"muted\" className=\"max-w-[52ch] text-pretty\">The four planners and jars members buy again, rated by the households who use them every week.</Text>\n            </Flex>\n            <Button variant=\"outline\" iconRight={<Icon name=\"arrow-right\" size=\"sm\" />} asChild><a href=\"/products\">See everything</a></Button>\n          </Flex>\n          <Grid columns=\"auto\" minWidth=\"sm\" maxColumns=\"4\" gap=\"5\">\n            {products.map((product, i) => (\n              <Flex key={product.name} direction=\"column\" className={i % 2 === 1 ? \"lg:mt-10\" : undefined}>\n                <Card padding=\"sm\" interactive>\n                  <Flex direction=\"column\" gap=\"4\">\n                    <Image src={product.image} alt={product.alt} ratio=\"1/1\" radius=\"concentric\" />\n                    <Flex direction=\"column\" gap=\"2\" className=\"px-1 pb-1\">\n                      <Flex direction=\"row\" align=\"start\" justify=\"between\" gap=\"3\">\n                        <Heading as=\"h3\" size=\"md\">{product.name}</Heading>\n                        <Text weight=\"semibold\" className=\"tabular-nums\">{product.price}</Text>\n                      </Flex>\n                      <Text size=\"sm\" color=\"muted\" className=\"text-pretty\">{product.note}</Text>\n                      <Rating readOnly size=\"sm\" value={product.rating} count={product.reviews} />\n                      {product.badge && <Badge size=\"sm\" color=\"brand\" className=\"self-start\">{product.badge}</Badge>}\n                    </Flex>\n                  </Flex>\n                </Card>\n              </Flex>\n            ))}\n          </Grid>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
     "sourcePath": "packages/block-schema/blocks/commerce/commerce-bestsellers.tsx"
   },
   {
@@ -367,7 +375,7 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "detail"
     ],
     "version": "1.0.0",
-    "rawCode": "import { Accordion, AccordionContent, AccordionItem, AccordionTrigger, Badge, Button, Container, Flex, Grid, Heading, Icon, Image, Section, Separator, Text } from \"@shavin/ui\";\n\nconst defaultColours = [\"Oat\", \"Sage\", \"Ink\"];\n\nconst defaultHighlights = [\n  { icon: \"truck\", label: \"Free shipping over $60, arrives in 3 to 5 days\" },\n  { icon: \"rotate-ccw\", label: \"30-day returns on unused planners\" },\n  { icon: \"leaf\", label: \"Recycled paper, printed in Portland\" },\n];\n\nconst defaultDetails = [\n  { title: \"What is inside\", body: \"52 undated weekly spreads, 12 monthly budget pages, a bills calendar, a goals tracker and a pocket for receipts.\" },\n  { title: \"Size and materials\", body: \"A5, 21 by 15 cm. 100 gsm cream paper that takes pen without bleeding, soft linen cover, lay-flat binding.\" },\n  { title: \"Shipping and returns\", body: \"Orders ship within two business days. Return unused items within 30 days for a full refund to the original payment method.\" },\n];\n\nexport function CommerceProductDetail({ colours = defaultColours, highlights = defaultHighlights, details = defaultDetails }) {\n  return (\n    <Section size=\"body\">\n      <Container size=\"lg\">\n        <Grid columns=\"2\" gap=\"7\" stack=\"auto\" align=\"start\">\n          <Image\n            src=\"https://assets.lummi.ai/assets/QmVQ6Y2zm36g3VK9LHzgCKqJEbTbL8GYXtmjuHB3nkgzeX?auto=format&w=1600\"\n            alt=\"A bright living room with a cream sofa in afternoon sun\"\n            ratio=\"4/5\"\n          />\n          <Flex direction=\"column\" gap=\"7\">\n            <Flex direction=\"column\" gap=\"4\">\n              <Flex direction=\"row\" align=\"center\" gap=\"3\">\n                <Text size=\"overline\" color=\"muted\">Planners</Text>\n                <Badge size=\"sm\" color=\"accent\">New</Badge>\n              </Flex>\n              <Heading as=\"h1\" size=\"3xl\">Household Money Planner</Heading>\n              <Flex direction=\"row\" align=\"center\" gap=\"2\">\n                <Icon name=\"star\" size=\"sm\" color=\"contrast\" />\n                <Text size=\"sm\" className=\"tabular-nums\">4.9 from 312 reviews</Text>\n              </Flex>\n              <Heading as=\"p\" size=\"2xl\" className=\"tabular-nums\">$38.00</Heading>\n              <Text size=\"lg\" color=\"muted\" className=\"max-w-[52ch] text-pretty\">An undated, lay-flat planner for the weekly money check-in you and your household already do, with room to write it down.</Text>\n            </Flex>\n            <Flex direction=\"column\" gap=\"3\">\n              <Text size=\"sm\" weight=\"medium\">Cover colour</Text>\n              <Flex direction=\"row\" gap=\"2\" wrap=\"wrap\">\n                {colours.map((colour, index) => (\n                  <Button key={colour} variant={index === 0 ? \"solid\" : \"outline\"} size=\"md\">{colour}</Button>\n                ))}\n              </Flex>\n            </Flex>\n            <Flex direction=\"column\" gap=\"2\">\n              <Button size=\"lg\" className=\"w-full\">Add to cart</Button>\n              <Button size=\"lg\" variant=\"ghost\" className=\"w-full\">Save for later</Button>\n            </Flex>\n            <Separator />\n            <Flex direction=\"column\" gap=\"3\">\n              {highlights.map((item) => (\n                <Flex key={item.label} direction=\"row\" align=\"center\" gap=\"3\">\n                  <Icon name={item.icon} size=\"sm\" color=\"muted\" className=\"shrink-0\" />\n                  <Text size=\"sm\" className=\"tabular-nums\">{item.label}</Text>\n                </Flex>\n              ))}\n            </Flex>\n            <Accordion type=\"single\" collapsible defaultValue=\"detail-0\">\n              {details.map((detail, index) => (\n                <AccordionItem key={detail.title} value={`detail-${index}`}>\n                  <AccordionTrigger className=\"gap-4 py-4 text-left text-base\">{detail.title}</AccordionTrigger>\n                  <AccordionContent className=\"max-w-[60ch] text-pretty\">{detail.body}</AccordionContent>\n                </AccordionItem>\n              ))}\n            </Accordion>\n          </Flex>\n        </Grid>\n      </Container>\n    </Section>\n  );\n}\n",
+    "rawCode": "import { Accordion, AccordionContent, AccordionItem, AccordionTrigger, Badge, Button, Container, Flex, Grid, Heading, Icon, Image, Section, Separator, Text } from \"@shavin/ui\";\n\nconst defaultColours = [\"Oat\", \"Sage\", \"Ink\"];\n\nconst defaultHighlights = [\n  { icon: \"truck\", label: \"Free shipping over $60, arrives in 3 to 5 days\" },\n  { icon: \"rotate-ccw\", label: \"30-day returns on unused planners\" },\n  { icon: \"leaf\", label: \"Recycled paper, printed in Portland\" },\n];\n\nconst defaultDetails = [\n  { title: \"What is inside\", body: \"52 undated weekly spreads, 12 monthly budget pages, a bills calendar, a goals tracker and a pocket for receipts.\" },\n  { title: \"Size and materials\", body: \"A5, 21 by 15 cm. 100 gsm cream paper that takes pen without bleeding, soft linen cover, lay-flat binding.\" },\n  { title: \"Shipping and returns\", body: \"Orders ship within two business days. Return unused items within 30 days for a full refund to the original payment method.\" },\n];\n\nexport function CommerceProductDetail({ colours = defaultColours, highlights = defaultHighlights, details = defaultDetails }) {\n  return (\n    <Section size=\"body\">\n      <Container size=\"lg\">\n        <Grid columns=\"2\" gap=\"7\" stack=\"auto\" align=\"start\">\n          <Image\n            src=\"https://assets.lummi.ai/assets/QmVQ6Y2zm36g3VK9LHzgCKqJEbTbL8GYXtmjuHB3nkgzeX?auto=format&w=1600\"\n            alt=\"A bright living room with a cream sofa in afternoon sun\"\n            ratio=\"4/5\"\n          />\n          <Flex direction=\"column\" gap=\"7\">\n            <Flex direction=\"column\" gap=\"4\">\n              <Flex direction=\"row\" align=\"center\" gap=\"3\">\n                <Text size=\"overline\" color=\"muted\">Planners</Text>\n                <Badge size=\"sm\" color=\"brand\">New</Badge>\n              </Flex>\n              <Heading as=\"h1\" size=\"3xl\">Household Money Planner</Heading>\n              <Flex direction=\"row\" align=\"center\" gap=\"2\">\n                <Icon name=\"star\" size=\"sm\" color=\"contrast\" />\n                <Text size=\"sm\" className=\"tabular-nums\">4.9 from 312 reviews</Text>\n              </Flex>\n              <Heading as=\"p\" size=\"2xl\" className=\"tabular-nums\">$38.00</Heading>\n              <Text size=\"lg\" color=\"muted\" className=\"max-w-[52ch] text-pretty\">An undated, lay-flat planner for the weekly money check-in you and your household already do, with room to write it down.</Text>\n            </Flex>\n            <Flex direction=\"column\" gap=\"3\">\n              <Text size=\"sm\" weight=\"medium\">Cover colour</Text>\n              <Flex direction=\"row\" gap=\"2\" wrap=\"wrap\">\n                {colours.map((colour, index) => (\n                  <Button key={colour} variant={index === 0 ? \"solid\" : \"outline\"} size=\"md\">{colour}</Button>\n                ))}\n              </Flex>\n            </Flex>\n            <Flex direction=\"column\" gap=\"2\">\n              <Button size=\"lg\" className=\"w-full\">Add to cart</Button>\n              <Button size=\"lg\" variant=\"ghost\" className=\"w-full\">Save for later</Button>\n            </Flex>\n            <Separator />\n            <Flex direction=\"column\" gap=\"3\">\n              {highlights.map((item) => (\n                <Flex key={item.label} direction=\"row\" align=\"center\" gap=\"3\">\n                  <Icon name={item.icon} size=\"sm\" color=\"muted\" className=\"shrink-0\" />\n                  <Text size=\"sm\" className=\"tabular-nums\">{item.label}</Text>\n                </Flex>\n              ))}\n            </Flex>\n            <Accordion type=\"single\" collapsible defaultValue=\"detail-0\">\n              {details.map((detail, index) => (\n                <AccordionItem key={detail.title} value={`detail-${index}`}>\n                  <AccordionTrigger className=\"gap-4 py-4 text-left text-base\">{detail.title}</AccordionTrigger>\n                  <AccordionContent className=\"max-w-[60ch] text-pretty\">{detail.body}</AccordionContent>\n                </AccordionItem>\n              ))}\n            </Accordion>\n          </Flex>\n        </Grid>\n      </Container>\n    </Section>\n  );\n}\n",
     "sourcePath": "packages/block-schema/blocks/commerce/commerce-product-detail.tsx"
   },
   {
@@ -397,7 +405,7 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "grid"
     ],
     "version": "1.0.0",
-    "rawCode": "import { Badge, Button, Card, Container, Flex, Grid, Heading, Icon, Image, Section, Text } from \"@shavin/ui\";\n\nconst defaultProducts = [\n  { name: \"Envelope Budget Kit\", category: \"Planners\", price: \"$24.00\", note: \"12 monthly cards and 40 reusable envelopes\", badge: \"Best seller\", image: \"https://assets.lummi.ai/assets/QmekBZwPh4KM1bLSWAVTRdXotDy2SMyHey3kHHihvoUMKS?auto=format&w=1200\", alt: \"A young pilea plant in a white pot by a window\" },\n  { name: \"Sinking Fund Jar Set\", category: \"Saving\", price: \"$32.00\", note: \"Four glass jars with chalk labels\", badge: \"\", image: \"https://assets.lummi.ai/assets/QmSETVchufAEGoYU15T4nFMVr5EKkqp5ZaM5UJmNe8omSw?auto=format&w=1200\", alt: \"Scattered coins on a peach background\" },\n  { name: \"Household Money Planner\", category: \"Planners\", price: \"$38.00\", note: \"Undated, lay-flat, 52 weekly spreads\", badge: \"New\", image: \"https://assets.lummi.ai/assets/QmVQ6Y2zm36g3VK9LHzgCKqJEbTbL8GYXtmjuHB3nkgzeX?auto=format&w=1200\", alt: \"A bright living room with a cream sofa in afternoon sun\" },\n  { name: \"Receipt Catcher Pouch\", category: \"Organising\", price: \"$18.00\", note: \"Waxed canvas with a dated tab index\", badge: \"\", image: \"https://assets.lummi.ai/assets/QmNqSc99v97Dd7Ba2F1aH4snKgMG1SuM6Mb32S7tox2N7p?auto=format&w=1200\", alt: \"A hand holding a printed receipt\" },\n  { name: \"Quiet Hours Desk Plant\", category: \"Home office\", price: \"$29.00\", note: \"Hand-glazed pot, ready to plant\", badge: \"\", image: \"https://assets.lummi.ai/assets/QmfSCe21jQS5RRs8FtCXUt2MKCaKBGgDs2ziDzCs751LEx?auto=format&w=1200\", alt: \"A small potted tree against a two-tone peach wall\" },\n  { name: \"WiseOwl Tote\", category: \"Apparel\", price: \"$22.00\", note: \"Heavy cotton, lime owl mark\", badge: \"\", image: \"https://assets.lummi.ai/assets/QmWfAxfaHHUvxEgKJfYFFSnZH6HAiMKdem6ytSq1dx6CYk?auto=format&w=1200\", alt: \"A calm pastel living space with mint walls and a yellow armchair\" },\n];\n\nexport function CommerceProductGrid({ products = defaultProducts }) {\n  return (\n    <Section size=\"body\">\n      <Container size=\"lg\">\n        <Flex direction=\"column\" gap=\"7\">\n          <Flex direction=\"row\" align=\"end\" justify=\"between\" gap=\"5\" wrap=\"wrap\">\n            <Flex direction=\"column\" gap=\"4\">\n              <Text size=\"overline\" color=\"muted\">The WiseOwl shop</Text>\n              <Heading as=\"h2\" size=\"3xl\">Tools for calmer money days</Heading>\n              <Text size=\"lg\" color=\"muted\" className=\"max-w-[52ch] text-pretty\">Paper planners, jars and pouches designed with the households who use WiseOwl. Free shipping over $60.</Text>\n            </Flex>\n            <Button variant=\"outline\" iconRight={<Icon name=\"arrow-right\" size=\"sm\" />} asChild><a href=\"/products\">View all 24 products</a></Button>\n          </Flex>\n          <Grid columns=\"auto\" minWidth=\"md\" maxColumns=\"3\" gap=\"5\">\n            {products.map((product) => (\n              <Card key={product.name} padding=\"md\" interactive>\n                <Flex direction=\"column\" gap=\"4\">\n                  <Image src={product.image} alt={product.alt} ratio=\"4/5\" radius=\"concentric\" />\n                  <Flex direction=\"column\" gap=\"2\">\n                    <Flex direction=\"row\" align=\"center\" justify=\"between\" gap=\"3\">\n                      <Text size=\"overline\" color=\"muted\">{product.category}</Text>\n                      {product.badge && <Badge size=\"sm\" color=\"accent\">{product.badge}</Badge>}\n                    </Flex>\n                    <Heading as=\"h3\" size=\"md\">{product.name}</Heading>\n                    <Text size=\"sm\" color=\"muted\" className=\"text-pretty\">{product.note}</Text>\n                  </Flex>\n                  <Flex direction=\"row\" align=\"center\" justify=\"between\" gap=\"3\">\n                    <Text size=\"lg\" weight=\"semibold\" className=\"tabular-nums\">{product.price}</Text>\n                    <Button size=\"sm\" variant=\"outline\">Add to cart</Button>\n                  </Flex>\n                </Flex>\n              </Card>\n            ))}\n          </Grid>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
+    "rawCode": "import { Badge, Button, Card, Container, Flex, Grid, Heading, Icon, Image, Section, Text } from \"@shavin/ui\";\n\nconst defaultProducts = [\n  { name: \"Envelope Budget Kit\", category: \"Planners\", price: \"$24.00\", note: \"12 monthly cards and 40 reusable envelopes\", badge: \"Best seller\", image: \"https://assets.lummi.ai/assets/QmekBZwPh4KM1bLSWAVTRdXotDy2SMyHey3kHHihvoUMKS?auto=format&w=1200\", alt: \"A young pilea plant in a white pot by a window\" },\n  { name: \"Sinking Fund Jar Set\", category: \"Saving\", price: \"$32.00\", note: \"Four glass jars with chalk labels\", badge: \"\", image: \"https://assets.lummi.ai/assets/QmSETVchufAEGoYU15T4nFMVr5EKkqp5ZaM5UJmNe8omSw?auto=format&w=1200\", alt: \"Scattered coins on a peach background\" },\n  { name: \"Household Money Planner\", category: \"Planners\", price: \"$38.00\", note: \"Undated, lay-flat, 52 weekly spreads\", badge: \"New\", image: \"https://assets.lummi.ai/assets/QmVQ6Y2zm36g3VK9LHzgCKqJEbTbL8GYXtmjuHB3nkgzeX?auto=format&w=1200\", alt: \"A bright living room with a cream sofa in afternoon sun\" },\n  { name: \"Receipt Catcher Pouch\", category: \"Organising\", price: \"$18.00\", note: \"Waxed canvas with a dated tab index\", badge: \"\", image: \"https://assets.lummi.ai/assets/QmNqSc99v97Dd7Ba2F1aH4snKgMG1SuM6Mb32S7tox2N7p?auto=format&w=1200\", alt: \"A hand holding a printed receipt\" },\n  { name: \"Quiet Hours Desk Plant\", category: \"Home office\", price: \"$29.00\", note: \"Hand-glazed pot, ready to plant\", badge: \"\", image: \"https://assets.lummi.ai/assets/QmfSCe21jQS5RRs8FtCXUt2MKCaKBGgDs2ziDzCs751LEx?auto=format&w=1200\", alt: \"A small potted tree against a two-tone peach wall\" },\n  { name: \"WiseOwl Tote\", category: \"Apparel\", price: \"$22.00\", note: \"Heavy cotton, lime owl mark\", badge: \"\", image: \"https://assets.lummi.ai/assets/QmWfAxfaHHUvxEgKJfYFFSnZH6HAiMKdem6ytSq1dx6CYk?auto=format&w=1200\", alt: \"A calm pastel living space with mint walls and a yellow armchair\" },\n];\n\nexport function CommerceProductGrid({ products = defaultProducts }) {\n  return (\n    <Section size=\"body\">\n      <Container size=\"lg\">\n        <Flex direction=\"column\" gap=\"7\">\n          <Flex direction=\"row\" align=\"end\" justify=\"between\" gap=\"5\" wrap=\"wrap\">\n            <Flex direction=\"column\" gap=\"4\">\n              <Text size=\"overline\" color=\"muted\">The WiseOwl shop</Text>\n              <Heading as=\"h2\" size=\"3xl\">Tools for calmer money days</Heading>\n              <Text size=\"lg\" color=\"muted\" className=\"max-w-[52ch] text-pretty\">Paper planners, jars and pouches designed with the households who use WiseOwl. Free shipping over $60.</Text>\n            </Flex>\n            <Button variant=\"outline\" iconRight={<Icon name=\"arrow-right\" size=\"sm\" />} asChild><a href=\"/products\">View all 24 products</a></Button>\n          </Flex>\n          <Grid columns=\"auto\" minWidth=\"md\" maxColumns=\"3\" gap=\"5\">\n            {products.map((product) => (\n              <Card key={product.name} padding=\"md\" interactive>\n                <Flex direction=\"column\" gap=\"4\">\n                  <Image src={product.image} alt={product.alt} ratio=\"4/5\" radius=\"concentric\" />\n                  <Flex direction=\"column\" gap=\"2\">\n                    <Flex direction=\"row\" align=\"center\" justify=\"between\" gap=\"3\">\n                      <Text size=\"overline\" color=\"muted\">{product.category}</Text>\n                      {product.badge && <Badge size=\"sm\" color=\"brand\">{product.badge}</Badge>}\n                    </Flex>\n                    <Heading as=\"h3\" size=\"md\">{product.name}</Heading>\n                    <Text size=\"sm\" color=\"muted\" className=\"text-pretty\">{product.note}</Text>\n                  </Flex>\n                  <Flex direction=\"row\" align=\"center\" justify=\"between\" gap=\"3\">\n                    <Text size=\"lg\" weight=\"semibold\" className=\"tabular-nums\">{product.price}</Text>\n                    <Button size=\"sm\" variant=\"outline\">Add to cart</Button>\n                  </Flex>\n                </Flex>\n              </Card>\n            ))}\n          </Grid>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
     "sourcePath": "packages/block-schema/blocks/commerce/commerce-product-grid.tsx"
   },
   {
@@ -514,13 +522,13 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "media"
     ],
     "version": "1.0.0",
-    "rawCode": "import { Button, Container, Flex, Heading, Section, Text } from \"@shavin/ui\";\n\nexport function CtaConversionBanner() {\n  return (\n    <Section\n      size=\"body\"\n      surface=\"dark-always\"\n      bgImage=\"https://assets.lummi.ai/assets/QmQrVUM5reCYVXq4MvwjghJ9Uhx9Uh4oKm6Y9xBzGE9x1S?auto=format&w=2000\"\n      bgOverlays=\"dark-50, scrim-left\"\n    >\n      <Container size=\"lg\">\n        <Flex direction=\"row\" align=\"end\" justify=\"between\" gap=\"7\" wrap=\"wrap\">\n          <Flex direction=\"column\" gap=\"3\" className=\"max-w-xl\">\n            <Text size=\"overline\" color=\"muted\">Plus trial</Text>\n            <Heading as=\"h2\" size=\"2xl\">Try Plus free for 14 days</Heading>\n            <Text size=\"lg\" color=\"muted\" className=\"max-w-[46ch] text-pretty\">\n              Unlimited budgets, receipt scanning and the WiseOwl assistant. We remind you three days before the trial ends.\n            </Text>\n          </Flex>\n          <Flex direction=\"row\" wrap=\"wrap\" gap=\"3\" className=\"shrink-0\">\n            <Button size=\"lg\" asChild><a href=\"/signup\">Start free trial</a></Button>\n            <Button size=\"lg\" variant=\"outline\" asChild><a href=\"/pricing\">Compare plans</a></Button>\n          </Flex>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
+    "rawCode": "import { Button, Container, Flex, Heading, Section, Text } from \"@shavin/ui\";\n\nexport function CtaConversionBanner() {\n  return (\n    <Section\n      size=\"body\"\n      surface=\"dark-always\"\n      bgImage=\"https://assets.lummi.ai/assets/QmQrVUM5reCYVXq4MvwjghJ9Uhx9Uh4oKm6Y9xBzGE9x1S?auto=format&w=2000\"\n      bgOverlays=\"dark-50, scrim-left\"\n    >\n      <Container size=\"lg\">\n        <Flex direction=\"row\" align=\"end\" justify=\"between\" gap=\"7\" wrap=\"wrap\">\n          <Flex direction=\"column\" gap=\"3\" className=\"max-w-xl\">\n            <Text size=\"overline\" color=\"muted\">Plus trial</Text>\n            <Heading as=\"h2\" size=\"2xl\">Try Plus free for 14 days</Heading>\n            <Text size=\"lg\" color=\"muted\" className=\"max-w-[46ch] text-pretty\">\n              Unlimited budgets, receipt scanning and the WiseOwl assistant. We remind you three days before the trial ends.\n            </Text>\n          </Flex>\n          <Flex direction=\"row\" wrap=\"wrap\" gap=\"3\" className=\"max-w-full\">\n            <Button size=\"lg\" asChild><a href=\"/signup\">Start free trial</a></Button>\n            <Button size=\"lg\" variant=\"outline\" asChild><a href=\"/pricing\">Compare plans</a></Button>\n          </Flex>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
     "sourcePath": "packages/block-schema/blocks/cta/cta-conversion-banner.tsx"
   },
   {
     "name": "Mesh CTA Band",
     "slug": "cta-mesh-band",
-    "description": "Full-width closing call to action on a theme-following accent mesh.",
+    "description": "Full-width closing call to action on a theme-following brand mesh.",
     "category": "cta",
     "tier": "system",
     "origin": "both",
@@ -538,7 +546,7 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "closing"
     ],
     "version": "1.0.0",
-    "rawCode": "import { Button, Container, Flex, Heading, Section, Text } from \"@shavin/ui\";\n\nexport function CtaMeshBand() {\n  return (\n    <Section size=\"hero\" bgOverlays=\"mesh-accent\">\n      <Container size=\"md\">\n        <Flex direction=\"column\" align=\"center\" gap=\"6\" className=\"text-center\">\n          <Flex direction=\"column\" align=\"center\" gap=\"5\">\n            <Text size=\"overline\" color=\"muted\">Get started</Text>\n            <Heading as=\"h2\" size=\"4xl\">Start your calmer money month</Heading>\n            <Text size=\"lg\" color=\"muted\" className=\"max-w-[52ch] text-pretty tabular-nums\">\n              Join 38,412 households who check in with WiseOwl a few minutes a week and stopped worrying about the rest.\n            </Text>\n          </Flex>\n          <Flex direction=\"row\" justify=\"center\" wrap=\"wrap\" gap=\"3\">\n            <Button size=\"lg\" asChild><a href=\"/signup\">Start free</a></Button>\n            <Button size=\"lg\" variant=\"outline\" asChild><a href=\"/contact\">Talk to us</a></Button>\n          </Flex>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
+    "rawCode": "import { Button, Container, Flex, Heading, Section, Text } from \"@shavin/ui\";\n\nexport function CtaMeshBand() {\n  return (\n    <Section size=\"hero\" bgOverlays=\"mesh-brand\">\n      <Container size=\"md\">\n        <Flex direction=\"column\" align=\"center\" gap=\"6\" className=\"text-center\">\n          <Flex direction=\"column\" align=\"center\" gap=\"5\">\n            <Text size=\"overline\" color=\"muted\">Get started</Text>\n            <Heading as=\"h2\" size=\"4xl\">Start your calmer money month</Heading>\n            <Text size=\"lg\" color=\"muted\" className=\"max-w-[52ch] text-pretty tabular-nums\">\n              Join 38,412 households who check in with WiseOwl a few minutes a week and stopped worrying about the rest.\n            </Text>\n          </Flex>\n          <Flex direction=\"row\" justify=\"center\" wrap=\"wrap\" gap=\"3\">\n            <Button size=\"lg\" asChild><a href=\"/signup\">Start free</a></Button>\n            <Button size=\"lg\" variant=\"outline\" asChild><a href=\"/contact\">Talk to us</a></Button>\n          </Flex>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
     "replaces": "cta-glow-centered",
     "sourcePath": "packages/block-schema/blocks/cta/cta-mesh-band.tsx"
   },
@@ -574,7 +582,8 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "TableColumnHeaderCell",
       "TableHeader",
       "TableRow",
-      "Text"
+      "Text",
+      "WiseOwlMark"
     ],
     "tags": [
       "app-shell",
@@ -584,7 +593,7 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "table"
     ],
     "version": "1.0.0",
-    "rawCode": "import { AppFrame, Badge, Box, Button, Card, Flex, Grid, Heading, Icon, IconButton, Progress, Sidebar, SidebarBody, SidebarFooter, SidebarHeader, SidebarNavItem, SidebarSection, SidebarTrigger, Table, TableBody, TableCell, TableColumnHeaderCell, TableHeader, TableRow, Text } from \"@shavin/ui\";\n\nconst defaultNavGroups = [\n  {\n    title: \"Money\",\n    items: [\n      { label: \"Overview\", icon: \"layout-dashboard\", active: true },\n      { label: \"Accounts\", icon: \"landmark\", active: false },\n      { label: \"Transactions\", icon: \"receipt\", active: false },\n    ],\n  },\n  {\n    title: \"Planning\",\n    items: [\n      { label: \"Budgets\", icon: \"pie-chart\", active: false },\n      { label: \"Goals\", icon: \"target\", active: false },\n      { label: \"Bills\", icon: \"calendar-clock\", active: false },\n    ],\n  },\n];\n\nconst defaultKpis = [\n  { label: \"Net worth\", value: \"$184,276.52\", change: \"+2.4%\", tone: \"success\" },\n  { label: \"Spent in September\", value: \"$6,412.38\", change: \"−6.8%\", tone: \"success\" },\n  { label: \"Saved in September\", value: \"$3,427.62\", change: \"35% of income\", tone: \"muted\" },\n  { label: \"Bills due in 7 days\", value: \"$1,418.72\", change: \"3 bills\", tone: \"muted\" },\n];\n\nconst defaultTransactions = [\n  { date: \"Oct 3\", merchant: \"Shell #4410\", category: \"Transport\", account: \"Meridian Visa ••4417\", amount: \"−$52.18\", status: \"\", credit: false },\n  { date: \"Oct 2\", merchant: \"Trader Joe's #142\", category: \"Groceries\", account: \"Cascade Checking ••6021\", amount: \"−$86.47\", status: \"\", credit: false },\n  { date: \"Oct 1\", merchant: \"Transfer to Savings\", category: \"Transfer\", account: \"Cascade Checking ••6021\", amount: \"−$1,200.00\", status: \"Pending\", credit: false },\n  { date: \"Oct 1\", merchant: \"Riverside Apartments\", category: \"Rent\", account: \"Cascade Checking ••6021\", amount: \"−$2,150.00\", status: \"\", credit: false },\n  { date: \"Sep 30\", merchant: \"Pacific Power\", category: \"Utilities\", account: \"Cascade Checking ••6021\", amount: \"−$118.63\", status: \"\", credit: false },\n  { date: \"Sep 28\", merchant: \"Portland Public Schools\", category: \"Income\", account: \"Cascade Checking ••6021\", amount: \"+$4,920.00\", status: \"\", credit: true },\n];\n\nexport function AppShell({ navGroups = defaultNavGroups, kpis = defaultKpis, transactions = defaultTransactions }) {\n  return (\n    <AppFrame\n      className=\"h-[720px] w-full bg-canvas text-fg\"\n      sidebar={\n        <Sidebar width=\"w-60\">\n          <SidebarHeader>\n            <Flex direction=\"row\" align=\"center\" gap=\"2\" className=\"min-w-0\">\n              <Icon name=\"wallet\" size=\"md\" color=\"accent\" />\n              <Flex direction=\"column\" gap=\"0\" className=\"min-w-0\">\n                <Text size=\"sm\" weight=\"semibold\">WiseOwl</Text>\n                <Text size=\"xs\" color=\"muted\" className=\"truncate\">Okafor-Reyes Household</Text>\n              </Flex>\n            </Flex>\n          </SidebarHeader>\n          <SidebarBody>\n            {navGroups.map((group) => (\n              <SidebarSection key={group.title} title={group.title}>\n                {group.items.map((item) => (\n                  <SidebarNavItem key={item.label} label={item.label} active={item.active} icon={<Icon name={item.icon} size=\"sm\" color=\"inherit\" />} />\n                ))}\n              </SidebarSection>\n            ))}\n          </SidebarBody>\n          <SidebarFooter>\n            <Box className=\"w-full rounded-[var(--radius-lg)] border border-hairline p-3\">\n              <Flex direction=\"column\" gap=\"2\">\n                <Flex direction=\"row\" align=\"center\" justify=\"between\" gap=\"2\">\n                  <Text size=\"xs\" weight=\"medium\">Household plan</Text>\n                  <Text size=\"xs\" color=\"muted\" className=\"tabular-nums\">4 of 6 seats</Text>\n                </Flex>\n                <Progress value={67} size=\"sm\" label=\"Seats used\" />\n              </Flex>\n            </Box>\n          </SidebarFooter>\n        </Sidebar>\n      }\n    >\n      <Flex direction=\"column\" gap=\"4\" className=\"min-h-0 min-w-0 flex-1 overflow-y-auto p-4 md:p-6\">\n        <Flex direction=\"row\" align=\"center\" justify=\"between\" wrap=\"wrap\" gap=\"3\">\n          <Flex direction=\"row\" align=\"center\" gap=\"2\" className=\"min-w-0\">\n            <SidebarTrigger />\n            <Flex direction=\"column\" gap=\"1\" className=\"min-w-0\">\n              <Heading as=\"h1\" size=\"md\">Good morning, Maya</Heading>\n              <Text size=\"sm\" color=\"muted\">Sunday, October 4 · 3 bills due this week</Text>\n            </Flex>\n          </Flex>\n          <Flex direction=\"row\" align=\"center\" gap=\"2\">\n            <IconButton variant=\"ghost\" size=\"md\" aria-label=\"Search\">\n              <Icon name=\"search\" />\n            </IconButton>\n            <IconButton variant=\"ghost\" size=\"md\" aria-label=\"Notifications\">\n              <Icon name=\"bell\" />\n            </IconButton>\n            <Button variant=\"solid\" size=\"md\">Add transaction</Button>\n          </Flex>\n        </Flex>\n        <Grid columns=\"auto\" minWidth=\"sm\" maxColumns=\"4\" gap=\"3\">\n          {kpis.map((kpi) => (\n            <Card key={kpi.label} padding=\"sm\">\n              <Flex direction=\"column\" gap=\"2\">\n                <Text size=\"xs\" color=\"muted\">{kpi.label}</Text>\n                <Heading as=\"p\" size=\"md\" weight=\"medium\" className=\"tabular-nums\">{kpi.value}</Heading>\n                <Text size=\"xs\" weight=\"medium\" className={kpi.tone === \"success\" ? \"text-success tabular-nums\" : \"text-fg-muted tabular-nums\"}>{kpi.change}</Text>\n              </Flex>\n            </Card>\n          ))}\n        </Grid>\n        <Card padding=\"sm\">\n          <Flex direction=\"column\" gap=\"3\">\n            <Flex direction=\"row\" align=\"center\" justify=\"between\" gap=\"3\">\n              <Heading as=\"h2\" size=\"sm\">Recent transactions</Heading>\n              <Button variant=\"ghost\" size=\"sm\">View all transactions</Button>\n            </Flex>\n            <Table>\n              <TableHeader>\n                <TableRow>\n                  <TableColumnHeaderCell>Date</TableColumnHeaderCell>\n                  <TableColumnHeaderCell>Merchant</TableColumnHeaderCell>\n                  <TableColumnHeaderCell className=\"max-md:hidden\">Category</TableColumnHeaderCell>\n                  <TableColumnHeaderCell className=\"max-lg:hidden\">Account</TableColumnHeaderCell>\n                  <TableColumnHeaderCell className=\"text-right\">Amount</TableColumnHeaderCell>\n                </TableRow>\n              </TableHeader>\n              <TableBody>\n                {transactions.map((txn) => (\n                  <TableRow key={`${txn.date}-${txn.merchant}`}>\n                    <TableCell className=\"whitespace-nowrap text-fg-muted tabular-nums\">{txn.date}</TableCell>\n                    <TableCell>\n                      <Flex direction=\"row\" align=\"center\" gap=\"2\">\n                        <Text size=\"sm\" weight=\"medium\" className=\"truncate\">{txn.merchant}</Text>\n                        {txn.status && <Badge variant=\"soft\" size=\"sm\" radius=\"full\" tone=\"warning\">{txn.status}</Badge>}\n                      </Flex>\n                    </TableCell>\n                    <TableCell className=\"text-fg-muted max-md:hidden\">{txn.category}</TableCell>\n                    <TableCell className=\"whitespace-nowrap text-fg-muted max-lg:hidden\">{txn.account}</TableCell>\n                    <TableCell className={txn.credit ? \"whitespace-nowrap text-right font-medium text-success tabular-nums\" : \"whitespace-nowrap text-right font-medium tabular-nums\"}>{txn.amount}</TableCell>\n                  </TableRow>\n                ))}\n              </TableBody>\n            </Table>\n          </Flex>\n        </Card>\n      </Flex>\n    </AppFrame>\n  );\n}\n",
+    "rawCode": "import { AppFrame, Badge, Box, Button, Card, Flex, Grid, Heading, Icon, IconButton, Progress, Sidebar, SidebarBody, SidebarFooter, SidebarHeader, SidebarNavItem, SidebarSection, SidebarTrigger, Table, TableBody, TableCell, TableColumnHeaderCell, TableHeader, TableRow, Text, WiseOwlMark } from \"@shavin/ui\";\n\nconst defaultNavGroups = [\n  {\n    title: \"Money\",\n    items: [\n      { label: \"Overview\", icon: \"layout-dashboard\", active: true },\n      { label: \"Accounts\", icon: \"landmark\", active: false },\n      { label: \"Transactions\", icon: \"receipt\", active: false },\n    ],\n  },\n  {\n    title: \"Planning\",\n    items: [\n      { label: \"Budgets\", icon: \"pie-chart\", active: false },\n      { label: \"Goals\", icon: \"target\", active: false },\n      { label: \"Bills\", icon: \"calendar-clock\", active: false },\n    ],\n  },\n];\n\nconst defaultKpis = [\n  { label: \"Net worth\", value: \"$184,276.52\", change: \"+2.4%\", tone: \"success\" },\n  { label: \"Spent in September\", value: \"$6,412.38\", change: \"−6.8%\", tone: \"success\" },\n  { label: \"Saved in September\", value: \"$3,427.62\", change: \"35% of income\", tone: \"muted\" },\n  { label: \"Bills due in 7 days\", value: \"$1,418.72\", change: \"3 bills\", tone: \"muted\" },\n];\n\nconst defaultTransactions = [\n  { date: \"Oct 3\", merchant: \"Shell #4410\", category: \"Transport\", account: \"Meridian Visa ••4417\", amount: \"−$52.18\", status: \"\", credit: false },\n  { date: \"Oct 2\", merchant: \"Trader Joe's #142\", category: \"Groceries\", account: \"Cascade Checking ••6021\", amount: \"−$86.47\", status: \"\", credit: false },\n  { date: \"Oct 1\", merchant: \"Transfer to Savings\", category: \"Transfer\", account: \"Cascade Checking ••6021\", amount: \"−$1,200.00\", status: \"Pending\", credit: false },\n  { date: \"Oct 1\", merchant: \"Riverside Apartments\", category: \"Rent\", account: \"Cascade Checking ••6021\", amount: \"−$2,150.00\", status: \"\", credit: false },\n  { date: \"Sep 30\", merchant: \"Pacific Power\", category: \"Utilities\", account: \"Cascade Checking ••6021\", amount: \"−$118.63\", status: \"\", credit: false },\n  { date: \"Sep 28\", merchant: \"Portland Public Schools\", category: \"Income\", account: \"Cascade Checking ••6021\", amount: \"+$4,920.00\", status: \"\", credit: true },\n];\n\nexport function AppShell({ navGroups = defaultNavGroups, kpis = defaultKpis, transactions = defaultTransactions }) {\n  return (\n    <AppFrame\n      className=\"h-[720px] w-full bg-canvas text-fg\"\n      sidebar={\n        <Sidebar width=\"w-60\">\n          <SidebarHeader>\n            <Flex direction=\"row\" align=\"center\" gap=\"2\" className=\"min-w-0\">\n              <WiseOwlMark size=\"lg\" color=\"brand\" decorative />\n              <Flex direction=\"column\" gap=\"0\" className=\"min-w-0\">\n                <Text size=\"sm\" weight=\"semibold\">WiseOwl</Text>\n                <Text size=\"xs\" color=\"muted\" className=\"truncate\">Okafor-Reyes Household</Text>\n              </Flex>\n            </Flex>\n          </SidebarHeader>\n          <SidebarBody>\n            {navGroups.map((group) => (\n              <SidebarSection key={group.title} title={group.title}>\n                {group.items.map((item) => (\n                  <SidebarNavItem key={item.label} label={item.label} active={item.active} icon={<Icon name={item.icon} size=\"sm\" color=\"inherit\" />} />\n                ))}\n              </SidebarSection>\n            ))}\n          </SidebarBody>\n          <SidebarFooter>\n            <Box className=\"w-full rounded-[var(--radius-lg)] border border-hairline p-3\">\n              <Flex direction=\"column\" gap=\"2\">\n                <Flex direction=\"row\" align=\"center\" justify=\"between\" gap=\"2\">\n                  <Text size=\"xs\" weight=\"medium\">Household plan</Text>\n                  <Text size=\"xs\" color=\"muted\" className=\"tabular-nums\">4 of 6 seats</Text>\n                </Flex>\n                <Progress value={67} size=\"sm\" label=\"Seats used\" />\n              </Flex>\n            </Box>\n          </SidebarFooter>\n        </Sidebar>\n      }\n    >\n      <Flex direction=\"column\" gap=\"4\" className=\"min-h-0 min-w-0 flex-1 overflow-y-auto p-4 md:p-6\">\n        <Flex direction=\"row\" align=\"center\" justify=\"between\" wrap=\"wrap\" gap=\"3\">\n          <Flex direction=\"row\" align=\"center\" gap=\"2\" className=\"min-w-0\">\n            <SidebarTrigger />\n            <Flex direction=\"column\" gap=\"1\" className=\"min-w-0\">\n              <Heading as=\"h1\" size=\"md\">Good morning, Maya</Heading>\n              <Text size=\"sm\" color=\"muted\">Sunday, October 4 · 3 bills due this week</Text>\n            </Flex>\n          </Flex>\n          <Flex direction=\"row\" align=\"center\" gap=\"2\">\n            <IconButton variant=\"ghost\" size=\"md\" aria-label=\"Search\">\n              <Icon name=\"search\" />\n            </IconButton>\n            <IconButton variant=\"ghost\" size=\"md\" aria-label=\"Notifications\">\n              <Icon name=\"bell\" />\n            </IconButton>\n            <Button variant=\"solid\" size=\"md\">Add transaction</Button>\n          </Flex>\n        </Flex>\n        <Grid columns=\"auto\" minWidth=\"xs\" maxColumns=\"4\" gap=\"3\">\n          {kpis.map((kpi) => (\n            <Card key={kpi.label} padding=\"sm\">\n              <Flex direction=\"column\" gap=\"2\">\n                <Text size=\"xs\" color=\"muted\">{kpi.label}</Text>\n                <Heading as=\"p\" size=\"md\" weight=\"medium\" className=\"tabular-nums\">{kpi.value}</Heading>\n                <Text size=\"xs\" weight=\"medium\" className={kpi.tone === \"success\" ? \"text-success tabular-nums\" : \"text-fg-muted tabular-nums\"}>{kpi.change}</Text>\n              </Flex>\n            </Card>\n          ))}\n        </Grid>\n        <Card padding=\"sm\">\n          <Flex direction=\"column\" gap=\"3\">\n            <Flex direction=\"row\" align=\"center\" justify=\"between\" gap=\"3\">\n              <Heading as=\"h2\" size=\"sm\">Recent transactions</Heading>\n              <Button variant=\"ghost\" size=\"sm\">View all transactions</Button>\n            </Flex>\n            <Table>\n              <TableHeader>\n                <TableRow>\n                  <TableColumnHeaderCell>Date</TableColumnHeaderCell>\n                  <TableColumnHeaderCell>Merchant</TableColumnHeaderCell>\n                  <TableColumnHeaderCell className=\"max-md:hidden\">Category</TableColumnHeaderCell>\n                  <TableColumnHeaderCell className=\"max-lg:hidden\">Account</TableColumnHeaderCell>\n                  <TableColumnHeaderCell className=\"text-right\">Amount</TableColumnHeaderCell>\n                </TableRow>\n              </TableHeader>\n              <TableBody>\n                {transactions.map((txn) => (\n                  <TableRow key={`${txn.date}-${txn.merchant}`}>\n                    <TableCell className=\"whitespace-nowrap text-fg-muted tabular-nums\">{txn.date}</TableCell>\n                    <TableCell>\n                      <Flex direction=\"row\" align=\"center\" gap=\"2\">\n                        <Text size=\"sm\" weight=\"medium\" className=\"truncate\">{txn.merchant}</Text>\n                        {txn.status && <Badge variant=\"soft\" size=\"sm\" radius=\"full\" tone=\"warning\">{txn.status}</Badge>}\n                      </Flex>\n                    </TableCell>\n                    <TableCell className=\"text-fg-muted max-md:hidden\">{txn.category}</TableCell>\n                    <TableCell className=\"whitespace-nowrap text-fg-muted max-lg:hidden\">{txn.account}</TableCell>\n                    <TableCell className={txn.credit ? \"whitespace-nowrap text-right font-medium text-success tabular-nums\" : \"whitespace-nowrap text-right font-medium tabular-nums\"}>{txn.amount}</TableCell>\n                  </TableRow>\n                ))}\n              </TableBody>\n            </Table>\n          </Flex>\n        </Card>\n      </Flex>\n    </AppFrame>\n  );\n}\n",
     "sourcePath": "packages/block-schema/blocks/dashboard/app-shell.tsx"
   },
   {
@@ -619,7 +628,7 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
   {
     "name": "Onboarding Checklist",
     "slug": "onboarding-checklist",
-    "description": "Setup checklist with greeting, progress, three tasks (two done) and a single CTA on a subtle mesh-accent panel.",
+    "description": "Setup checklist with greeting, progress, three tasks (two done) and a single CTA on a subtle mesh-brand panel.",
     "category": "dashboard",
     "tier": "system",
     "origin": "both",
@@ -643,7 +652,7 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "progress"
     ],
     "version": "1.0.0",
-    "rawCode": "import { Box, Button, Card, Container, Flex, Grid, Heading, Icon, Progress, Section, Text } from \"@shavin/ui\";\n\nconst defaultTasks = [\n  { id: \"link\", title: \"Link your first bank\", description: \"3 accounts connected\", done: true },\n  { id: \"budget\", title: \"Review your budget\", description: \"9 categories, $5,980.00 per month\", done: true },\n  { id: \"invite\", title: \"Invite Daniel to the household\", description: \"Share budgets and goals with Editor access\", done: false },\n];\n\nexport function OnboardingChecklist({ tasks = defaultTasks }) {\n  return (\n    <Section size=\"compact\">\n      <Container size=\"lg\">\n        <Card padding=\"sm\">\n          <Grid columns=\"2\" gap=\"4\" stack=\"auto\" className=\"md:grid-cols-[minmax(0,1fr)_16rem]\">\n            <Flex direction=\"column\" gap=\"5\" className=\"p-2 md:p-3\">\n              <Flex direction=\"column\" gap=\"2\">\n                <Text size=\"overline\" color=\"muted\">Good morning, Maya</Text>\n                <Heading as=\"h2\" size=\"lg\">Finish setting up</Heading>\n                <Text size=\"sm\" color=\"muted\" className=\"max-w-[52ch] text-pretty\">Two of three done. Households who finish setup save about twice as much in their first month.</Text>\n              </Flex>\n              <Flex direction=\"column\" gap=\"0\">\n                {tasks.map((task) => (\n                  <Flex key={task.id} direction=\"row\" align=\"center\" gap=\"3\" className=\"border-b border-hairline py-3 last:border-b-0\">\n                    <Icon name={task.done ? \"circle-check\" : \"circle\"} size=\"md\" color={task.done ? \"accent\" : \"muted\"} />\n                    <Flex direction=\"column\" gap=\"0\" className=\"min-w-0 flex-1\">\n                      <Text size=\"sm\" weight=\"medium\" className={task.done ? \"text-fg-muted line-through decoration-fg-muted/40\" : \"text-fg\"}>{task.title}</Text>\n                      <Text size=\"xs\" color=\"muted\" className=\"tabular-nums\">{task.description}</Text>\n                    </Flex>\n                    {task.done === false && <Button variant=\"solid\" size=\"sm\">Send invite</Button>}\n                  </Flex>\n                ))}\n              </Flex>\n            </Flex>\n            <Box bgOverlays=\"mesh-accent\" className=\"rounded-panel-inner p-5 max-md:hidden\">\n              <Flex direction=\"column\" justify=\"between\" gap=\"4\" className=\"h-full\">\n                <Text size=\"overline\" color=\"muted\">Setup progress</Text>\n                <Flex direction=\"column\" gap=\"3\">\n                  <Heading as=\"p\" size=\"2xl\" weight=\"medium\" className=\"tabular-nums\">67%</Heading>\n                  <Progress value={67} size=\"sm\" label=\"Setup progress\" />\n                  <Text size=\"xs\" color=\"muted\" className=\"tabular-nums\">2 of 3 tasks complete</Text>\n                </Flex>\n              </Flex>\n            </Box>\n          </Grid>\n        </Card>\n      </Container>\n    </Section>\n  );\n}\n",
+    "rawCode": "import { Box, Button, Card, Container, Flex, Grid, Heading, Icon, Progress, Section, Text } from \"@shavin/ui\";\n\nconst defaultTasks = [\n  { id: \"link\", title: \"Link your first bank\", description: \"3 accounts connected\", done: true },\n  { id: \"budget\", title: \"Review your budget\", description: \"9 categories, $5,980.00 per month\", done: true },\n  { id: \"invite\", title: \"Invite Daniel to the household\", description: \"Share budgets and goals with Editor access\", done: false },\n];\n\nexport function OnboardingChecklist({ tasks = defaultTasks }) {\n  return (\n    <Section size=\"compact\">\n      <Container size=\"lg\">\n        <Card padding=\"sm\">\n          <Grid columns=\"2\" gap=\"4\" stack=\"auto\" className=\"md:grid-cols-[minmax(0,1fr)_16rem]\">\n            <Flex direction=\"column\" gap=\"5\" className=\"p-2 md:p-3\">\n              <Flex direction=\"column\" gap=\"2\">\n                <Text size=\"overline\" color=\"muted\">Good morning, Maya</Text>\n                <Heading as=\"h2\" size=\"lg\">Finish setting up</Heading>\n                <Text size=\"sm\" color=\"muted\" className=\"max-w-[52ch] text-pretty\">Two of three done. Households who finish setup save about twice as much in their first month.</Text>\n              </Flex>\n              <Flex direction=\"column\" gap=\"0\">\n                {tasks.map((task) => (\n                  <Flex key={task.id} direction=\"row\" align=\"center\" gap=\"3\" className=\"border-b border-hairline py-3 last:border-b-0\">\n                    <Icon name={task.done ? \"circle-check\" : \"circle\"} size=\"md\" color={task.done ? \"brand\" : \"muted\"} />\n                    <Flex direction=\"column\" gap=\"0\" className=\"min-w-0 flex-1\">\n                      <Text size=\"sm\" weight=\"medium\" className={task.done ? \"text-fg-muted line-through decoration-fg-muted/40\" : \"text-fg\"}>{task.title}</Text>\n                      <Text size=\"xs\" color=\"muted\" className=\"tabular-nums\">{task.description}</Text>\n                    </Flex>\n                    {task.done === false && <Button variant=\"solid\" size=\"sm\">Send invite</Button>}\n                  </Flex>\n                ))}\n              </Flex>\n            </Flex>\n            <Box bgOverlays=\"mesh-brand\" className=\"rounded-panel-inner p-5 max-md:hidden\">\n              <Flex direction=\"column\" justify=\"between\" gap=\"4\" className=\"h-full\">\n                <Text size=\"overline\" color=\"muted\">Setup progress</Text>\n                <Flex direction=\"column\" gap=\"3\">\n                  <Heading as=\"p\" size=\"2xl\" weight=\"medium\" className=\"tabular-nums\">67%</Heading>\n                  <Progress value={67} size=\"sm\" label=\"Setup progress\" />\n                  <Text size=\"xs\" color=\"muted\" className=\"tabular-nums\">2 of 3 tasks complete</Text>\n                </Flex>\n              </Flex>\n            </Box>\n          </Grid>\n        </Card>\n      </Container>\n    </Section>\n  );\n}\n",
     "replaces": "starter-card",
     "sourcePath": "packages/block-schema/blocks/dashboard/onboarding-checklist.tsx"
   },
@@ -700,7 +709,7 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "actions"
     ],
     "version": "1.0.0",
-    "rawCode": "import { Badge, Button, Card, Container, Flex, Heading, Icon, Section, Separator, Text } from \"@shavin/ui\";\n\nexport function CardFeatureAction() {\n  return (\n    <Section size=\"body\">\n      <Container size=\"xs\">\n        <Card padding=\"lg\">\n          <Flex direction=\"column\" gap=\"5\">\n            <Flex direction=\"row\" align=\"start\" justify=\"between\" gap=\"3\">\n              <Flex align=\"center\" justify=\"center\" className=\"h-12 w-12 shrink-0 rounded-panel-inner bg-accent-subtle\">\n                <Icon name=\"sparkles\" size=\"md\" color=\"contrast\" />\n              </Flex>\n              <Badge variant=\"soft\" tone=\"neutral\" size=\"sm\" radius=\"full\">New</Badge>\n            </Flex>\n            <Flex direction=\"column\" gap=\"2\">\n              <Heading as=\"h3\" size=\"md\">Ask WiseOwl about your spending</Heading>\n              <Text size=\"sm\" color=\"muted\" className=\"text-pretty\">\n                Ask plain questions about your transactions and get answers with the exact charges listed underneath.\n              </Text>\n            </Flex>\n            <Flex direction=\"row\" wrap=\"wrap\" gap=\"2\">\n              <Button size=\"sm\">Try a question</Button>\n              <Button size=\"sm\" variant=\"ghost\">See examples</Button>\n            </Flex>\n            <Separator />\n            <Text size=\"xs\" color=\"muted\">Included in Plus and Household</Text>\n          </Flex>\n        </Card>\n      </Container>\n    </Section>\n  );\n}\n",
+    "rawCode": "import { Badge, Button, Card, Container, Flex, Heading, Icon, Section, Separator, Text } from \"@shavin/ui\";\n\nexport function CardFeatureAction() {\n  return (\n    <Section size=\"body\">\n      <Container size=\"xs\">\n        <Card padding=\"lg\">\n          <Flex direction=\"column\" gap=\"5\">\n            <Flex direction=\"row\" align=\"start\" justify=\"between\" gap=\"3\">\n              <Flex align=\"center\" justify=\"center\" className=\"h-12 w-12 shrink-0 rounded-panel-inner bg-brand-subtle\">\n                <Icon name=\"sparkles\" size=\"md\" color=\"contrast\" />\n              </Flex>\n              <Badge variant=\"soft\" tone=\"neutral\" size=\"sm\" radius=\"full\">New</Badge>\n            </Flex>\n            <Flex direction=\"column\" gap=\"2\">\n              <Heading as=\"h3\" size=\"md\">Ask WiseOwl about your spending</Heading>\n              <Text size=\"sm\" color=\"muted\" className=\"text-pretty\">\n                Ask plain questions about your transactions and get answers with the exact charges listed underneath.\n              </Text>\n            </Flex>\n            <Flex direction=\"row\" wrap=\"wrap\" gap=\"2\">\n              <Button size=\"sm\">Try a question</Button>\n              <Button size=\"sm\" variant=\"ghost\">See examples</Button>\n            </Flex>\n            <Separator />\n            <Text size=\"xs\" color=\"muted\">Included in Plus and Household</Text>\n          </Flex>\n        </Card>\n      </Container>\n    </Section>\n  );\n}\n",
     "sourcePath": "packages/block-schema/blocks/features/card-feature-action.tsx"
   },
   {
@@ -783,7 +792,7 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "grid"
     ],
     "version": "1.0.0",
-    "rawCode": "import { Container, Flex, Grid, Heading, Icon, Section, Text } from \"@shavin/ui\";\n\nconst defaultItems = [\n  { icon: \"piggy-bank\", title: \"Savings goals\", body: \"Track progress toward a home, a trip or a cushion, with a weekly amount to set aside.\" },\n  { icon: \"receipt\", title: \"Receipt scanning\", body: \"Photograph a receipt and WiseOwl splits it into line items and categories.\" },\n  { icon: \"target\", title: \"Category budgets\", body: \"Monthly limits for groceries, dining and more, with rollover for unspent amounts.\" },\n  { icon: \"users\", title: \"Shared households\", body: \"Invite a partner, family member or accountant as Owner, Editor or Viewer.\" },\n  { icon: \"shield-check\", title: \"Bank-grade security\", body: \"Read-only connections, AES-256 encryption and two-factor sign-in on every account.\" },\n  { icon: \"bell\", title: \"Quiet alerts\", body: \"Due bills, large charges and budgets near their limit. Nothing more.\" },\n];\n\nexport function FeaturesIconMatrix({ items = defaultItems }) {\n  return (\n    <Section size=\"body\">\n      <Container size=\"lg\">\n        <Flex direction=\"column\" gap=\"7\">\n          <Flex direction=\"column\" gap=\"4\">\n            <Text size=\"overline\" color=\"muted\">Capabilities</Text>\n            <Heading as=\"h2\" size=\"2xl\">Built for the whole money picture</Heading>\n            <Text size=\"lg\" color=\"muted\" className=\"max-w-[52ch] text-pretty\">\n              Six everyday tools for budgets, bills, goals and security, on web, iPhone and Android from one account.\n            </Text>\n          </Flex>\n          <Grid columns=\"auto\" minWidth=\"md\" maxColumns=\"3\" gap=\"6\" className=\"gap-y-10\">\n            {items.map((item) => (\n              <Flex key={item.title} direction=\"row\" align=\"start\" gap=\"3\" className=\"md:flex-col\">\n                <Flex align=\"center\" justify=\"center\" className=\"h-12 w-12 shrink-0 rounded-[var(--radius-lg)] bg-accent-subtle\">\n                  <Icon name={item.icon} size=\"md\" color=\"contrast\" />\n                </Flex>\n                <Flex direction=\"column\" gap=\"1\">\n                  <Heading as=\"h3\" size=\"sm\">{item.title}</Heading>\n                  <Text size=\"sm\" color=\"muted\" className=\"max-w-[40ch] text-pretty\">{item.body}</Text>\n                </Flex>\n              </Flex>\n            ))}\n          </Grid>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
+    "rawCode": "import { Container, Flex, Grid, Heading, Icon, Section, Text } from \"@shavin/ui\";\n\nconst defaultItems = [\n  { icon: \"piggy-bank\", title: \"Savings goals\", body: \"Track progress toward a home, a trip or a cushion, with a weekly amount to set aside.\" },\n  { icon: \"receipt\", title: \"Receipt scanning\", body: \"Photograph a receipt and WiseOwl splits it into line items and categories.\" },\n  { icon: \"target\", title: \"Category budgets\", body: \"Monthly limits for groceries, dining and more, with rollover for unspent amounts.\" },\n  { icon: \"users\", title: \"Shared households\", body: \"Invite a partner, family member or accountant as Owner, Editor or Viewer.\" },\n  { icon: \"shield-check\", title: \"Bank-grade security\", body: \"Read-only connections, AES-256 encryption and two-factor sign-in on every account.\" },\n  { icon: \"bell\", title: \"Quiet alerts\", body: \"Due bills, large charges and budgets near their limit. Nothing more.\" },\n];\n\nexport function FeaturesIconMatrix({ items = defaultItems }) {\n  return (\n    <Section size=\"body\">\n      <Container size=\"lg\">\n        <Flex direction=\"column\" gap=\"7\">\n          <Flex direction=\"column\" gap=\"4\">\n            <Text size=\"overline\" color=\"muted\">Capabilities</Text>\n            <Heading as=\"h2\" size=\"2xl\">Built for the whole money picture</Heading>\n            <Text size=\"lg\" color=\"muted\" className=\"max-w-[52ch] text-pretty\">\n              Six everyday tools for budgets, bills, goals and security, on web, iPhone and Android from one account.\n            </Text>\n          </Flex>\n          <Grid columns=\"auto\" minWidth=\"md\" maxColumns=\"3\" gap=\"6\" className=\"gap-y-10\">\n            {items.map((item) => (\n              <Flex key={item.title} direction=\"row\" align=\"start\" gap=\"3\" className=\"md:flex-col\">\n                <Flex align=\"center\" justify=\"center\" className=\"h-12 w-12 shrink-0 rounded-[var(--radius-lg)] bg-brand-subtle\">\n                  <Icon name={item.icon} size=\"md\" color=\"contrast\" />\n                </Flex>\n                <Flex direction=\"column\" gap=\"1\">\n                  <Heading as=\"h3\" size=\"sm\">{item.title}</Heading>\n                  <Text size=\"sm\" color=\"muted\" className=\"max-w-[40ch] text-pretty\">{item.body}</Text>\n                </Flex>\n              </Flex>\n            ))}\n          </Grid>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
     "sourcePath": "packages/block-schema/blocks/features/features-icon-matrix.tsx"
   },
   {
@@ -810,7 +819,7 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "links"
     ],
     "version": "1.0.0",
-    "rawCode": "import { Card, Container, Flex, Grid, Heading, Icon, Link, Section, Text } from \"@shavin/ui\";\n\nconst defaultCards = [\n  { icon: \"link\", title: \"Link your accounts\", body: \"Read-only access through your bank's own secure login.\", cta: \"Connect a bank\", href: \"/accounts/link\", meta: \"About 4 minutes\" },\n  { icon: \"wallet\", title: \"Build a first budget\", body: \"Limits suggested from your last 90 days of spending.\", cta: \"Set up a budget\", href: \"/budgets/new\", meta: \"About 6 minutes\" },\n  { icon: \"users\", title: \"Invite your household\", body: \"Add a partner or accountant who can view or edit.\", cta: \"Send an invite\", href: \"/household/invite\", meta: \"About 2 minutes\" },\n];\n\nexport function FeaturesInteractiveCards({ cards = defaultCards }) {\n  return (\n    <Section size=\"body\">\n      <Container size=\"lg\">\n        <Flex direction=\"column\" gap=\"7\">\n          <Flex direction=\"column\" gap=\"4\">\n            <Text size=\"overline\" color=\"muted\">Start here</Text>\n            <Heading as=\"h2\" size=\"2xl\">Three ways to get organised</Heading>\n            <Text size=\"lg\" color=\"muted\" className=\"max-w-[52ch] text-pretty\">\n              Pick the one that matters most this month. Each takes under ten minutes and works with the accounts you already have.\n            </Text>\n          </Flex>\n          <Grid columns=\"auto\" minWidth=\"md\" maxColumns=\"3\" gap=\"5\">\n            {cards.map((card) => (\n              <Card key={card.title} padding=\"lg\" interactive className=\"group relative\">\n                <Flex direction=\"column\" gap=\"5\" className=\"h-full\">\n                  <Flex align=\"center\" justify=\"center\" className=\"h-10 w-10 shrink-0 rounded-panel-inner bg-accent-subtle\">\n                    <Icon name={card.icon} size=\"sm\" color=\"contrast\" />\n                  </Flex>\n                  <Flex direction=\"column\" gap=\"2\">\n                    <Text size=\"overline\" color=\"muted\">{card.meta}</Text>\n                    <Heading as=\"h3\" size=\"sm\">{card.title}</Heading>\n                    <Text size=\"sm\" color=\"muted\" className=\"text-pretty\">{card.body}</Text>\n                  </Flex>\n                  <Flex direction=\"row\" align=\"center\" gap=\"1\" className=\"mt-auto\">\n                    <Link href={card.href} size=\"sm\" underline=\"none\" className=\"font-medium after:absolute after:inset-0\">{card.cta}</Link>\n                    <Icon name=\"arrow-right\" size=\"sm\" color=\"contrast\" className=\"transition-transform group-hover:translate-x-0.5\" />\n                  </Flex>\n                </Flex>\n              </Card>\n            ))}\n          </Grid>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
+    "rawCode": "import { Card, Container, Flex, Grid, Heading, Icon, Link, Section, Text } from \"@shavin/ui\";\n\nconst defaultCards = [\n  { icon: \"link\", title: \"Link your accounts\", body: \"Read-only access through your bank's own secure login.\", cta: \"Connect a bank\", href: \"/accounts/link\", meta: \"About 4 minutes\" },\n  { icon: \"wallet\", title: \"Build a first budget\", body: \"Limits suggested from your last 90 days of spending.\", cta: \"Set up a budget\", href: \"/budgets/new\", meta: \"About 6 minutes\" },\n  { icon: \"users\", title: \"Invite your household\", body: \"Add a partner or accountant who can view or edit.\", cta: \"Send an invite\", href: \"/household/invite\", meta: \"About 2 minutes\" },\n];\n\nexport function FeaturesInteractiveCards({ cards = defaultCards }) {\n  return (\n    <Section size=\"body\">\n      <Container size=\"lg\">\n        <Flex direction=\"column\" gap=\"7\">\n          <Flex direction=\"column\" gap=\"4\">\n            <Text size=\"overline\" color=\"muted\">Start here</Text>\n            <Heading as=\"h2\" size=\"2xl\">Three ways to get organised</Heading>\n            <Text size=\"lg\" color=\"muted\" className=\"max-w-[52ch] text-pretty\">\n              Pick the one that matters most this month. Each takes under ten minutes and works with the accounts you already have.\n            </Text>\n          </Flex>\n          <Grid columns=\"auto\" minWidth=\"md\" maxColumns=\"3\" gap=\"5\">\n            {cards.map((card) => (\n              <Card key={card.title} padding=\"lg\" interactive className=\"group relative\">\n                <Flex direction=\"column\" gap=\"5\" className=\"h-full\">\n                  <Flex align=\"center\" justify=\"center\" className=\"h-10 w-10 shrink-0 rounded-panel-inner bg-brand-subtle\">\n                    <Icon name={card.icon} size=\"sm\" color=\"contrast\" />\n                  </Flex>\n                  <Flex direction=\"column\" gap=\"2\">\n                    <Text size=\"overline\" color=\"muted\">{card.meta}</Text>\n                    <Heading as=\"h3\" size=\"sm\">{card.title}</Heading>\n                    <Text size=\"sm\" color=\"muted\" className=\"text-pretty\">{card.body}</Text>\n                  </Flex>\n                  <Flex direction=\"row\" align=\"center\" gap=\"1\" className=\"mt-auto\">\n                    <Link href={card.href} size=\"sm\" underline=\"none\" className=\"font-medium after:absolute after:inset-0\">{card.cta}</Link>\n                    <Icon name=\"arrow-right\" size=\"sm\" color=\"contrast\" className=\"transition-transform group-hover:translate-x-0.5\" />\n                  </Flex>\n                </Flex>\n              </Card>\n            ))}\n          </Grid>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
     "sourcePath": "packages/block-schema/blocks/features/features-interactive-cards.tsx"
   },
   {
@@ -901,12 +910,12 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "Container",
       "Flex",
       "Grid",
-      "Heading",
       "Icon",
       "Link",
       "Section",
       "Separator",
-      "Text"
+      "Text",
+      "WiseOwlLogo"
     ],
     "tags": [
       "footer",
@@ -914,7 +923,7 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "links"
     ],
     "version": "1.0.0",
-    "rawCode": "import { Container, Flex, Grid, Heading, Icon, Link, Section, Separator, Text } from \"@shavin/ui\";\n\nconst defaultGroups = [\n  {\n    title: \"Product\",\n    links: [\n      { label: \"Budgets\", href: \"/product/budgets\" },\n      { label: \"Savings goals\", href: \"/product/goals\" },\n      { label: \"Bills & subscriptions\", href: \"/product/bills\" },\n      { label: \"Net worth\", href: \"/product/net-worth\" },\n      { label: \"Pricing\", href: \"/pricing\" },\n    ],\n  },\n  {\n    title: \"Company\",\n    links: [\n      { label: \"About\", href: \"/about\" },\n      { label: \"Careers\", href: \"/careers\" },\n      { label: \"Press\", href: \"/press\" },\n      { label: \"Contact\", href: \"/contact\" },\n    ],\n  },\n  {\n    title: \"Resources\",\n    links: [\n      { label: \"Help centre\", href: \"/help\" },\n      { label: \"Money guides\", href: \"/guides\" },\n      { label: \"API docs\", href: \"/docs/api\" },\n      { label: \"System status\", href: \"https://status.wiseowl.app\" },\n    ],\n  },\n];\n\nconst defaultSocial = [\n  { name: \"GitHub\", icon: \"github-logo\", href: \"https://github.com/wiseowl-finance\" },\n  { name: \"X\", icon: \"x-logo\", href: \"https://x.com/wiseowlapp\" },\n  { name: \"LinkedIn\", icon: \"linkedin-logo\", href: \"https://linkedin.com/company/wiseowl-finance\" },\n  { name: \"YouTube\", icon: \"youtube-logo\", href: \"https://youtube.com/@wiseowlapp\" },\n];\n\nexport function FooterColumns({ groups = defaultGroups, social = defaultSocial }) {\n  return (\n    <Section as=\"footer\" size=\"strip\" className=\"border-t border-hairline\">\n      <Container size=\"lg\">\n        <Flex direction=\"column\" gap=\"7\">\n          <Flex direction=\"column\" gap=\"7\" className=\"lg:flex-row lg:justify-between\">\n            <Flex direction=\"column\" gap=\"3\" className=\"max-w-xs\">\n              <Heading as=\"p\" size=\"md\" tracking=\"tight\">WiseOwl</Heading>\n              <Text size=\"sm\" color=\"muted\" className=\"text-pretty\">Calm control of your money, for you and everyone you share it with.</Text>\n            </Flex>\n            <Grid as=\"nav\" aria-label=\"Footer\" columns=\"auto\" minWidth=\"xs\" maxColumns=\"3\" gap=\"6\" className=\"lg:min-w-[560px]\">\n              {groups.map((group) => (\n                <Flex key={group.title} direction=\"column\" gap=\"4\">\n                  <Text as=\"h2\" size=\"overline\" color=\"muted\">{group.title}</Text>\n                  <Flex as=\"ul\" direction=\"column\" gap=\"2\">\n                    {group.links.map((link) => (\n                      <li key={link.label}><Link href={link.href} size=\"sm\" className=\"inline-flex min-h-6 items-center\">{link.label}</Link></li>\n                    ))}\n                  </Flex>\n                </Flex>\n              ))}\n            </Grid>\n          </Flex>\n          <Separator />\n          <Flex direction=\"column\" gap=\"4\" className=\"md:flex-row md:items-center md:justify-between\">\n            <Text size=\"sm\" color=\"muted\" className=\"md:whitespace-nowrap\">© 2026 WiseOwl Finance, Inc. WiseOwl is not a bank.</Text>\n            <Flex direction=\"row\" gap=\"1\" className=\"-ml-2.5 md:ml-0 md:-mr-2.5\">\n              {social.map((item) => (\n                <Link key={item.name} href={item.href} aria-label={item.name} className=\"inline-flex h-10 w-10 items-center justify-center rounded-[var(--radius-lg)] text-fg-muted hover:bg-surface-hover hover:text-fg\">\n                  <Icon name={item.icon} size=\"md\" color=\"inherit\" />\n                </Link>\n              ))}\n            </Flex>\n          </Flex>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
+    "rawCode": "import { Container, Flex, Grid, Icon, Link, Section, Separator, Text, WiseOwlLogo } from \"@shavin/ui\";\n\nconst defaultGroups = [\n  {\n    title: \"Product\",\n    links: [\n      { label: \"Budgets\", href: \"/product/budgets\" },\n      { label: \"Savings goals\", href: \"/product/goals\" },\n      { label: \"Bills & subscriptions\", href: \"/product/bills\" },\n      { label: \"Net worth\", href: \"/product/net-worth\" },\n      { label: \"Pricing\", href: \"/pricing\" },\n    ],\n  },\n  {\n    title: \"Company\",\n    links: [\n      { label: \"About\", href: \"/about\" },\n      { label: \"Careers\", href: \"/careers\" },\n      { label: \"Press\", href: \"/press\" },\n      { label: \"Contact\", href: \"/contact\" },\n    ],\n  },\n  {\n    title: \"Resources\",\n    links: [\n      { label: \"Help centre\", href: \"/help\" },\n      { label: \"Money guides\", href: \"/guides\" },\n      { label: \"API docs\", href: \"/docs/api\" },\n      { label: \"System status\", href: \"https://status.wiseowl.app\" },\n    ],\n  },\n];\n\nconst defaultSocial = [\n  { name: \"GitHub\", icon: \"github-logo\", href: \"https://github.com/wiseowl-finance\" },\n  { name: \"X\", icon: \"x-logo\", href: \"https://x.com/wiseowlapp\" },\n  { name: \"LinkedIn\", icon: \"linkedin-logo\", href: \"https://linkedin.com/company/wiseowl-finance\" },\n  { name: \"YouTube\", icon: \"youtube-logo\", href: \"https://youtube.com/@wiseowlapp\" },\n];\n\nexport function FooterColumns({ groups = defaultGroups, social = defaultSocial }) {\n  return (\n    <Section as=\"footer\" size=\"strip\" className=\"border-t border-hairline\">\n      <Container size=\"lg\">\n        <Flex direction=\"column\" gap=\"7\">\n          <Flex direction=\"column\" gap=\"7\" className=\"lg:flex-row lg:justify-between\">\n            <Flex direction=\"column\" gap=\"3\" className=\"max-w-xs\">\n              <WiseOwlLogo />\n              <Text size=\"sm\" color=\"muted\" className=\"text-pretty\">Calm control of your money, for you and everyone you share it with.</Text>\n            </Flex>\n            <Grid as=\"nav\" aria-label=\"Footer\" columns=\"auto\" minWidth=\"xs\" maxColumns=\"3\" gap=\"6\" className=\"lg:min-w-[560px]\">\n              {groups.map((group) => (\n                <Flex key={group.title} direction=\"column\" gap=\"4\">\n                  <Text as=\"h2\" size=\"overline\" color=\"muted\">{group.title}</Text>\n                  <Flex as=\"ul\" direction=\"column\" gap=\"2\">\n                    {group.links.map((link) => (\n                      <li key={link.label}><Link href={link.href} size=\"sm\" className=\"inline-flex min-h-6 items-center\">{link.label}</Link></li>\n                    ))}\n                  </Flex>\n                </Flex>\n              ))}\n            </Grid>\n          </Flex>\n          <Separator />\n          <Flex direction=\"column\" gap=\"4\" className=\"md:flex-row md:items-center md:justify-between\">\n            <Text size=\"sm\" color=\"muted\" className=\"md:whitespace-nowrap\">© 2026 WiseOwl Finance, Inc. WiseOwl is not a bank.</Text>\n            <Flex direction=\"row\" gap=\"1\" className=\"-ml-2.5 md:ml-0 md:-mr-2.5\">\n              {social.map((item) => (\n                <Link key={item.name} href={item.href} aria-label={item.name} className=\"inline-flex h-10 w-10 items-center justify-center rounded-[var(--radius-lg)] text-fg-muted hover:bg-surface-hover hover:text-fg\">\n                  <Icon name={item.icon} size=\"md\" color=\"inherit\" />\n                </Link>\n              ))}\n            </Flex>\n          </Flex>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
     "replaces": "nav-multi-column-footer",
     "sourcePath": "packages/block-schema/blocks/footer/footer-columns.tsx"
   },
@@ -928,11 +937,11 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
     "dependencies": [
       "Container",
       "Flex",
-      "Heading",
       "Icon",
       "Link",
       "Section",
-      "Text"
+      "Text",
+      "WiseOwlLogo"
     ],
     "tags": [
       "footer",
@@ -940,7 +949,7 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "minimal"
     ],
     "version": "1.0.0",
-    "rawCode": "import { Container, Flex, Heading, Icon, Link, Section, Text } from \"@shavin/ui\";\n\nconst defaultLinks = [\n  { label: \"Privacy\", href: \"/legal/privacy\" },\n  { label: \"Terms\", href: \"/legal/terms\" },\n  { label: \"Status\", href: \"https://status.wiseowl.app\" },\n  { label: \"help@wiseowl.app\", href: \"mailto:help@wiseowl.app\" },\n];\n\nconst defaultSocial = [\n  { name: \"GitHub\", icon: \"github-logo\", href: \"https://github.com/wiseowl-finance\" },\n  { name: \"X\", icon: \"x-logo\", href: \"https://x.com/wiseowlapp\" },\n  { name: \"LinkedIn\", icon: \"linkedin-logo\", href: \"https://linkedin.com/company/wiseowl-finance\" },\n];\n\nexport function FooterCompactSingleRow({ links = defaultLinks, social = defaultSocial }) {\n  return (\n    <Section as=\"footer\" size=\"compact\" className=\"border-t border-hairline\">\n      <Container size=\"lg\">\n        <Flex direction=\"column\" gap=\"4\" className=\"lg:flex-row lg:items-center lg:gap-8\">\n          <Flex direction=\"row\" align=\"center\" justify=\"between\" gap=\"4\" className=\"lg:contents\">\n            <Heading as=\"p\" size=\"md\" tracking=\"tight\" className=\"lg:order-1\">WiseOwl</Heading>\n            <Flex direction=\"row\" gap=\"1\" className=\"-mr-2.5 lg:order-3 lg:mr-0\">\n              {social.map((item) => (\n                <Link key={item.name} href={item.href} aria-label={item.name} className=\"inline-flex h-10 w-10 items-center justify-center rounded-[var(--radius-lg)] text-fg-muted hover:bg-surface-hover hover:text-fg\">\n                  <Icon name={item.icon} size=\"md\" color=\"inherit\" />\n                </Link>\n              ))}\n            </Flex>\n          </Flex>\n          <Flex direction=\"row\" wrap=\"wrap\" gap=\"5\" className=\"gap-y-1 lg:order-2 lg:flex-1\">\n            {links.map((link) => (\n              <Link key={link.label} href={link.href} size=\"sm\" className=\"inline-flex h-10 items-center\">{link.label}</Link>\n            ))}\n          </Flex>\n          <Text size=\"sm\" color=\"muted\" className=\"shrink-0 whitespace-nowrap lg:order-4\">© 2026 WiseOwl Finance, Inc.</Text>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
+    "rawCode": "import { Container, Flex, Icon, Link, Section, Text, WiseOwlLogo } from \"@shavin/ui\";\n\nconst defaultLinks = [\n  { label: \"Privacy\", href: \"/legal/privacy\" },\n  { label: \"Terms\", href: \"/legal/terms\" },\n  { label: \"Status\", href: \"https://status.wiseowl.app\" },\n  { label: \"help@wiseowl.app\", href: \"mailto:help@wiseowl.app\" },\n];\n\nconst defaultSocial = [\n  { name: \"GitHub\", icon: \"github-logo\", href: \"https://github.com/wiseowl-finance\" },\n  { name: \"X\", icon: \"x-logo\", href: \"https://x.com/wiseowlapp\" },\n  { name: \"LinkedIn\", icon: \"linkedin-logo\", href: \"https://linkedin.com/company/wiseowl-finance\" },\n];\n\nexport function FooterCompactSingleRow({ links = defaultLinks, social = defaultSocial }) {\n  return (\n    <Section as=\"footer\" size=\"compact\" className=\"border-t border-hairline\">\n      <Container size=\"lg\">\n        <Flex direction=\"column\" gap=\"4\" className=\"lg:flex-row lg:items-center lg:gap-8\">\n          <Flex direction=\"row\" align=\"center\" justify=\"between\" gap=\"4\" className=\"lg:contents\">\n            <WiseOwlLogo className=\"lg:order-1\" />\n            <Flex direction=\"row\" gap=\"1\" className=\"-mr-2.5 lg:order-3 lg:mr-0\">\n              {social.map((item) => (\n                <Link key={item.name} href={item.href} aria-label={item.name} className=\"inline-flex h-10 w-10 items-center justify-center rounded-[var(--radius-lg)] text-fg-muted hover:bg-surface-hover hover:text-fg\">\n                  <Icon name={item.icon} size=\"md\" color=\"inherit\" />\n                </Link>\n              ))}\n            </Flex>\n          </Flex>\n          <Flex direction=\"row\" wrap=\"wrap\" gap=\"5\" className=\"gap-y-1 lg:order-2 lg:flex-1\">\n            {links.map((link) => (\n              <Link key={link.label} href={link.href} size=\"sm\" className=\"inline-flex h-10 items-center\">{link.label}</Link>\n            ))}\n          </Flex>\n          <Text size=\"sm\" color=\"muted\" className=\"shrink-0 whitespace-nowrap lg:order-4\">© 2026 WiseOwl Finance, Inc.</Text>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
     "sourcePath": "packages/block-schema/blocks/footer/footer-compact-single-row.tsx"
   },
   {
@@ -953,12 +962,12 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
     "dependencies": [
       "Container",
       "Flex",
-      "Heading",
       "Icon",
       "Link",
       "Section",
       "Separator",
-      "Text"
+      "Text",
+      "WiseOwlLogo"
     ],
     "tags": [
       "footer",
@@ -966,7 +975,7 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "statement"
     ],
     "version": "1.0.0",
-    "rawCode": "import { Container, Flex, Heading, Icon, Link, Section, Separator, Text } from \"@shavin/ui\";\n\nconst defaultLinks = [\n  { label: \"Product\", href: \"/product\" },\n  { label: \"Pricing\", href: \"/pricing\" },\n  { label: \"Security\", href: \"/security\" },\n  { label: \"Help\", href: \"/help\" },\n  { label: \"Privacy\", href: \"/legal/privacy\" },\n];\n\nconst defaultSocial = [\n  { name: \"X\", icon: \"x-logo\", href: \"https://x.com/wiseowlapp\" },\n  { name: \"LinkedIn\", icon: \"linkedin-logo\", href: \"https://linkedin.com/company/wiseowl-finance\" },\n  { name: \"YouTube\", icon: \"youtube-logo\", href: \"https://youtube.com/@wiseowlapp\" },\n];\n\nexport function FooterSimpleCentered({ links = defaultLinks, social = defaultSocial }) {\n  return (\n    <Section as=\"footer\" size=\"body\" className=\"border-t border-hairline\">\n      <Container size=\"md\">\n        <Flex direction=\"column\" align=\"center\" gap=\"5\" className=\"text-center\">\n          <Flex direction=\"column\" align=\"center\" gap=\"4\">\n            <Heading as=\"p\" size=\"5xl\" tracking=\"tighter\">WiseOwl</Heading>\n            <Text size=\"lg\" color=\"muted\">Calm control of your money.</Text>\n          </Flex>\n          <Flex direction=\"row\" justify=\"center\" wrap=\"wrap\" gap=\"5\" className=\"gap-y-2\">\n            {links.map((link) => (\n              <Link key={link.label} href={link.href} size=\"sm\" className=\"inline-flex h-10 items-center\">{link.label}</Link>\n            ))}\n          </Flex>\n          <Flex direction=\"row\" justify=\"center\" gap=\"1\">\n            {social.map((item) => (\n              <Link key={item.name} href={item.href} aria-label={item.name} className=\"inline-flex h-10 w-10 items-center justify-center rounded-[var(--radius-lg)] text-fg-muted hover:bg-surface-hover hover:text-fg\">\n                <Icon name={item.icon} size=\"md\" color=\"inherit\" />\n              </Link>\n            ))}\n          </Flex>\n          <Separator className=\"w-full\" />\n          <Text size=\"sm\" color=\"muted\">© 2026 WiseOwl Finance, Inc.</Text>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
+    "rawCode": "import { Container, Flex, Icon, Link, Section, Separator, Text, WiseOwlLogo } from \"@shavin/ui\";\n\nconst defaultLinks = [\n  { label: \"Product\", href: \"/product\" },\n  { label: \"Pricing\", href: \"/pricing\" },\n  { label: \"Security\", href: \"/security\" },\n  { label: \"Help\", href: \"/help\" },\n  { label: \"Privacy\", href: \"/legal/privacy\" },\n];\n\nconst defaultSocial = [\n  { name: \"X\", icon: \"x-logo\", href: \"https://x.com/wiseowlapp\" },\n  { name: \"LinkedIn\", icon: \"linkedin-logo\", href: \"https://linkedin.com/company/wiseowl-finance\" },\n  { name: \"YouTube\", icon: \"youtube-logo\", href: \"https://youtube.com/@wiseowlapp\" },\n];\n\nexport function FooterSimpleCentered({ links = defaultLinks, social = defaultSocial }) {\n  return (\n    <Section as=\"footer\" size=\"body\" className=\"border-t border-hairline\">\n      <Container size=\"md\">\n        <Flex direction=\"column\" align=\"center\" gap=\"5\" className=\"text-center\">\n          <Flex direction=\"column\" align=\"center\" gap=\"4\">\n            <WiseOwlLogo size=\"lg\" />\n            <Text size=\"lg\" color=\"muted\">Calm control of your money.</Text>\n          </Flex>\n          <Flex direction=\"row\" justify=\"center\" wrap=\"wrap\" gap=\"5\" className=\"gap-y-2\">\n            {links.map((link) => (\n              <Link key={link.label} href={link.href} size=\"sm\" className=\"inline-flex h-10 items-center\">{link.label}</Link>\n            ))}\n          </Flex>\n          <Flex direction=\"row\" justify=\"center\" gap=\"1\">\n            {social.map((item) => (\n              <Link key={item.name} href={item.href} aria-label={item.name} className=\"inline-flex h-10 w-10 items-center justify-center rounded-[var(--radius-lg)] text-fg-muted hover:bg-surface-hover hover:text-fg\">\n                <Icon name={item.icon} size=\"md\" color=\"inherit\" />\n              </Link>\n            ))}\n          </Flex>\n          <Separator className=\"w-full\" />\n          <Text size=\"sm\" color=\"muted\">© 2026 WiseOwl Finance, Inc.</Text>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
     "sourcePath": "packages/block-schema/blocks/footer/footer-simple-centered.tsx"
   },
   {
@@ -981,12 +990,12 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "Container",
       "Flex",
       "Grid",
-      "Heading",
       "Icon",
       "Link",
       "Section",
       "Separator",
-      "Text"
+      "Text",
+      "WiseOwlLogo"
     ],
     "tags": [
       "footer",
@@ -994,7 +1003,7 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "links"
     ],
     "version": "1.0.0",
-    "rawCode": "import { Button, Container, Flex, Grid, Heading, Icon, Link, Section, Separator, Text } from \"@shavin/ui\";\n\nconst defaultGroups = [\n  {\n    title: \"Product\",\n    links: [\n      { label: \"Budgets\", href: \"/product/budgets\" },\n      { label: \"Savings goals\", href: \"/product/goals\" },\n      { label: \"Bills & subscriptions\", href: \"/product/bills\" },\n      { label: \"Net worth\", href: \"/product/net-worth\" },\n      { label: \"Receipt scanning\", href: \"/product/receipts\" },\n      { label: \"Pricing\", href: \"/pricing\" },\n    ],\n  },\n  {\n    title: \"Households\",\n    links: [\n      { label: \"Couples\", href: \"/households/couples\" },\n      { label: \"Families\", href: \"/households/families\" },\n      { label: \"Caring for parents\", href: \"/households/caregivers\" },\n      { label: \"Working with an accountant\", href: \"/households/accountants\" },\n    ],\n  },\n  {\n    title: \"Developers\",\n    links: [\n      { label: \"API overview\", href: \"/docs/api\" },\n      { label: \"API reference\", href: \"/docs/api/reference\" },\n      { label: \"Webhooks\", href: \"/docs/api/webhooks\" },\n      { label: \"Sandbox\", href: \"/docs/api/sandbox\" },\n      { label: \"Status\", href: \"https://status.wiseowl.app\" },\n    ],\n  },\n  {\n    title: \"Resources\",\n    links: [\n      { label: \"Help centre\", href: \"/help\" },\n      { label: \"Getting started\", href: \"/help/getting-started\" },\n      { label: \"Money guides\", href: \"/guides\" },\n      { label: \"Budget templates\", href: \"/guides/templates\" },\n      { label: \"Changelog\", href: \"/changelog\" },\n    ],\n  },\n  {\n    title: \"Company\",\n    links: [\n      { label: \"About\", href: \"/about\" },\n      { label: \"Careers\", href: \"/careers\" },\n      { label: \"Security\", href: \"/security\" },\n      { label: \"Press\", href: \"/press\" },\n      { label: \"Contact\", href: \"/contact\" },\n    ],\n  },\n];\n\nconst defaultLegal = [\n  { label: \"Privacy\", href: \"/legal/privacy\" },\n  { label: \"Terms\", href: \"/legal/terms\" },\n  { label: \"Cookie settings\", href: \"/legal/cookies\" },\n  { label: \"Accessibility\", href: \"/legal/accessibility\" },\n];\n\nexport function FooterSitemap({ groups = defaultGroups, legal = defaultLegal }) {\n  return (\n    <Section as=\"footer\" size=\"strip\" className=\"border-t border-hairline\">\n      <Container size=\"lg\">\n        <Flex direction=\"column\" gap=\"7\">\n          <Flex direction=\"column\" gap=\"2\">\n            <Heading as=\"p\" size=\"md\" tracking=\"tight\">WiseOwl</Heading>\n            <Text size=\"sm\" color=\"muted\">Calm control of your money.</Text>\n          </Flex>\n          <Grid as=\"nav\" aria-label=\"Footer\" columns=\"auto\" minWidth=\"xs\" maxColumns=\"5\" gap=\"6\" className=\"gap-y-10\">\n            {groups.map((group) => (\n              <Flex key={group.title} direction=\"column\" gap=\"4\">\n                <Text as=\"h2\" size=\"overline\" color=\"muted\">{group.title}</Text>\n                <Flex as=\"ul\" direction=\"column\" gap=\"2\">\n                  {group.links.map((link) => (\n                    <li key={link.label}><Link href={link.href} size=\"sm\" className=\"inline-flex min-h-6 items-center\">{link.label}</Link></li>\n                  ))}\n                </Flex>\n              </Flex>\n            ))}\n          </Grid>\n          <Separator />\n          <Flex direction=\"column\" gap=\"4\" className=\"w-full lg:flex-row lg:items-center lg:justify-between\">\n            <Flex direction=\"row\" align=\"center\" wrap=\"wrap\" gap=\"4\" className=\"gap-y-2\">\n              <Text size=\"sm\" color=\"muted\">© 2026 WiseOwl Finance, Inc. · Portland, OR</Text>\n              {legal.map((item) => (\n                <Link key={item.label} href={item.href} size=\"sm\" className=\"text-fg-muted hover:text-fg\">{item.label}</Link>\n              ))}\n            </Flex>\n            <Flex direction=\"row\" align=\"center\" wrap=\"wrap\" gap=\"4\" className=\"lg:ml-auto\">\n              <Flex direction=\"row\" align=\"center\" gap=\"2\">\n                <Icon name=\"shield-check\" size=\"sm\" color=\"muted\" />\n                <Text size=\"sm\" color=\"muted\">SOC 2 Type II</Text>\n              </Flex>\n              <Button variant=\"outline\" size=\"md\">\n                <Icon name=\"globe\" size=\"sm\" color=\"muted\" />\n                English (US)\n                <Icon name=\"chevron-down\" size=\"sm\" color=\"muted\" />\n              </Button>\n            </Flex>\n          </Flex>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
+    "rawCode": "import { Button, Container, Flex, Grid, Icon, Link, Section, Separator, Text, WiseOwlLogo } from \"@shavin/ui\";\n\nconst defaultGroups = [\n  {\n    title: \"Product\",\n    links: [\n      { label: \"Budgets\", href: \"/product/budgets\" },\n      { label: \"Savings goals\", href: \"/product/goals\" },\n      { label: \"Bills & subscriptions\", href: \"/product/bills\" },\n      { label: \"Net worth\", href: \"/product/net-worth\" },\n      { label: \"Receipt scanning\", href: \"/product/receipts\" },\n      { label: \"Pricing\", href: \"/pricing\" },\n    ],\n  },\n  {\n    title: \"Households\",\n    links: [\n      { label: \"Couples\", href: \"/households/couples\" },\n      { label: \"Families\", href: \"/households/families\" },\n      { label: \"Caring for parents\", href: \"/households/caregivers\" },\n      { label: \"Working with an accountant\", href: \"/households/accountants\" },\n    ],\n  },\n  {\n    title: \"Developers\",\n    links: [\n      { label: \"API overview\", href: \"/docs/api\" },\n      { label: \"API reference\", href: \"/docs/api/reference\" },\n      { label: \"Webhooks\", href: \"/docs/api/webhooks\" },\n      { label: \"Sandbox\", href: \"/docs/api/sandbox\" },\n      { label: \"Status\", href: \"https://status.wiseowl.app\" },\n    ],\n  },\n  {\n    title: \"Resources\",\n    links: [\n      { label: \"Help centre\", href: \"/help\" },\n      { label: \"Getting started\", href: \"/help/getting-started\" },\n      { label: \"Money guides\", href: \"/guides\" },\n      { label: \"Budget templates\", href: \"/guides/templates\" },\n      { label: \"Changelog\", href: \"/changelog\" },\n    ],\n  },\n  {\n    title: \"Company\",\n    links: [\n      { label: \"About\", href: \"/about\" },\n      { label: \"Careers\", href: \"/careers\" },\n      { label: \"Security\", href: \"/security\" },\n      { label: \"Press\", href: \"/press\" },\n      { label: \"Contact\", href: \"/contact\" },\n    ],\n  },\n];\n\nconst defaultLegal = [\n  { label: \"Privacy\", href: \"/legal/privacy\" },\n  { label: \"Terms\", href: \"/legal/terms\" },\n  { label: \"Cookie settings\", href: \"/legal/cookies\" },\n  { label: \"Accessibility\", href: \"/legal/accessibility\" },\n];\n\nexport function FooterSitemap({ groups = defaultGroups, legal = defaultLegal }) {\n  return (\n    <Section as=\"footer\" size=\"strip\" className=\"border-t border-hairline\">\n      <Container size=\"lg\">\n        <Flex direction=\"column\" gap=\"7\">\n          <Flex direction=\"column\" gap=\"2\">\n            <WiseOwlLogo />\n            <Text size=\"sm\" color=\"muted\">Calm control of your money.</Text>\n          </Flex>\n          <Grid as=\"nav\" aria-label=\"Footer\" columns=\"auto\" minWidth=\"xs\" maxColumns=\"5\" gap=\"6\" className=\"gap-y-10\">\n            {groups.map((group) => (\n              <Flex key={group.title} direction=\"column\" gap=\"4\">\n                <Text as=\"h2\" size=\"overline\" color=\"muted\">{group.title}</Text>\n                <Flex as=\"ul\" direction=\"column\" gap=\"2\">\n                  {group.links.map((link) => (\n                    <li key={link.label}><Link href={link.href} size=\"sm\" className=\"inline-flex min-h-6 items-center\">{link.label}</Link></li>\n                  ))}\n                </Flex>\n              </Flex>\n            ))}\n          </Grid>\n          <Separator />\n          <Flex direction=\"column\" gap=\"4\" className=\"w-full lg:flex-row lg:items-center lg:justify-between\">\n            <Flex direction=\"row\" align=\"center\" wrap=\"wrap\" gap=\"4\" className=\"gap-y-2\">\n              <Text size=\"sm\" color=\"muted\">© 2026 WiseOwl Finance, Inc. · Portland, OR</Text>\n              {legal.map((item) => (\n                <Link key={item.label} href={item.href} size=\"sm\" className=\"text-fg-muted hover:text-fg\">{item.label}</Link>\n              ))}\n            </Flex>\n            <Flex direction=\"row\" align=\"center\" wrap=\"wrap\" gap=\"4\" className=\"lg:ml-auto\">\n              <Flex direction=\"row\" align=\"center\" gap=\"2\">\n                <Icon name=\"shield-check\" size=\"sm\" color=\"muted\" />\n                <Text size=\"sm\" color=\"muted\">SOC 2 Type II</Text>\n              </Flex>\n              <Button variant=\"outline\" size=\"md\">\n                <Icon name=\"globe\" size=\"sm\" color=\"muted\" />\n                English (US)\n                <Icon name=\"chevron-down\" size=\"sm\" color=\"muted\" />\n              </Button>\n            </Flex>\n          </Flex>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
     "sourcePath": "packages/block-schema/blocks/footer/footer-sitemap.tsx"
   },
   {
@@ -1017,7 +1026,8 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "Section",
       "Separator",
       "Text",
-      "TextField"
+      "TextField",
+      "WiseOwlLogo"
     ],
     "tags": [
       "footer",
@@ -1025,7 +1035,7 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "form"
     ],
     "version": "1.0.0",
-    "rawCode": "import { Button, Card, Container, Flex, Grid, Heading, Icon, Image, Link, Section, Separator, Text, TextField } from \"@shavin/ui\";\n\nconst defaultGroups = [\n  {\n    title: \"Product\",\n    links: [\n      { label: \"Budgets\", href: \"/product/budgets\" },\n      { label: \"Savings goals\", href: \"/product/goals\" },\n      { label: \"Bills & subscriptions\", href: \"/product/bills\" },\n      { label: \"Ask WiseOwl\", href: \"/product/assistant\" },\n    ],\n  },\n  {\n    title: \"Resources\",\n    links: [\n      { label: \"Help centre\", href: \"/help\" },\n      { label: \"Money guides\", href: \"/guides\" },\n      { label: \"Changelog\", href: \"/changelog\" },\n      { label: \"System status\", href: \"https://status.wiseowl.app\" },\n    ],\n  },\n  {\n    title: \"Company\",\n    links: [\n      { label: \"About\", href: \"/about\" },\n      { label: \"Careers\", href: \"/careers\" },\n      { label: \"Press\", href: \"/press\" },\n      { label: \"Contact\", href: \"/contact\" },\n    ],\n  },\n];\n\nconst defaultLegal = [\n  { label: \"Privacy\", href: \"/legal/privacy\" },\n  { label: \"Terms\", href: \"/legal/terms\" },\n];\n\nconst defaultSocial = [\n  { name: \"X\", icon: \"x-logo\", href: \"https://x.com/wiseowlapp\" },\n  { name: \"LinkedIn\", icon: \"linkedin-logo\", href: \"https://linkedin.com/company/wiseowl-finance\" },\n  { name: \"YouTube\", icon: \"youtube-logo\", href: \"https://youtube.com/@wiseowlapp\" },\n];\n\nexport function FooterWithNewsletter({ groups = defaultGroups, legal = defaultLegal, social = defaultSocial }) {\n  return (\n    <Section as=\"footer\" size=\"strip\" className=\"border-t border-hairline\">\n      <Container size=\"lg\">\n        <Flex direction=\"column\" gap=\"7\">\n          <Card padding=\"lg\">\n            <Flex direction=\"column\" gap=\"5\" className=\"md:flex-row md:items-center\">\n              <Image\n                src=\"https://assets.lummi.ai/assets/QmQ57n8BauDZPxxXUZX1wLGVZDjYBbYXMd5JXWTrrenLqq?auto=format&w=400\"\n                alt=\"A succulent on a bright windowsill\"\n                ratio=\"1/1\"\n                radius=\"concentric\"\n                className=\"w-20 shrink-0\"\n              />\n              <Flex direction=\"column\" gap=\"1\" className=\"flex-1\">\n                <Heading as=\"h2\" size=\"md\">One money idea every Sunday</Heading>\n                <Text size=\"sm\" color=\"muted\" className=\"max-w-[52ch] text-pretty tabular-nums\">Practical habits and one reader question, read by 21,786 people each week.</Text>\n              </Flex>\n              <form className=\"flex flex-col gap-2 sm:flex-row md:w-[400px]\">\n                <TextField type=\"email\" placeholder=\"you@example.com\" aria-label=\"Email address\" autoComplete=\"email\" className=\"h-10 flex-1\" />\n                <Button type=\"submit\" size=\"md\" className=\"w-full shrink-0 sm:w-auto\">Subscribe</Button>\n              </form>\n            </Flex>\n          </Card>\n          <Grid as=\"nav\" aria-label=\"Footer\" columns=\"4\" gap=\"6\" className=\"max-lg:grid-cols-3 max-md:grid-cols-2\">\n            <Flex direction=\"column\" gap=\"3\" className=\"max-lg:col-span-3 max-md:col-span-2\">\n              <Heading as=\"p\" size=\"md\" tracking=\"tight\">WiseOwl</Heading>\n              <Text size=\"sm\" color=\"muted\">Calm control of your money.</Text>\n            </Flex>\n            {groups.map((group) => (\n              <Flex key={group.title} direction=\"column\" gap=\"4\">\n                <Text as=\"h2\" size=\"overline\" color=\"muted\">{group.title}</Text>\n                <Flex as=\"ul\" direction=\"column\" gap=\"2\">\n                  {group.links.map((link) => (\n                    <li key={link.label}><Link href={link.href} size=\"sm\" className=\"inline-flex min-h-6 items-center\">{link.label}</Link></li>\n                  ))}\n                </Flex>\n              </Flex>\n            ))}\n          </Grid>\n          <Separator />\n          <Flex direction=\"column\" gap=\"4\" className=\"md:flex-row md:items-center md:justify-between\">\n            <Flex direction=\"row\" align=\"center\" wrap=\"wrap\" gap=\"4\" className=\"gap-y-1\">\n              <Text size=\"sm\" color=\"muted\">© 2026 WiseOwl Finance, Inc. WiseOwl is not a bank.</Text>\n              {legal.map((item) => (\n                <Link key={item.label} href={item.href} size=\"sm\" className=\"inline-flex h-10 items-center text-fg-muted hover:text-fg\">{item.label}</Link>\n              ))}\n            </Flex>\n            <Flex direction=\"row\" gap=\"1\" className=\"-ml-2.5 md:ml-0 md:-mr-2.5\">\n              {social.map((item) => (\n                <Link key={item.name} href={item.href} aria-label={item.name} className=\"inline-flex h-10 w-10 items-center justify-center rounded-[var(--radius-lg)] text-fg-muted hover:bg-surface-hover hover:text-fg\">\n                  <Icon name={item.icon} size=\"md\" color=\"inherit\" />\n                </Link>\n              ))}\n            </Flex>\n          </Flex>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
+    "rawCode": "import { Button, Card, Container, Flex, Grid, Heading, Icon, Image, Link, Section, Separator, Text, TextField, WiseOwlLogo } from \"@shavin/ui\";\n\nconst defaultGroups = [\n  {\n    title: \"Product\",\n    links: [\n      { label: \"Budgets\", href: \"/product/budgets\" },\n      { label: \"Savings goals\", href: \"/product/goals\" },\n      { label: \"Bills & subscriptions\", href: \"/product/bills\" },\n      { label: \"Ask WiseOwl\", href: \"/product/assistant\" },\n    ],\n  },\n  {\n    title: \"Resources\",\n    links: [\n      { label: \"Help centre\", href: \"/help\" },\n      { label: \"Money guides\", href: \"/guides\" },\n      { label: \"Changelog\", href: \"/changelog\" },\n      { label: \"System status\", href: \"https://status.wiseowl.app\" },\n    ],\n  },\n  {\n    title: \"Company\",\n    links: [\n      { label: \"About\", href: \"/about\" },\n      { label: \"Careers\", href: \"/careers\" },\n      { label: \"Press\", href: \"/press\" },\n      { label: \"Contact\", href: \"/contact\" },\n    ],\n  },\n];\n\nconst defaultLegal = [\n  { label: \"Privacy\", href: \"/legal/privacy\" },\n  { label: \"Terms\", href: \"/legal/terms\" },\n];\n\nconst defaultSocial = [\n  { name: \"X\", icon: \"x-logo\", href: \"https://x.com/wiseowlapp\" },\n  { name: \"LinkedIn\", icon: \"linkedin-logo\", href: \"https://linkedin.com/company/wiseowl-finance\" },\n  { name: \"YouTube\", icon: \"youtube-logo\", href: \"https://youtube.com/@wiseowlapp\" },\n];\n\nexport function FooterWithNewsletter({ groups = defaultGroups, legal = defaultLegal, social = defaultSocial }) {\n  return (\n    <Section as=\"footer\" size=\"strip\" className=\"border-t border-hairline\">\n      <Container size=\"lg\">\n        <Flex direction=\"column\" gap=\"7\">\n          <Card padding=\"lg\">\n            <Flex direction=\"column\" gap=\"5\" className=\"md:flex-row md:items-center\">\n              <Image\n                src=\"https://assets.lummi.ai/assets/QmQ57n8BauDZPxxXUZX1wLGVZDjYBbYXMd5JXWTrrenLqq?auto=format&w=400\"\n                alt=\"A succulent on a bright windowsill\"\n                ratio=\"1/1\"\n                radius=\"concentric\"\n                className=\"w-20 shrink-0\"\n              />\n              <Flex direction=\"column\" gap=\"1\" className=\"flex-1\">\n                <Heading as=\"h2\" size=\"md\">One money idea every Sunday</Heading>\n                <Text size=\"sm\" color=\"muted\" className=\"max-w-[52ch] text-pretty tabular-nums\">Practical habits and one reader question, read by 21,786 people each week.</Text>\n              </Flex>\n              <form className=\"flex flex-col gap-2 sm:flex-row md:w-[400px]\">\n                <TextField type=\"email\" placeholder=\"you@example.com\" aria-label=\"Email address\" autoComplete=\"email\" className=\"h-10 flex-1\" />\n                <Button type=\"submit\" size=\"md\" className=\"w-full shrink-0 sm:w-auto\">Subscribe</Button>\n              </form>\n            </Flex>\n          </Card>\n          <Grid as=\"nav\" aria-label=\"Footer\" columns=\"4\" gap=\"6\" className=\"max-lg:grid-cols-3 max-md:grid-cols-2\">\n            <Flex direction=\"column\" gap=\"3\" className=\"max-lg:col-span-3 max-md:col-span-2\">\n              <WiseOwlLogo />\n              <Text size=\"sm\" color=\"muted\">Calm control of your money.</Text>\n            </Flex>\n            {groups.map((group) => (\n              <Flex key={group.title} direction=\"column\" gap=\"4\">\n                <Text as=\"h2\" size=\"overline\" color=\"muted\">{group.title}</Text>\n                <Flex as=\"ul\" direction=\"column\" gap=\"2\">\n                  {group.links.map((link) => (\n                    <li key={link.label}><Link href={link.href} size=\"sm\" className=\"inline-flex min-h-6 items-center\">{link.label}</Link></li>\n                  ))}\n                </Flex>\n              </Flex>\n            ))}\n          </Grid>\n          <Separator />\n          <Flex direction=\"column\" gap=\"4\" className=\"md:flex-row md:items-center md:justify-between\">\n            <Flex direction=\"row\" align=\"center\" wrap=\"wrap\" gap=\"4\" className=\"gap-y-1\">\n              <Text size=\"sm\" color=\"muted\">© 2026 WiseOwl Finance, Inc. WiseOwl is not a bank.</Text>\n              {legal.map((item) => (\n                <Link key={item.label} href={item.href} size=\"sm\" className=\"inline-flex h-10 items-center text-fg-muted hover:text-fg\">{item.label}</Link>\n              ))}\n            </Flex>\n            <Flex direction=\"row\" gap=\"1\" className=\"-ml-2.5 md:ml-0 md:-mr-2.5\">\n              {social.map((item) => (\n                <Link key={item.name} href={item.href} aria-label={item.name} className=\"inline-flex h-10 w-10 items-center justify-center rounded-[var(--radius-lg)] text-fg-muted hover:bg-surface-hover hover:text-fg\">\n                  <Icon name={item.icon} size=\"md\" color=\"inherit\" />\n                </Link>\n              ))}\n            </Flex>\n          </Flex>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
     "sourcePath": "packages/block-schema/blocks/footer/footer-with-newsletter.tsx"
   },
   {
@@ -1083,7 +1093,7 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
   {
     "name": "Split Media Hero",
     "slug": "hero-split-media",
-    "description": "Two-column hero: headline, supporting copy, proof points and CTAs beside a framed product photo, on a theme-following accent mesh.",
+    "description": "Two-column hero: headline, supporting copy, proof points and CTAs beside a framed product photo, on a theme-following brand mesh.",
     "category": "hero",
     "tier": "system",
     "origin": "both",
@@ -1105,7 +1115,7 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "landing"
     ],
     "version": "1.0.0",
-    "rawCode": "import { Button, Container, Flex, Grid, Heading, Icon, Image, Section, Text } from \"@shavin/ui\";\n\nconst defaultPoints = [\"Read-only bank connections\", \"Owner, Editor and Viewer roles\", \"Free for one person, forever\"];\n\nexport function HeroSplitMedia({ points = defaultPoints }) {\n  return (\n    <Section size=\"hero\" bgOverlays=\"mesh-accent\">\n      <Container size=\"lg\">\n        <Grid columns=\"2\" gap=\"7\" align=\"center\" stack=\"auto\">\n          <Flex direction=\"column\" gap=\"6\">\n            <Flex direction=\"column\" gap=\"4\">\n              <Text size=\"overline\" color=\"muted\">For households</Text>\n              <Heading as=\"h1\" size=\"4xl\">Plan money together, without the arguments</Heading>\n              <Text size=\"lg\" color=\"muted\" className=\"max-w-[48ch] text-pretty\">\n                Share budgets, goals and bills with a partner or family member. Everyone sees the same numbers, and you choose who can edit.\n              </Text>\n            </Flex>\n            <Flex direction=\"row\" wrap=\"wrap\" gap=\"3\">\n              <Button size=\"lg\" asChild><a href=\"/signup\">Start a household</a></Button>\n              <Button size=\"lg\" variant=\"ghost\" asChild><a href=\"/pricing\">Compare plans</a></Button>\n            </Flex>\n            <Flex direction=\"column\" gap=\"2\">\n              {points.map((point) => (\n                <Flex key={point} direction=\"row\" align=\"center\" gap=\"2\">\n                  <Icon name=\"check\" size=\"sm\" color=\"accent\" />\n                  <Text size=\"sm\" color=\"muted\">{point}</Text>\n                </Flex>\n              ))}\n            </Flex>\n          </Flex>\n          <Image\n            src=\"https://assets.lummi.ai/assets/QmTsaPtLFDMQpYQYMP9C1qWfaxtEWp1EcQUNPQgT4mXY29?auto=format&w=1200\"\n            alt=\"A couple sitting close together against a warm pink wall\"\n            ratio=\"4/5\"\n            className=\"shadow-panel\"\n          />\n        </Grid>\n      </Container>\n    </Section>\n  );\n}\n",
+    "rawCode": "import { Button, Container, Flex, Grid, Heading, Icon, Image, Section, Text } from \"@shavin/ui\";\n\nconst defaultPoints = [\"Read-only bank connections\", \"Owner, Editor and Viewer roles\", \"Free for one person, forever\"];\n\nexport function HeroSplitMedia({ points = defaultPoints }) {\n  return (\n    <Section size=\"hero\" bgOverlays=\"mesh-brand\">\n      <Container size=\"lg\">\n        <Grid columns=\"2\" gap=\"7\" align=\"center\" stack=\"auto\">\n          <Flex direction=\"column\" gap=\"6\">\n            <Flex direction=\"column\" gap=\"4\">\n              <Text size=\"overline\" color=\"muted\">For households</Text>\n              <Heading as=\"h1\" size=\"4xl\">Plan money together, without the arguments</Heading>\n              <Text size=\"lg\" color=\"muted\" className=\"max-w-[48ch] text-pretty\">\n                Share budgets, goals and bills with a partner or family member. Everyone sees the same numbers, and you choose who can edit.\n              </Text>\n            </Flex>\n            <Flex direction=\"row\" wrap=\"wrap\" gap=\"3\">\n              <Button size=\"lg\" asChild><a href=\"/signup\">Start a household</a></Button>\n              <Button size=\"lg\" variant=\"ghost\" asChild><a href=\"/pricing\">Compare plans</a></Button>\n            </Flex>\n            <Flex direction=\"column\" gap=\"2\">\n              {points.map((point) => (\n                <Flex key={point} direction=\"row\" align=\"center\" gap=\"2\">\n                  <Icon name=\"check\" size=\"sm\" color=\"brand\" />\n                  <Text size=\"sm\" color=\"muted\">{point}</Text>\n                </Flex>\n              ))}\n            </Flex>\n          </Flex>\n          <Image\n            src=\"https://assets.lummi.ai/assets/QmTsaPtLFDMQpYQYMP9C1qWfaxtEWp1EcQUNPQgT4mXY29?auto=format&w=1200\"\n            alt=\"A couple sitting close together against a warm pink wall\"\n            ratio=\"4/5\"\n            className=\"shadow-panel\"\n          />\n        </Grid>\n      </Container>\n    </Section>\n  );\n}\n",
     "replaces": "hero-split-gradient",
     "sourcePath": "packages/block-schema/blocks/hero/hero-split-media.tsx"
   },
@@ -1242,23 +1252,27 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
   {
     "name": "Mega Menu Header",
     "slug": "nav-header-mega-menu",
-    "description": "Marketing header with wordmark, primary links and sign-in actions, shown with its product mega panel open: three icon link groups beside a featured release card.",
+    "description": "Marketing header with wordmark, primary links and sign-in actions. The Product item opens a mega panel on click (three icon link groups beside a featured release card; Esc closes it); below md a menu button opens the same links in a drawer. Includes a skip link.",
     "category": "navigation",
     "tier": "system",
     "origin": "both",
     "dependencies": [
       "Button",
-      "Card",
       "Container",
+      "Drawer",
       "Flex",
       "Grid",
-      "Heading",
       "Icon",
       "IconButton",
       "Image",
       "Link",
+      "Popover",
+      "PopoverAnchor",
+      "PopoverContent",
+      "PopoverTrigger",
       "Section",
-      "Text"
+      "Text",
+      "WiseOwlLogo"
     ],
     "tags": [
       "navigation",
@@ -1267,13 +1281,13 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "marketing"
     ],
     "version": "1.0.0",
-    "rawCode": "import { Button, Card, Container, Flex, Grid, Heading, Icon, IconButton, Image, Link, Section, Text } from \"@shavin/ui\";\n\nconst defaultLinks = [\n  { label: \"Household\", href: \"/household\" },\n  { label: \"Pricing\", href: \"/pricing\" },\n  { label: \"Developers\", href: \"/developers\" },\n];\n\nconst defaultGroups = [\n  {\n    title: \"Plan\",\n    items: [\n      { icon: \"target\", label: \"Budgets\", description: \"Monthly limits by category\", href: \"/product/budgets\" },\n      { icon: \"piggy-bank\", label: \"Savings goals\", description: \"Amounts and dates that add up\", href: \"/product/goals\" },\n      { icon: \"trending-up\", label: \"Cash-flow forecast\", description: \"The next 90 days, estimated\", href: \"/product/forecast\" },\n    ],\n  },\n  {\n    title: \"Track\",\n    items: [\n      { icon: \"landmark\", label: \"Accounts\", description: \"11,642 banks and credit unions\", href: \"/product/accounts\" },\n      { icon: \"receipt\", label: \"Bills & subscriptions\", description: \"Every recurring charge in one list\", href: \"/product/bills\" },\n      { icon: \"line-chart\", label: \"Net worth\", description: \"Assets and debts over time\", href: \"/product/net-worth\" },\n    ],\n  },\n  {\n    title: \"Ask\",\n    items: [\n      { icon: \"message-circle\", label: \"Ask WiseOwl\", description: \"Questions about your spending\", href: \"/product/ask\" },\n      { icon: \"scan-line\", label: \"Receipt scanning\", description: \"Line items from a photo\", href: \"/product/receipts\" },\n    ],\n  },\n];\n\nexport function NavHeaderMegaMenu({ links = defaultLinks, groups = defaultGroups }) {\n  return (\n    <Section as=\"header\" size=\"compact\">\n      <Container size=\"lg\">\n        <Flex direction=\"column\" gap=\"3\">\n          <Flex direction=\"row\" align=\"center\" justify=\"between\" gap=\"6\" className=\"h-14\">\n            <Heading as=\"p\" size=\"md\" tracking=\"tight\">WiseOwl</Heading>\n            <Flex as=\"nav\" direction=\"row\" align=\"center\" gap=\"1\" aria-label=\"Main\" className=\"max-md:hidden\">\n              <Button variant=\"ghost\" size=\"sm\" aria-expanded=\"true\" className=\"bg-surface-hover text-fg\" iconRight={<Icon name=\"chevron-down\" size=\"sm\" />}>Product</Button>\n              {links.map((link) => (\n                <Link key={link.label} href={link.href} size=\"sm\" underline=\"none\" className=\"rounded-[var(--radius-lg)] px-3 py-2 font-medium text-fg-muted hover:bg-surface-hover hover:text-fg\">{link.label}</Link>\n              ))}\n            </Flex>\n            <Flex direction=\"row\" align=\"center\" gap=\"2\" className=\"max-md:hidden\">\n              <Button variant=\"ghost\" size=\"sm\" asChild><a href=\"/signin\">Sign in</a></Button>\n              <Button size=\"sm\" asChild><a href=\"/signup\">Start free</a></Button>\n            </Flex>\n            <IconButton variant=\"ghost\" size=\"md\" aria-label=\"Open menu\" aria-expanded=\"false\" className=\"md:hidden\">\n              <Icon name=\"menu\" size=\"md\" color=\"inherit\" />\n            </IconButton>\n          </Flex>\n          <Card padding=\"none\" className=\"overflow-hidden shadow-panel max-md:hidden\">\n            <Flex direction=\"column\" className=\"lg:flex-row\">\n              <Grid columns=\"3\" gap=\"6\" className=\"flex-1 p-6\">\n                {groups.map((group) => (\n                  <Flex key={group.title} direction=\"column\" gap=\"3\">\n                    <Text size=\"overline\" color=\"muted\" className=\"px-2\">{group.title}</Text>\n                    <Flex direction=\"column\" gap=\"1\">\n                      {group.items.map((item) => (\n                        <Link key={item.label} href={item.href} underline=\"none\" className=\"flex items-start gap-3 rounded-[var(--radius-lg)] p-2 hover:bg-surface-hover\">\n                          <Flex align=\"center\" justify=\"center\" className=\"h-9 w-9 shrink-0 rounded-[var(--radius-lg)] border border-hairline bg-canvas\">\n                            <Icon name={item.icon} size=\"sm\" color=\"accent\" />\n                          </Flex>\n                          <Flex direction=\"column\" gap=\"1\" className=\"min-w-0\">\n                            <Text size=\"sm\" weight=\"medium\">{item.label}</Text>\n                            <Text size=\"sm\" color=\"muted\">{item.description}</Text>\n                          </Flex>\n                        </Link>\n                      ))}\n                    </Flex>\n                  </Flex>\n                ))}\n              </Grid>\n              <Flex direction=\"column\" gap=\"4\" className=\"border-hairline bg-canvas p-6 max-lg:border-t lg:w-[320px] lg:border-l\">\n                <Image src=\"https://assets.lummi.ai/assets/QmQrVUM5reCYVXq4MvwjghJ9Uhx9Uh4oKm6Y9xBzGE9x1S?auto=format&w=800\" alt=\"A warm red living room with a low sofa\" ratio=\"16/10\" radius=\"concentric\" className=\"max-lg:hidden\" />\n                <Flex direction=\"column\" gap=\"2\">\n                  <Text size=\"overline\" color=\"muted\">New in 3.8</Text>\n                  <Text size=\"md\" weight=\"semibold\">Shared goals for households</Text>\n                  <Text size=\"sm\" color=\"muted\" className=\"text-pretty\">Track one goal with contributions from everyone in the household.</Text>\n                </Flex>\n                <Link href=\"/changelog\" size=\"sm\" className=\"inline-flex items-center gap-1.5 font-medium\">\n                  Read the release notes\n                  <Icon name=\"arrow-right\" size=\"sm\" color=\"inherit\" />\n                </Link>\n              </Flex>\n            </Flex>\n          </Card>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
+    "rawCode": "import { Button, Container, Drawer, Flex, Grid, Icon, IconButton, Image, Link, Popover, PopoverAnchor, PopoverContent, PopoverTrigger, Section, Text, WiseOwlLogo } from \"@shavin/ui\";\n\nconst defaultLinks = [\n  { label: \"Household\", href: \"/household\" },\n  { label: \"Pricing\", href: \"/pricing\" },\n  { label: \"Developers\", href: \"/developers\" },\n];\n\nconst defaultGroups = [\n  {\n    title: \"Plan\",\n    items: [\n      { icon: \"target\", label: \"Budgets\", description: \"Monthly limits by category\", href: \"/product/budgets\" },\n      { icon: \"piggy-bank\", label: \"Savings goals\", description: \"Amounts and dates that add up\", href: \"/product/goals\" },\n      { icon: \"trending-up\", label: \"Cash-flow forecast\", description: \"The next 90 days, estimated\", href: \"/product/forecast\" },\n    ],\n  },\n  {\n    title: \"Track\",\n    items: [\n      { icon: \"landmark\", label: \"Accounts\", description: \"11,642 banks and credit unions\", href: \"/product/accounts\" },\n      { icon: \"receipt\", label: \"Bills & subscriptions\", description: \"Every recurring charge in one list\", href: \"/product/bills\" },\n      { icon: \"line-chart\", label: \"Net worth\", description: \"Assets and debts over time\", href: \"/product/net-worth\" },\n    ],\n  },\n  {\n    title: \"Ask\",\n    items: [\n      { icon: \"message-circle\", label: \"Ask WiseOwl\", description: \"Questions about your spending\", href: \"/product/ask\" },\n      { icon: \"scan-line\", label: \"Receipt scanning\", description: \"Line items from a photo\", href: \"/product/receipts\" },\n    ],\n  },\n];\n\nexport function NavHeaderMegaMenu({ links = defaultLinks, groups = defaultGroups }) {\n  return (\n    <Section as=\"header\" size=\"compact\">\n      <Container size=\"lg\">\n        <Link href=\"#main\" underline=\"none\" className=\"sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-[var(--radius-lg)] focus:border focus:border-hairline focus:bg-surface focus:px-3 focus:py-2 focus:text-fg\">Skip to content</Link>\n        <Popover>\n          <PopoverAnchor asChild>\n            <Flex direction=\"row\" align=\"center\" justify=\"between\" gap=\"6\" className=\"h-14\">\n              <WiseOwlLogo />\n              <Flex as=\"nav\" direction=\"row\" align=\"center\" gap=\"1\" aria-label=\"Main\" className=\"max-md:hidden\">\n                <PopoverTrigger asChild>\n                  <Button variant=\"ghost\" size=\"sm\" iconRight={<Icon name=\"chevron-down\" size=\"sm\" />} className=\"data-[state=open]:bg-surface-hover data-[state=open]:text-fg\">Product</Button>\n                </PopoverTrigger>\n                {links.map((link) => (\n                  <Link key={link.label} href={link.href} size=\"sm\" underline=\"none\" className=\"rounded-[var(--radius-lg)] px-3 py-2 font-medium text-fg-muted hover:bg-surface-hover hover:text-fg\">{link.label}</Link>\n                ))}\n              </Flex>\n              <Flex direction=\"row\" align=\"center\" gap=\"2\" className=\"max-md:hidden\">\n                <Button variant=\"ghost\" size=\"sm\" asChild><a href=\"/signin\">Sign in</a></Button>\n                <Button size=\"sm\" asChild><a href=\"/signup\">Start free</a></Button>\n              </Flex>\n              <Drawer\n                title=\"Menu\"\n                side=\"right\"\n                size=\"sm\"\n                trigger={\n                  <IconButton variant=\"ghost\" size=\"md\" aria-label=\"Open menu\" className=\"md:hidden\">\n                    <Icon name=\"menu\" size=\"md\" color=\"inherit\" />\n                  </IconButton>\n                }\n              >\n                <Flex as=\"nav\" direction=\"column\" gap=\"5\" aria-label=\"Mobile\">\n                  {groups.map((group) => (\n                    <Flex key={group.title} direction=\"column\" gap=\"1\">\n                      <Text size=\"overline\" color=\"muted\">{group.title}</Text>\n                      {group.items.map((item) => (\n                        <Link key={item.label} href={item.href} size=\"md\" underline=\"none\" className=\"rounded-[var(--radius-lg)] px-2 py-2 font-medium text-fg hover:bg-surface-hover\">{item.label}</Link>\n                      ))}\n                    </Flex>\n                  ))}\n                  <Flex direction=\"column\" gap=\"1\">\n                    {links.map((link) => (\n                      <Link key={link.label} href={link.href} size=\"md\" underline=\"none\" className=\"rounded-[var(--radius-lg)] px-2 py-2 font-medium text-fg hover:bg-surface-hover\">{link.label}</Link>\n                    ))}\n                  </Flex>\n                  <Button asChild><a href=\"/signup\">Start free</a></Button>\n                </Flex>\n              </Drawer>\n            </Flex>\n          </PopoverAnchor>\n          <PopoverContent align=\"start\" sideOffset={8} className=\"w-[var(--radix-popper-anchor-width)] overflow-hidden p-0 shadow-panel max-md:hidden\">\n            <Flex direction=\"column\" className=\"lg:flex-row\">\n              <Grid columns=\"3\" gap=\"6\" className=\"flex-1 p-6\">\n                {groups.map((group) => (\n                  <Flex key={group.title} direction=\"column\" gap=\"3\">\n                    <Text size=\"overline\" color=\"muted\" className=\"px-2\">{group.title}</Text>\n                    <Flex direction=\"column\" gap=\"1\">\n                      {group.items.map((item) => (\n                        <Link key={item.label} href={item.href} underline=\"none\" className=\"flex items-start gap-3 rounded-[var(--radius-lg)] p-2 hover:bg-surface-hover\">\n                          <Flex align=\"center\" justify=\"center\" className=\"h-9 w-9 shrink-0 rounded-[var(--radius-lg)] border border-hairline bg-canvas\">\n                            <Icon name={item.icon} size=\"sm\" color=\"brand\" />\n                          </Flex>\n                          <Flex direction=\"column\" gap=\"1\" className=\"min-w-0\">\n                            <Text size=\"sm\" weight=\"medium\">{item.label}</Text>\n                            <Text size=\"sm\" color=\"muted\">{item.description}</Text>\n                          </Flex>\n                        </Link>\n                      ))}\n                    </Flex>\n                  </Flex>\n                ))}\n              </Grid>\n              <Flex direction=\"column\" gap=\"4\" className=\"border-hairline bg-canvas p-6 max-lg:border-t lg:w-[320px] lg:border-l\">\n                <Image src=\"https://assets.lummi.ai/assets/QmQrVUM5reCYVXq4MvwjghJ9Uhx9Uh4oKm6Y9xBzGE9x1S?auto=format&w=800\" alt=\"A warm red living room with a low sofa\" ratio=\"16/10\" radius=\"concentric\" className=\"max-lg:hidden\" />\n                <Flex direction=\"column\" gap=\"2\">\n                  <Text size=\"overline\" color=\"muted\">New in 3.8</Text>\n                  <Text size=\"md\" weight=\"semibold\">Shared goals for households</Text>\n                  <Text size=\"sm\" color=\"muted\" className=\"text-pretty\">Track one goal with contributions from everyone in the household.</Text>\n                </Flex>\n                <Link href=\"/changelog\" size=\"sm\" className=\"inline-flex items-center gap-1.5 font-medium\">\n                  Read the release notes\n                  <Icon name=\"arrow-right\" size=\"sm\" color=\"inherit\" />\n                </Link>\n              </Flex>\n            </Flex>\n          </PopoverContent>\n        </Popover>\n      </Container>\n    </Section>\n  );\n}\n",
     "sourcePath": "packages/block-schema/blocks/navigation/nav-header-mega-menu.tsx"
   },
   {
     "name": "Sticky App Bar",
     "slug": "nav-sticky-appbar",
-    "description": "Translucent sticky app bar with breadcrumbs, a centred search field with a keyboard hint, notifications and the member avatar, above a budgets page.",
+    "description": "Translucent sticky app bar with breadcrumbs, a centred search field with a keyboard hint, a notifications panel and an account menu on the avatar, above a budgets page. On phones the search icon opens a search field.",
     "category": "navigation",
     "tier": "system",
     "origin": "both",
@@ -1289,6 +1303,12 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "Icon",
       "IconButton",
       "Kbd",
+      "Menu",
+      "MenuItem",
+      "MenuTrigger",
+      "Popover",
+      "PopoverContent",
+      "PopoverTrigger",
       "Progress",
       "Section",
       "Text",
@@ -1302,7 +1322,7 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "app"
     ],
     "version": "1.0.0",
-    "rawCode": "import { Avatar, Box, Breadcrumbs, Card, Container, Flex, Grid, Heading, Icon, IconButton, Kbd, Progress, Section, Text, TextField } from \"@shavin/ui\";\n\nconst defaultCrumbs = [\n  { label: \"Household\", href: \"/household\" },\n  { label: \"Budgets\", href: \"/budgets\" },\n  { label: \"September\" },\n];\n\nconst defaultBudgets = [\n  { name: \"Groceries\", spent: \"$612.40\", limit: \"$750.00\", percent: 82 },\n  { name: \"Dining out\", spent: \"$148.20\", limit: \"$250.00\", percent: 59 },\n  { name: \"Transport\", spent: \"$96.75\", limit: \"$180.00\", percent: 54 },\n];\n\nexport function NavStickyAppbar({ crumbs = defaultCrumbs, budgets = defaultBudgets }) {\n  return (\n    <Section size=\"compact\">\n      <Container size=\"lg\">\n        <Flex direction=\"column\" className=\"h-[640px] overflow-hidden rounded-[var(--radius-panel)] border border-hairline bg-canvas\">\n          <Flex as=\"header\" direction=\"row\" align=\"center\" justify=\"between\" gap=\"4\" className=\"sticky top-0 z-10 h-16 shrink-0 border-b border-hairline bg-surface/80 px-4 backdrop-blur\">\n            <Breadcrumbs items={crumbs} className=\"min-w-0 flex-1 md:flex-none\" />\n            <Box className=\"w-full max-w-md max-md:hidden\">\n              <TextField type=\"search\" placeholder=\"Search transactions, merchants or categories\" aria-label=\"Search\" leadingIcon={<Icon name=\"search\" size=\"sm\" color=\"muted\" />} trailingIcon={<Kbd>⌘K</Kbd>} />\n            </Box>\n            <Flex direction=\"row\" align=\"center\" gap=\"1\" className=\"shrink-0\">\n              <IconButton variant=\"ghost\" size=\"md\" aria-label=\"Search\" className=\"md:hidden\">\n                <Icon name=\"search\" size=\"md\" color=\"inherit\" />\n              </IconButton>\n              <Box className=\"relative\">\n                <IconButton variant=\"ghost\" size=\"md\" aria-label=\"Notifications, 3 unread\">\n                  <Icon name=\"bell\" size=\"md\" color=\"inherit\" />\n                </IconButton>\n                <Box aria-hidden=\"true\" className=\"pointer-events-none absolute right-2.5 top-2.5 h-2 w-2 rounded-full bg-accent ring-2 ring-surface\" />\n              </Box>\n              <Avatar src=\"https://assets.lummi.ai/assets/QmUWu25KJZruktibFUXivSoPDWmKs3S9ASXp7zVENaXSqL?auto=format&w=400\" alt=\"Maya Okafor\" size=\"md\" className=\"ml-1\" />\n            </Flex>\n          </Flex>\n          <Flex direction=\"column\" gap=\"6\" className=\"flex-1 overflow-y-auto p-6\">\n            <Flex direction=\"column\" gap=\"1\">\n              <Heading as=\"h1\" size=\"lg\">September budgets</Heading>\n              <Text size=\"sm\" color=\"muted\">18 days left in the month. Spending is on pace in 7 of 9 categories.</Text>\n            </Flex>\n            <Grid columns=\"auto\" minWidth=\"sm\" maxColumns=\"3\" gap=\"4\">\n              {budgets.map((budget) => (\n                <Card key={budget.name} padding=\"lg\">\n                  <Flex direction=\"column\" gap=\"3\">\n                    <Text size=\"sm\" color=\"muted\">{budget.name}</Text>\n                    <Flex direction=\"row\" align=\"baseline\" gap=\"2\">\n                      <Heading as=\"p\" size=\"lg\" className=\"tabular-nums\">{budget.spent}</Heading>\n                      <Text size=\"sm\" color=\"muted\" className=\"tabular-nums\">of {budget.limit}</Text>\n                    </Flex>\n                    <Progress value={budget.percent} />\n                  </Flex>\n                </Card>\n              ))}\n            </Grid>\n          </Flex>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
+    "rawCode": "import { Avatar, Box, Breadcrumbs, Card, Container, Flex, Grid, Heading, Icon, IconButton, Kbd, Menu, MenuItem, MenuTrigger, Popover, PopoverContent, PopoverTrigger, Progress, Section, Text, TextField } from \"@shavin/ui\";\n\nconst defaultCrumbs = [\n  { label: \"Household\", href: \"/household\" },\n  { label: \"Budgets\", href: \"/budgets\" },\n  { label: \"September\" },\n];\n\nconst defaultNotifications = [\n  { title: \"Groceries is at 82% of its limit\", time: \"2 h ago\" },\n  { title: \"Rent posted: $1,850.00\", time: \"Yesterday\" },\n  { title: \"Shared goal: Maya added $120\", time: \"2 days ago\" },\n];\n\nconst defaultBudgets = [\n  { name: \"Groceries\", spent: \"$612.40\", limit: \"$750.00\", percent: 82 },\n  { name: \"Dining out\", spent: \"$148.20\", limit: \"$250.00\", percent: 59 },\n  { name: \"Transport\", spent: \"$96.75\", limit: \"$180.00\", percent: 54 },\n];\n\nexport function NavStickyAppbar({ crumbs = defaultCrumbs, budgets = defaultBudgets, notifications = defaultNotifications }) {\n  return (\n    <Section size=\"compact\">\n      <Container size=\"lg\">\n        <Flex direction=\"column\" className=\"h-[640px] overflow-hidden rounded-[var(--radius-panel)] border border-hairline bg-canvas\">\n          <Flex as=\"header\" direction=\"row\" align=\"center\" justify=\"between\" gap=\"4\" className=\"sticky top-0 z-10 h-16 shrink-0 border-b border-hairline bg-surface/80 px-4 backdrop-blur\">\n            <Breadcrumbs items={crumbs} className=\"min-w-0 flex-1 md:flex-none\" />\n            <Box className=\"w-full max-w-md max-md:hidden\">\n              <TextField type=\"search\" placeholder=\"Search transactions, merchants or categories\" aria-label=\"Search\" leadingIcon={<Icon name=\"search\" size=\"sm\" color=\"muted\" />} trailingIcon={<Kbd>⌘K</Kbd>} />\n            </Box>\n            <Flex direction=\"row\" align=\"center\" gap=\"1\" className=\"shrink-0\">\n              <Popover>\n                <PopoverTrigger asChild>\n                  <IconButton variant=\"ghost\" size=\"md\" aria-label=\"Search\" className=\"md:hidden\">\n                    <Icon name=\"search\" size=\"md\" color=\"inherit\" />\n                  </IconButton>\n                </PopoverTrigger>\n                <PopoverContent align=\"end\" className=\"w-[min(22rem,calc(100vw-2rem))]\">\n                  <TextField type=\"search\" placeholder=\"Search transactions\" aria-label=\"Search transactions\" leadingIcon={<Icon name=\"search\" size=\"sm\" color=\"muted\" />} />\n                </PopoverContent>\n              </Popover>\n              <Popover>\n                <Box className=\"relative\">\n                  <PopoverTrigger asChild>\n                    <IconButton variant=\"ghost\" size=\"md\" aria-label=\"Notifications, 3 unread\">\n                      <Icon name=\"bell\" size=\"md\" color=\"inherit\" />\n                    </IconButton>\n                  </PopoverTrigger>\n                  <Box aria-hidden=\"true\" className=\"pointer-events-none absolute right-2.5 top-2.5 h-2 w-2 rounded-full bg-brand ring-2 ring-surface\" />\n                </Box>\n                <PopoverContent align=\"end\" className=\"w-[min(22rem,calc(100vw-2rem))]\">\n                  <Flex direction=\"column\" gap=\"3\">\n                    <Text size=\"sm\" weight=\"semibold\">Notifications</Text>\n                    {notifications.map((item) => (\n                      <Flex key={item.title} direction=\"column\" gap=\"0\">\n                        <Text size=\"sm\">{item.title}</Text>\n                        <Text size=\"xs\" color=\"subtle\">{item.time}</Text>\n                      </Flex>\n                    ))}\n                  </Flex>\n                </PopoverContent>\n              </Popover>\n              <Menu trigger={\n                <MenuTrigger aria-label=\"Account menu\" className=\"ml-1 rounded-full\">\n                  <Avatar src=\"https://assets.lummi.ai/assets/QmUWu25KJZruktibFUXivSoPDWmKs3S9ASXp7zVENaXSqL?auto=format&w=400\" alt=\"Maya Okafor\" size=\"md\" />\n                </MenuTrigger>\n              }>\n                <MenuItem>Profile</MenuItem>\n                <MenuItem>Household settings</MenuItem>\n                <MenuItem className=\"border-t border-hairline\">Sign out</MenuItem>\n              </Menu>\n            </Flex>\n          </Flex>\n          <Flex direction=\"column\" gap=\"6\" className=\"flex-1 overflow-y-auto p-6\">\n            <Flex direction=\"column\" gap=\"1\">\n              <Heading as=\"h1\" size=\"lg\">September budgets</Heading>\n              <Text size=\"sm\" color=\"muted\">18 days left in the month. Spending is on pace in 7 of 9 categories.</Text>\n            </Flex>\n            <Grid columns=\"auto\" minWidth=\"sm\" maxColumns=\"3\" gap=\"4\">\n              {budgets.map((budget) => (\n                <Card key={budget.name} padding=\"lg\">\n                  <Flex direction=\"column\" gap=\"3\">\n                    <Text size=\"sm\" color=\"muted\">{budget.name}</Text>\n                    <Flex direction=\"row\" align=\"baseline\" gap=\"2\">\n                      <Heading as=\"p\" size=\"lg\" className=\"tabular-nums\">{budget.spent}</Heading>\n                      <Text size=\"sm\" color=\"muted\" className=\"tabular-nums\">of {budget.limit}</Text>\n                    </Flex>\n                    <Progress value={budget.percent} />\n                  </Flex>\n                </Card>\n              ))}\n            </Grid>\n          </Flex>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
     "sourcePath": "packages/block-schema/blocks/navigation/nav-sticky-appbar.tsx"
   },
   {
@@ -1328,7 +1348,8 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "SidebarNavItem",
       "SidebarSection",
       "SidebarTrigger",
-      "Text"
+      "Text",
+      "WiseOwlMark"
     ],
     "tags": [
       "navigation",
@@ -1338,7 +1359,7 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "app"
     ],
     "version": "1.0.0",
-    "rawCode": "import { Card, Container, Flex, Grid, Heading, Icon, Progress, Section, Sidebar, SidebarBody, SidebarFooter, SidebarHeader, SidebarNavItem, SidebarSection, SidebarTrigger, Text } from \"@shavin/ui\";\n\nconst defaultItems = [\n  { icon: \"layout-dashboard\", label: \"Overview\", active: true },\n  { icon: \"landmark\", label: \"Accounts\", active: false },\n  { icon: \"arrow-left-right\", label: \"Transactions\", active: false },\n  { icon: \"target\", label: \"Budgets\", active: false },\n  { icon: \"piggy-bank\", label: \"Goals\", active: false },\n  { icon: \"receipt\", label: \"Bills\", active: false },\n];\n\nconst defaultGoals = [\n  { name: \"Emergency fund\", saved: \"$8,400.00\", target: \"$12,000.00\", percent: 70 },\n  { name: \"Summer in Lisbon\", saved: \"$2,150.00\", target: \"$4,800.00\", percent: 45 },\n];\n\nexport function SidebarCollapsible({ items = defaultItems, goals = defaultGoals }) {\n  return (\n    <Section size=\"compact\">\n      <Container size=\"lg\">\n        <Flex direction=\"row\" className=\"h-[640px] overflow-hidden rounded-[var(--radius-panel)] border border-hairline bg-canvas\">\n          <Sidebar variant=\"collapsible\" defaultCollapsed>\n            <SidebarHeader>\n              <Flex role=\"img\" aria-label=\"WiseOwl\" align=\"center\" justify=\"center\" className=\"h-8 w-8 rounded-[var(--radius-lg)] bg-fg text-sm font-semibold text-canvas\">W</Flex>\n            </SidebarHeader>\n            <SidebarBody>\n              <SidebarSection>\n                {items.map((item) => (\n                  <SidebarNavItem key={item.label} label={item.label} active={item.active} icon={<Icon name={item.icon} size=\"sm\" color=\"inherit\" />} />\n                ))}\n              </SidebarSection>\n            </SidebarBody>\n            <SidebarFooter>\n              <SidebarTrigger />\n            </SidebarFooter>\n          </Sidebar>\n          <Flex direction=\"column\" gap=\"6\" className=\"min-w-0 flex-1 overflow-y-auto p-6\">\n            <Flex direction=\"column\" gap=\"1\">\n              <Heading as=\"h1\" size=\"lg\">Overview</Heading>\n              <Text size=\"sm\" color=\"muted\">The sidebar stays out of the way. Hover an icon to see its name.</Text>\n            </Flex>\n            <Card padding=\"lg\">\n              <Flex direction=\"column\" gap=\"2\">\n                <Text size=\"sm\" color=\"muted\">Net worth</Text>\n                <Heading as=\"p\" size=\"xl\" className=\"tabular-nums\">$184,276.52</Heading>\n                <Text size=\"sm\" color=\"muted\" className=\"tabular-nums\">Up $2,914.08 since August</Text>\n              </Flex>\n            </Card>\n            <Grid columns=\"auto\" minWidth=\"sm\" maxColumns=\"2\" gap=\"4\">\n              {goals.map((goal) => (\n                <Card key={goal.name} padding=\"lg\">\n                  <Flex direction=\"column\" gap=\"3\">\n                    <Text size=\"sm\" weight=\"medium\">{goal.name}</Text>\n                    <Text size=\"sm\" color=\"muted\" className=\"tabular-nums\">{goal.saved} of {goal.target}</Text>\n                    <Progress value={goal.percent} />\n                  </Flex>\n                </Card>\n              ))}\n            </Grid>\n          </Flex>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
+    "rawCode": "import { Card, Container, Flex, Grid, Heading, Icon, Progress, Section, Sidebar, SidebarBody, SidebarFooter, SidebarHeader, SidebarNavItem, SidebarSection, SidebarTrigger, Text, WiseOwlMark } from \"@shavin/ui\";\n\nconst defaultItems = [\n  { icon: \"layout-dashboard\", label: \"Overview\", active: true },\n  { icon: \"landmark\", label: \"Accounts\", active: false },\n  { icon: \"arrow-left-right\", label: \"Transactions\", active: false },\n  { icon: \"target\", label: \"Budgets\", active: false },\n  { icon: \"piggy-bank\", label: \"Goals\", active: false },\n  { icon: \"receipt\", label: \"Bills\", active: false },\n];\n\nconst defaultGoals = [\n  { name: \"Emergency fund\", saved: \"$8,400.00\", target: \"$12,000.00\", percent: 70 },\n  { name: \"Summer in Lisbon\", saved: \"$2,150.00\", target: \"$4,800.00\", percent: 45 },\n];\n\nexport function SidebarCollapsible({ items = defaultItems, goals = defaultGoals }) {\n  return (\n    <Section size=\"compact\">\n      <Container size=\"lg\">\n        <Flex direction=\"row\" className=\"h-[640px] overflow-hidden rounded-[var(--radius-panel)] border border-hairline bg-canvas\">\n          <Sidebar variant=\"collapsible\" defaultCollapsed>\n            <SidebarHeader>\n              <WiseOwlMark size=\"lg\" />\n            </SidebarHeader>\n            <SidebarBody>\n              <SidebarSection>\n                {items.map((item) => (\n                  <SidebarNavItem key={item.label} label={item.label} active={item.active} icon={<Icon name={item.icon} size=\"sm\" color=\"inherit\" />} />\n                ))}\n              </SidebarSection>\n            </SidebarBody>\n            <SidebarFooter>\n              <SidebarTrigger />\n            </SidebarFooter>\n          </Sidebar>\n          <Flex direction=\"column\" gap=\"6\" className=\"min-w-0 flex-1 overflow-y-auto p-6\">\n            <Flex direction=\"column\" gap=\"1\">\n              <Heading as=\"h1\" size=\"lg\">Overview</Heading>\n              <Text size=\"sm\" color=\"muted\">The sidebar stays out of the way. Hover an icon to see its name.</Text>\n            </Flex>\n            <Card padding=\"lg\">\n              <Flex direction=\"column\" gap=\"2\">\n                <Text size=\"sm\" color=\"muted\">Net worth</Text>\n                <Heading as=\"p\" size=\"xl\" className=\"tabular-nums\">$184,276.52</Heading>\n                <Text size=\"sm\" color=\"muted\" className=\"tabular-nums\">Up $2,914.08 since August</Text>\n              </Flex>\n            </Card>\n            <Grid columns=\"auto\" minWidth=\"sm\" maxColumns=\"2\" gap=\"4\">\n              {goals.map((goal) => (\n                <Card key={goal.name} padding=\"lg\">\n                  <Flex direction=\"column\" gap=\"3\">\n                    <Text size=\"sm\" weight=\"medium\">{goal.name}</Text>\n                    <Text size=\"sm\" color=\"muted\" className=\"tabular-nums\">{goal.saved} of {goal.target}</Text>\n                    <Progress value={goal.percent} />\n                  </Flex>\n                </Card>\n              ))}\n            </Grid>\n          </Flex>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
     "sourcePath": "packages/block-schema/blocks/navigation/sidebar-collapsible.tsx"
   },
   {
@@ -1397,7 +1418,8 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "SidebarNavItem",
       "SidebarSection",
       "SidebarTrigger",
-      "Text"
+      "Text",
+      "WiseOwlLogo"
     ],
     "tags": [
       "navigation",
@@ -1407,7 +1429,7 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "app"
     ],
     "version": "1.0.0",
-    "rawCode": "import { AppFrame, Button, Card, Container, Flex, Grid, Heading, Icon, Section, Sidebar, SidebarBody, SidebarFooter, SidebarHeader, SidebarNavItem, SidebarSection, SidebarTrigger, Text } from \"@shavin/ui\";\n\nconst defaultItems = [\n  { icon: \"layout-dashboard\", label: \"Overview\", active: true },\n  { icon: \"arrow-left-right\", label: \"Transactions\", active: false },\n  { icon: \"target\", label: \"Budgets\", active: false },\n  { icon: \"piggy-bank\", label: \"Goals\", active: false },\n  { icon: \"message-circle\", label: \"Ask WiseOwl\", active: false },\n];\n\nconst defaultStats = [\n  { label: \"Net worth\", value: \"$184,276.52\", note: \"Up $2,914.08 since August\" },\n  { label: \"Left to spend\", value: \"$1,284.60\", note: \"18 days left in September\" },\n];\n\nexport function SidebarFloating({ items = defaultItems, stats = defaultStats }) {\n  return (\n    <Section size=\"compact\">\n      <Container size=\"lg\">\n        <Flex bgOverlays=\"mesh-accent\" className=\"relative h-[640px] overflow-hidden rounded-[var(--radius-panel)] border border-hairline bg-canvas\">\n          <AppFrame\n            className=\"h-full w-full\"\n            sidebar={\n              <Sidebar variant=\"floating\" width=\"w-60\" className=\"bg-surface/80 backdrop-blur\">\n                <SidebarHeader className=\"border-b-0\">\n                  <Heading as=\"p\" size=\"sm\" tracking=\"tight\">WiseOwl</Heading>\n                </SidebarHeader>\n                <SidebarBody>\n                  <SidebarSection>\n                    {items.map((item) => (\n                      <SidebarNavItem key={item.label} label={item.label} active={item.active} icon={<Icon name={item.icon} size=\"sm\" color=\"inherit\" />} />\n                    ))}\n                  </SidebarSection>\n                </SidebarBody>\n                <SidebarFooter className=\"border-t-0 p-4\">\n                  <Flex direction=\"column\" gap=\"3\" className=\"w-full\">\n                    <Flex direction=\"column\" gap=\"1\">\n                      <Text size=\"overline\" color=\"muted\">Bills due this week</Text>\n                      <Text size=\"sm\" className=\"text-pretty tabular-nums\">3 bills totalling $1,418.72 before Friday.</Text>\n                    </Flex>\n                    <Button variant=\"outline\" size=\"sm\" className=\"w-full\">Review bills</Button>\n                  </Flex>\n                </SidebarFooter>\n              </Sidebar>\n            }\n          >\n            <Flex direction=\"row\" align=\"center\" gap=\"2\" className=\"shavin-frame-compact-only m-3 mb-0 h-14 shrink-0 rounded-[var(--radius-panel)] border border-hairline bg-surface/80 pl-2 pr-4 shadow-panel backdrop-blur\">\n              <SidebarTrigger />\n              <Heading as=\"p\" size=\"sm\" tracking=\"tight\">WiseOwl</Heading>\n            </Flex>\n            <Flex direction=\"column\" gap=\"6\" role=\"region\" aria-label=\"Content\" tabIndex={0} className=\"relative min-h-0 min-w-0 flex-1 overflow-y-auto p-6\">\n              <Flex direction=\"column\" gap=\"1\">\n                <Heading as=\"h1\" size=\"lg\">Good morning, Maya</Heading>\n                <Text size=\"sm\" color=\"muted\">Everything synced 4 minutes ago. Two budgets need a look this week.</Text>\n              </Flex>\n              <Grid columns=\"auto\" minWidth=\"sm\" maxColumns=\"2\" gap=\"4\">\n                {stats.map((stat) => (\n                  <Card key={stat.label} padding=\"lg\">\n                    <Flex direction=\"column\" gap=\"2\">\n                      <Text size=\"sm\" color=\"muted\">{stat.label}</Text>\n                      <Heading as=\"p\" size=\"xl\" className=\"tabular-nums\">{stat.value}</Heading>\n                      <Text size=\"sm\" color=\"muted\">{stat.note}</Text>\n                    </Flex>\n                  </Card>\n                ))}\n              </Grid>\n            </Flex>\n          </AppFrame>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
+    "rawCode": "import { AppFrame, Button, Card, Container, Flex, Grid, Heading, Icon, Section, Sidebar, SidebarBody, SidebarFooter, SidebarHeader, SidebarNavItem, SidebarSection, SidebarTrigger, Text, WiseOwlLogo } from \"@shavin/ui\";\n\nconst defaultItems = [\n  { icon: \"layout-dashboard\", label: \"Overview\", active: true },\n  { icon: \"arrow-left-right\", label: \"Transactions\", active: false },\n  { icon: \"target\", label: \"Budgets\", active: false },\n  { icon: \"piggy-bank\", label: \"Goals\", active: false },\n  { icon: \"message-circle\", label: \"Ask WiseOwl\", active: false },\n];\n\nconst defaultStats = [\n  { label: \"Net worth\", value: \"$184,276.52\", note: \"Up $2,914.08 since August\" },\n  { label: \"Left to spend\", value: \"$1,284.60\", note: \"18 days left in September\" },\n];\n\nexport function SidebarFloating({ items = defaultItems, stats = defaultStats }) {\n  return (\n    <Section size=\"compact\">\n      <Container size=\"lg\">\n        <Flex bgOverlays=\"mesh-brand\" className=\"relative h-[640px] overflow-hidden rounded-[var(--radius-panel)] border border-hairline bg-canvas\">\n          <AppFrame\n            className=\"h-full w-full\"\n            sidebar={\n              <Sidebar variant=\"floating\" width=\"w-60\" className=\"bg-surface/80 backdrop-blur\">\n                <SidebarHeader className=\"border-b-0\">\n                  <WiseOwlLogo size=\"sm\" />\n                </SidebarHeader>\n                <SidebarBody>\n                  <SidebarSection>\n                    {items.map((item) => (\n                      <SidebarNavItem key={item.label} label={item.label} active={item.active} icon={<Icon name={item.icon} size=\"sm\" color=\"inherit\" />} />\n                    ))}\n                  </SidebarSection>\n                </SidebarBody>\n                <SidebarFooter className=\"border-t-0 p-4\">\n                  <Flex direction=\"column\" gap=\"3\" className=\"w-full\">\n                    <Flex direction=\"column\" gap=\"1\">\n                      <Text size=\"overline\" color=\"muted\">Bills due this week</Text>\n                      <Text size=\"sm\" className=\"text-pretty tabular-nums\">3 bills totalling $1,418.72 before Friday.</Text>\n                    </Flex>\n                    <Button variant=\"outline\" size=\"sm\" className=\"w-full\">Review bills</Button>\n                  </Flex>\n                </SidebarFooter>\n              </Sidebar>\n            }\n          >\n            <Flex direction=\"row\" align=\"center\" gap=\"2\" className=\"shavin-frame-compact-only m-3 mb-0 h-14 shrink-0 rounded-[var(--radius-panel)] border border-hairline bg-surface/80 pl-2 pr-4 shadow-panel backdrop-blur\">\n              <SidebarTrigger />\n              <WiseOwlLogo size=\"sm\" />\n            </Flex>\n            <Flex direction=\"column\" gap=\"6\" role=\"region\" aria-label=\"Content\" tabIndex={0} className=\"relative min-h-0 min-w-0 flex-1 overflow-y-auto p-6\">\n              <Flex direction=\"column\" gap=\"1\">\n                <Heading as=\"h1\" size=\"lg\">Good morning, Maya</Heading>\n                <Text size=\"sm\" color=\"muted\">Everything synced 4 minutes ago. Two budgets need a look this week.</Text>\n              </Flex>\n              <Grid columns=\"auto\" minWidth=\"sm\" maxColumns=\"2\" gap=\"4\">\n                {stats.map((stat) => (\n                  <Card key={stat.label} padding=\"lg\">\n                    <Flex direction=\"column\" gap=\"2\">\n                      <Text size=\"sm\" color=\"muted\">{stat.label}</Text>\n                      <Heading as=\"p\" size=\"xl\" className=\"tabular-nums\">{stat.value}</Heading>\n                      <Text size=\"sm\" color=\"muted\">{stat.note}</Text>\n                    </Flex>\n                  </Card>\n                ))}\n              </Grid>\n            </Flex>\n          </AppFrame>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
     "sourcePath": "packages/block-schema/blocks/navigation/sidebar-floating.tsx"
   },
   {
@@ -1470,7 +1492,8 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "SidebarSection",
       "SidebarTrigger",
       "Text",
-      "TopBar"
+      "TopBar",
+      "WiseOwlLogo"
     ],
     "tags": [
       "navigation",
@@ -1479,7 +1502,7 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "app-shell"
     ],
     "version": "1.0.0",
-    "rawCode": "import { AppFrame, Avatar, Box, Card, Container, Flex, Grid, Heading, Icon, Section, Sidebar, SidebarBody, SidebarFooter, SidebarHeader, SidebarNavItem, SidebarSection, SidebarTrigger, Text, TopBar } from \"@shavin/ui\";\n\nconst defaultSections = [\n  {\n    title: \"Overview\",\n    items: [\n      { icon: \"layout-dashboard\", label: \"Overview\", active: true },\n      { icon: \"landmark\", label: \"Accounts\", active: false },\n      { icon: \"arrow-left-right\", label: \"Transactions\", active: false },\n    ],\n  },\n  {\n    title: \"Planning\",\n    items: [\n      { icon: \"target\", label: \"Budgets\", active: false },\n      { icon: \"piggy-bank\", label: \"Goals\", active: false },\n      { icon: \"receipt\", label: \"Bills\", active: false },\n      { icon: \"trending-up\", label: \"Forecast\", active: false },\n    ],\n  },\n  {\n    title: \"Settings\",\n    items: [\n      { icon: \"users\", label: \"Members\", active: false },\n      { icon: \"settings\", label: \"Preferences\", active: false },\n      { icon: \"life-buoy\", label: \"Help\", active: false },\n    ],\n  },\n];\n\nconst defaultStats = [\n  { label: \"Net worth\", value: \"$184,276.52\", note: \"Up $2,914.08 this month\" },\n  { label: \"Spent in September\", value: \"$3,862.19\", note: \"$1,284.60 left across 9 budgets\" },\n];\n\nexport function SidebarStandard({ sections = defaultSections, stats = defaultStats }) {\n  return (\n    <Section size=\"compact\">\n      <Container size=\"lg\">\n        <Box className=\"h-[640px] overflow-hidden rounded-[var(--radius-panel)] border border-hairline bg-canvas\">\n          <AppFrame\n            className=\"h-full\"\n            sidebar={\n              <Sidebar width=\"w-64\">\n                <SidebarHeader>\n                  <Heading as=\"p\" size=\"sm\" tracking=\"tight\">WiseOwl</Heading>\n                </SidebarHeader>\n                <SidebarBody>\n                  {sections.map((section) => (\n                    <SidebarSection key={section.title} title={section.title}>\n                      {section.items.map((item) => (\n                        <SidebarNavItem key={item.label} label={item.label} active={item.active} icon={<Icon name={item.icon} size=\"sm\" color=\"inherit\" />} />\n                      ))}\n                    </SidebarSection>\n                  ))}\n                </SidebarBody>\n                <SidebarFooter>\n                  <Flex direction=\"row\" align=\"center\" gap=\"2\" className=\"min-w-0\">\n                    <Avatar src=\"https://assets.lummi.ai/assets/QmUWu25KJZruktibFUXivSoPDWmKs3S9ASXp7zVENaXSqL?auto=format&w=400\" fallback=\"MO\" size=\"sm\" />\n                    <Flex direction=\"column\" gap=\"0\" className=\"min-w-0\">\n                      <Text size=\"sm\" weight=\"medium\" truncate>Maya Okafor</Text>\n                      <Text size=\"xs\" color=\"subtle\" truncate>Household owner</Text>\n                    </Flex>\n                  </Flex>\n                </SidebarFooter>\n              </Sidebar>\n            }\n          >\n            <TopBar className=\"gap-2\">\n              <SidebarTrigger />\n              <Text as=\"span\" size=\"sm\" weight=\"medium\">Overview</Text>\n            </TopBar>\n            <Flex direction=\"column\" gap=\"6\" className=\"min-h-0 min-w-0 flex-1 overflow-y-auto p-6\">\n              <Flex direction=\"column\" gap=\"1\">\n                <Heading as=\"h1\" size=\"lg\">Overview</Heading>\n                <Text size=\"sm\" color=\"muted\">Okafor-Reyes Household · 7 accounts synced 4 minutes ago</Text>\n              </Flex>\n              <Grid columns=\"auto\" minWidth=\"sm\" gap=\"4\">\n                {stats.map((stat) => (\n                  <Card key={stat.label} padding=\"lg\">\n                    <Flex direction=\"column\" gap=\"2\">\n                      <Text size=\"sm\" color=\"muted\">{stat.label}</Text>\n                      <Heading as=\"p\" size=\"xl\" className=\"tabular-nums\">{stat.value}</Heading>\n                      <Text size=\"sm\" color=\"muted\" className=\"tabular-nums\">{stat.note}</Text>\n                    </Flex>\n                  </Card>\n                ))}\n              </Grid>\n              <Flex direction=\"column\" className=\"min-h-[160px] flex-1 rounded-[var(--radius-panel)] border border-dashed border-hairline\" />\n            </Flex>\n          </AppFrame>\n        </Box>\n      </Container>\n    </Section>\n  );\n}\n",
+    "rawCode": "import { AppFrame, Avatar, Box, Card, Container, Flex, Grid, Heading, Icon, Section, Sidebar, SidebarBody, SidebarFooter, SidebarHeader, SidebarNavItem, SidebarSection, SidebarTrigger, Text, TopBar, WiseOwlLogo } from \"@shavin/ui\";\n\nconst defaultSections = [\n  {\n    title: \"Overview\",\n    items: [\n      { icon: \"layout-dashboard\", label: \"Overview\", active: true },\n      { icon: \"landmark\", label: \"Accounts\", active: false },\n      { icon: \"arrow-left-right\", label: \"Transactions\", active: false },\n    ],\n  },\n  {\n    title: \"Planning\",\n    items: [\n      { icon: \"target\", label: \"Budgets\", active: false },\n      { icon: \"piggy-bank\", label: \"Goals\", active: false },\n      { icon: \"receipt\", label: \"Bills\", active: false },\n      { icon: \"trending-up\", label: \"Forecast\", active: false },\n    ],\n  },\n  {\n    title: \"Settings\",\n    items: [\n      { icon: \"users\", label: \"Members\", active: false },\n      { icon: \"settings\", label: \"Preferences\", active: false },\n      { icon: \"life-buoy\", label: \"Help\", active: false },\n    ],\n  },\n];\n\nconst defaultStats = [\n  { label: \"Net worth\", value: \"$184,276.52\", note: \"Up $2,914.08 this month\" },\n  { label: \"Spent in September\", value: \"$3,862.19\", note: \"$1,284.60 left across 9 budgets\" },\n];\n\nexport function SidebarStandard({ sections = defaultSections, stats = defaultStats }) {\n  return (\n    <Section size=\"compact\">\n      <Container size=\"lg\">\n        <Box className=\"h-[640px] overflow-hidden rounded-[var(--radius-panel)] border border-hairline bg-canvas\">\n          <AppFrame\n            className=\"h-full\"\n            sidebar={\n              <Sidebar width=\"w-64\">\n                <SidebarHeader>\n                  <WiseOwlLogo size=\"sm\" />\n                </SidebarHeader>\n                <SidebarBody>\n                  {sections.map((section) => (\n                    <SidebarSection key={section.title} title={section.title}>\n                      {section.items.map((item) => (\n                        <SidebarNavItem key={item.label} label={item.label} active={item.active} icon={<Icon name={item.icon} size=\"sm\" color=\"inherit\" />} />\n                      ))}\n                    </SidebarSection>\n                  ))}\n                </SidebarBody>\n                <SidebarFooter>\n                  <Flex direction=\"row\" align=\"center\" gap=\"2\" className=\"min-w-0\">\n                    <Avatar src=\"https://assets.lummi.ai/assets/QmUWu25KJZruktibFUXivSoPDWmKs3S9ASXp7zVENaXSqL?auto=format&w=400\" fallback=\"MO\" size=\"sm\" />\n                    <Flex direction=\"column\" gap=\"0\" className=\"min-w-0\">\n                      <Text size=\"sm\" weight=\"medium\" truncate>Maya Okafor</Text>\n                      <Text size=\"xs\" color=\"subtle\" truncate>Household owner</Text>\n                    </Flex>\n                  </Flex>\n                </SidebarFooter>\n              </Sidebar>\n            }\n          >\n            <TopBar className=\"gap-2\">\n              <SidebarTrigger />\n              <Text as=\"span\" size=\"sm\" weight=\"medium\">Overview</Text>\n            </TopBar>\n            <Flex direction=\"column\" gap=\"6\" className=\"min-h-0 min-w-0 flex-1 overflow-y-auto p-6\">\n              <Flex direction=\"column\" gap=\"1\">\n                <Heading as=\"h1\" size=\"lg\">Overview</Heading>\n                <Text size=\"sm\" color=\"muted\">Okafor-Reyes Household · 7 accounts synced 4 minutes ago</Text>\n              </Flex>\n              <Grid columns=\"auto\" minWidth=\"sm\" gap=\"4\">\n                {stats.map((stat) => (\n                  <Card key={stat.label} padding=\"lg\">\n                    <Flex direction=\"column\" gap=\"2\">\n                      <Text size=\"sm\" color=\"muted\">{stat.label}</Text>\n                      <Heading as=\"p\" size=\"xl\" className=\"tabular-nums\">{stat.value}</Heading>\n                      <Text size=\"sm\" color=\"muted\" className=\"tabular-nums\">{stat.note}</Text>\n                    </Flex>\n                  </Card>\n                ))}\n              </Grid>\n              <Flex direction=\"column\" className=\"min-h-[160px] flex-1 rounded-[var(--radius-panel)] border border-dashed border-hairline\" />\n            </Flex>\n          </AppFrame>\n        </Box>\n      </Container>\n    </Section>\n  );\n}\n",
     "sourcePath": "packages/block-schema/blocks/navigation/sidebar-standard.tsx"
   },
   {
@@ -1550,13 +1573,13 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "matrix"
     ],
     "version": "1.0.0",
-    "rawCode": "import { Badge, Button, Container, Flex, Grid, Heading, Icon, Section, Text } from \"@shavin/ui\";\n\nconst defaultPlans = [\n  { name: \"Free\", price: \"$0\", period: \"forever\", featured: false, cta: \"Start free\" },\n  { name: \"Plus\", price: \"$7.99\", period: \"per month\", featured: false, cta: \"Start trial\" },\n  { name: \"Household\", price: \"$13.99\", period: \"per month\", featured: true, cta: \"Start trial\" },\n];\n\nconst defaultGroups = [\n  {\n    title: \"Accounts\",\n    rows: [\n      { feature: \"Linked accounts\", values: [\"2\", \"Unlimited\", \"Unlimited\"] },\n      { feature: \"Transaction history\", values: [\"12 months\", \"24 months\", \"24 months\"] },\n      { feature: \"Manual and cash accounts\", values: [\"yes\", \"yes\", \"yes\"] },\n    ],\n  },\n  {\n    title: \"Planning\",\n    rows: [\n      { feature: \"Budget categories\", values: [\"10\", \"Unlimited\", \"Unlimited\"] },\n      { feature: \"Savings goals\", values: [\"1\", \"Unlimited\", \"Unlimited\"] },\n      { feature: \"Cash-flow forecast\", values: [\"no\", \"90 days\", \"90 days\"] },\n    ],\n  },\n  {\n    title: \"Smart tools\",\n    rows: [\n      { feature: \"Receipt scans per month\", values: [\"5\", \"50\", \"150\"] },\n      { feature: \"AI questions per month\", values: [\"10\", \"75\", \"200\"] },\n      { feature: \"Subscription tracking\", values: [\"yes\", \"yes\", \"yes\"] },\n    ],\n  },\n  {\n    title: \"Sharing and support\",\n    rows: [\n      { feature: \"Household members\", values: [\"1\", \"1\", \"Up to 6\"] },\n      { feature: \"Roles and permissions\", values: [\"no\", \"no\", \"yes\"] },\n      { feature: \"Support\", values: [\"Email\", \"Email and chat\", \"Priority chat\"] },\n    ],\n  },\n];\n\nexport function PricingComparisonMatrix({ plans = defaultPlans, groups = defaultGroups }) {\n  return (\n    <Section size=\"body\">\n      <Container size=\"lg\">\n        <Flex direction=\"column\" gap=\"7\">\n          <Flex direction=\"column\" gap=\"4\">\n            <Text size=\"overline\" color=\"muted\">Compare plans</Text>\n            <Heading as=\"h2\" size=\"3xl\">Every feature, side by side</Heading>\n          </Flex>\n          <Flex direction=\"column\" gap=\"0\" className=\"-mx-4 overflow-x-auto px-4\">\n            <Flex direction=\"column\" gap=\"0\" className=\"min-w-[44rem]\">\n              <Grid columns=\"4\" gap=\"4\" className=\"grid-cols-[1.6fr_repeat(3,minmax(0,1fr))] items-end border-b border-hairline pb-5\">\n                <Text size=\"sm\" color=\"muted\">Prices in USD</Text>\n                {plans.map((plan) => (\n                  <Flex key={plan.name} direction=\"column\" align=\"start\" gap=\"3\">\n                    <Flex direction=\"row\" align=\"center\" wrap=\"wrap\" gap=\"2\">\n                      <Heading as=\"h3\" size=\"sm\">{plan.name}</Heading>\n                      {plan.featured && <Badge variant=\"soft\" tone=\"accent\" size=\"sm\" radius=\"full\">Most popular</Badge>}\n                    </Flex>\n                    <Flex direction=\"row\" align=\"baseline\" gap=\"1\">\n                      <Heading as=\"p\" size=\"lg\" className=\"tabular-nums\">{plan.price}</Heading>\n                      <Text size=\"xs\" color=\"muted\">{plan.period}</Text>\n                    </Flex>\n                    <Button size=\"sm\" variant={plan.featured ? \"solid\" : \"outline\"} asChild><a href=\"/signup\">{plan.cta}</a></Button>\n                  </Flex>\n                ))}\n              </Grid>\n              {groups.map((group) => (\n                <Flex key={group.title} direction=\"column\" gap=\"0\">\n                  <Text size=\"sm\" weight=\"semibold\" className=\"border-b border-hairline pb-3 pt-7\">{group.title}</Text>\n                  {group.rows.map((row) => (\n                    <Grid key={row.feature} columns=\"4\" gap=\"4\" align=\"center\" className=\"grid-cols-[1.6fr_repeat(3,minmax(0,1fr))] border-b border-hairline py-3\">\n                      <Text size=\"sm\" color=\"muted\">{row.feature}</Text>\n                      {row.values.map((value, i) => (\n                        <Flex key={i} direction=\"row\" align=\"center\" gap=\"2\">\n                          {value === \"yes\" && <Icon name=\"check\" size=\"sm\" color=\"contrast\" aria-label=\"Included\" />}\n                          {value === \"no\" && <Icon name=\"minus\" size=\"sm\" color=\"muted\" aria-label=\"Not included\" />}\n                          {value !== \"yes\" && value !== \"no\" && <Text size=\"sm\" className=\"tabular-nums\">{value}</Text>}\n                        </Flex>\n                      ))}\n                    </Grid>\n                  ))}\n                </Flex>\n              ))}\n            </Flex>\n          </Flex>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
+    "rawCode": "import { Badge, Button, Container, Flex, Grid, Heading, Icon, Section, Text } from \"@shavin/ui\";\n\nconst defaultPlans = [\n  { name: \"Free\", price: \"$0\", period: \"forever\", featured: false, cta: \"Start free\" },\n  { name: \"Plus\", price: \"$7.99\", period: \"per month\", featured: false, cta: \"Start trial\" },\n  { name: \"Household\", price: \"$13.99\", period: \"per month\", featured: true, cta: \"Start trial\" },\n];\n\nconst defaultGroups = [\n  {\n    title: \"Accounts\",\n    rows: [\n      { feature: \"Linked accounts\", values: [\"2\", \"Unlimited\", \"Unlimited\"] },\n      { feature: \"Transaction history\", values: [\"12 months\", \"24 months\", \"24 months\"] },\n      { feature: \"Manual and cash accounts\", values: [\"yes\", \"yes\", \"yes\"] },\n    ],\n  },\n  {\n    title: \"Planning\",\n    rows: [\n      { feature: \"Budget categories\", values: [\"10\", \"Unlimited\", \"Unlimited\"] },\n      { feature: \"Savings goals\", values: [\"1\", \"Unlimited\", \"Unlimited\"] },\n      { feature: \"Cash-flow forecast\", values: [\"no\", \"90 days\", \"90 days\"] },\n    ],\n  },\n  {\n    title: \"Smart tools\",\n    rows: [\n      { feature: \"Receipt scans per month\", values: [\"5\", \"50\", \"150\"] },\n      { feature: \"AI questions per month\", values: [\"10\", \"75\", \"200\"] },\n      { feature: \"Subscription tracking\", values: [\"yes\", \"yes\", \"yes\"] },\n    ],\n  },\n  {\n    title: \"Sharing and support\",\n    rows: [\n      { feature: \"Household members\", values: [\"1\", \"1\", \"Up to 6\"] },\n      { feature: \"Roles and permissions\", values: [\"no\", \"no\", \"yes\"] },\n      { feature: \"Support\", values: [\"Email\", \"Email and chat\", \"Priority chat\"] },\n    ],\n  },\n];\n\nexport function PricingComparisonMatrix({ plans = defaultPlans, groups = defaultGroups }) {\n  return (\n    <Section size=\"body\">\n      <Container size=\"lg\">\n        <Flex direction=\"column\" gap=\"7\">\n          <Flex direction=\"column\" gap=\"4\">\n            <Text size=\"overline\" color=\"muted\">Compare plans</Text>\n            <Heading as=\"h2\" size=\"3xl\">Every feature, side by side</Heading>\n          </Flex>\n          <Flex direction=\"column\" gap=\"0\" className=\"-mx-4 overflow-x-auto px-4\">\n            <Flex direction=\"column\" gap=\"0\" className=\"min-w-[44rem]\">\n              <Grid columns=\"4\" gap=\"4\" className=\"grid-cols-[1.6fr_repeat(3,minmax(0,1fr))] items-end border-b border-hairline pb-5\">\n                <Text size=\"sm\" color=\"muted\">Prices in USD</Text>\n                {plans.map((plan) => (\n                  <Flex key={plan.name} direction=\"column\" align=\"start\" gap=\"3\">\n                    <Flex direction=\"row\" align=\"center\" wrap=\"wrap\" gap=\"2\">\n                      <Heading as=\"h3\" size=\"sm\">{plan.name}</Heading>\n                      {plan.featured && <Badge variant=\"soft\" tone=\"brand\" size=\"sm\" radius=\"full\">Most popular</Badge>}\n                    </Flex>\n                    <Flex direction=\"row\" align=\"baseline\" gap=\"1\">\n                      <Heading as=\"p\" size=\"lg\" className=\"tabular-nums\">{plan.price}</Heading>\n                      <Text size=\"xs\" color=\"muted\">{plan.period}</Text>\n                    </Flex>\n                    <Button size=\"sm\" variant={plan.featured ? \"solid\" : \"outline\"} asChild><a href=\"/signup\">{plan.cta}</a></Button>\n                  </Flex>\n                ))}\n              </Grid>\n              {groups.map((group) => (\n                <Flex key={group.title} direction=\"column\" gap=\"0\">\n                  <Text size=\"sm\" weight=\"semibold\" className=\"border-b border-hairline pb-3 pt-7\">{group.title}</Text>\n                  {group.rows.map((row) => (\n                    <Grid key={row.feature} columns=\"4\" gap=\"4\" align=\"center\" className=\"grid-cols-[1.6fr_repeat(3,minmax(0,1fr))] border-b border-hairline py-3\">\n                      <Text size=\"sm\" color=\"muted\">{row.feature}</Text>\n                      {row.values.map((value, i) => (\n                        <Flex key={i} direction=\"row\" align=\"center\" gap=\"2\">\n                          {value === \"yes\" && <Icon name=\"check\" size=\"sm\" color=\"contrast\" aria-label=\"Included\" />}\n                          {value === \"no\" && <Icon name=\"minus\" size=\"sm\" color=\"muted\" aria-label=\"Not included\" />}\n                          {value !== \"yes\" && value !== \"no\" && <Text size=\"sm\" className=\"tabular-nums\">{value}</Text>}\n                        </Flex>\n                      ))}\n                    </Grid>\n                  ))}\n                </Flex>\n              ))}\n            </Flex>\n          </Flex>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
     "sourcePath": "packages/block-schema/blocks/pricing/pricing-comparison-matrix.tsx"
   },
   {
     "name": "Single Plan Pricing",
     "slug": "pricing-single-plan",
-    "description": "Two-column single-plan offer: icon feature list on the left, annual price card with photo accent, CTAs and money-back guarantee on the right.",
+    "description": "Two-column single-plan offer: icon feature list on the left, annual price card with photo brand, CTAs and money-back guarantee on the right.",
     "category": "pricing",
     "tier": "system",
     "origin": "both",
@@ -1610,7 +1633,7 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "cards"
     ],
     "version": "1.0.0",
-    "rawCode": "import { Badge, Button, Card, Container, Flex, Grid, Heading, Icon, Section, Separator, Text } from \"@shavin/ui\";\n\nconst defaultTiers = [\n  {\n    name: \"Free\",\n    price: \"$0\",\n    period: \"forever\",\n    description: \"For one person getting organised.\",\n    featured: false,\n    features: [\"2 linked accounts\", \"10 budget categories\", \"Bill reminders\", \"Web and mobile apps\"],\n    cta: \"Start free\",\n  },\n  {\n    name: \"Plus\",\n    price: \"$7.99\",\n    period: \"per month\",\n    description: \"For individuals who want the full picture.\",\n    featured: false,\n    features: [\"Unlimited linked accounts\", \"Unlimited budgets and goals\", \"50 receipt scans per month\", \"75 AI questions per month\", \"CSV and PDF export\"],\n    cta: \"Start 14-day trial\",\n  },\n  {\n    name: \"Household\",\n    price: \"$13.99\",\n    period: \"per month\",\n    description: \"For couples and families sharing money.\",\n    featured: true,\n    features: [\"Everything in Plus\", \"Up to 6 household members\", \"Owner, Editor and Viewer roles\", \"150 receipt scans per month\", \"200 AI questions per month\"],\n    cta: \"Start 14-day trial\",\n  },\n];\n\nexport function PricingThreeTier({ tiers = defaultTiers }) {\n  return (\n    <Section size=\"body\">\n      <Container size=\"lg\">\n        <Flex direction=\"column\" gap=\"7\">\n          <Flex direction=\"column\" align=\"center\" gap=\"4\" className=\"text-center\">\n            <Text size=\"overline\" color=\"muted\">Pricing</Text>\n            <Heading as=\"h2\" size=\"3xl\">Simple plans for every household</Heading>\n            <Text size=\"lg\" color=\"muted\" className=\"max-w-[52ch] text-pretty\">Start free and upgrade when you need more. Every plan includes read-only bank connections and two-factor sign-in.</Text>\n          </Flex>\n          <Grid columns=\"auto\" minWidth=\"md\" maxColumns=\"3\" gap=\"5\">\n            {tiers.map((tier) => (\n              <Card key={tier.name} padding=\"lg\" className={tier.featured ? \"border-hairline-strong bg-surface-hover/15\" : \"\"}>\n                <Flex direction=\"column\" gap=\"5\" className=\"h-full\">\n                  <Flex direction=\"column\" gap=\"2\">\n                    <Flex direction=\"row\" align=\"center\" justify=\"between\" gap=\"2\">\n                      <Heading as=\"h3\" size=\"md\">{tier.name}</Heading>\n                      {tier.featured && <Badge variant=\"soft\" tone=\"accent\" size=\"sm\" radius=\"full\">Most popular</Badge>}\n                    </Flex>\n                    <Text size=\"sm\" color=\"muted\" className=\"text-pretty\">{tier.description}</Text>\n                  </Flex>\n                  <Flex direction=\"row\" align=\"baseline\" gap=\"2\">\n                    <Heading as=\"p\" size=\"3xl\" className=\"tabular-nums\">{tier.price}</Heading>\n                    <Text size=\"sm\" color=\"muted\">{tier.period}</Text>\n                  </Flex>\n                  <Separator />\n                  <Flex direction=\"column\" gap=\"3\">\n                    {tier.features.map((feature) => (\n                      <Flex key={feature} direction=\"row\" align=\"start\" gap=\"2\">\n                        <Icon name=\"check\" size=\"sm\" color=\"contrast\" className=\"mt-0.5 shrink-0\" />\n                        <Text size=\"sm\" className=\"tabular-nums\">{feature}</Text>\n                      </Flex>\n                    ))}\n                  </Flex>\n                  <Button size=\"lg\" variant={tier.featured ? \"solid\" : \"outline\"} className=\"mt-auto w-full\" asChild><a href=\"/signup\">{tier.cta}</a></Button>\n                </Flex>\n              </Card>\n            ))}\n          </Grid>\n          <Text size=\"xs\" color=\"muted\" className=\"text-center\">Prices in USD. Taxes may apply.</Text>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
+    "rawCode": "import { Badge, Button, Card, Container, Flex, Grid, Heading, Icon, Section, Separator, Text } from \"@shavin/ui\";\n\nconst defaultTiers = [\n  {\n    name: \"Free\",\n    price: \"$0\",\n    period: \"forever\",\n    description: \"For one person getting organised.\",\n    featured: false,\n    features: [\"2 linked accounts\", \"10 budget categories\", \"Bill reminders\", \"Web and mobile apps\"],\n    cta: \"Start free\",\n  },\n  {\n    name: \"Plus\",\n    price: \"$7.99\",\n    period: \"per month\",\n    description: \"For individuals who want the full picture.\",\n    featured: false,\n    features: [\"Unlimited linked accounts\", \"Unlimited budgets and goals\", \"50 receipt scans per month\", \"75 AI questions per month\", \"CSV and PDF export\"],\n    cta: \"Start 14-day trial\",\n  },\n  {\n    name: \"Household\",\n    price: \"$13.99\",\n    period: \"per month\",\n    description: \"For couples and families sharing money.\",\n    featured: true,\n    features: [\"Everything in Plus\", \"Up to 6 household members\", \"Owner, Editor and Viewer roles\", \"150 receipt scans per month\", \"200 AI questions per month\"],\n    cta: \"Start 14-day trial\",\n  },\n];\n\nexport function PricingThreeTier({ tiers = defaultTiers }) {\n  return (\n    <Section size=\"body\">\n      <Container size=\"lg\">\n        <Flex direction=\"column\" gap=\"7\">\n          <Flex direction=\"column\" align=\"center\" gap=\"4\" className=\"text-center\">\n            <Text size=\"overline\" color=\"muted\">Pricing</Text>\n            <Heading as=\"h2\" size=\"3xl\">Simple plans for every household</Heading>\n            <Text size=\"lg\" color=\"muted\" className=\"max-w-[52ch] text-pretty\">Start free and upgrade when you need more. Every plan includes read-only bank connections and two-factor sign-in.</Text>\n          </Flex>\n          <Grid columns=\"auto\" minWidth=\"md\" maxColumns=\"3\" gap=\"5\">\n            {tiers.map((tier) => (\n              <Card key={tier.name} padding=\"lg\" className={tier.featured ? \"border-hairline-strong bg-surface-hover/15\" : \"\"}>\n                <Flex direction=\"column\" gap=\"5\" className=\"h-full\">\n                  <Flex direction=\"column\" gap=\"2\">\n                    <Flex direction=\"row\" align=\"center\" justify=\"between\" gap=\"2\">\n                      <Heading as=\"h3\" size=\"md\">{tier.name}</Heading>\n                      {tier.featured && <Badge variant=\"soft\" tone=\"brand\" size=\"sm\" radius=\"full\">Most popular</Badge>}\n                    </Flex>\n                    <Text size=\"sm\" color=\"muted\" className=\"text-pretty\">{tier.description}</Text>\n                  </Flex>\n                  <Flex direction=\"row\" align=\"baseline\" gap=\"2\">\n                    <Heading as=\"p\" size=\"3xl\" className=\"tabular-nums\">{tier.price}</Heading>\n                    <Text size=\"sm\" color=\"muted\">{tier.period}</Text>\n                  </Flex>\n                  <Separator />\n                  <Flex direction=\"column\" gap=\"3\">\n                    {tier.features.map((feature) => (\n                      <Flex key={feature} direction=\"row\" align=\"start\" gap=\"2\">\n                        <Icon name=\"check\" size=\"sm\" color=\"contrast\" className=\"mt-0.5 shrink-0\" />\n                        <Text size=\"sm\" className=\"tabular-nums\">{feature}</Text>\n                      </Flex>\n                    ))}\n                  </Flex>\n                  <Button size=\"lg\" variant={tier.featured ? \"solid\" : \"outline\"} className=\"mt-auto w-full\" asChild><a href=\"/signup\">{tier.cta}</a></Button>\n                </Flex>\n              </Card>\n            ))}\n          </Grid>\n          <Text size=\"xs\" color=\"muted\" className=\"text-center\">Prices in USD. Taxes may apply.</Text>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
     "sourcePath": "packages/block-schema/blocks/pricing/pricing-three-tier.tsx"
   },
   {
@@ -1642,7 +1665,7 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "annual"
     ],
     "version": "1.0.0",
-    "rawCode": "import { Button, Card, Container, Flex, Grid, Heading, Icon, Link, Section, SegmentedControl, SegmentedControlItem, Separator, Text } from \"@shavin/ui\";\n\nconst defaultPlans = [\n  {\n    name: \"Plus\",\n    description: \"For individuals who want the full picture.\",\n    price: \"$6.33\",\n    billed: \"$76 billed yearly\",\n    monthly: \"or $7.99 billed monthly\",\n    featured: false,\n    features: [\"Unlimited accounts and budgets\", \"50 receipt scans per month\", \"75 AI questions per month\"],\n    cta: \"Choose Plus\",\n  },\n  {\n    name: \"Household\",\n    description: \"For couples and families sharing money.\",\n    price: \"$11.17\",\n    billed: \"$134 billed yearly\",\n    monthly: \"or $13.99 billed monthly\",\n    featured: true,\n    features: [\"Up to 6 members with roles\", \"150 receipt scans per month\", \"200 AI questions per month\"],\n    cta: \"Choose Household\",\n  },\n];\n\nconst defaultAdvisor = { label: \"Talk to our team\", href: \"/advisors\" };\n\nexport function PricingToggle({ plans = defaultPlans, advisor = defaultAdvisor }) {\n  return (\n    <Section size=\"body\">\n      <Container size=\"md\">\n        <Flex direction=\"column\" gap=\"7\">\n          <Flex direction=\"column\" align=\"center\" gap=\"4\" className=\"text-center\">\n            <Text size=\"overline\" color=\"muted\">Pricing</Text>\n            <Heading as=\"h2\" size=\"3xl\">Pay monthly or save 20% yearly</Heading>\n            <Text size=\"lg\" color=\"muted\" className=\"max-w-[52ch] text-pretty\">Switch plans at any time. Changes are prorated to the day, and you can cancel from settings in two clicks.</Text>\n            <Flex direction=\"row\" align=\"center\" justify=\"center\" wrap=\"wrap\" gap=\"3\" className=\"pt-2\">\n              <SegmentedControl defaultValue=\"annual\" variant=\"pill\" size=\"md\" aria-label=\"Billing period\">\n                <SegmentedControlItem value=\"monthly\">Monthly</SegmentedControlItem>\n                <SegmentedControlItem value=\"annual\">Annual</SegmentedControlItem>\n              </SegmentedControl>\n              <Text size=\"sm\" weight=\"medium\" color=\"accent\">Save 20% with annual billing</Text>\n            </Flex>\n          </Flex>\n          <Grid columns=\"auto\" minWidth=\"md\" maxColumns=\"2\" gap=\"5\">\n            {plans.map((plan) => (\n              <Card key={plan.name} padding=\"lg\" className={plan.featured ? \"border-hairline-strong bg-surface-hover/15\" : \"\"}>\n                <Flex direction=\"column\" gap=\"5\" className=\"h-full\">\n                  <Flex direction=\"column\" gap=\"2\">\n                    <Heading as=\"h3\" size=\"md\">{plan.name}</Heading>\n                    <Text size=\"sm\" color=\"muted\" className=\"text-pretty\">{plan.description}</Text>\n                  </Flex>\n                  <Flex direction=\"column\" gap=\"1\">\n                    <Flex direction=\"row\" align=\"baseline\" gap=\"2\">\n                      <Heading as=\"p\" size=\"3xl\" className=\"tabular-nums\">{plan.price}</Heading>\n                      <Text size=\"sm\" color=\"muted\">per month</Text>\n                    </Flex>\n                    <Text size=\"xs\" color=\"muted\" className=\"tabular-nums\">{plan.billed}, {plan.monthly}</Text>\n                  </Flex>\n                  <Separator />\n                  <Flex direction=\"column\" gap=\"3\">\n                    {plan.features.map((feature) => (\n                      <Flex key={feature} direction=\"row\" align=\"start\" gap=\"2\">\n                        <Icon name=\"check\" size=\"sm\" color=\"contrast\" className=\"mt-0.5 shrink-0\" />\n                        <Text size=\"sm\" className=\"tabular-nums\">{feature}</Text>\n                      </Flex>\n                    ))}\n                  </Flex>\n                  <Button size=\"lg\" variant={plan.featured ? \"solid\" : \"outline\"} className=\"mt-auto w-full\" asChild><a href=\"/signup\">{plan.cta}</a></Button>\n                </Flex>\n              </Card>\n            ))}\n          </Grid>\n          <Card padding=\"lg\">\n            <Flex direction=\"column\" justify=\"between\" gap=\"4\" className=\"md:flex-row md:items-center\">\n              <Flex direction=\"row\" align=\"start\" gap=\"4\">\n                <Icon name=\"briefcase\" size=\"md\" color=\"muted\" className=\"mt-1 shrink-0\" />\n                <Flex direction=\"column\" gap=\"1\">\n                  <Flex direction=\"row\" align=\"baseline\" wrap=\"wrap\" gap=\"2\">\n                    <Heading as=\"h3\" size=\"md\">Advisor</Heading>\n                    <Text size=\"sm\" color=\"muted\" className=\"tabular-nums\">$39 per advisor seat, per month</Text>\n                  </Flex>\n                  <Text size=\"sm\" color=\"muted\" className=\"max-w-[52ch] text-pretty\">For accountants and planners managing client households with read-only access, notes and bulk exports.</Text>\n                </Flex>\n              </Flex>\n              <Link href={advisor.href} size=\"sm\" className=\"inline-flex h-10 shrink-0 items-center font-medium\">{advisor.label}</Link>\n            </Flex>\n          </Card>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
+    "rawCode": "import { Button, Card, Container, Flex, Grid, Heading, Icon, Link, Section, SegmentedControl, SegmentedControlItem, Separator, Text } from \"@shavin/ui\";\n\nconst defaultPlans = [\n  {\n    name: \"Plus\",\n    description: \"For individuals who want the full picture.\",\n    price: \"$6.33\",\n    billed: \"$76 billed yearly\",\n    monthly: \"or $7.99 billed monthly\",\n    featured: false,\n    features: [\"Unlimited accounts and budgets\", \"50 receipt scans per month\", \"75 AI questions per month\"],\n    cta: \"Choose Plus\",\n  },\n  {\n    name: \"Household\",\n    description: \"For couples and families sharing money.\",\n    price: \"$11.17\",\n    billed: \"$134 billed yearly\",\n    monthly: \"or $13.99 billed monthly\",\n    featured: true,\n    features: [\"Up to 6 members with roles\", \"150 receipt scans per month\", \"200 AI questions per month\"],\n    cta: \"Choose Household\",\n  },\n];\n\nexport function PricingToggle({ plans = defaultPlans }) {\n  return (\n    <Section size=\"body\">\n      <Container size=\"md\">\n        <Flex direction=\"column\" gap=\"7\">\n          <Flex direction=\"column\" align=\"center\" gap=\"4\" className=\"text-center\">\n            <Text size=\"overline\" color=\"muted\">Pricing</Text>\n            <Heading as=\"h2\" size=\"3xl\">Pay monthly or save 20% yearly</Heading>\n            <Text size=\"lg\" color=\"muted\" className=\"max-w-[52ch] text-pretty\">Switch plans at any time. Changes are prorated to the day, and you can cancel from settings in two clicks.</Text>\n            <Flex direction=\"row\" align=\"center\" justify=\"center\" wrap=\"wrap\" gap=\"3\" className=\"pt-2\">\n              <SegmentedControl defaultValue=\"annual\" variant=\"pill\" size=\"md\" aria-label=\"Billing period\">\n                <SegmentedControlItem value=\"monthly\">Monthly</SegmentedControlItem>\n                <SegmentedControlItem value=\"annual\">Annual</SegmentedControlItem>\n              </SegmentedControl>\n              <Text size=\"sm\" weight=\"medium\" color=\"brand\">Save 20% with annual billing</Text>\n            </Flex>\n          </Flex>\n          <Grid columns=\"auto\" minWidth=\"md\" maxColumns=\"2\" gap=\"5\">\n            {plans.map((plan) => (\n              <Card key={plan.name} padding=\"lg\" className={plan.featured ? \"border-hairline-strong bg-surface-hover/15\" : \"\"}>\n                <Flex direction=\"column\" gap=\"5\" className=\"h-full\">\n                  <Flex direction=\"column\" gap=\"2\">\n                    <Heading as=\"h3\" size=\"md\">{plan.name}</Heading>\n                    <Text size=\"sm\" color=\"muted\" className=\"text-pretty\">{plan.description}</Text>\n                  </Flex>\n                  <Flex direction=\"column\" gap=\"1\">\n                    <Flex direction=\"row\" align=\"baseline\" gap=\"2\">\n                      <Heading as=\"p\" size=\"3xl\" className=\"tabular-nums\">{plan.price}</Heading>\n                      <Text size=\"sm\" color=\"muted\">per month</Text>\n                    </Flex>\n                    <Text size=\"xs\" color=\"muted\" className=\"tabular-nums\">{plan.billed}, {plan.monthly}</Text>\n                  </Flex>\n                  <Separator />\n                  <Flex direction=\"column\" gap=\"3\">\n                    {plan.features.map((feature) => (\n                      <Flex key={feature} direction=\"row\" align=\"start\" gap=\"2\">\n                        <Icon name=\"check\" size=\"sm\" color=\"contrast\" className=\"mt-0.5 shrink-0\" />\n                        <Text size=\"sm\" className=\"tabular-nums\">{feature}</Text>\n                      </Flex>\n                    ))}\n                  </Flex>\n                  <Button size=\"lg\" variant={plan.featured ? \"solid\" : \"outline\"} className=\"mt-auto w-full\" asChild><a href=\"/signup\">{plan.cta}</a></Button>\n                </Flex>\n              </Card>\n            ))}\n          </Grid>\n          <Card padding=\"lg\">\n            <Flex direction=\"column\" justify=\"between\" gap=\"4\" className=\"md:flex-row md:items-center\">\n              <Flex direction=\"row\" align=\"start\" gap=\"4\">\n                <Icon name=\"briefcase\" size=\"md\" color=\"muted\" className=\"mt-1 shrink-0\" />\n                <Flex direction=\"column\" gap=\"1\">\n                  <Flex direction=\"row\" align=\"baseline\" wrap=\"wrap\" gap=\"2\">\n                    <Heading as=\"h3\" size=\"md\">Advisor</Heading>\n                    <Text size=\"sm\" color=\"muted\" className=\"tabular-nums\">$39 per advisor seat, per month</Text>\n                  </Flex>\n                  <Text size=\"sm\" color=\"muted\" className=\"max-w-[52ch] text-pretty\">For accountants and planners managing client households with read-only access, notes and bulk exports.</Text>\n                </Flex>\n              </Flex>\n              <Link href=\"/advisors\" size=\"sm\" className=\"inline-flex h-10 shrink-0 items-center font-medium\">Talk to our team</Link>\n            </Flex>\n          </Card>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
     "replaces": "pricing-plans",
     "sourcePath": "packages/block-schema/blocks/pricing/pricing-toggle.tsx"
   },
@@ -1721,7 +1744,7 @@ export const AUTHORED_BLOCKS: AuthoredBlock[] = [
       "grid"
     ],
     "version": "1.0.0",
-    "rawCode": "import { Avatar, Card, Container, Flex, Grid, Heading, Icon, Section, Text } from \"@shavin/ui\";\n\nconst stars = [1, 2, 3, 4, 5];\nconst featuredStars = [1, 2, 3, 4, 5];\n\nconst defaultReviews = [\n  { name: \"Marcus Bell\", role: \"Restaurant manager\", rating: 5, photo: \"https://assets.lummi.ai/assets/QmXfEoGQdAQxXbT8ydEjxDR8UtXpmywjsqyUQCUeDLz4Ej?auto=format&w=400\", quote: \"The subscriptions list paid for the app in the first week. I had no idea about two of them.\" },\n  { name: \"Ingrid Solberg\", role: \"Retired librarian\", rating: 5, photo: \"https://assets.lummi.ai/assets/QmX5eK5oLpmJmSstwYVDmKtsUjU7UPN3BXVMSjJkup2FZV?auto=format&w=400\", quote: \"Large text, plain words, and a reminder before each bill. My daughter set it up in an afternoon.\" },\n  { name: \"Amara Nwosu\", role: \"Graduate student\", rating: 4, photo: \"https://assets.lummi.ai/assets/Qma5G7Ysfs1veKyTEdAC8tPvCdM9KDGeGY3Jrsf7Bky7N7?auto=format&w=400\", quote: \"The free plan covers what I need on a tight stipend. I wish custom category icons were on Android too.\" },\n  { name: \"Diego Morales\", role: \"Electrician\", rating: 5, photo: \"https://assets.lummi.ai/assets/QmajivGeNJJBhcUZrd52CDSeGopQ5cpeS3ew2qopjdXQBX?auto=format&w=400\", quote: \"I scan job receipts in the truck. My accountant gets a clean export instead of a shoebox.\" },\n];\n\nexport function TestimonialsReviewGrid({ reviews = defaultReviews }) {\n  return (\n    <Section size=\"body\">\n      <Container size=\"lg\">\n        <Flex direction=\"column\" gap=\"7\">\n          <Flex direction=\"column\" gap=\"4\">\n            <Text size=\"overline\" color=\"muted\">Reviews</Text>\n            <Heading as=\"h2\" size=\"3xl\">What members say after a year</Heading>\n            <Flex direction=\"row\" align=\"baseline\" wrap=\"wrap\" gap=\"2\">\n              <Heading as=\"p\" size=\"3xl\" weight=\"medium\" className=\"tabular-nums\">4.8</Heading>\n              <Text size=\"lg\" color=\"muted\" className=\"tabular-nums\">/ 5 · 3,906 reviews</Text>\n            </Flex>\n            <Text size=\"lg\" color=\"muted\" className=\"max-w-[52ch] text-pretty\">\n              Average rating from member reviews on the App Store, Google Play and Trustpilot.\n            </Text>\n          </Flex>\n          <Grid columns=\"auto\" minWidth=\"md\" maxColumns=\"3\" gap=\"5\">\n            <Card padding=\"xl\" className=\"md:col-span-2\">\n              <Flex direction=\"column\" justify=\"between\" gap=\"6\" className=\"h-full\">\n                <Flex direction=\"column\" gap=\"4\">\n                  <Flex direction=\"row\" gap=\"1\" role=\"img\" aria-label=\"5 out of 5 stars\">\n                    {featuredStars.map((star) => (\n                      <Icon key={star} name=\"star\" size=\"sm\" color=\"accent\" className=\"fill-current\" />\n                    ))}\n                  </Flex>\n                  <Heading as=\"p\" size=\"lg\" weight=\"normal\" className=\"max-w-[40ch] text-pretty\">\n                    “Watching the payoff date move closer each month kept me going. $18,420 cleared in 22 months.”\n                  </Heading>\n                </Flex>\n                <Flex direction=\"row\" align=\"center\" gap=\"3\">\n                  <Avatar src=\"https://assets.lummi.ai/assets/QmQcKhezkk7r1v6yWpKETiLR22bUnVth1qxou372nTSS7w?auto=format&w=400\" alt=\"Priya Raman\" size=\"lg\" />\n                  <Flex direction=\"column\" gap=\"0\">\n                    <Text size=\"md\" weight=\"semibold\">Priya Raman</Text>\n                    <Text size=\"sm\" color=\"muted\">Nurse practitioner</Text>\n                  </Flex>\n                </Flex>\n              </Flex>\n            </Card>\n            {reviews.map((review) => (\n              <Card key={review.name} padding=\"lg\">\n                <Flex direction=\"column\" justify=\"between\" gap=\"5\" className=\"h-full\">\n                  <Flex direction=\"column\" gap=\"3\">\n                    <Flex direction=\"row\" gap=\"1\" role=\"img\" aria-label={`${review.rating} out of 5 stars`}>\n                      {stars.map((star) => (\n                        <Icon key={star} name=\"star\" size=\"sm\" color={star <= review.rating ? \"accent\" : \"subtle\"} className={star <= review.rating ? \"fill-current\" : \"\"} />\n                      ))}\n                    </Flex>\n                    <Text size=\"md\" className=\"text-pretty\">“{review.quote}”</Text>\n                  </Flex>\n                  <Flex direction=\"row\" align=\"center\" gap=\"3\">\n                    <Avatar src={review.photo} size=\"md\" />\n                    <Flex direction=\"column\" gap=\"0\">\n                      <Text size=\"sm\" weight=\"semibold\">{review.name}</Text>\n                      <Text size=\"sm\" color=\"muted\">{review.role}</Text>\n                    </Flex>\n                  </Flex>\n                </Flex>\n              </Card>\n            ))}\n          </Grid>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
+    "rawCode": "import { Avatar, Card, Container, Flex, Grid, Heading, Icon, Section, Text } from \"@shavin/ui\";\n\nconst stars = [1, 2, 3, 4, 5];\nconst featuredStars = [1, 2, 3, 4, 5];\n\nconst defaultReviews = [\n  { name: \"Marcus Bell\", role: \"Restaurant manager\", rating: 5, photo: \"https://assets.lummi.ai/assets/QmXfEoGQdAQxXbT8ydEjxDR8UtXpmywjsqyUQCUeDLz4Ej?auto=format&w=400\", quote: \"The subscriptions list paid for the app in the first week. I had no idea about two of them.\" },\n  { name: \"Ingrid Solberg\", role: \"Retired librarian\", rating: 5, photo: \"https://assets.lummi.ai/assets/QmX5eK5oLpmJmSstwYVDmKtsUjU7UPN3BXVMSjJkup2FZV?auto=format&w=400\", quote: \"Large text, plain words, and a reminder before each bill. My daughter set it up in an afternoon.\" },\n  { name: \"Amara Nwosu\", role: \"Graduate student\", rating: 4, photo: \"https://assets.lummi.ai/assets/Qma5G7Ysfs1veKyTEdAC8tPvCdM9KDGeGY3Jrsf7Bky7N7?auto=format&w=400\", quote: \"The free plan covers what I need on a tight stipend. I wish custom category icons were on Android too.\" },\n  { name: \"Diego Morales\", role: \"Electrician\", rating: 5, photo: \"https://assets.lummi.ai/assets/QmajivGeNJJBhcUZrd52CDSeGopQ5cpeS3ew2qopjdXQBX?auto=format&w=400\", quote: \"I scan job receipts in the truck. My accountant gets a clean export instead of a shoebox.\" },\n];\n\nexport function TestimonialsReviewGrid({ reviews = defaultReviews }) {\n  return (\n    <Section size=\"body\">\n      <Container size=\"lg\">\n        <Flex direction=\"column\" gap=\"7\">\n          <Flex direction=\"column\" gap=\"4\">\n            <Text size=\"overline\" color=\"muted\">Reviews</Text>\n            <Heading as=\"h2\" size=\"3xl\">What members say after a year</Heading>\n            <Flex direction=\"row\" align=\"baseline\" wrap=\"wrap\" gap=\"2\">\n              <Heading as=\"p\" size=\"3xl\" weight=\"medium\" className=\"tabular-nums\">4.8</Heading>\n              <Text size=\"lg\" color=\"muted\" className=\"tabular-nums\">/ 5 · 3,906 reviews</Text>\n            </Flex>\n            <Text size=\"lg\" color=\"muted\" className=\"max-w-[52ch] text-pretty\">\n              Average rating from member reviews on the App Store, Google Play and Trustpilot.\n            </Text>\n          </Flex>\n          <Grid columns=\"auto\" minWidth=\"md\" maxColumns=\"3\" gap=\"5\">\n            <Card padding=\"xl\" className=\"md:col-span-2\">\n              <Flex direction=\"column\" justify=\"between\" gap=\"6\" className=\"h-full\">\n                <Flex direction=\"column\" gap=\"4\">\n                  <Flex direction=\"row\" gap=\"1\" role=\"img\" aria-label=\"5 out of 5 stars\">\n                    {featuredStars.map((star) => (\n                      <Icon key={star} name=\"star\" size=\"sm\" color=\"brand\" className=\"fill-current\" />\n                    ))}\n                  </Flex>\n                  <Heading as=\"p\" size=\"lg\" weight=\"normal\" className=\"max-w-[40ch] text-pretty\">\n                    “Watching the payoff date move closer each month kept me going. $18,420 cleared in 22 months.”\n                  </Heading>\n                </Flex>\n                <Flex direction=\"row\" align=\"center\" gap=\"3\">\n                  <Avatar src=\"https://assets.lummi.ai/assets/QmQcKhezkk7r1v6yWpKETiLR22bUnVth1qxou372nTSS7w?auto=format&w=400\" alt=\"Priya Raman\" size=\"lg\" />\n                  <Flex direction=\"column\" gap=\"0\">\n                    <Text size=\"md\" weight=\"semibold\">Priya Raman</Text>\n                    <Text size=\"sm\" color=\"muted\">Nurse practitioner</Text>\n                  </Flex>\n                </Flex>\n              </Flex>\n            </Card>\n            {reviews.map((review) => (\n              <Card key={review.name} padding=\"lg\">\n                <Flex direction=\"column\" justify=\"between\" gap=\"5\" className=\"h-full\">\n                  <Flex direction=\"column\" gap=\"3\">\n                    <Flex direction=\"row\" gap=\"1\" role=\"img\" aria-label={`${review.rating} out of 5 stars`}>\n                      {stars.map((star) => (\n                        <Icon key={star} name=\"star\" size=\"sm\" color={star <= review.rating ? \"brand\" : \"subtle\"} className={star <= review.rating ? \"fill-current\" : \"\"} />\n                      ))}\n                    </Flex>\n                    <Text size=\"md\" className=\"text-pretty\">“{review.quote}”</Text>\n                  </Flex>\n                  <Flex direction=\"row\" align=\"center\" gap=\"3\">\n                    <Avatar src={review.photo} size=\"md\" />\n                    <Flex direction=\"column\" gap=\"0\">\n                      <Text size=\"sm\" weight=\"semibold\">{review.name}</Text>\n                      <Text size=\"sm\" color=\"muted\">{review.role}</Text>\n                    </Flex>\n                  </Flex>\n                </Flex>\n              </Card>\n            ))}\n          </Grid>\n        </Flex>\n      </Container>\n    </Section>\n  );\n}\n",
     "sourcePath": "packages/block-schema/blocks/testimonials/testimonials-review-grid.tsx"
   },
   {
@@ -2111,9 +2134,9 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
       "type": "SectionLayout",
       "props": {
         "size": "hero",
-        "bgOverlays": "mesh-accent",
+        "bgOverlays": "mesh-brand",
         "className": "flex items-center justify-center",
-        "_file": "{\"imports\":[\"import { Button, Card, Container, Flex, Heading, Icon, Link, Section, Text, TextField } from \\\"@shavin/ui\\\";\"],\"before\":[],\"signature\":{\"name\":\"AuthForgot\",\"kind\":\"function\",\"exportKind\":\"named\",\"params\":[]},\"body\":[],\"after\":[]}"
+        "_file": "{\"imports\":[\"import { Button, Card, Container, Flex, Heading, Icon, Link, Section, Text, TextField, WiseOwlLogo } from \\\"@shavin/ui\\\";\"],\"before\":[],\"signature\":{\"name\":\"AuthForgot\",\"kind\":\"function\",\"exportKind\":\"named\",\"params\":[]},\"body\":[],\"after\":[]}"
       },
       "children": [
         {
@@ -2133,13 +2156,10 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
               },
               "children": [
                 {
-                  "id": "1hezn3i",
-                  "type": "Heading",
+                  "id": "pu9sa74",
+                  "type": "WiseOwlLogo",
                   "props": {
-                    "as": "p",
-                    "size": "sm",
-                    "tracking": "tight",
-                    "children": "WiseOwl"
+                    "size": "sm"
                   },
                   "children": []
                 },
@@ -2284,9 +2304,9 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
       "type": "SectionLayout",
       "props": {
         "size": "hero",
-        "bgOverlays": "mesh-accent",
+        "bgOverlays": "mesh-brand",
         "className": "flex items-center justify-center",
-        "_file": "{\"imports\":[\"import { Button, Card, Container, Flex, Heading, Icon, Section, Text, TextField } from \\\"@shavin/ui\\\";\"],\"before\":[],\"signature\":{\"name\":\"AuthMagicLink\",\"kind\":\"function\",\"exportKind\":\"named\",\"params\":[]},\"body\":[],\"after\":[]}"
+        "_file": "{\"imports\":[\"import { Button, Card, Container, Flex, Heading, Icon, Section, Text, TextField, WiseOwlLogo } from \\\"@shavin/ui\\\";\"],\"before\":[],\"signature\":{\"name\":\"AuthMagicLink\",\"kind\":\"function\",\"exportKind\":\"named\",\"params\":[]},\"body\":[],\"after\":[]}"
       },
       "children": [
         {
@@ -2306,13 +2326,10 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
               },
               "children": [
                 {
-                  "id": "9u000s0",
-                  "type": "Heading",
+                  "id": "uvw99ou",
+                  "type": "WiseOwlLogo",
                   "props": {
-                    "as": "p",
-                    "size": "sm",
-                    "tracking": "tight",
-                    "children": "WiseOwl"
+                    "size": "sm"
                   },
                   "children": []
                 },
@@ -2438,9 +2455,9 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
       "type": "SectionLayout",
       "props": {
         "size": "hero",
-        "bgOverlays": "mesh-accent",
+        "bgOverlays": "mesh-brand",
         "className": "flex items-center justify-center",
-        "_file": "{\"imports\":[\"import { Button, Card, Checkbox, Container, Flex, Grid, Heading, Icon, Link, Section, Separator, Text, TextField } from \\\"@shavin/ui\\\";\"],\"before\":[\"const defaultProviders = [\\n  { label: \\\"Google\\\", icon: \\\"google-logo\\\" },\\n  { label: \\\"GitHub\\\", icon: \\\"github-logo\\\" },\\n];\"],\"signature\":{\"name\":\"AuthSignin\",\"kind\":\"function\",\"exportKind\":\"named\",\"params\":[\"providers = defaultProviders\"]},\"body\":[],\"after\":[]}"
+        "_file": "{\"imports\":[\"import { Button, Card, Checkbox, Container, Flex, Heading, Icon, Image, Link, Section, Separator, Text, TextField, WiseOwlLogo } from \\\"@shavin/ui\\\";\"],\"before\":[],\"signature\":{\"name\":\"AuthSignin\",\"kind\":\"function\",\"exportKind\":\"named\",\"params\":[]},\"body\":[],\"after\":[]}"
       },
       "children": [
         {
@@ -2460,13 +2477,10 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
               },
               "children": [
                 {
-                  "id": "1x5tnes",
-                  "type": "Heading",
+                  "id": "1e22zje",
+                  "type": "WiseOwlLogo",
                   "props": {
-                    "as": "p",
-                    "size": "sm",
-                    "tracking": "tight",
-                    "children": "WiseOwl"
+                    "size": "sm"
                   },
                   "children": []
                 },
@@ -2518,19 +2532,33 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           ]
                         },
                         {
-                          "id": "2i42480",
-                          "type": "GridLayout",
+                          "id": "11wbkcu",
+                          "type": "FlexLayout",
                           "props": {
-                            "columns": "2",
+                            "direction": "column",
                             "gap": "3"
                           },
                           "children": [
                             {
-                              "id": "oun97gi",
-                              "type": "Island",
+                              "id": "18xvkju",
+                              "type": "Button",
                               "props": {
-                                "source": "providers.map((provider) => (\n                  <Button key={provider.label} variant=\"outline\" className=\"w-full\" iconLeft={<Icon name={provider.icon} size=\"sm\" />}>{provider.label}</Button>\n                ))",
-                                "kind": "expr"
+                                "variant": "outline",
+                                "className": "w-full",
+                                "_slot:iconLeft": "{\"id\":\"x14ujwm\",\"type\":\"Image\",\"props\":{\"src\":\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cpath fill='%23EA4335' d='M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z'/%3E%3Cpath fill='%234285F4' d='M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z'/%3E%3Cpath fill='%23FBBC05' d='M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z'/%3E%3Cpath fill='%2334A853' d='M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z'/%3E%3C/svg%3E\",\"fit\":\"contain\",\"radius\":\"none\",\"className\":\"size-[18px]\"},\"children\":[]}",
+                                "children": "Continue with Google"
+                              },
+                              "children": []
+                            },
+                            {
+                              "id": "1g3edsc",
+                              "type": "Button",
+                              "props": {
+                                "variant": "outline",
+                                "className": "w-full",
+                                "iconLeft": "github-logo",
+                                "_icons": "{\"iconLeft\":[\"Icon\",\"github-logo\",{\"size\":\"sm\"}]}",
+                                "children": "Continue with GitHub"
                               },
                               "children": []
                             }
@@ -2636,7 +2664,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                       "props": {
                                         "href": "/forgot",
                                         "size": "sm",
-                                        "color": "accent",
+                                        "color": "brand",
                                         "textType": "link",
                                         "children": "Forgot password?"
                                       },
@@ -2682,7 +2710,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               "type": "Text",
                               "props": {
                                 "href": "/signup",
-                                "color": "accent",
+                                "color": "brand",
                                 "textType": "link",
                                 "children": "Create a free account"
                               },
@@ -2709,9 +2737,9 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
       "type": "SectionLayout",
       "props": {
         "size": "hero",
-        "bgOverlays": "mesh-accent",
+        "bgOverlays": "mesh-brand",
         "className": "flex items-center justify-center",
-        "_file": "{\"imports\":[\"import { Button, Card, Container, Flex, Grid, Heading, Icon, Link, Section, Separator, Text, TextField } from \\\"@shavin/ui\\\";\"],\"before\":[\"const defaultProviders = [\\n  { label: \\\"Google\\\", icon: \\\"google-logo\\\" },\\n  { label: \\\"GitHub\\\", icon: \\\"github-logo\\\" },\\n];\"],\"signature\":{\"name\":\"AuthSignup\",\"kind\":\"function\",\"exportKind\":\"named\",\"params\":[\"providers = defaultProviders\"]},\"body\":[],\"after\":[]}"
+        "_file": "{\"imports\":[\"import { Button, Card, Container, Flex, Heading, Icon, Image, Link, Section, Separator, Text, TextField, WiseOwlLogo } from \\\"@shavin/ui\\\";\"],\"before\":[],\"signature\":{\"name\":\"AuthSignup\",\"kind\":\"function\",\"exportKind\":\"named\",\"params\":[]},\"body\":[],\"after\":[]}"
       },
       "children": [
         {
@@ -2731,13 +2759,10 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
               },
               "children": [
                 {
-                  "id": "17zsfu8",
-                  "type": "Heading",
+                  "id": "14c2x0q",
+                  "type": "WiseOwlLogo",
                   "props": {
-                    "as": "p",
-                    "size": "sm",
-                    "tracking": "tight",
-                    "children": "WiseOwl"
+                    "size": "sm"
                   },
                   "children": []
                 },
@@ -2789,19 +2814,33 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           ]
                         },
                         {
-                          "id": "kmf1sqc",
-                          "type": "GridLayout",
+                          "id": "1og7r3y",
+                          "type": "FlexLayout",
                           "props": {
-                            "columns": "2",
+                            "direction": "column",
                             "gap": "3"
                           },
                           "children": [
                             {
-                              "id": "1ye7do2",
-                              "type": "Island",
+                              "id": "1k1q45e",
+                              "type": "Button",
                               "props": {
-                                "source": "providers.map((provider) => (\n                  <Button key={provider.label} variant=\"outline\" className=\"w-full\" iconLeft={<Icon name={provider.icon} size=\"sm\" />}>{provider.label}</Button>\n                ))",
-                                "kind": "expr"
+                                "variant": "outline",
+                                "className": "w-full",
+                                "_slot:iconLeft": "{\"id\":\"1sgm5qm\",\"type\":\"Image\",\"props\":{\"src\":\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cpath fill='%23EA4335' d='M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z'/%3E%3Cpath fill='%234285F4' d='M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z'/%3E%3Cpath fill='%23FBBC05' d='M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z'/%3E%3Cpath fill='%2334A853' d='M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z'/%3E%3C/svg%3E\",\"fit\":\"contain\",\"radius\":\"none\",\"className\":\"size-[18px]\"},\"children\":[]}",
+                                "children": "Sign up with Google"
+                              },
+                              "children": []
+                            },
+                            {
+                              "id": "1b95ioo",
+                              "type": "Button",
+                              "props": {
+                                "variant": "outline",
+                                "className": "w-full",
+                                "iconLeft": "github-logo",
+                                "_icons": "{\"iconLeft\":[\"Icon\",\"github-logo\",{\"size\":\"sm\"}]}",
+                                "children": "Sign up with GitHub"
                               },
                               "children": []
                             }
@@ -2997,7 +3036,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   "type": "Text",
                                   "props": {
                                     "href": "/signin",
-                                    "color": "accent",
+                                    "color": "brand",
                                     "textType": "link",
                                     "children": "Sign in"
                                   },
@@ -3025,8 +3064,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
       "id": "pqs9bqa",
       "type": "SectionLayout",
       "props": {
-        "className": "py-0",
-        "_file": "{\"imports\":[\"import { Button, Container, Flex, Grid, Heading, Link, Section, Text, TextField } from \\\"@shavin/ui\\\";\"],\"before\":[],\"signature\":{\"name\":\"AuthSplitScreen\",\"kind\":\"function\",\"exportKind\":\"named\",\"params\":[]},\"body\":[],\"after\":[]}"
+        "_file": "{\"imports\":[\"import { Button, Container, Flex, Grid, Heading, Link, Section, Text, TextField, WiseOwlLogo } from \\\"@shavin/ui\\\";\"],\"before\":[],\"signature\":{\"name\":\"AuthSplitScreen\",\"kind\":\"function\",\"exportKind\":\"named\",\"params\":[]},\"body\":[],\"after\":[]}"
       },
       "children": [
         {
@@ -3132,13 +3170,10 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       },
                       "children": [
                         {
-                          "id": "1me144a",
-                          "type": "Heading",
+                          "id": "1o3s3yg",
+                          "type": "WiseOwlLogo",
                           "props": {
-                            "as": "p",
-                            "size": "sm",
-                            "tracking": "tight",
-                            "children": "WiseOwl"
+                            "size": "sm"
                           },
                           "children": []
                         },
@@ -3217,7 +3252,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   "props": {
                                     "href": "/forgot",
                                     "size": "sm",
-                                    "color": "accent",
+                                    "color": "brand",
                                     "className": "w-fit",
                                     "textType": "link",
                                     "children": "Forgot password?"
@@ -3282,7 +3317,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               "type": "Text",
                               "props": {
                                 "href": "/signup",
-                                "color": "accent",
+                                "color": "brand",
                                 "textType": "link",
                                 "children": "Create a free account"
                               },
@@ -3309,9 +3344,9 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
       "type": "SectionLayout",
       "props": {
         "size": "hero",
-        "bgOverlays": "mesh-accent",
+        "bgOverlays": "mesh-brand",
         "className": "flex items-center justify-center",
-        "_file": "{\"imports\":[\"import { Button, Card, Container, Flex, Heading, Icon, Link, Section, Separator, Text, TextField } from \\\"@shavin/ui\\\";\"],\"before\":[\"const defaultProviders = [\\n  { label: \\\"Continue with Google\\\", icon: \\\"google-logo\\\" },\\n  { label: \\\"Continue with GitHub\\\", icon: \\\"github-logo\\\" },\\n  { label: \\\"Continue with Apple\\\", icon: \\\"apple-logo\\\" },\\n];\"],\"signature\":{\"name\":\"AuthSsoFirst\",\"kind\":\"function\",\"exportKind\":\"named\",\"params\":[\"providers = defaultProviders\"]},\"body\":[],\"after\":[]}"
+        "_file": "{\"imports\":[\"import { Button, Card, Container, Flex, Heading, Icon, Image, Link, Section, Separator, Text, TextField, WiseOwlLogo } from \\\"@shavin/ui\\\";\"],\"before\":[],\"signature\":{\"name\":\"AuthSsoFirst\",\"kind\":\"function\",\"exportKind\":\"named\",\"params\":[]},\"body\":[],\"after\":[]}"
       },
       "children": [
         {
@@ -3331,13 +3366,10 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
               },
               "children": [
                 {
-                  "id": "1afpp8y",
-                  "type": "Heading",
+                  "id": "0kakopg",
+                  "type": "WiseOwlLogo",
                   "props": {
-                    "as": "p",
-                    "size": "sm",
-                    "tracking": "tight",
-                    "children": "WiseOwl"
+                    "size": "sm"
                   },
                   "children": []
                 },
@@ -3397,11 +3429,40 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           },
                           "children": [
                             {
-                              "id": "18l3wry",
-                              "type": "Island",
+                              "id": "1ubwllo",
+                              "type": "Button",
                               "props": {
-                                "source": "providers.map((provider) => (\n                  <Button key={provider.label} size=\"lg\" variant=\"outline\" className=\"w-full\" iconLeft={<Icon name={provider.icon} size=\"sm\" />}>{provider.label}</Button>\n                ))",
-                                "kind": "expr"
+                                "size": "lg",
+                                "variant": "outline",
+                                "className": "w-full",
+                                "_slot:iconLeft": "{\"id\":\"1a0oja0\",\"type\":\"Image\",\"props\":{\"src\":\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cpath fill='%23EA4335' d='M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z'/%3E%3Cpath fill='%234285F4' d='M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z'/%3E%3Cpath fill='%23FBBC05' d='M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z'/%3E%3Cpath fill='%2334A853' d='M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z'/%3E%3C/svg%3E\",\"fit\":\"contain\",\"radius\":\"none\",\"className\":\"size-[18px]\"},\"children\":[]}",
+                                "children": "Continue with Google"
+                              },
+                              "children": []
+                            },
+                            {
+                              "id": "fxl06fu",
+                              "type": "Button",
+                              "props": {
+                                "size": "lg",
+                                "variant": "outline",
+                                "className": "w-full",
+                                "iconLeft": "github-logo",
+                                "_icons": "{\"iconLeft\":[\"Icon\",\"github-logo\",{\"size\":\"sm\"}]}",
+                                "children": "Continue with GitHub"
+                              },
+                              "children": []
+                            },
+                            {
+                              "id": "4zdwbf8",
+                              "type": "Button",
+                              "props": {
+                                "size": "lg",
+                                "variant": "outline",
+                                "className": "w-full",
+                                "iconLeft": "key",
+                                "_icons": "{\"iconLeft\":[\"Icon\",\"key\",{\"size\":\"sm\"}]}",
+                                "children": "Continue with SSO"
                               },
                               "children": []
                             }
@@ -3553,9 +3614,9 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
       "type": "SectionLayout",
       "props": {
         "size": "hero",
-        "bgOverlays": "mesh-accent",
+        "bgOverlays": "mesh-brand",
         "className": "flex items-center justify-center",
-        "_file": "{\"imports\":[\"import { Button, Card, Container, Flex, Heading, Link, Section, Text, TextField } from \\\"@shavin/ui\\\";\"],\"before\":[],\"signature\":{\"name\":\"AuthVerify\",\"kind\":\"function\",\"exportKind\":\"named\",\"params\":[]},\"body\":[],\"after\":[]}"
+        "_file": "{\"imports\":[\"import { Button, Card, Container, Flex, Heading, Link, Section, Text, TextField, WiseOwlLogo } from \\\"@shavin/ui\\\";\"],\"before\":[],\"signature\":{\"name\":\"AuthVerify\",\"kind\":\"function\",\"exportKind\":\"named\",\"params\":[]},\"body\":[],\"after\":[]}"
       },
       "children": [
         {
@@ -3575,13 +3636,10 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
               },
               "children": [
                 {
-                  "id": "kst9dou",
-                  "type": "Heading",
+                  "id": "zi8cugg",
+                  "type": "WiseOwlLogo",
                   "props": {
-                    "as": "p",
-                    "size": "sm",
-                    "tracking": "tight",
-                    "children": "WiseOwl"
+                    "size": "sm"
                   },
                   "children": []
                 },
@@ -3698,7 +3756,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   "type": "Text",
                                   "props": {
                                     "href": "/verify/resend",
-                                    "color": "accent",
+                                    "color": "brand",
                                     "textType": "link",
                                     "children": "Resend code"
                                   },
@@ -4261,7 +4319,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
               "props": {
                 "href": "/forgot",
                 "size": "sm",
-                "color": "accent",
+                "color": "brand",
                 "className": "mx-auto",
                 "textType": "link",
                 "children": "Forgot password?"
@@ -4505,7 +4563,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                           "type": "Badge",
                                           "props": {
                                             "size": "sm",
-                                            "color": "accent",
+                                            "color": "brand",
                                             "className": "self-start",
                                             "$children": "{product.badge}",
                                             "$if": "product.badge"
@@ -4609,7 +4667,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               "type": "Badge",
                               "props": {
                                 "size": "sm",
-                                "color": "accent",
+                                "color": "brand",
                                 "children": "New"
                               },
                               "children": []
@@ -5075,7 +5133,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                           "type": "Badge",
                                           "props": {
                                             "size": "sm",
-                                            "color": "accent",
+                                            "color": "brand",
                                             "$children": "{product.badge}",
                                             "$if": "product.badge"
                                           },
@@ -5213,7 +5271,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           "type": "FlexLayout",
                           "props": {
                             "direction": "column",
-                            "className": "min-w-0 flex-1"
+                            "className": "min-w-0 flex-1 w-fit",
+                            "_autoHug": "true"
                           },
                           "children": [
                             {
@@ -5989,7 +6048,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                     "direction": "row",
                     "wrap": "wrap",
                     "gap": "3",
-                    "className": "shrink-0 w-fit",
+                    "className": "max-w-full w-fit",
                     "_autoHug": "true"
                   },
                   "children": [
@@ -6053,7 +6112,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
       "type": "SectionLayout",
       "props": {
         "size": "hero",
-        "bgOverlays": "mesh-accent",
+        "bgOverlays": "mesh-brand",
         "_file": "{\"imports\":[\"import { Button, Container, Flex, Heading, Section, Text } from \\\"@shavin/ui\\\";\"],\"before\":[],\"signature\":{\"name\":\"CtaMeshBand\",\"kind\":\"function\",\"exportKind\":\"named\",\"params\":[]},\"body\":[],\"after\":[]}"
       },
       "children": [
@@ -6186,7 +6245,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
       "type": "AppFrame",
       "props": {
         "className": "h-[720px] w-full bg-canvas text-fg",
-        "_file": "{\"imports\":[\"import { AppFrame, Badge, Box, Button, Card, Flex, Grid, Heading, Icon, IconButton, Progress, Sidebar, SidebarBody, SidebarFooter, SidebarHeader, SidebarNavItem, SidebarSection, SidebarTrigger, Table, TableBody, TableCell, TableColumnHeaderCell, TableHeader, TableRow, Text } from \\\"@shavin/ui\\\";\"],\"before\":[\"const defaultNavGroups = [\\n  {\\n    title: \\\"Money\\\",\\n    items: [\\n      { label: \\\"Overview\\\", icon: \\\"layout-dashboard\\\", active: true },\\n      { label: \\\"Accounts\\\", icon: \\\"landmark\\\", active: false },\\n      { label: \\\"Transactions\\\", icon: \\\"receipt\\\", active: false },\\n    ],\\n  },\\n  {\\n    title: \\\"Planning\\\",\\n    items: [\\n      { label: \\\"Budgets\\\", icon: \\\"pie-chart\\\", active: false },\\n      { label: \\\"Goals\\\", icon: \\\"target\\\", active: false },\\n      { label: \\\"Bills\\\", icon: \\\"calendar-clock\\\", active: false },\\n    ],\\n  },\\n];\",{\"data\":\"defaultKpis\"},{\"data\":\"defaultTransactions\"}],\"signature\":{\"name\":\"AppShell\",\"kind\":\"function\",\"exportKind\":\"named\",\"params\":[\"navGroups = defaultNavGroups\",{\"data\":\"kpis\"},{\"data\":\"transactions\"}]},\"body\":[],\"after\":[]}"
+        "_file": "{\"imports\":[\"import { AppFrame, Badge, Box, Button, Card, Flex, Grid, Heading, Icon, IconButton, Progress, Sidebar, SidebarBody, SidebarFooter, SidebarHeader, SidebarNavItem, SidebarSection, SidebarTrigger, Table, TableBody, TableCell, TableColumnHeaderCell, TableHeader, TableRow, Text, WiseOwlMark } from \\\"@shavin/ui\\\";\"],\"before\":[{\"data\":\"defaultNavGroups\"},{\"data\":\"defaultKpis\"},{\"data\":\"defaultTransactions\"}],\"signature\":{\"name\":\"AppShell\",\"kind\":\"function\",\"exportKind\":\"named\",\"params\":[{\"data\":\"navGroups\"},{\"data\":\"kpis\"},{\"data\":\"transactions\"}]},\"body\":[],\"after\":[]}"
       },
       "children": [
         {
@@ -6212,12 +6271,12 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                   },
                   "children": [
                     {
-                      "id": "yl42nng",
-                      "type": "Icon",
+                      "id": "ause416",
+                      "type": "WiseOwlMark",
                       "props": {
-                        "name": "wallet",
-                        "size": "md",
-                        "color": "accent"
+                        "size": "lg",
+                        "color": "brand",
+                        "decorative": "true"
                       },
                       "children": []
                     },
@@ -6227,7 +6286,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       "props": {
                         "direction": "column",
                         "gap": "0",
-                        "className": "min-w-0"
+                        "className": "min-w-0 w-fit",
+                        "_autoHug": "true"
                       },
                       "children": [
                         {
@@ -6263,13 +6323,48 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
               "props": {},
               "children": [
                 {
-                  "id": "1axg41a",
-                  "type": "Island",
+                  "id": "1qgara6",
+                  "type": "RepeatGrid",
                   "props": {
-                    "source": "navGroups.map((group) => (\n              <SidebarSection key={group.title} title={group.title}>\n                {group.items.map((item) => (\n                  <SidebarNavItem key={item.label} label={item.label} active={item.active} icon={<Icon name={item.icon} size=\"sm\" color=\"inherit\" />} />\n                ))}\n              </SidebarSection>\n            ))",
-                    "kind": "expr"
+                    "item": "group",
+                    "key": "group.title",
+                    "data": "[{\"title\":\"Money\",\"items\":[{\"label\":\"Overview\",\"icon\":\"layout-dashboard\",\"active\":true},{\"label\":\"Accounts\",\"icon\":\"landmark\",\"active\":false},{\"label\":\"Transactions\",\"icon\":\"receipt\",\"active\":false}]},{\"title\":\"Planning\",\"items\":[{\"label\":\"Budgets\",\"icon\":\"pie-chart\",\"active\":false},{\"label\":\"Goals\",\"icon\":\"target\",\"active\":false},{\"label\":\"Bills\",\"icon\":\"calendar-clock\",\"active\":false}]}]",
+                    "source": "navGroups",
+                    "param": "true"
                   },
-                  "children": []
+                  "children": [
+                    {
+                      "id": "1q18tkc",
+                      "type": "SidebarSection",
+                      "props": {
+                        "$title": "group.title"
+                      },
+                      "children": [
+                        {
+                          "id": "1h7akbe",
+                          "type": "RepeatGrid",
+                          "props": {
+                            "item": "item",
+                            "key": "item.label",
+                            "$data": "group.items"
+                          },
+                          "children": [
+                            {
+                              "id": "1ot7hme",
+                              "type": "SidebarNavItem",
+                              "props": {
+                                "$label": "item.label",
+                                "$active": "item.active",
+                                "$icon": "item.icon",
+                                "_icons": "{\"icon\":[\"Icon\",\"$\",{\"size\":\"sm\",\"color\":\"inherit\"}]}"
+                              },
+                              "children": []
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
                 }
               ]
             },
@@ -6371,7 +6466,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                     "direction": "row",
                     "align": "center",
                     "gap": "2",
-                    "className": "min-w-0"
+                    "className": "min-w-0 w-fit",
+                    "_autoHug": "true"
                   },
                   "children": [
                     {
@@ -6386,7 +6482,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       "props": {
                         "direction": "column",
                         "gap": "1",
-                        "className": "min-w-0"
+                        "className": "min-w-0 w-fit",
+                        "_autoHug": "true"
                       },
                       "children": [
                         {
@@ -6481,7 +6578,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
               "type": "GridLayout",
               "props": {
                 "columns": "auto",
-                "minWidth": "sm",
+                "minWidth": "xs",
                 "maxColumns": "4",
                 "gap": "3"
               },
@@ -6837,7 +6934,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           "props": {
                             "direction": "column",
                             "gap": "1",
-                            "className": "min-w-0"
+                            "className": "min-w-0 w-fit",
+                            "_autoHug": "true"
                           },
                           "children": [
                             {
@@ -7095,7 +7193,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                       "props": {
                                         "$name": "task.done ? \"circle-check\" : \"circle\"",
                                         "size": "md",
-                                        "$color": "task.done ? \"accent\" : \"muted\""
+                                        "$color": "task.done ? \"brand\" : \"muted\""
                                       },
                                       "children": []
                                     },
@@ -7105,7 +7203,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                       "props": {
                                         "direction": "column",
                                         "gap": "0",
-                                        "className": "min-w-0 flex-1"
+                                        "className": "min-w-0 flex-1 w-fit",
+                                        "_autoHug": "true"
                                       },
                                       "children": [
                                         {
@@ -7155,7 +7254,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       "id": "wjyenoa",
                       "type": "BoxLayout",
                       "props": {
-                        "bgOverlays": "mesh-accent",
+                        "bgOverlays": "mesh-brand",
                         "className": "rounded-panel-inner p-5 max-md:hidden"
                       },
                       "children": [
@@ -7434,7 +7533,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           "props": {
                             "align": "center",
                             "justify": "center",
-                            "className": "h-12 w-12 shrink-0 rounded-panel-inner bg-accent-subtle"
+                            "className": "h-12 w-12 shrink-0 rounded-panel-inner bg-brand-subtle"
                           },
                           "children": [
                             {
@@ -8107,7 +8206,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               "props": {
                                 "align": "center",
                                 "justify": "center",
-                                "className": "h-12 w-12 shrink-0 rounded-[var(--radius-lg)] bg-accent-subtle"
+                                "className": "h-12 w-12 shrink-0 rounded-[var(--radius-lg)] bg-brand-subtle"
                               },
                               "children": [
                                 {
@@ -8280,7 +8379,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   "props": {
                                     "align": "center",
                                     "justify": "center",
-                                    "className": "h-10 w-10 shrink-0 rounded-panel-inner bg-accent-subtle"
+                                    "className": "h-10 w-10 shrink-0 rounded-panel-inner bg-brand-subtle"
                                   },
                                   "children": [
                                     {
@@ -8881,7 +8980,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
         "as": "footer",
         "size": "strip",
         "className": "border-t border-hairline",
-        "_file": "{\"imports\":[\"import { Container, Flex, Grid, Heading, Icon, Link, Section, Separator, Text } from \\\"@shavin/ui\\\";\"],\"before\":[{\"data\":\"defaultGroups\"},{\"data\":\"defaultSocial\"}],\"signature\":{\"name\":\"FooterColumns\",\"kind\":\"function\",\"exportKind\":\"named\",\"params\":[{\"data\":\"groups\"},{\"data\":\"social\"}]},\"body\":[],\"after\":[]}"
+        "_file": "{\"imports\":[\"import { Container, Flex, Grid, Icon, Link, Section, Separator, Text, WiseOwlLogo } from \\\"@shavin/ui\\\";\"],\"before\":[{\"data\":\"defaultGroups\"},{\"data\":\"defaultSocial\"}],\"signature\":{\"name\":\"FooterColumns\",\"kind\":\"function\",\"exportKind\":\"named\",\"params\":[{\"data\":\"groups\"},{\"data\":\"social\"}]},\"body\":[],\"after\":[]}"
       },
       "children": [
         {
@@ -8918,14 +9017,9 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       },
                       "children": [
                         {
-                          "id": "1kqklfe",
-                          "type": "Heading",
-                          "props": {
-                            "as": "p",
-                            "size": "md",
-                            "tracking": "tight",
-                            "children": "WiseOwl"
-                          },
+                          "id": "1ly1p5w",
+                          "type": "WiseOwlLogo",
+                          "props": {},
                           "children": []
                         },
                         {
@@ -9126,7 +9220,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
         "as": "footer",
         "size": "compact",
         "className": "border-t border-hairline",
-        "_file": "{\"imports\":[\"import { Container, Flex, Heading, Icon, Link, Section, Text } from \\\"@shavin/ui\\\";\"],\"before\":[{\"data\":\"defaultLinks\"},{\"data\":\"defaultSocial\"}],\"signature\":{\"name\":\"FooterCompactSingleRow\",\"kind\":\"function\",\"exportKind\":\"named\",\"params\":[{\"data\":\"links\"},{\"data\":\"social\"}]},\"body\":[],\"after\":[]}"
+        "_file": "{\"imports\":[\"import { Container, Flex, Icon, Link, Section, Text, WiseOwlLogo } from \\\"@shavin/ui\\\";\"],\"before\":[{\"data\":\"defaultLinks\"},{\"data\":\"defaultSocial\"}],\"signature\":{\"name\":\"FooterCompactSingleRow\",\"kind\":\"function\",\"exportKind\":\"named\",\"params\":[{\"data\":\"links\"},{\"data\":\"social\"}]},\"body\":[],\"after\":[]}"
       },
       "children": [
         {
@@ -9157,14 +9251,10 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                   },
                   "children": [
                     {
-                      "id": "14kthce",
-                      "type": "Heading",
+                      "id": "orzkno4",
+                      "type": "WiseOwlLogo",
                       "props": {
-                        "as": "p",
-                        "size": "md",
-                        "tracking": "tight",
-                        "className": "lg:order-1",
-                        "children": "WiseOwl"
+                        "className": "lg:order-1"
                       },
                       "children": []
                     },
@@ -9282,7 +9372,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
         "as": "footer",
         "size": "body",
         "className": "border-t border-hairline",
-        "_file": "{\"imports\":[\"import { Container, Flex, Heading, Icon, Link, Section, Separator, Text } from \\\"@shavin/ui\\\";\"],\"before\":[{\"data\":\"defaultLinks\"},{\"data\":\"defaultSocial\"}],\"signature\":{\"name\":\"FooterSimpleCentered\",\"kind\":\"function\",\"exportKind\":\"named\",\"params\":[{\"data\":\"links\"},{\"data\":\"social\"}]},\"body\":[],\"after\":[]}"
+        "_file": "{\"imports\":[\"import { Container, Flex, Icon, Link, Section, Separator, Text, WiseOwlLogo } from \\\"@shavin/ui\\\";\"],\"before\":[{\"data\":\"defaultLinks\"},{\"data\":\"defaultSocial\"}],\"signature\":{\"name\":\"FooterSimpleCentered\",\"kind\":\"function\",\"exportKind\":\"named\",\"params\":[{\"data\":\"links\"},{\"data\":\"social\"}]},\"body\":[],\"after\":[]}"
       },
       "children": [
         {
@@ -9312,13 +9402,10 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                   },
                   "children": [
                     {
-                      "id": "1ghodzk",
-                      "type": "Heading",
+                      "id": "166v7dy",
+                      "type": "WiseOwlLogo",
                       "props": {
-                        "as": "p",
-                        "size": "5xl",
-                        "tracking": "tighter",
-                        "children": "WiseOwl"
+                        "size": "lg"
                       },
                       "children": []
                     },
@@ -9453,7 +9540,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
         "as": "footer",
         "size": "strip",
         "className": "border-t border-hairline",
-        "_file": "{\"imports\":[\"import { Button, Container, Flex, Grid, Heading, Icon, Link, Section, Separator, Text } from \\\"@shavin/ui\\\";\"],\"before\":[{\"data\":\"defaultGroups\"},{\"data\":\"defaultLegal\"}],\"signature\":{\"name\":\"FooterSitemap\",\"kind\":\"function\",\"exportKind\":\"named\",\"params\":[{\"data\":\"groups\"},{\"data\":\"legal\"}]},\"body\":[],\"after\":[]}"
+        "_file": "{\"imports\":[\"import { Button, Container, Flex, Grid, Icon, Link, Section, Separator, Text, WiseOwlLogo } from \\\"@shavin/ui\\\";\"],\"before\":[{\"data\":\"defaultGroups\"},{\"data\":\"defaultLegal\"}],\"signature\":{\"name\":\"FooterSitemap\",\"kind\":\"function\",\"exportKind\":\"named\",\"params\":[{\"data\":\"groups\"},{\"data\":\"legal\"}]},\"body\":[],\"after\":[]}"
       },
       "children": [
         {
@@ -9480,14 +9567,9 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                   },
                   "children": [
                     {
-                      "id": "1c4hbww",
-                      "type": "Heading",
-                      "props": {
-                        "as": "p",
-                        "size": "md",
-                        "tracking": "tight",
-                        "children": "WiseOwl"
-                      },
+                      "id": "soicwai",
+                      "type": "WiseOwlLogo",
+                      "props": {},
                       "children": []
                     },
                     {
@@ -9761,7 +9843,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
         "as": "footer",
         "size": "strip",
         "className": "border-t border-hairline",
-        "_file": "{\"imports\":[\"import { Button, Card, Container, Flex, Grid, Heading, Icon, Image, Link, Section, Separator, Text, TextField } from \\\"@shavin/ui\\\";\"],\"before\":[{\"data\":\"defaultGroups\"},{\"data\":\"defaultLegal\"},{\"data\":\"defaultSocial\"}],\"signature\":{\"name\":\"FooterWithNewsletter\",\"kind\":\"function\",\"exportKind\":\"named\",\"params\":[{\"data\":\"groups\"},{\"data\":\"legal\"},{\"data\":\"social\"}]},\"body\":[],\"after\":[]}"
+        "_file": "{\"imports\":[\"import { Button, Card, Container, Flex, Grid, Heading, Icon, Image, Link, Section, Separator, Text, TextField, WiseOwlLogo } from \\\"@shavin/ui\\\";\"],\"before\":[{\"data\":\"defaultGroups\"},{\"data\":\"defaultLegal\"},{\"data\":\"defaultSocial\"}],\"signature\":{\"name\":\"FooterWithNewsletter\",\"kind\":\"function\",\"exportKind\":\"named\",\"params\":[{\"data\":\"groups\"},{\"data\":\"legal\"},{\"data\":\"social\"}]},\"body\":[],\"after\":[]}"
       },
       "children": [
         {
@@ -9898,14 +9980,9 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       },
                       "children": [
                         {
-                          "id": "e2hp4ck",
-                          "type": "Heading",
-                          "props": {
-                            "as": "p",
-                            "size": "md",
-                            "tracking": "tight",
-                            "children": "WiseOwl"
-                          },
+                          "id": "tmysdri",
+                          "type": "WiseOwlLogo",
+                          "props": {},
                           "children": []
                         },
                         {
@@ -10382,7 +10459,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
       "type": "SectionLayout",
       "props": {
         "size": "hero",
-        "bgOverlays": "mesh-accent",
+        "bgOverlays": "mesh-brand",
         "_file": "{\"imports\":[\"import { Button, Container, Flex, Grid, Heading, Icon, Image, Section, Text } from \\\"@shavin/ui\\\";\"],\"before\":[{\"data\":\"defaultPoints\"}],\"signature\":{\"name\":\"HeroSplitMedia\",\"kind\":\"function\",\"exportKind\":\"named\",\"params\":[{\"data\":\"points\"}]},\"body\":[],\"after\":[]}"
       },
       "children": [
@@ -10540,7 +10617,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   "props": {
                                     "name": "check",
                                     "size": "sm",
-                                    "color": "accent"
+                                    "color": "brand"
                                   },
                                   "children": []
                                 },
@@ -11322,14 +11399,14 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
   },
   "nav-header-mega-menu": {
     "key": "nav-header-mega-menu",
-    "layout": "fullscreen",
+    "layout": "header",
     "tree": {
       "id": "1vbldmc",
       "type": "SectionLayout",
       "props": {
         "as": "header",
         "size": "compact",
-        "_file": "{\"imports\":[\"import { Button, Card, Container, Flex, Grid, Heading, Icon, IconButton, Image, Link, Section, Text } from \\\"@shavin/ui\\\";\"],\"before\":[{\"data\":\"defaultLinks\"},{\"data\":\"defaultGroups\"}],\"signature\":{\"name\":\"NavHeaderMegaMenu\",\"kind\":\"function\",\"exportKind\":\"named\",\"params\":[{\"data\":\"links\"},{\"data\":\"groups\"}]},\"body\":[],\"after\":[]}"
+        "_file": "{\"imports\":[\"import { Button, Container, Drawer, Flex, Grid, Icon, IconButton, Image, Link, Popover, PopoverAnchor, PopoverContent, PopoverTrigger, Section, Text, WiseOwlLogo } from \\\"@shavin/ui\\\";\"],\"before\":[{\"data\":\"defaultLinks\"},{\"data\":\"defaultGroups\"}],\"signature\":{\"name\":\"NavHeaderMegaMenu\",\"kind\":\"function\",\"exportKind\":\"named\",\"params\":[{\"data\":\"links\"},{\"data\":\"groups\"}]},\"body\":[],\"after\":[]}"
       },
       "children": [
         {
@@ -11340,181 +11417,317 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
           },
           "children": [
             {
-              "id": "16wpa1q",
-              "type": "FlexLayout",
+              "id": "1pbzdp6",
+              "type": "Text",
               "props": {
-                "direction": "column",
-                "gap": "3"
+                "href": "#main",
+                "underline": "none",
+                "className": "sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-[var(--radius-lg)] focus:border focus:border-hairline focus:bg-surface focus:px-3 focus:py-2 focus:text-fg",
+                "textType": "link",
+                "children": "Skip to content"
               },
+              "children": []
+            },
+            {
+              "id": "18sgbcq",
+              "type": "Popover",
+              "props": {},
               "children": [
                 {
-                  "id": "vo9ra3c",
-                  "type": "FlexLayout",
+                  "id": "11ealy0",
+                  "type": "PopoverAnchor",
                   "props": {
-                    "direction": "row",
-                    "align": "center",
-                    "justify": "between",
-                    "gap": "6",
-                    "className": "h-14"
+                    "asChild": "true"
                   },
                   "children": [
                     {
-                      "id": "1e0na06",
-                      "type": "Heading",
-                      "props": {
-                        "as": "p",
-                        "size": "md",
-                        "tracking": "tight",
-                        "children": "WiseOwl"
-                      },
-                      "children": []
-                    },
-                    {
-                      "id": "2e2aib8",
+                      "id": "19ad2fq",
                       "type": "FlexLayout",
                       "props": {
-                        "as": "nav",
                         "direction": "row",
                         "align": "center",
-                        "gap": "1",
-                        "aria-label": "Main",
-                        "className": "max-md:hidden w-fit",
-                        "_autoHug": "true"
+                        "justify": "between",
+                        "gap": "6",
+                        "className": "h-14"
                       },
                       "children": [
                         {
-                          "id": "1w047qs",
-                          "type": "Button",
-                          "props": {
-                            "variant": "ghost",
-                            "size": "sm",
-                            "aria-expanded": "true",
-                            "className": "bg-surface-hover text-fg",
-                            "iconRight": "chevron-down",
-                            "_icons": "{\"iconRight\":[\"Icon\",\"chevron-down\",{\"size\":\"sm\"}]}",
-                            "children": "Product"
-                          },
+                          "id": "1i7mlcu",
+                          "type": "WiseOwlLogo",
+                          "props": {},
                           "children": []
                         },
                         {
-                          "id": "18hx8ic",
-                          "type": "RepeatGrid",
+                          "id": "0j442cq",
+                          "type": "FlexLayout",
                           "props": {
-                            "item": "link",
-                            "key": "link.label",
-                            "data": "[{\"label\":\"Household\",\"href\":\"/household\"},{\"label\":\"Pricing\",\"href\":\"/pricing\"},{\"label\":\"Developers\",\"href\":\"/developers\"}]",
-                            "source": "links",
-                            "param": "true"
+                            "as": "nav",
+                            "direction": "row",
+                            "align": "center",
+                            "gap": "1",
+                            "aria-label": "Main",
+                            "className": "max-md:hidden w-fit",
+                            "_autoHug": "true"
                           },
                           "children": [
                             {
-                              "id": "trbf3qy",
-                              "type": "Text",
+                              "id": "49jguqw",
+                              "type": "PopoverTrigger",
                               "props": {
-                                "$href": "link.href",
+                                "asChild": "true"
+                              },
+                              "children": [
+                                {
+                                  "id": "1it4glc",
+                                  "type": "Button",
+                                  "props": {
+                                    "variant": "ghost",
+                                    "size": "sm",
+                                    "iconRight": "chevron-down",
+                                    "className": "data-[state=open]:bg-surface-hover data-[state=open]:text-fg",
+                                    "_icons": "{\"iconRight\":[\"Icon\",\"chevron-down\",{\"size\":\"sm\"}]}",
+                                    "children": "Product"
+                                  },
+                                  "children": []
+                                }
+                              ]
+                            },
+                            {
+                              "id": "1omiz3m",
+                              "type": "RepeatGrid",
+                              "props": {
+                                "item": "link",
+                                "key": "link.label",
+                                "data": "[{\"label\":\"Household\",\"href\":\"/household\"},{\"label\":\"Pricing\",\"href\":\"/pricing\"},{\"label\":\"Developers\",\"href\":\"/developers\"}]",
+                                "source": "links",
+                                "param": "true"
+                              },
+                              "children": [
+                                {
+                                  "id": "1wd7qqc",
+                                  "type": "Text",
+                                  "props": {
+                                    "$href": "link.href",
+                                    "size": "sm",
+                                    "underline": "none",
+                                    "className": "rounded-[var(--radius-lg)] px-3 py-2 font-medium text-fg-muted hover:bg-surface-hover hover:text-fg",
+                                    "textType": "link",
+                                    "$children": "{link.label}"
+                                  },
+                                  "children": []
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "id": "1bn2l78",
+                          "type": "FlexLayout",
+                          "props": {
+                            "direction": "row",
+                            "align": "center",
+                            "gap": "2",
+                            "className": "max-md:hidden w-fit",
+                            "_autoHug": "true"
+                          },
+                          "children": [
+                            {
+                              "id": "1npk8rc",
+                              "type": "Button",
+                              "props": {
+                                "variant": "ghost",
                                 "size": "sm",
-                                "underline": "none",
-                                "className": "rounded-[var(--radius-lg)] px-3 py-2 font-medium text-fg-muted hover:bg-surface-hover hover:text-fg",
-                                "textType": "link",
-                                "$children": "{link.label}"
+                                "asChild": "true"
                               },
-                              "children": []
-                            }
-                          ]
-                        }
-                      ]
-                    },
-                    {
-                      "id": "tcfb662",
-                      "type": "FlexLayout",
-                      "props": {
-                        "direction": "row",
-                        "align": "center",
-                        "gap": "2",
-                        "className": "max-md:hidden w-fit",
-                        "_autoHug": "true"
-                      },
-                      "children": [
-                        {
-                          "id": "gl4foq6",
-                          "type": "Button",
-                          "props": {
-                            "variant": "ghost",
-                            "size": "sm",
-                            "asChild": "true"
-                          },
-                          "children": [
+                              "children": [
+                                {
+                                  "id": "yua16uq",
+                                  "type": "Text",
+                                  "props": {
+                                    "children": "Sign in",
+                                    "textType": "link",
+                                    "href": "/signin",
+                                    "_tag": "a"
+                                  },
+                                  "children": []
+                                }
+                              ]
+                            },
                             {
-                              "id": "1wzfwgs",
-                              "type": "Text",
+                              "id": "1yxghey",
+                              "type": "Button",
                               "props": {
-                                "children": "Sign in",
-                                "textType": "link",
-                                "href": "/signin",
-                                "_tag": "a"
+                                "size": "sm",
+                                "asChild": "true"
                               },
-                              "children": []
+                              "children": [
+                                {
+                                  "id": "1wxu67c",
+                                  "type": "Text",
+                                  "props": {
+                                    "children": "Start free",
+                                    "textType": "link",
+                                    "href": "/signup",
+                                    "_tag": "a"
+                                  },
+                                  "children": []
+                                }
+                              ]
                             }
                           ]
                         },
                         {
-                          "id": "1yaadb8",
-                          "type": "Button",
+                          "id": "1j0pwhe",
+                          "type": "Drawer",
                           "props": {
+                            "title": "Menu",
+                            "side": "right",
                             "size": "sm",
-                            "asChild": "true"
+                            "_slot:trigger": "{\"id\":\"1icxyuc\",\"type\":\"IconButton\",\"props\":{\"variant\":\"ghost\",\"size\":\"md\",\"aria-label\":\"Open menu\",\"className\":\"md:hidden\"},\"children\":[{\"id\":\"17asnhm\",\"type\":\"Icon\",\"props\":{\"name\":\"menu\",\"size\":\"md\",\"color\":\"inherit\"},\"children\":[]}]}"
                           },
                           "children": [
                             {
-                              "id": "1wq5qc6",
-                              "type": "Text",
+                              "id": "ckif21w",
+                              "type": "FlexLayout",
                               "props": {
-                                "children": "Start free",
-                                "textType": "link",
-                                "href": "/signup",
-                                "_tag": "a"
+                                "as": "nav",
+                                "direction": "column",
+                                "gap": "5",
+                                "aria-label": "Mobile"
                               },
-                              "children": []
+                              "children": [
+                                {
+                                  "id": "cneab16",
+                                  "type": "RepeatGrid",
+                                  "props": {
+                                    "item": "group",
+                                    "key": "group.title",
+                                    "data": "[{\"title\":\"Plan\",\"items\":[{\"icon\":\"target\",\"label\":\"Budgets\",\"description\":\"Monthly limits by category\",\"href\":\"/product/budgets\"},{\"icon\":\"piggy-bank\",\"label\":\"Savings goals\",\"description\":\"Amounts and dates that add up\",\"href\":\"/product/goals\"},{\"icon\":\"trending-up\",\"label\":\"Cash-flow forecast\",\"description\":\"The next 90 days, estimated\",\"href\":\"/product/forecast\"}]},{\"title\":\"Track\",\"items\":[{\"icon\":\"landmark\",\"label\":\"Accounts\",\"description\":\"11,642 banks and credit unions\",\"href\":\"/product/accounts\"},{\"icon\":\"receipt\",\"label\":\"Bills & subscriptions\",\"description\":\"Every recurring charge in one list\",\"href\":\"/product/bills\"},{\"icon\":\"line-chart\",\"label\":\"Net worth\",\"description\":\"Assets and debts over time\",\"href\":\"/product/net-worth\"}]},{\"title\":\"Ask\",\"items\":[{\"icon\":\"message-circle\",\"label\":\"Ask WiseOwl\",\"description\":\"Questions about your spending\",\"href\":\"/product/ask\"},{\"icon\":\"scan-line\",\"label\":\"Receipt scanning\",\"description\":\"Line items from a photo\",\"href\":\"/product/receipts\"}]}]",
+                                    "source": "groups",
+                                    "param": "true"
+                                  },
+                                  "children": [
+                                    {
+                                      "id": "uzz4eu0",
+                                      "type": "FlexLayout",
+                                      "props": {
+                                        "direction": "column",
+                                        "gap": "1"
+                                      },
+                                      "children": [
+                                        {
+                                          "id": "iin8npq",
+                                          "type": "Text",
+                                          "props": {
+                                            "size": "overline",
+                                            "color": "muted",
+                                            "$children": "{group.title}"
+                                          },
+                                          "children": []
+                                        },
+                                        {
+                                          "id": "1w0sim0",
+                                          "type": "RepeatGrid",
+                                          "props": {
+                                            "item": "item",
+                                            "key": "item.label",
+                                            "$data": "group.items"
+                                          },
+                                          "children": [
+                                            {
+                                              "id": "9r2p7ui",
+                                              "type": "Text",
+                                              "props": {
+                                                "$href": "item.href",
+                                                "size": "md",
+                                                "underline": "none",
+                                                "className": "rounded-[var(--radius-lg)] px-2 py-2 font-medium text-fg hover:bg-surface-hover",
+                                                "textType": "link",
+                                                "$children": "{item.label}"
+                                              },
+                                              "children": []
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "id": "35gnxf4",
+                                  "type": "FlexLayout",
+                                  "props": {
+                                    "direction": "column",
+                                    "gap": "1"
+                                  },
+                                  "children": [
+                                    {
+                                      "id": "1xkjm6q",
+                                      "type": "RepeatGrid",
+                                      "props": {
+                                        "item": "link",
+                                        "key": "link.label",
+                                        "data": "[{\"label\":\"Household\",\"href\":\"/household\"},{\"label\":\"Pricing\",\"href\":\"/pricing\"},{\"label\":\"Developers\",\"href\":\"/developers\"}]",
+                                        "source": "links",
+                                        "param": "true"
+                                      },
+                                      "children": [
+                                        {
+                                          "id": "fm57770",
+                                          "type": "Text",
+                                          "props": {
+                                            "$href": "link.href",
+                                            "size": "md",
+                                            "underline": "none",
+                                            "className": "rounded-[var(--radius-lg)] px-2 py-2 font-medium text-fg hover:bg-surface-hover",
+                                            "textType": "link",
+                                            "$children": "{link.label}"
+                                          },
+                                          "children": []
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "id": "18ia1j4",
+                                  "type": "Button",
+                                  "props": {
+                                    "asChild": "true"
+                                  },
+                                  "children": [
+                                    {
+                                      "id": "vsfwbei",
+                                      "type": "Text",
+                                      "props": {
+                                        "children": "Start free",
+                                        "textType": "link",
+                                        "href": "/signup",
+                                        "_tag": "a"
+                                      },
+                                      "children": []
+                                    }
+                                  ]
+                                }
+                              ]
                             }
                           ]
-                        }
-                      ]
-                    },
-                    {
-                      "id": "18vcvvg",
-                      "type": "IconButton",
-                      "props": {
-                        "variant": "ghost",
-                        "size": "md",
-                        "aria-label": "Open menu",
-                        "aria-expanded": "false",
-                        "className": "md:hidden"
-                      },
-                      "children": [
-                        {
-                          "id": "a9oqszm",
-                          "type": "Icon",
-                          "props": {
-                            "name": "menu",
-                            "size": "md",
-                            "color": "inherit"
-                          },
-                          "children": []
                         }
                       ]
                     }
                   ]
                 },
                 {
-                  "id": "72ed3ic",
-                  "type": "CardLayout",
+                  "id": "8fj5rg8",
+                  "type": "PopoverContent",
                   "props": {
-                    "padding": "none",
-                    "className": "overflow-hidden shadow-panel max-md:hidden"
+                    "align": "start",
+                    "sideOffset": "8",
+                    "className": "w-[var(--radix-popper-anchor-width)] overflow-hidden p-0 shadow-panel max-md:hidden"
                   },
                   "children": [
                     {
-                      "id": "3b0qb9q",
+                      "id": "158xv6e",
                       "type": "FlexLayout",
                       "props": {
                         "direction": "column",
@@ -11522,7 +11735,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       },
                       "children": [
                         {
-                          "id": "10cbizi",
+                          "id": "1ycav56",
                           "type": "GridLayout",
                           "props": {
                             "columns": "3",
@@ -11531,7 +11744,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           },
                           "children": [
                             {
-                              "id": "1tz5iig",
+                              "id": "dr0boes",
                               "type": "RepeatGrid",
                               "props": {
                                 "item": "group",
@@ -11542,7 +11755,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               },
                               "children": [
                                 {
-                                  "id": "1y6azea",
+                                  "id": "12kmu8a",
                                   "type": "FlexLayout",
                                   "props": {
                                     "direction": "column",
@@ -11550,7 +11763,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   },
                                   "children": [
                                     {
-                                      "id": "1ymnddo",
+                                      "id": "nzfjp48",
                                       "type": "Text",
                                       "props": {
                                         "size": "overline",
@@ -11561,7 +11774,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                       "children": []
                                     },
                                     {
-                                      "id": "1mwdjfq",
+                                      "id": "1sxgb3a",
                                       "type": "FlexLayout",
                                       "props": {
                                         "direction": "column",
@@ -11569,7 +11782,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                       },
                                       "children": [
                                         {
-                                          "id": "fxqxvnc",
+                                          "id": "so3zjtc",
                                           "type": "RepeatGrid",
                                           "props": {
                                             "item": "item",
@@ -11578,7 +11791,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                           },
                                           "children": [
                                             {
-                                              "id": "1huw9he",
+                                              "id": "wox0bj2",
                                               "type": "Text",
                                               "props": {
                                                 "$href": "item.href",
@@ -11588,7 +11801,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                               },
                                               "children": [
                                                 {
-                                                  "id": "9ueexis",
+                                                  "id": "yerh9f8",
                                                   "type": "FlexLayout",
                                                   "props": {
                                                     "align": "center",
@@ -11597,19 +11810,19 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                                   },
                                                   "children": [
                                                     {
-                                                      "id": "hjqe3d6",
+                                                      "id": "1wtgms2",
                                                       "type": "Icon",
                                                       "props": {
                                                         "$name": "item.icon",
                                                         "size": "sm",
-                                                        "color": "accent"
+                                                        "color": "brand"
                                                       },
                                                       "children": []
                                                     }
                                                   ]
                                                 },
                                                 {
-                                                  "id": "1q6unke",
+                                                  "id": "71btc6i",
                                                   "type": "FlexLayout",
                                                   "props": {
                                                     "direction": "column",
@@ -11618,7 +11831,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                                   },
                                                   "children": [
                                                     {
-                                                      "id": "8y2kbus",
+                                                      "id": "1jmydm4",
                                                       "type": "Text",
                                                       "props": {
                                                         "size": "sm",
@@ -11628,7 +11841,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                                       "children": []
                                                     },
                                                     {
-                                                      "id": "5pa0rfi",
+                                                      "id": "c3cvc7u",
                                                       "type": "Text",
                                                       "props": {
                                                         "size": "sm",
@@ -11652,7 +11865,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           ]
                         },
                         {
-                          "id": "yj8bqv6",
+                          "id": "1icsbjm",
                           "type": "FlexLayout",
                           "props": {
                             "direction": "column",
@@ -11661,7 +11874,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           },
                           "children": [
                             {
-                              "id": "17zv2pe",
+                              "id": "p3v6hoe",
                               "type": "Image",
                               "props": {
                                 "src": "https://assets.lummi.ai/assets/QmQrVUM5reCYVXq4MvwjghJ9Uhx9Uh4oKm6Y9xBzGE9x1S?auto=format&w=800",
@@ -11673,7 +11886,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               "children": []
                             },
                             {
-                              "id": "lpovp1q",
+                              "id": "1o1uodi",
                               "type": "FlexLayout",
                               "props": {
                                 "direction": "column",
@@ -11681,7 +11894,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               },
                               "children": [
                                 {
-                                  "id": "313kft4",
+                                  "id": "wbtb9ak",
                                   "type": "Text",
                                   "props": {
                                     "size": "overline",
@@ -11691,7 +11904,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   "children": []
                                 },
                                 {
-                                  "id": "1l1pu46",
+                                  "id": "5dr6xba",
                                   "type": "Text",
                                   "props": {
                                     "size": "md",
@@ -11701,7 +11914,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   "children": []
                                 },
                                 {
-                                  "id": "1gd4qx8",
+                                  "id": "1t82y10",
                                   "type": "Text",
                                   "props": {
                                     "size": "sm",
@@ -11714,7 +11927,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               ]
                             },
                             {
-                              "id": "gcjnkq4",
+                              "id": "xo9dsak",
                               "type": "Text",
                               "props": {
                                 "href": "/changelog",
@@ -11724,7 +11937,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               },
                               "children": [
                                 {
-                                  "id": "sk17vzy",
+                                  "id": "rmu387m",
                                   "type": "Text",
                                   "props": {
                                     "children": "Read the release notes",
@@ -11733,7 +11946,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   "children": []
                                 },
                                 {
-                                  "id": "j41ch3k",
+                                  "id": "1bmoulo",
                                   "type": "Icon",
                                   "props": {
                                     "name": "arrow-right",
@@ -11765,7 +11978,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
       "type": "SectionLayout",
       "props": {
         "size": "compact",
-        "_file": "{\"imports\":[\"import { Avatar, Box, Breadcrumbs, Card, Container, Flex, Grid, Heading, Icon, IconButton, Kbd, Progress, Section, Text, TextField } from \\\"@shavin/ui\\\";\"],\"before\":[{\"data\":\"defaultCrumbs\"},{\"data\":\"defaultBudgets\"}],\"signature\":{\"name\":\"NavStickyAppbar\",\"kind\":\"function\",\"exportKind\":\"named\",\"params\":[{\"data\":\"crumbs\"},{\"data\":\"budgets\"}]},\"body\":[],\"after\":[]}"
+        "_file": "{\"imports\":[\"import { Avatar, Box, Breadcrumbs, Card, Container, Flex, Grid, Heading, Icon, IconButton, Kbd, Menu, MenuItem, MenuTrigger, Popover, PopoverContent, PopoverTrigger, Progress, Section, Text, TextField } from \\\"@shavin/ui\\\";\"],\"before\":[{\"data\":\"defaultCrumbs\"},{\"data\":\"defaultNotifications\"},{\"data\":\"defaultBudgets\"}],\"signature\":{\"name\":\"NavStickyAppbar\",\"kind\":\"function\",\"exportKind\":\"named\",\"params\":[{\"data\":\"crumbs\"},{\"data\":\"budgets\"},{\"data\":\"notifications\"}]},\"body\":[],\"after\":[]}"
       },
       "children": [
         {
@@ -11814,11 +12027,15 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       },
                       "children": [
                         {
-                          "id": "ynkt0ra",
-                          "type": "Island",
+                          "id": "otjkhm8",
+                          "type": "TextField",
                           "props": {
-                            "source": "<TextField type=\"search\" placeholder=\"Search transactions, merchants or categories\" aria-label=\"Search\" leadingIcon={<Icon name=\"search\" size=\"sm\" color=\"muted\" />} trailingIcon={<Kbd>⌘K</Kbd>} />",
-                            "kind": "jsx"
+                            "type": "search",
+                            "placeholder": "Search transactions, merchants or categories",
+                            "aria-label": "Search",
+                            "leadingIcon": "search",
+                            "_slot:trailingIcon": "{\"id\":\"1hvgy1a\",\"type\":\"Kbd\",\"props\":{\"children\":\"⌘K\"},\"children\":[]}",
+                            "_icons": "{\"leadingIcon\":[\"Icon\",\"search\",{\"size\":\"sm\",\"color\":\"muted\"}]}"
                           },
                           "children": []
                         }
@@ -11836,77 +12053,225 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       },
                       "children": [
                         {
-                          "id": "nwzvhda",
-                          "type": "IconButton",
-                          "props": {
-                            "variant": "ghost",
-                            "size": "md",
-                            "aria-label": "Search",
-                            "className": "md:hidden"
-                          },
+                          "id": "76bazpg",
+                          "type": "Popover",
+                          "props": {},
                           "children": [
                             {
-                              "id": "3csk5xg",
-                              "type": "Icon",
+                              "id": "1bagzs2",
+                              "type": "PopoverTrigger",
                               "props": {
-                                "name": "search",
-                                "size": "md",
-                                "color": "inherit"
+                                "asChild": "true"
                               },
-                              "children": []
+                              "children": [
+                                {
+                                  "id": "1ntzh20",
+                                  "type": "IconButton",
+                                  "props": {
+                                    "variant": "ghost",
+                                    "size": "md",
+                                    "aria-label": "Search",
+                                    "className": "md:hidden"
+                                  },
+                                  "children": [
+                                    {
+                                      "id": "xaxz8ka",
+                                      "type": "Icon",
+                                      "props": {
+                                        "name": "search",
+                                        "size": "md",
+                                        "color": "inherit"
+                                      },
+                                      "children": []
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "id": "1efoq6a",
+                              "type": "PopoverContent",
+                              "props": {
+                                "align": "end",
+                                "className": "w-[min(22rem,calc(100vw-2rem))]"
+                              },
+                              "children": [
+                                {
+                                  "id": "18ydr76",
+                                  "type": "TextField",
+                                  "props": {
+                                    "type": "search",
+                                    "placeholder": "Search transactions",
+                                    "aria-label": "Search transactions",
+                                    "leadingIcon": "search",
+                                    "_icons": "{\"leadingIcon\":[\"Icon\",\"search\",{\"size\":\"sm\",\"color\":\"muted\"}]}"
+                                  },
+                                  "children": []
+                                }
+                              ]
                             }
                           ]
                         },
                         {
-                          "id": "2et7bwq",
-                          "type": "BoxLayout",
-                          "props": {
-                            "className": "relative w-fit",
-                            "_autoHug": "true"
-                          },
+                          "id": "slq2i3u",
+                          "type": "Popover",
+                          "props": {},
                           "children": [
                             {
-                              "id": "1y2mmpg",
-                              "type": "IconButton",
+                              "id": "6nhdbsq",
+                              "type": "BoxLayout",
                               "props": {
-                                "variant": "ghost",
-                                "size": "md",
-                                "aria-label": "Notifications, 3 unread"
+                                "className": "relative"
                               },
                               "children": [
                                 {
-                                  "id": "qljigmm",
-                                  "type": "Icon",
+                                  "id": "qpp1feg",
+                                  "type": "PopoverTrigger",
                                   "props": {
-                                    "name": "bell",
-                                    "size": "md",
-                                    "color": "inherit"
+                                    "asChild": "true"
+                                  },
+                                  "children": [
+                                    {
+                                      "id": "1qup4iu",
+                                      "type": "IconButton",
+                                      "props": {
+                                        "variant": "ghost",
+                                        "size": "md",
+                                        "aria-label": "Notifications, 3 unread"
+                                      },
+                                      "children": [
+                                        {
+                                          "id": "iccnl38",
+                                          "type": "Icon",
+                                          "props": {
+                                            "name": "bell",
+                                            "size": "md",
+                                            "color": "inherit"
+                                          },
+                                          "children": []
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "id": "1tvlq38",
+                                  "type": "BoxLayout",
+                                  "props": {
+                                    "aria-hidden": "true",
+                                    "className": "pointer-events-none absolute right-2.5 top-2.5 h-2 w-2 rounded-full bg-brand ring-2 ring-surface"
                                   },
                                   "children": []
                                 }
                               ]
                             },
                             {
-                              "id": "jqawf8k",
-                              "type": "BoxLayout",
+                              "id": "ggx9fd0",
+                              "type": "PopoverContent",
                               "props": {
-                                "aria-hidden": "true",
-                                "className": "pointer-events-none absolute right-2.5 top-2.5 h-2 w-2 rounded-full bg-accent ring-2 ring-surface"
+                                "align": "end",
+                                "className": "w-[min(22rem,calc(100vw-2rem))]"
                               },
-                              "children": []
+                              "children": [
+                                {
+                                  "id": "m9u1fpi",
+                                  "type": "FlexLayout",
+                                  "props": {
+                                    "direction": "column",
+                                    "gap": "3"
+                                  },
+                                  "children": [
+                                    {
+                                      "id": "q1wbfsg",
+                                      "type": "Text",
+                                      "props": {
+                                        "size": "sm",
+                                        "weight": "semibold",
+                                        "children": "Notifications"
+                                      },
+                                      "children": []
+                                    },
+                                    {
+                                      "id": "fj8vaqu",
+                                      "type": "RepeatGrid",
+                                      "props": {
+                                        "item": "item",
+                                        "key": "item.title",
+                                        "data": "[{\"title\":\"Groceries is at 82% of its limit\",\"time\":\"2 h ago\"},{\"title\":\"Rent posted: $1,850.00\",\"time\":\"Yesterday\"},{\"title\":\"Shared goal: Maya added $120\",\"time\":\"2 days ago\"}]",
+                                        "source": "notifications",
+                                        "param": "true"
+                                      },
+                                      "children": [
+                                        {
+                                          "id": "1opzlk0",
+                                          "type": "FlexLayout",
+                                          "props": {
+                                            "direction": "column",
+                                            "gap": "0"
+                                          },
+                                          "children": [
+                                            {
+                                              "id": "1jfvqw2",
+                                              "type": "Text",
+                                              "props": {
+                                                "size": "sm",
+                                                "$children": "{item.title}"
+                                              },
+                                              "children": []
+                                            },
+                                            {
+                                              "id": "4cuynv4",
+                                              "type": "Text",
+                                              "props": {
+                                                "size": "xs",
+                                                "color": "subtle",
+                                                "$children": "{item.time}"
+                                              },
+                                              "children": []
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
                             }
                           ]
                         },
                         {
-                          "id": "1a6tu1a",
-                          "type": "Avatar",
+                          "id": "3t0vcei",
+                          "type": "Menu",
                           "props": {
-                            "src": "https://assets.lummi.ai/assets/QmUWu25KJZruktibFUXivSoPDWmKs3S9ASXp7zVENaXSqL?auto=format&w=400",
-                            "alt": "Maya Okafor",
-                            "size": "md",
-                            "className": "ml-1"
+                            "_slot:trigger": "{\"id\":\"1ary7i8\",\"type\":\"MenuTrigger\",\"props\":{\"aria-label\":\"Account menu\",\"className\":\"ml-1 rounded-full\"},\"children\":[{\"id\":\"uvx2m5y\",\"type\":\"Avatar\",\"props\":{\"src\":\"https://assets.lummi.ai/assets/QmUWu25KJZruktibFUXivSoPDWmKs3S9ASXp7zVENaXSqL?auto=format&w=400\",\"alt\":\"Maya Okafor\",\"size\":\"md\"},\"children\":[]}]}"
                           },
-                          "children": []
+                          "children": [
+                            {
+                              "id": "1ifosv6",
+                              "type": "MenuItem",
+                              "props": {
+                                "children": "Profile"
+                              },
+                              "children": []
+                            },
+                            {
+                              "id": "bumvk3s",
+                              "type": "MenuItem",
+                              "props": {
+                                "children": "Household settings"
+                              },
+                              "children": []
+                            },
+                            {
+                              "id": "19xsije",
+                              "type": "MenuItem",
+                              "props": {
+                                "className": "border-t border-hairline",
+                                "children": "Sign out"
+                              },
+                              "children": []
+                            }
+                          ]
                         }
                       ]
                     }
@@ -12063,7 +12428,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
       "type": "SectionLayout",
       "props": {
         "size": "compact",
-        "_file": "{\"imports\":[\"import { Card, Container, Flex, Grid, Heading, Icon, Progress, Section, Sidebar, SidebarBody, SidebarFooter, SidebarHeader, SidebarNavItem, SidebarSection, SidebarTrigger, Text } from \\\"@shavin/ui\\\";\"],\"before\":[\"const defaultItems = [\\n  { icon: \\\"layout-dashboard\\\", label: \\\"Overview\\\", active: true },\\n  { icon: \\\"landmark\\\", label: \\\"Accounts\\\", active: false },\\n  { icon: \\\"arrow-left-right\\\", label: \\\"Transactions\\\", active: false },\\n  { icon: \\\"target\\\", label: \\\"Budgets\\\", active: false },\\n  { icon: \\\"piggy-bank\\\", label: \\\"Goals\\\", active: false },\\n  { icon: \\\"receipt\\\", label: \\\"Bills\\\", active: false },\\n];\",{\"data\":\"defaultGoals\"}],\"signature\":{\"name\":\"SidebarCollapsible\",\"kind\":\"function\",\"exportKind\":\"named\",\"params\":[\"items = defaultItems\",{\"data\":\"goals\"}]},\"body\":[],\"after\":[]}"
+        "_file": "{\"imports\":[\"import { Card, Container, Flex, Grid, Heading, Icon, Progress, Section, Sidebar, SidebarBody, SidebarFooter, SidebarHeader, SidebarNavItem, SidebarSection, SidebarTrigger, Text, WiseOwlMark } from \\\"@shavin/ui\\\";\"],\"before\":[{\"data\":\"defaultItems\"},{\"data\":\"defaultGoals\"}],\"signature\":{\"name\":\"SidebarCollapsible\",\"kind\":\"function\",\"exportKind\":\"named\",\"params\":[{\"data\":\"items\"},{\"data\":\"goals\"}]},\"body\":[],\"after\":[]}"
       },
       "children": [
         {
@@ -12097,15 +12462,10 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                       "props": {},
                       "children": [
                         {
-                          "id": "d47pfca",
-                          "type": "FlexLayout",
+                          "id": "f7nb52o",
+                          "type": "WiseOwlMark",
                           "props": {
-                            "role": "img",
-                            "aria-label": "WiseOwl",
-                            "align": "center",
-                            "justify": "center",
-                            "className": "h-8 w-8 rounded-[var(--radius-lg)] bg-fg text-sm font-semibold text-canvas",
-                            "children": "W"
+                            "size": "lg"
                           },
                           "children": []
                         }
@@ -12122,13 +12482,28 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           "props": {},
                           "children": [
                             {
-                              "id": "d8nwxo4",
-                              "type": "Island",
+                              "id": "19un7y0",
+                              "type": "RepeatGrid",
                               "props": {
-                                "source": "items.map((item) => (\n                  <SidebarNavItem key={item.label} label={item.label} active={item.active} icon={<Icon name={item.icon} size=\"sm\" color=\"inherit\" />} />\n                ))",
-                                "kind": "expr"
+                                "item": "item",
+                                "key": "item.label",
+                                "data": "[{\"icon\":\"layout-dashboard\",\"label\":\"Overview\",\"active\":true},{\"icon\":\"landmark\",\"label\":\"Accounts\",\"active\":false},{\"icon\":\"arrow-left-right\",\"label\":\"Transactions\",\"active\":false},{\"icon\":\"target\",\"label\":\"Budgets\",\"active\":false},{\"icon\":\"piggy-bank\",\"label\":\"Goals\",\"active\":false},{\"icon\":\"receipt\",\"label\":\"Bills\",\"active\":false}]",
+                                "source": "items",
+                                "param": "true"
                               },
-                              "children": []
+                              "children": [
+                                {
+                                  "id": "ocamlvk",
+                                  "type": "SidebarNavItem",
+                                  "props": {
+                                    "$label": "item.label",
+                                    "$active": "item.active",
+                                    "$icon": "item.icon",
+                                    "_icons": "{\"icon\":[\"Icon\",\"$\",{\"size\":\"sm\",\"color\":\"inherit\"}]}"
+                                  },
+                                  "children": []
+                                }
+                              ]
                             }
                           ]
                         }
@@ -12155,7 +12530,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                   "props": {
                     "direction": "column",
                     "gap": "6",
-                    "className": "min-w-0 flex-1 overflow-y-auto p-6"
+                    "className": "min-w-0 flex-1 overflow-y-auto p-6 w-fit",
+                    "_autoHug": "true"
                   },
                   "children": [
                     {
@@ -12627,7 +13003,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                   "props": {
                     "direction": "column",
                     "gap": "6",
-                    "className": "min-w-0 flex-1 overflow-y-auto p-6 max-md:hidden"
+                    "className": "min-w-0 flex-1 overflow-y-auto p-6 max-md:hidden w-fit",
+                    "_autoHug": "true"
                   },
                   "children": [
                     {
@@ -12704,7 +13081,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
       "type": "SectionLayout",
       "props": {
         "size": "compact",
-        "_file": "{\"imports\":[\"import { AppFrame, Button, Card, Container, Flex, Grid, Heading, Icon, Section, Sidebar, SidebarBody, SidebarFooter, SidebarHeader, SidebarNavItem, SidebarSection, SidebarTrigger, Text } from \\\"@shavin/ui\\\";\"],\"before\":[\"const defaultItems = [\\n  { icon: \\\"layout-dashboard\\\", label: \\\"Overview\\\", active: true },\\n  { icon: \\\"arrow-left-right\\\", label: \\\"Transactions\\\", active: false },\\n  { icon: \\\"target\\\", label: \\\"Budgets\\\", active: false },\\n  { icon: \\\"piggy-bank\\\", label: \\\"Goals\\\", active: false },\\n  { icon: \\\"message-circle\\\", label: \\\"Ask WiseOwl\\\", active: false },\\n];\",{\"data\":\"defaultStats\"}],\"signature\":{\"name\":\"SidebarFloating\",\"kind\":\"function\",\"exportKind\":\"named\",\"params\":[\"items = defaultItems\",{\"data\":\"stats\"}]},\"body\":[],\"after\":[]}"
+        "_file": "{\"imports\":[\"import { AppFrame, Button, Card, Container, Flex, Grid, Heading, Icon, Section, Sidebar, SidebarBody, SidebarFooter, SidebarHeader, SidebarNavItem, SidebarSection, SidebarTrigger, Text, WiseOwlLogo } from \\\"@shavin/ui\\\";\"],\"before\":[{\"data\":\"defaultItems\"},{\"data\":\"defaultStats\"}],\"signature\":{\"name\":\"SidebarFloating\",\"kind\":\"function\",\"exportKind\":\"named\",\"params\":[{\"data\":\"items\"},{\"data\":\"stats\"}]},\"body\":[],\"after\":[]}"
       },
       "children": [
         {
@@ -12718,7 +13095,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
               "id": "2wr93sw",
               "type": "FlexLayout",
               "props": {
-                "bgOverlays": "mesh-accent",
+                "bgOverlays": "mesh-brand",
                 "className": "relative h-[640px] overflow-hidden rounded-[var(--radius-panel)] border border-hairline bg-canvas"
               },
               "children": [
@@ -12746,13 +13123,10 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           },
                           "children": [
                             {
-                              "id": "1kuuofc",
-                              "type": "Heading",
+                              "id": "14mp846",
+                              "type": "WiseOwlLogo",
                               "props": {
-                                "as": "p",
-                                "size": "sm",
-                                "tracking": "tight",
-                                "children": "WiseOwl"
+                                "size": "sm"
                               },
                               "children": []
                             }
@@ -12769,13 +13143,28 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               "props": {},
                               "children": [
                                 {
-                                  "id": "18knuda",
-                                  "type": "Island",
+                                  "id": "1vwdmxy",
+                                  "type": "RepeatGrid",
                                   "props": {
-                                    "source": "items.map((item) => (\n                      <SidebarNavItem key={item.label} label={item.label} active={item.active} icon={<Icon name={item.icon} size=\"sm\" color=\"inherit\" />} />\n                    ))",
-                                    "kind": "expr"
+                                    "item": "item",
+                                    "key": "item.label",
+                                    "data": "[{\"icon\":\"layout-dashboard\",\"label\":\"Overview\",\"active\":true},{\"icon\":\"arrow-left-right\",\"label\":\"Transactions\",\"active\":false},{\"icon\":\"target\",\"label\":\"Budgets\",\"active\":false},{\"icon\":\"piggy-bank\",\"label\":\"Goals\",\"active\":false},{\"icon\":\"message-circle\",\"label\":\"Ask WiseOwl\",\"active\":false}]",
+                                    "source": "items",
+                                    "param": "true"
                                   },
-                                  "children": []
+                                  "children": [
+                                    {
+                                      "id": "3fpx2v6",
+                                      "type": "SidebarNavItem",
+                                      "props": {
+                                        "$label": "item.label",
+                                        "$active": "item.active",
+                                        "$icon": "item.icon",
+                                        "_icons": "{\"icon\":[\"Icon\",\"$\",{\"size\":\"sm\",\"color\":\"inherit\"}]}"
+                                      },
+                                      "children": []
+                                    }
+                                  ]
                                 }
                               ]
                             }
@@ -12861,13 +13250,10 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           "children": []
                         },
                         {
-                          "id": "0hose3o",
-                          "type": "Heading",
+                          "id": "v1ztl9e",
+                          "type": "WiseOwlLogo",
                           "props": {
-                            "as": "p",
-                            "size": "sm",
-                            "tracking": "tight",
-                            "children": "WiseOwl"
+                            "size": "sm"
                           },
                           "children": []
                         }
@@ -13033,7 +13419,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                   "props": {
                     "direction": "column",
                     "gap": "1",
-                    "className": "min-w-0 flex-1 overflow-y-auto p-3 max-md:hidden"
+                    "className": "min-w-0 flex-1 overflow-y-auto p-3 max-md:hidden w-fit",
+                    "_autoHug": "true"
                   },
                   "children": [
                     {
@@ -13074,7 +13461,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               "type": "FlexLayout",
                               "props": {
                                 "direction": "column",
-                                "className": "min-w-0"
+                                "className": "min-w-0 w-fit",
+                                "_autoHug": "true"
                               },
                               "children": [
                                 {
@@ -13205,7 +13593,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               "props": {
                                 "direction": "column",
                                 "gap": "1",
-                                "className": "min-w-0 flex-1"
+                                "className": "min-w-0 flex-1 w-fit",
+                                "_autoHug": "true"
                               },
                               "children": [
                                 {
@@ -13513,7 +13902,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
       "type": "SectionLayout",
       "props": {
         "size": "compact",
-        "_file": "{\"imports\":[\"import { AppFrame, Avatar, Box, Card, Container, Flex, Grid, Heading, Icon, Section, Sidebar, SidebarBody, SidebarFooter, SidebarHeader, SidebarNavItem, SidebarSection, SidebarTrigger, Text, TopBar } from \\\"@shavin/ui\\\";\"],\"before\":[\"const defaultSections = [\\n  {\\n    title: \\\"Overview\\\",\\n    items: [\\n      { icon: \\\"layout-dashboard\\\", label: \\\"Overview\\\", active: true },\\n      { icon: \\\"landmark\\\", label: \\\"Accounts\\\", active: false },\\n      { icon: \\\"arrow-left-right\\\", label: \\\"Transactions\\\", active: false },\\n    ],\\n  },\\n  {\\n    title: \\\"Planning\\\",\\n    items: [\\n      { icon: \\\"target\\\", label: \\\"Budgets\\\", active: false },\\n      { icon: \\\"piggy-bank\\\", label: \\\"Goals\\\", active: false },\\n      { icon: \\\"receipt\\\", label: \\\"Bills\\\", active: false },\\n      { icon: \\\"trending-up\\\", label: \\\"Forecast\\\", active: false },\\n    ],\\n  },\\n  {\\n    title: \\\"Settings\\\",\\n    items: [\\n      { icon: \\\"users\\\", label: \\\"Members\\\", active: false },\\n      { icon: \\\"settings\\\", label: \\\"Preferences\\\", active: false },\\n      { icon: \\\"life-buoy\\\", label: \\\"Help\\\", active: false },\\n    ],\\n  },\\n];\",{\"data\":\"defaultStats\"}],\"signature\":{\"name\":\"SidebarStandard\",\"kind\":\"function\",\"exportKind\":\"named\",\"params\":[\"sections = defaultSections\",{\"data\":\"stats\"}]},\"body\":[],\"after\":[]}"
+        "_file": "{\"imports\":[\"import { AppFrame, Avatar, Box, Card, Container, Flex, Grid, Heading, Icon, Section, Sidebar, SidebarBody, SidebarFooter, SidebarHeader, SidebarNavItem, SidebarSection, SidebarTrigger, Text, TopBar, WiseOwlLogo } from \\\"@shavin/ui\\\";\"],\"before\":[{\"data\":\"defaultSections\"},{\"data\":\"defaultStats\"}],\"signature\":{\"name\":\"SidebarStandard\",\"kind\":\"function\",\"exportKind\":\"named\",\"params\":[{\"data\":\"sections\"},{\"data\":\"stats\"}]},\"body\":[],\"after\":[]}"
       },
       "children": [
         {
@@ -13550,13 +13939,10 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           "props": {},
                           "children": [
                             {
-                              "id": "2tuwreg",
-                              "type": "Heading",
+                              "id": "18319j6",
+                              "type": "WiseOwlLogo",
                               "props": {
-                                "as": "p",
-                                "size": "sm",
-                                "tracking": "tight",
-                                "children": "WiseOwl"
+                                "size": "sm"
                               },
                               "children": []
                             }
@@ -13568,13 +13954,48 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           "props": {},
                           "children": [
                             {
-                              "id": "rqyyk14",
-                              "type": "Island",
+                              "id": "14ncsz0",
+                              "type": "RepeatGrid",
                               "props": {
-                                "source": "sections.map((section) => (\n                    <SidebarSection key={section.title} title={section.title}>\n                      {section.items.map((item) => (\n                        <SidebarNavItem key={item.label} label={item.label} active={item.active} icon={<Icon name={item.icon} size=\"sm\" color=\"inherit\" />} />\n                      ))}\n                    </SidebarSection>\n                  ))",
-                                "kind": "expr"
+                                "item": "section",
+                                "key": "section.title",
+                                "data": "[{\"title\":\"Overview\",\"items\":[{\"icon\":\"layout-dashboard\",\"label\":\"Overview\",\"active\":true},{\"icon\":\"landmark\",\"label\":\"Accounts\",\"active\":false},{\"icon\":\"arrow-left-right\",\"label\":\"Transactions\",\"active\":false}]},{\"title\":\"Planning\",\"items\":[{\"icon\":\"target\",\"label\":\"Budgets\",\"active\":false},{\"icon\":\"piggy-bank\",\"label\":\"Goals\",\"active\":false},{\"icon\":\"receipt\",\"label\":\"Bills\",\"active\":false},{\"icon\":\"trending-up\",\"label\":\"Forecast\",\"active\":false}]},{\"title\":\"Settings\",\"items\":[{\"icon\":\"users\",\"label\":\"Members\",\"active\":false},{\"icon\":\"settings\",\"label\":\"Preferences\",\"active\":false},{\"icon\":\"life-buoy\",\"label\":\"Help\",\"active\":false}]}]",
+                                "source": "sections",
+                                "param": "true"
                               },
-                              "children": []
+                              "children": [
+                                {
+                                  "id": "1dic8kq",
+                                  "type": "SidebarSection",
+                                  "props": {
+                                    "$title": "section.title"
+                                  },
+                                  "children": [
+                                    {
+                                      "id": "1xnxkjk",
+                                      "type": "RepeatGrid",
+                                      "props": {
+                                        "item": "item",
+                                        "key": "item.label",
+                                        "$data": "section.items"
+                                      },
+                                      "children": [
+                                        {
+                                          "id": "6gs0pf4",
+                                          "type": "SidebarNavItem",
+                                          "props": {
+                                            "$label": "item.label",
+                                            "$active": "item.active",
+                                            "$icon": "item.icon",
+                                            "_icons": "{\"icon\":[\"Icon\",\"$\",{\"size\":\"sm\",\"color\":\"inherit\"}]}"
+                                          },
+                                          "children": []
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
                             }
                           ]
                         },
@@ -13609,7 +14030,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   "props": {
                                     "direction": "column",
                                     "gap": "0",
-                                    "className": "min-w-0"
+                                    "className": "min-w-0 w-fit",
+                                    "_autoHug": "true"
                                   },
                                   "children": [
                                     {
@@ -13810,7 +14232,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
       "type": "SectionLayout",
       "props": {
         "size": "compact",
-        "_file": "{\"imports\":[\"import { AppFrame, Avatar, Box, Button, Card, Container, Flex, Heading, Icon, Menu, MenuItem, MenuTrigger, Progress, Section, Sidebar, SidebarBody, SidebarFooter, SidebarHeader, SidebarNavItem, SidebarSection, SidebarTrigger, Text, TopBar } from \\\"@shavin/ui\\\";\"],\"before\":[\"const defaultHouseholds = [\\n  { name: \\\"Okafor-Reyes Household\\\", plan: \\\"Household\\\" },\\n  { name: \\\"Okafor Parents (viewer)\\\", plan: \\\"Household\\\" },\\n  { name: \\\"Maya · Freelance\\\", plan: \\\"Plus\\\" },\\n];\",\"const defaultItems = [\\n  { icon: \\\"layout-dashboard\\\", label: \\\"Overview\\\", active: true },\\n  { icon: \\\"landmark\\\", label: \\\"Accounts\\\", active: false },\\n  { icon: \\\"arrow-left-right\\\", label: \\\"Transactions\\\", active: false },\\n  { icon: \\\"target\\\", label: \\\"Budgets\\\", active: false },\\n  { icon: \\\"piggy-bank\\\", label: \\\"Goals\\\", active: false },\\n  { icon: \\\"users\\\", label: \\\"Members\\\", active: false },\\n];\"],\"signature\":{\"name\":\"SidebarWorkspace\",\"kind\":\"function\",\"exportKind\":\"named\",\"params\":[\"households = defaultHouseholds\",\"items = defaultItems\"]},\"body\":[],\"after\":[]}"
+        "_file": "{\"imports\":[\"import { AppFrame, Avatar, Box, Button, Card, Container, Flex, Heading, Icon, Menu, MenuItem, MenuTrigger, Progress, Section, Sidebar, SidebarBody, SidebarFooter, SidebarHeader, SidebarNavItem, SidebarSection, SidebarTrigger, Text, TopBar } from \\\"@shavin/ui\\\";\"],\"before\":[{\"data\":\"defaultHouseholds\"},{\"data\":\"defaultItems\"}],\"signature\":{\"name\":\"SidebarWorkspace\",\"kind\":\"function\",\"exportKind\":\"named\",\"params\":[{\"data\":\"households\"},{\"data\":\"items\"}]},\"body\":[],\"after\":[]}"
       },
       "children": [
         {
@@ -13849,13 +14271,43 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           },
                           "children": [
                             {
-                              "id": "1opxfqu",
-                              "type": "Island",
+                              "id": "11x9x26",
+                              "type": "Menu",
                               "props": {
-                                "source": "<Menu trigger={\n                    <MenuTrigger aria-label=\"Switch household\" className=\"flex w-full items-center gap-3 p-2 text-left text-fg\">\n                      <Avatar fallback=\"OR\" size=\"sm\" radius=\"large\" />\n                      <Flex direction=\"column\" gap=\"0\" className=\"min-w-0 flex-1\">\n                        <Text size=\"sm\" weight=\"semibold\" truncate>Okafor-Reyes Household</Text>\n                        <Text size=\"xs\" color=\"subtle\">Household plan · 4 members</Text>\n                      </Flex>\n                      <Icon name=\"chevrons-up-down\" size=\"sm\" color=\"muted\" />\n                    </MenuTrigger>\n                  }>\n                    {households.map((household) => (\n                      <MenuItem key={household.name}>{household.name}</MenuItem>\n                    ))}\n                    <MenuItem className=\"border-t border-hairline\">Create household</MenuItem>\n                  </Menu>",
-                                "kind": "jsx"
+                                "_slot:trigger": "{\"id\":\"1nhfnlo\",\"type\":\"MenuTrigger\",\"props\":{\"aria-label\":\"Switch household\",\"className\":\"flex w-full items-center gap-3 p-2 text-left text-fg\"},\"children\":[{\"id\":\"1828gcq\",\"type\":\"Avatar\",\"props\":{\"fallback\":\"OR\",\"size\":\"sm\",\"radius\":\"large\"},\"children\":[]},{\"id\":\"zfx6rcg\",\"type\":\"FlexLayout\",\"props\":{\"direction\":\"column\",\"gap\":\"0\",\"className\":\"min-w-0 flex-1\"},\"children\":[{\"id\":\"3pj9jk6\",\"type\":\"Text\",\"props\":{\"size\":\"sm\",\"weight\":\"semibold\",\"truncate\":\"true\",\"children\":\"Okafor-Reyes Household\"},\"children\":[]},{\"id\":\"1om9udc\",\"type\":\"Text\",\"props\":{\"size\":\"xs\",\"color\":\"subtle\",\"children\":\"Household plan · 4 members\"},\"children\":[]}]},{\"id\":\"1d15ajm\",\"type\":\"Icon\",\"props\":{\"name\":\"chevrons-up-down\",\"size\":\"sm\",\"color\":\"muted\"},\"children\":[]}]}"
                               },
-                              "children": []
+                              "children": [
+                                {
+                                  "id": "1jyooqg",
+                                  "type": "RepeatGrid",
+                                  "props": {
+                                    "item": "household",
+                                    "key": "household.name",
+                                    "data": "[{\"name\":\"Okafor-Reyes Household\",\"plan\":\"Household\"},{\"name\":\"Okafor Parents (viewer)\",\"plan\":\"Household\"},{\"name\":\"Maya · Freelance\",\"plan\":\"Plus\"}]",
+                                    "source": "households",
+                                    "param": "true"
+                                  },
+                                  "children": [
+                                    {
+                                      "id": "icw1q2w",
+                                      "type": "MenuItem",
+                                      "props": {
+                                        "$children": "{household.name}"
+                                      },
+                                      "children": []
+                                    }
+                                  ]
+                                },
+                                {
+                                  "id": "z1re8gk",
+                                  "type": "MenuItem",
+                                  "props": {
+                                    "className": "border-t border-hairline",
+                                    "children": "Create household"
+                                  },
+                                  "children": []
+                                }
+                              ]
                             }
                           ]
                         },
@@ -13870,13 +14322,28 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                               "props": {},
                               "children": [
                                 {
-                                  "id": "httoo2k",
-                                  "type": "Island",
+                                  "id": "3xpi6e8",
+                                  "type": "RepeatGrid",
                                   "props": {
-                                    "source": "items.map((item) => (\n                      <SidebarNavItem key={item.label} label={item.label} active={item.active} icon={<Icon name={item.icon} size=\"sm\" color=\"inherit\" />} />\n                    ))",
-                                    "kind": "expr"
+                                    "item": "item",
+                                    "key": "item.label",
+                                    "data": "[{\"icon\":\"layout-dashboard\",\"label\":\"Overview\",\"active\":true},{\"icon\":\"landmark\",\"label\":\"Accounts\",\"active\":false},{\"icon\":\"arrow-left-right\",\"label\":\"Transactions\",\"active\":false},{\"icon\":\"target\",\"label\":\"Budgets\",\"active\":false},{\"icon\":\"piggy-bank\",\"label\":\"Goals\",\"active\":false},{\"icon\":\"users\",\"label\":\"Members\",\"active\":false}]",
+                                    "source": "items",
+                                    "param": "true"
                                   },
-                                  "children": []
+                                  "children": [
+                                    {
+                                      "id": "8cgu43c",
+                                      "type": "SidebarNavItem",
+                                      "props": {
+                                        "$label": "item.label",
+                                        "$active": "item.active",
+                                        "$icon": "item.icon",
+                                        "_icons": "{\"icon\":[\"Icon\",\"$\",{\"size\":\"sm\",\"color\":\"inherit\"}]}"
+                                      },
+                                      "children": []
+                                    }
+                                  ]
                                 }
                               ]
                             }
@@ -14017,7 +14484,8 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                   "props": {
                                     "direction": "column",
                                     "gap": "0",
-                                    "className": "min-w-0"
+                                    "className": "min-w-0 w-fit",
+                                    "_autoHug": "true"
                                   },
                                   "children": [
                                     {
@@ -14273,7 +14741,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                           "type": "Badge",
                                           "props": {
                                             "variant": "soft",
-                                            "tone": "accent",
+                                            "tone": "brand",
                                             "size": "sm",
                                             "radius": "full",
                                             "children": "Most popular",
@@ -14939,7 +15407,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                           "type": "Badge",
                                           "props": {
                                             "variant": "soft",
-                                            "tone": "accent",
+                                            "tone": "brand",
                                             "size": "sm",
                                             "radius": "full",
                                             "children": "Most popular",
@@ -15110,7 +15578,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
       "type": "SectionLayout",
       "props": {
         "size": "body",
-        "_file": "{\"imports\":[\"import { Button, Card, Container, Flex, Grid, Heading, Icon, Link, Section, SegmentedControl, SegmentedControlItem, Separator, Text } from \\\"@shavin/ui\\\";\"],\"before\":[{\"data\":\"defaultPlans\"},\"const defaultAdvisor = { label: \\\"Talk to our team\\\", href: \\\"/advisors\\\" };\"],\"signature\":{\"name\":\"PricingToggle\",\"kind\":\"function\",\"exportKind\":\"named\",\"params\":[{\"data\":\"plans\"},\"advisor = defaultAdvisor\"]},\"body\":[],\"after\":[]}"
+        "_file": "{\"imports\":[\"import { Button, Card, Container, Flex, Grid, Heading, Icon, Link, Section, SegmentedControl, SegmentedControlItem, Separator, Text } from \\\"@shavin/ui\\\";\"],\"before\":[{\"data\":\"defaultPlans\"}],\"signature\":{\"name\":\"PricingToggle\",\"kind\":\"function\",\"exportKind\":\"named\",\"params\":[{\"data\":\"plans\"}]},\"body\":[],\"after\":[]}"
       },
       "children": [
         {
@@ -15217,7 +15685,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           "props": {
                             "size": "sm",
                             "weight": "medium",
-                            "color": "accent",
+                            "color": "brand",
                             "children": "Save 20% with annual billing"
                           },
                           "children": []
@@ -15534,11 +16002,14 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                           ]
                         },
                         {
-                          "id": "e6hetym",
-                          "type": "Island",
+                          "id": "87nnzxu",
+                          "type": "Text",
                           "props": {
-                            "source": "<Link href={advisor.href} size=\"sm\" className=\"inline-flex h-10 shrink-0 items-center font-medium\">{advisor.label}</Link>",
-                            "kind": "jsx"
+                            "href": "/advisors",
+                            "size": "sm",
+                            "className": "inline-flex h-10 shrink-0 items-center font-medium",
+                            "textType": "link",
+                            "children": "Talk to our team"
                           },
                           "children": []
                         }
@@ -16101,7 +16572,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                           "props": {
                                             "name": "star",
                                             "size": "sm",
-                                            "color": "accent",
+                                            "color": "brand",
                                             "className": "fill-current"
                                           },
                                           "children": []
@@ -16243,7 +16714,7 @@ export const AUTHORED_TREES: Record<string, BakedTree> = {
                                               "props": {
                                                 "name": "star",
                                                 "size": "sm",
-                                                "$color": "star <= review.rating ? \"accent\" : \"subtle\"",
+                                                "$color": "star <= review.rating ? \"brand\" : \"subtle\"",
                                                 "$className": "star <= review.rating ? \"fill-current\" : \"\""
                                               },
                                               "children": []

@@ -65,9 +65,9 @@ describe("synthesizeLayout: output structure", () => {
     expect(result.visualCompositor.concentricLaws).toHaveProperty("spacingLaw");
   });
 
-  it("themeApplied has accentColor, grayColor, radius, panelBackground", () => {
+  it("themeApplied has brandColor, grayColor, radius, panelBackground", () => {
     const result = synthesizeLayout({ prompt: "A page", category: "content" });
-    expect(result.themeApplied).toHaveProperty("accentColor");
+    expect(result.themeApplied).toHaveProperty("brandColor");
     expect(result.themeApplied).toHaveProperty("grayColor");
     expect(result.themeApplied).toHaveProperty("radius");
     expect(result.themeApplied).toHaveProperty("panelBackground");
@@ -141,13 +141,13 @@ describe("synthesizeLayout: activation mode detection", () => {
 
 // ── Theme Override Tests ───────────────────────────────────────────────
 describe("synthesizeLayout: theme overrides", () => {
-  it("applies custom accentColor", () => {
+  it("applies custom brandColor", () => {
     const result = synthesizeLayout({
       prompt: "A page",
       category: "landing",
-      theme: { accentColor: "blue" },
+      theme: { brandColor: "blue" },
     });
-    expect(result.themeApplied.accentColor).toBe("blue");
+    expect(result.themeApplied.brandColor).toBe("blue");
   });
 
   it("applies custom grayColor", () => {
@@ -177,9 +177,9 @@ describe("synthesizeLayout: theme overrides", () => {
     expect(result.themeApplied.panelBackground).toBe("translucent");
   });
 
-  it("defaults accentColor to 'grass' when not specified", () => {
+  it("defaults brandColor to 'monochrome' when not specified", () => {
     const result = synthesizeLayout({ prompt: "A page", category: "landing" });
-    expect(result.themeApplied.accentColor).toBe("grass");
+    expect(result.themeApplied.brandColor).toBe("monochrome");
   });
 
   it("defaults grayColor to 'gray' when not specified", () => {

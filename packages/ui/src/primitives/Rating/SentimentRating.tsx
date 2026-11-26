@@ -5,12 +5,12 @@ import { cn } from "../../lib/cn";
 import { Icon } from "../Icon";
 
 const button = cva(
-  "inline-flex items-center justify-center rounded-full border transition-[background-color,border-color,color,transform] duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent active:scale-95",
+  "inline-flex items-center justify-center rounded-full border transition-[background-color,border-color,color,transform] duration-150 active:scale-95",
   {
     variants: {
       size: { sm: "size-8", md: "size-10", lg: "size-12" },
       selected: {
-        true: "border-transparent bg-accent text-accent-fg",
+        true: "border-transparent bg-brand-solid text-brand-fg",
         false: "border-hairline bg-surface text-fg-muted hover:bg-surface-hover hover:text-fg",
       },
     },

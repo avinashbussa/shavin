@@ -51,8 +51,20 @@ export const FIGURES = {
 /* Brand                                                               */
 /* ------------------------------------------------------------------ */
 
+/**
+ * Brand artwork. Blocks render the React components from @shavin/ui (single colour,
+ * currentColor, so they follow the theme); `src` is the static copy served by the
+ * website for non-React use. Keep the text name as the accessible label.
+ */
+export const LOGO = { component: "WiseOwlLogo", src: "/brand/wiseowl/wiseowl-logo.svg", alt: "WiseOwl" } as const;
+export const MARK = { component: "WiseOwlMark", src: "/brand/wiseowl/wiseowl-mark.svg", alt: "WiseOwl" } as const;
+export const APP_ICON = { src: "/brand/wiseowl/wiseowl-app-icon-512.png", size: 512, alt: "WiseOwl" } as const;
+
 export const WISEOWL = {
   name: "WiseOwl",
+  logo: LOGO,
+  mark: MARK,
+  appIcon: APP_ICON,
   domain: "wiseowl.app",
   tagline: "Calm control of your money.",
   description:
@@ -424,14 +436,14 @@ export const COPY: Record<string, any> = {
   /* ============================== FOOTER ============================= */
 
   "footer-columns": {
-    brand: { name: "WiseOwl", tagline: "Calm control of your money." },
+    brand: { name: "WiseOwl", logo: LOGO, tagline: "Calm control of your money." },
     groups: ["Product", "Company", "Resources", "Legal"],
     social: ["GitHub", "X", "LinkedIn", "YouTube"],
     legal: "© 2026 WiseOwl Finance, Inc. WiseOwl is not a bank.",
   },
 
   "footer-simple-centered": {
-    brand: { name: "WiseOwl" },
+    brand: { name: "WiseOwl", logo: LOGO },
     links: [
       { label: "Product", href: "/product" },
       { label: "Pricing", href: "/pricing" },
@@ -444,7 +456,7 @@ export const COPY: Record<string, any> = {
   },
 
   "footer-with-newsletter": {
-    brand: { name: "WiseOwl", tagline: "Calm control of your money." },
+    brand: { name: "WiseOwl", logo: LOGO, tagline: "Calm control of your money." },
     newsletter: {
       headline: "One money idea every Sunday",
       sub: "Practical habits and one reader question, read by 21,786 people each week.",
@@ -456,7 +468,7 @@ export const COPY: Record<string, any> = {
   },
 
   "footer-sitemap": {
-    brand: { name: "WiseOwl", tagline: "Calm control of your money." },
+    brand: { name: "WiseOwl", logo: LOGO, tagline: "Calm control of your money." },
     groups: [
       { title: "Product", links: ["Budgets", "Savings goals", "Bills & subscriptions", "Net worth", "Receipt scanning", "Ask WiseOwl"] },
       { title: "Households", links: ["Couples", "Families", "Caring for parents", "Working with an accountant"] },
@@ -470,7 +482,7 @@ export const COPY: Record<string, any> = {
   },
 
   "footer-compact-single-row": {
-    brand: { name: "WiseOwl" },
+    brand: { name: "WiseOwl", logo: LOGO },
     links: [
       { label: "Privacy", href: "/legal/privacy" },
       { label: "Terms", href: "/legal/terms" },
@@ -591,6 +603,7 @@ export const COPY: Record<string, any> = {
   /* =============================== AUTH ============================== */
 
   "auth-signin": {
+    brand: { name: "WiseOwl", logo: LOGO },
     headline: "Welcome back to WiseOwl",
     sub: "Sign in to see your accounts, budgets and household. Your session stays private and expires after 30 days.",
     fields: [
@@ -605,6 +618,7 @@ export const COPY: Record<string, any> = {
   },
 
   "auth-signup": {
+    brand: { name: "WiseOwl", logo: LOGO },
     headline: "Create your free WiseOwl account",
     sub: "Free for one person with two linked accounts. No card required, and you can upgrade or delete your account any time.",
     fields: [
@@ -619,6 +633,7 @@ export const COPY: Record<string, any> = {
   },
 
   "auth-forgot": {
+    brand: { name: "WiseOwl", logo: LOGO },
     headline: "Reset your password",
     sub: "Enter the email on your account and we will send a reset link. It works once and expires in 30 minutes.",
     fields: [{ name: "email", label: "Email", type: "email", placeholder: "you@example.com" }],
@@ -628,6 +643,7 @@ export const COPY: Record<string, any> = {
   },
 
   "auth-verify": {
+    brand: { name: "WiseOwl", logo: LOGO },
     headline: "Enter your verification code",
     sub: "We sent a 6-digit code to maya.okafor@example.com. It expires in 10 minutes, so enter it soon.",
     codeLength: 6,
@@ -637,6 +653,7 @@ export const COPY: Record<string, any> = {
   },
 
   "auth-magic-link": {
+    brand: { name: "WiseOwl", logo: LOGO },
     headline: "Sign in without a password",
     sub: "We will email you a secure link that signs you in on this device. The link works once and expires in 15 minutes.",
     fields: [{ name: "email", label: "Email", type: "email", placeholder: "you@example.com" }],
@@ -646,6 +663,7 @@ export const COPY: Record<string, any> = {
   },
 
   "auth-split-screen": {
+    brand: { name: "WiseOwl", logo: LOGO },
     form: {
       headline: "Sign in to your household",
       sub: "Pick up where you left off. Your partner sees the same numbers the moment you update a budget.",
@@ -666,6 +684,7 @@ export const COPY: Record<string, any> = {
   },
 
   "auth-sso-first": {
+    brand: { name: "WiseOwl", logo: LOGO },
     headline: "Sign in to WiseOwl",
     sub: "Use the account you already trust. We never see your Google or Apple password, and you can add one later.",
     providers: [
@@ -720,7 +739,7 @@ export const COPY: Record<string, any> = {
   /* ================================ NAV =============================== */
 
   "nav-header-mega-menu": {
-    brand: "WiseOwl",
+    brand: { name: "WiseOwl", logo: LOGO },
     links: ["Product", "Household", "Pricing", "Developers", "Blog"],
     mega: {
       trigger: "Product",
@@ -764,7 +783,7 @@ export const COPY: Record<string, any> = {
   },
 
   "nav-sticky-appbar": {
-    brand: "WiseOwl",
+    brand: { name: "WiseOwl", logo: LOGO },
     breadcrumb: ["Okafor-Reyes Household", "Budgets", "September 2026"],
     search: { placeholder: "Search transactions, merchants or categories", shortcut: "⌘K" },
     actions: [
@@ -775,7 +794,7 @@ export const COPY: Record<string, any> = {
   },
 
   "sidebar-standard": {
-    brand: "WiseOwl",
+    brand: { name: "WiseOwl", logo: LOGO },
     sections: [
       {
         items: [
@@ -833,7 +852,7 @@ export const COPY: Record<string, any> = {
   },
 
   "sidebar-collapsible": {
-    brand: "WiseOwl",
+    brand: { name: "WiseOwl", logo: MARK },
     collapsedLabel: "Expand sidebar",
     expandedLabel: "Collapse sidebar",
     items: [
@@ -909,7 +928,7 @@ export const COPY: Record<string, any> = {
   },
 
   "sidebar-floating": {
-    brand: "WiseOwl",
+    brand: { name: "WiseOwl", logo: LOGO },
     items: [
       { icon: "layout-dashboard", label: "Overview", active: true },
       { icon: "arrow-left-right", label: "Transactions" },
@@ -959,7 +978,7 @@ export const COPY: Record<string, any> = {
   /* ============================= DASHBOARD =========================== */
 
   "app-shell": {
-    nav: { brand: "WiseOwl", household: "Okafor-Reyes Household", items: ["Overview", "Accounts", "Transactions", "Budgets", "Goals", "Bills"], active: "Overview" },
+    nav: { brand: { name: "WiseOwl", logo: MARK }, household: "Okafor-Reyes Household", items: ["Overview", "Accounts", "Transactions", "Budgets", "Goals", "Bills"], active: "Overview" },
     header: { title: "Good morning, Maya", sub: "Sunday, October 4 · 3 bills due this week" },
     kpis: [
       { label: "Net worth", value: "$184,276.52", change: "+2.4%" },

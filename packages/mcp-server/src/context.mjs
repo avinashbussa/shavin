@@ -9,6 +9,8 @@
 import { readFileSync, writeFileSync, existsSync, readdirSync, mkdirSync, unlinkSync } from "node:fs";
 import { matchHexColors } from "@shavin/block-schema/hex-policy";
 import { createHash } from "node:crypto";
+import { toPosix } from "./posix-path.mjs";
+import { parseJson } from "./json-file.mjs";
 import { resolve, dirname, join, basename } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -18,7 +20,7 @@ const ROOT = resolve(__dirname, "..", "..", "..");
 
 export function loadJSON(path) {
   try {
-    if (existsSync(path)) return JSON.parse(readFileSync(path, "utf8"));
+    if (existsSync(path)) return parseJson(readFileSync(path, "utf8"));
   } catch {}
   return null;
 }
@@ -65,23 +67,16 @@ export function getAllFiles(dir, maxDepth = 4, currentDepth = 0) {
 // Also resolves `theme="Editorial"` preset props by inlining THEME_PRESETS data.
 
 const THEME_PRESETS_DATA = [
-  { name: "Default", accentColor: "Monochrome", grayColor: "Zinc", radius: "medium", scaling: 100, panelBackground: "solid", appearance: "light", displayFont: "Space Grotesk", bodyFont: "Inter" },
-  { name: "Linear", accentColor: "Violet", grayColor: "Zinc", radius: "medium", scaling: 100, panelBackground: "translucent", appearance: "dark", displayFont: "Inter", bodyFont: "Inter" },
-  { name: "Nordic", accentColor: "Teal", grayColor: "Gray", radius: "large", scaling: 100, panelBackground: "solid", appearance: "light", displayFont: "Outfit", bodyFont: "Inter" },
-  { name: "Vanguard", accentColor: "Red", grayColor: "Zinc", radius: "medium", scaling: 100, panelBackground: "solid", appearance: "dark", displayFont: "Space Grotesk", bodyFont: "Inter" },
-  { name: "Cyber", accentColor: "Lime", grayColor: "Zinc", radius: "large", scaling: 100, panelBackground: "translucent", appearance: "dark", displayFont: "JetBrains Mono", bodyFont: "Inter" },
-  { name: "WiseOwl", accentColor: "Lime", grayColor: "Zinc", radius: "large", scaling: 100, panelBackground: "translucent", appearance: "dark", displayFont: "Public Sans", bodyFont: "Inter" },
-  { name: "Editorial", accentColor: "Bronze", grayColor: "Stone", radius: "medium", scaling: 100, panelBackground: "solid", appearance: "light", displayFont: "Fraunces", bodyFont: "Inter" },
-  { name: "Neo Tokyo", accentColor: "Ruby", grayColor: "Zinc", radius: "medium", scaling: 100, panelBackground: "translucent", appearance: "dark", displayFont: "Space Grotesk", bodyFont: "Inter" },
-  { name: "Oasis", accentColor: "Jade", grayColor: "Stone", radius: "large", scaling: 100, panelBackground: "solid", appearance: "light", displayFont: "Outfit", bodyFont: "Inter" },
-  { name: "Ocean", accentColor: "Mint", grayColor: "Zinc", radius: "medium", scaling: 100, panelBackground: "solid", appearance: "light", displayFont: "Space Grotesk", bodyFont: "Inter" },
-  { name: "Velvet", accentColor: "Plum", grayColor: "Slate", radius: "large", scaling: 100, panelBackground: "translucent", appearance: "dark", displayFont: "Playfair Display", bodyFont: "Inter" },
-  { name: "Minimal", accentColor: "Monochrome", grayColor: "Gray", radius: "small", scaling: 100, panelBackground: "solid", appearance: "light", displayFont: "Outfit", bodyFont: "Inter" },
-  { name: "Warm", accentColor: "Amber", grayColor: "Stone", radius: "large", scaling: 100, panelBackground: "solid", appearance: "light", displayFont: "Lora", bodyFont: "Inter" },
-  { name: "Playful", accentColor: "Iris", grayColor: "Slate", radius: "large", scaling: 100, panelBackground: "solid", appearance: "light", displayFont: "Space Grotesk", bodyFont: "Space Grotesk" },
-  { name: "Sunset", accentColor: "Crimson", grayColor: "Stone", radius: "large", scaling: 100, panelBackground: "translucent", appearance: "dark", displayFont: "Outfit", bodyFont: "Inter" },
-  { name: "Midnight", accentColor: "Cyan", grayColor: "Zinc", radius: "medium", scaling: 100, panelBackground: "translucent", appearance: "dark", displayFont: "Space Grotesk", bodyFont: "Inter" },
-  { name: "Terminal", accentColor: "Green", grayColor: "Zinc", radius: "none", scaling: 100, panelBackground: "solid", appearance: "dark", displayFont: "JetBrains Mono", bodyFont: "JetBrains Mono" },
+  { name: "Monochrome", brandColor: "Monochrome", grayColor: "Zinc", radius: "medium", scaling: 100, panelBackground: "solid", appearance: "dark", displayFont: "Rethink Sans", bodyFont: "Inter" },
+  { name: "Midnight", brandColor: "Cyan", grayColor: "Zinc", radius: "medium", scaling: 100, panelBackground: "translucent", appearance: "dark", displayFont: "Inter", bodyFont: "Inter" },
+  { name: "Neo Tokyo", brandColor: "Ruby", grayColor: "Zinc", radius: "medium", scaling: 100, panelBackground: "translucent", appearance: "dark", displayFont: "Host Grotesk", bodyFont: "Inter" },
+  { name: "Terminal", brandColor: "Green", grayColor: "Zinc", radius: "none", scaling: 100, panelBackground: "solid", appearance: "dark", displayFont: "JetBrains Mono", bodyFont: "JetBrains Mono" },
+  { name: "Velvet", brandColor: "Plum", grayColor: "Slate", radius: "large", scaling: 100, panelBackground: "translucent", appearance: "dark", displayFont: "Playfair Display", bodyFont: "Inter" },
+  { name: "Paper", brandColor: "Monochrome", grayColor: "Gray", radius: "small", scaling: 100, panelBackground: "solid", appearance: "light", displayFont: "Public Sans", bodyFont: "Inter" },
+  { name: "Editorial", brandColor: "Bronze", grayColor: "Stone", radius: "medium", scaling: 100, panelBackground: "solid", appearance: "light", displayFont: "Fraunces", bodyFont: "Inter" },
+  { name: "Hearth", brandColor: "Amber", grayColor: "Stone", radius: "large", scaling: 100, panelBackground: "solid", appearance: "light", displayFont: "Lora", bodyFont: "Inter" },
+  { name: "Opal", brandColor: "Teal", grayColor: "Gray", radius: "large", scaling: 100, panelBackground: "solid", appearance: "light", displayFont: "Figtree", bodyFont: "Inter" },
+  { name: "WiseOwl", brandColor: "Lime", grayColor: "Zinc", radius: "large", scaling: 100, panelBackground: "translucent", appearance: "dark", displayFont: "Public Sans", bodyFont: "Inter" },
 ];
 
 const LAYOUT_CANDIDATES = [
@@ -106,7 +101,7 @@ export function parseThemeProviderFromLayout(targetDir) {
     const result = {
       source: c,
       theme: null,        // named preset
-      accentColor: null,
+      brandColor: null,
       grayColor: null,
       radius: null,
       scaling: null,
@@ -115,6 +110,7 @@ export function parseThemeProviderFromLayout(targetDir) {
       displayFont: null,
       bodyFont: null,
       subheadingFont: null,
+      brandSolid: null,   // accessible (default) | exact | perceptual
     };
 
     // Extract individual prop="value" or prop={value} pairs
@@ -126,7 +122,7 @@ export function parseThemeProviderFromLayout(targetDir) {
     };
 
     result.theme = extractProp("theme");
-    result.accentColor = extractProp("accentColor");
+    result.brandColor = extractProp("brandColor");
     result.grayColor = extractProp("grayColor");
     result.radius = extractProp("radius");
     result.scaling = extractProp("scaling");
@@ -135,6 +131,7 @@ export function parseThemeProviderFromLayout(targetDir) {
     result.displayFont = extractProp("displayFont");
     result.bodyFont = extractProp("bodyFont");
     result.subheadingFont = extractProp("subheadingFont");
+    result.brandSolid = extractProp("brandSolid");
 
     // If theme="PresetName" is set, start from preset values as the base
     // Individual props override the preset (matching ThemeProvider's own logic)
@@ -143,7 +140,7 @@ export function parseThemeProviderFromLayout(targetDir) {
         (t) => t.name.toLowerCase() === result.theme.toLowerCase()
       );
       if (preset) {
-        if (!result.accentColor) result.accentColor = preset.accentColor;
+        if (!result.brandColor) result.brandColor = preset.brandColor;
         if (!result.grayColor) result.grayColor = preset.grayColor;
         if (!result.radius) result.radius = preset.radius;
         if (!result.scaling) result.scaling = String(preset.scaling);
@@ -159,6 +156,25 @@ export function parseThemeProviderFromLayout(targetDir) {
   return null;
 }
 
+/** One advisory line while the project's theme is still the unconfirmed default. Never an error. */
+export const THEME_UNCONFIRMED_NOTICE =
+  "[THEME_NOT_CONFIRMED] The user has not set colours or fonts. If the request did not name them, pick a brand colour, a display and body font pair, and a mode from the brief (visual-compositor, Theme), apply them with `npx @shavin/cli brand --color <preset|#hex> --display-font <name> --body-font <name> --mode <mode>`, and after the first page tell the user what you chose and offer to change it; then run `npx @shavin/cli brand --confirm`.";
+
+const themeNoticeShown = new Set();
+
+/** The notice once per project per server session (for validate_code and check_page), or null. */
+export function themeReminderOnce(targetDir) {
+  try {
+    if (themeNoticeShown.has(targetDir)) return null;
+    const m = parseShavinManifest(targetDir);
+    if (!m || !m.themeUnconfirmed) return null;
+    themeNoticeShown.add(targetDir);
+    return THEME_UNCONFIRMED_NOTICE;
+  } catch {
+    return null;
+  }
+}
+
 export function parseShavinManifest(targetDir) {
   // ── Priority chain: ThemeProvider (runtime) > SHAVIN.md > config.json > defaults ──
   const tp = parseThemeProviderFromLayout(targetDir);
@@ -169,20 +185,21 @@ export function parseShavinManifest(targetDir) {
     manifestFile: null,
     appName: null,
     domain: null,
-    accent: "monochrome",
+    brand: "monochrome",
     neutral: "zinc",
     themeMode: "dark-first",
-    density: "95%",
+    density: "100%",
     radius: "medium",
     panelBackground: "solid",
     raw: null,
     themeSource: null, // tracks which source provided theme values
+    themeUnconfirmed: false, // true until the user (or the agent, after telling them) confirms the theme
   };
 
   // Layer 1: ThemeProvider from layout.tsx (runtime truth — highest priority for theme fields)
   if (tp) {
     config.themeSource = "ThemeProvider";
-    if (tp.accentColor) config.accent = tp.accentColor.toLowerCase();
+    if (tp.brandColor) config.brand = tp.brandColor.toLowerCase();
     if (tp.grayColor) config.neutral = tp.grayColor.toLowerCase();
     if (tp.radius) config.radius = tp.radius.toLowerCase();
     if (tp.panelBackground) config.panelBackground = tp.panelBackground.toLowerCase();
@@ -214,9 +231,10 @@ export function parseShavinManifest(targetDir) {
     if (domainMatch) config.domain = domainMatch[1].replace(/[*`\[\]]/g, "").trim();
 
     // Only use SHAVIN.md theme fields if ThemeProvider didn't provide them
-    if (!tp?.accentColor) {
-      const accentMatch = shavinContent.match(/Primary Accent\*{0,2}:\s*`?([a-z-]+)`?/i);
-      if (accentMatch) { config.accent = accentMatch[1].trim(); if (!config.themeSource) config.themeSource = "SHAVIN.md"; }
+    if (!tp?.brandColor) {
+      const brandMatch = shavinContent.match(/Primary Brand\*{0,2}:\s*`?([a-z-]+)`?/i);
+      if (brandMatch && /^unset$/i.test(brandMatch[1].trim())) config.themeUnconfirmed = true; // not chosen yet: keep the default, the agent proposes one
+      else if (brandMatch) { config.brand = brandMatch[1].trim(); if (!config.themeSource) config.themeSource = "SHAVIN.md"; }
     }
     if (!tp?.grayColor) {
       const neutralMatch = shavinContent.match(/Neutral Scale\*{0,2}:\s*`?([a-z-]+)`?/i);
@@ -224,7 +242,7 @@ export function parseShavinManifest(targetDir) {
     }
     if (!tp?.defaultTheme) {
       const modeMatch = shavinContent.match(/Theme Mode\*{0,2}:\s*`?([a-z-]+)`?/i);
-      if (modeMatch) config.themeMode = modeMatch[1].trim();
+      if (modeMatch && !/^auto$/i.test(modeMatch[1].trim())) config.themeMode = modeMatch[1].trim();
     }
     if (!tp?.scaling) {
       const densityMatch = shavinContent.match(/Scaling \/ Density\*{0,2}:\s*`?([0-9%a-z\s()-]+)`?/i);
@@ -248,11 +266,15 @@ export function parseShavinManifest(targetDir) {
 
   const shavinConfig = loadJSON(resolve(targetDir, ".shavin", "config.json"));
   if (shavinConfig?.presets) {
-    if (!tp?.accentColor && !shavinContent?.match(/Primary Accent\*{0,2}:/i) && shavinConfig.presets.accentColor) config.accent = shavinConfig.presets.accentColor;
+    if (!tp?.brandColor && !shavinContent?.match(/Primary Brand\*{0,2}:/i) && shavinConfig.presets.brandColor) config.brand = shavinConfig.presets.brandColor;
     if (!tp?.grayColor && !shavinContent?.match(/Neutral Scale\*{0,2}:/i) && shavinConfig.presets.grayColor) config.neutral = shavinConfig.presets.grayColor;
     if (!tp?.radius && !shavinContent?.match(/Base Radius\*{0,2}:/i) && shavinConfig.presets.radius) config.radius = shavinConfig.presets.radius;
     if (!tp?.scaling && !shavinContent?.match(/Scaling \/ Density\*{0,2}:/i) && shavinConfig.presets.scaling) config.density = shavinConfig.presets.scaling;
   }
+
+  // brandConfirmed is written by `shavin init` (false) and `shavin brand --confirm` (true).
+  // A missing field means an older project: treated as confirmed, nothing changes for it.
+  if (shavinConfig && shavinConfig.brandConfirmed === false) config.themeUnconfirmed = true;
 
   if (!config.manifestFile && !tp && !shavinConfig) {
     return { hasManifest: false };
@@ -320,7 +342,7 @@ export function detectProjectArchetype(targetDir) {
 }
 
 export function scanCodebaseAlignment(targetDir) {
-  const srcFiles = getAllFiles(targetDir, 4).filter((f) =>
+  const srcFiles = getAllFiles(targetDir, 4).map(toPosix).filter((f) => // forward slashes: Windows paths have backslashes
     /\.(tsx|jsx|ts|js|html|css|vue|svelte)$/i.test(f) &&
     !f.includes(".test.") &&
     !f.includes(".spec.") &&
@@ -376,15 +398,15 @@ export function scanCodebaseAlignment(targetDir) {
     score = Math.max(10, 100 - penalty);
   }
 
-  let inferredAccent = "monochrome";
+  let inferredBrand = "monochrome";
   if (detectedHexColors.size > 0) {
     const topHex = [...detectedHexColors.entries()].sort((a, b) => b[1] - a[1])[0][0];
-    if (/#(3b82f6|2563eb|1d4ed8|60a5fa|4f46e5|6366f1)/i.test(topHex)) inferredAccent = "indigo";
-    else if (/#(10b981|059669|34d399|46a758|22c55e)/i.test(topHex)) inferredAccent = "grass";
-    else if (/#(f59e0b|d97706|f97316|ea580c)/i.test(topHex)) inferredAccent = "amber";
-    else if (/#(ef4444|dc2626|e11d48|f43f5e)/i.test(topHex)) inferredAccent = "ruby";
-    else if (/#(8b5cf6|7c3aed|a855f7)/i.test(topHex)) inferredAccent = "iris";
-    else if (/#(06b6d4|0891b2|38bdf8|0ea5e9)/i.test(topHex)) inferredAccent = "sky";
+    if (/#(3b82f6|2563eb|1d4ed8|60a5fa|4f46e5|6366f1)/i.test(topHex)) inferredBrand = "indigo";
+    else if (/#(10b981|059669|34d399|46a758|22c55e)/i.test(topHex)) inferredBrand = "grass";
+    else if (/#(f59e0b|d97706|f97316|ea580c)/i.test(topHex)) inferredBrand = "amber";
+    else if (/#(ef4444|dc2626|e11d48|f43f5e)/i.test(topHex)) inferredBrand = "ruby";
+    else if (/#(8b5cf6|7c3aed|a855f7)/i.test(topHex)) inferredBrand = "iris";
+    else if (/#(06b6d4|0891b2|38bdf8|0ea5e9)/i.test(topHex)) inferredBrand = "sky";
   }
 
   return {
@@ -396,7 +418,7 @@ export function scanCodebaseAlignment(targetDir) {
     rawColorScaleCount,
     directFoundationVarCount,
     totalViolations,
-    inferredAccent,
+    inferredBrand,
   };
 }
 
@@ -415,10 +437,10 @@ export function extractProjectContext(options = {}) {
     ? "HEALTHY_ALIGNED"
     : "PROGRESSIVE_MIGRATION";
 
-  const accent = manifest.accent || alignment.inferredAccent || "monochrome";
+  const brand = manifest.brand || alignment.inferredBrand || "monochrome";
   const neutral = manifest.neutral || "zinc";
   const themeMode = manifest.themeMode || "dark-first";
-  const density = manifest.density || "95%";
+  const density = manifest.density || "100%";
   const radius = manifest.radius || "medium";
   const appName = manifest.appName || pkg.name || basename(targetDir);
 
@@ -431,13 +453,13 @@ Framework: ${pkg.name || "React"} | Shavin Status: ⚠️ UNINITIALIZED | Alignm
 Detected Debt: ${alignment.rawHexCount} raw hexes, ${alignment.rawRadiusCount} literal radii, ${alignment.rawColorScaleCount} raw color utilities
 
 [INFERRED_BRAND_MAPPING]
-Accent: ${accent} | Neutral: ${neutral} | Mode: ${themeMode} | Density: ${density} | Radius: ${radius}
+Brand: ${brand} | Neutral: ${neutral} | Mode: ${themeMode} | Density: ${density} | Radius: ${radius}
 
 [TARGET_MIGRATION_RULES_FOR_AI]
 When generating or refactoring components in this workspace:
-1. Replace raw colors with semantic tokens: bg-surface, text-fg, text-fg-subtle, border-hairline, bg-accent.
+1. Replace raw colors with semantic tokens: bg-surface, text-fg, text-fg-subtle, border-hairline, bg-brand.
 2. Replace hardcoded radii on cards with rounded-[var(--radius-panel)]; use rounded-[var(--radius-lg)] on controls.
-3. Suggest wrapping root with @shavin/ui's <ThemeProvider accentColor="${accent}" grayColor="${neutral}" />.
+3. Suggest wrapping root with @shavin/ui's <ThemeProvider brandColor="${brand}" grayColor="${neutral}" />.
 
 [AVAILABLE_MCP_TOOLS]
 - plan_page: Brief → per-section composition plan (call before writing a page).
@@ -454,7 +476,7 @@ When generating or refactoring components in this workspace:
     promptMarkdown = `<!-- SHAVIN_DESIGN_CONTEXT:START (Mode: ${mode}) -->
 [PROJECT_PROFILE]
 App: ${appName} | Archetype: ${archetype.label} (${archetype.recommendedAgentSkill})
-Theme: ${themeMode} | Accent: ${accent} | Neutral: ${neutral} | Density: ${density} | Radius: ${radius} | Alignment Score: ${alignment.score}/100
+Theme: ${themeMode} | Brand: ${brand} | Neutral: ${neutral} | Density: ${density} | Radius: ${radius} | Alignment Score: ${alignment.score}/100
 
 [WORKFLOW (call these tools in order; skills load through get_skill, not file paths)]
 1. Pages / sections (marketing, landing, pricing, docs, editorial): plan_page({ brief }) → fill the plan → check_page({ plan }).
@@ -473,7 +495,7 @@ Never output flat sterile wireframes or generic AI slop. Always apply these prem
 6. Software Authenticity: Feature real UI artifacts (Token Inspector with render counter, Concentric Geometry preview) instead of detached 3D clay balls. Use organic metrics (99.94%, <3.2ms, 1,423,690). Ban AI cliches ('Elevate', 'Seamless', 'Unleash'). Never use the sparkles icon or sparkle emoji unless the user asks (use <Murmur> for AI activity).
 
 [STRICT_TOKEN_INVARIANTS]
-• Color Purity: ZERO hex/rgb/--n-* literals. Use bg-surface, bg-canvas, text-fg (titles), text-fg-subtle (descriptions), border-hairline, bg-accent.
+• Color Purity: ZERO hex/rgb/--n-* literals. Use bg-surface, bg-canvas, text-fg (titles), text-fg-subtle (descriptions), border-hairline, bg-brand.
 • Concentric Geometry: Container panels use rounded-[var(--radius-panel)]. Controls use rounded-[var(--radius-lg)]. Concentric inner: rounded-panel-p5 (for p-5) or rounded-panel-p3 (for p-3).
 • Floating Panels: Overlays/menus/dialogs MUST include data-panel attribute.
 
@@ -487,6 +509,10 @@ Never output flat sterile wireframes or generic AI slop. Always apply these prem
 • validate_code: Test snippet against token rules & contrast gates.
 • shavin_steer: Execute polish / harden / typeset / audit actions with snapshot rollbacks.
 <!-- SHAVIN_DESIGN_CONTEXT:END -->`;
+  }
+
+  if (manifest.themeUnconfirmed) {
+    promptMarkdown = promptMarkdown.replace(/^.*\n/, (first) => `${first}${THEME_UNCONFIRMED_NOTICE}\n`);
   }
 
   const contextHash = createHash("sha256").update(promptMarkdown).digest("hex").slice(0, 12);

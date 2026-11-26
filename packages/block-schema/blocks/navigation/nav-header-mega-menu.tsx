@@ -1,4 +1,4 @@
-import { Button, Card, Container, Flex, Grid, Heading, Icon, IconButton, Image, Link, Section, Text } from "@shavin/ui";
+import { Button, Container, Drawer, Flex, Grid, Icon, IconButton, Image, Link, Popover, PopoverAnchor, PopoverContent, PopoverTrigger, Section, Text, WiseOwlLogo } from "@shavin/ui";
 
 const defaultLinks = [
   { label: "Household", href: "/household" },
@@ -36,24 +36,53 @@ export function NavHeaderMegaMenu({ links = defaultLinks, groups = defaultGroups
   return (
     <Section as="header" size="compact">
       <Container size="lg">
-        <Flex direction="column" gap="3">
-          <Flex direction="row" align="center" justify="between" gap="6" className="h-14">
-            <Heading as="p" size="md" tracking="tight">WiseOwl</Heading>
-            <Flex as="nav" direction="row" align="center" gap="1" aria-label="Main" className="max-md:hidden">
-              <Button variant="ghost" size="sm" aria-expanded="true" className="bg-surface-hover text-fg" iconRight={<Icon name="chevron-down" size="sm" />}>Product</Button>
-              {links.map((link) => (
-                <Link key={link.label} href={link.href} size="sm" underline="none" className="rounded-[var(--radius-lg)] px-3 py-2 font-medium text-fg-muted hover:bg-surface-hover hover:text-fg">{link.label}</Link>
-              ))}
+        <Link href="#main" underline="none" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-[var(--radius-lg)] focus:border focus:border-hairline focus:bg-surface focus:px-3 focus:py-2 focus:text-fg">Skip to content</Link>
+        <Popover>
+          <PopoverAnchor asChild>
+            <Flex direction="row" align="center" justify="between" gap="6" className="h-14">
+              <WiseOwlLogo />
+              <Flex as="nav" direction="row" align="center" gap="1" aria-label="Main" className="max-md:hidden">
+                <PopoverTrigger asChild>
+                  <Button variant="ghost" size="sm" iconRight={<Icon name="chevron-down" size="sm" />} className="data-[state=open]:bg-surface-hover data-[state=open]:text-fg">Product</Button>
+                </PopoverTrigger>
+                {links.map((link) => (
+                  <Link key={link.label} href={link.href} size="sm" underline="none" className="rounded-[var(--radius-lg)] px-3 py-2 font-medium text-fg-muted hover:bg-surface-hover hover:text-fg">{link.label}</Link>
+                ))}
+              </Flex>
+              <Flex direction="row" align="center" gap="2" className="max-md:hidden">
+                <Button variant="ghost" size="sm" asChild><a href="/signin">Sign in</a></Button>
+                <Button size="sm" asChild><a href="/signup">Start free</a></Button>
+              </Flex>
+              <Drawer
+                title="Menu"
+                side="right"
+                size="sm"
+                trigger={
+                  <IconButton variant="ghost" size="md" aria-label="Open menu" className="md:hidden">
+                    <Icon name="menu" size="md" color="inherit" />
+                  </IconButton>
+                }
+              >
+                <Flex as="nav" direction="column" gap="5" aria-label="Mobile">
+                  {groups.map((group) => (
+                    <Flex key={group.title} direction="column" gap="1">
+                      <Text size="overline" color="muted">{group.title}</Text>
+                      {group.items.map((item) => (
+                        <Link key={item.label} href={item.href} size="md" underline="none" className="rounded-[var(--radius-lg)] px-2 py-2 font-medium text-fg hover:bg-surface-hover">{item.label}</Link>
+                      ))}
+                    </Flex>
+                  ))}
+                  <Flex direction="column" gap="1">
+                    {links.map((link) => (
+                      <Link key={link.label} href={link.href} size="md" underline="none" className="rounded-[var(--radius-lg)] px-2 py-2 font-medium text-fg hover:bg-surface-hover">{link.label}</Link>
+                    ))}
+                  </Flex>
+                  <Button asChild><a href="/signup">Start free</a></Button>
+                </Flex>
+              </Drawer>
             </Flex>
-            <Flex direction="row" align="center" gap="2" className="max-md:hidden">
-              <Button variant="ghost" size="sm" asChild><a href="/signin">Sign in</a></Button>
-              <Button size="sm" asChild><a href="/signup">Start free</a></Button>
-            </Flex>
-            <IconButton variant="ghost" size="md" aria-label="Open menu" aria-expanded="false" className="md:hidden">
-              <Icon name="menu" size="md" color="inherit" />
-            </IconButton>
-          </Flex>
-          <Card padding="none" className="overflow-hidden shadow-panel max-md:hidden">
+          </PopoverAnchor>
+          <PopoverContent align="start" sideOffset={8} className="w-[var(--radix-popper-anchor-width)] overflow-hidden p-0 shadow-panel max-md:hidden">
             <Flex direction="column" className="lg:flex-row">
               <Grid columns="3" gap="6" className="flex-1 p-6">
                 {groups.map((group) => (
@@ -63,7 +92,7 @@ export function NavHeaderMegaMenu({ links = defaultLinks, groups = defaultGroups
                       {group.items.map((item) => (
                         <Link key={item.label} href={item.href} underline="none" className="flex items-start gap-3 rounded-[var(--radius-lg)] p-2 hover:bg-surface-hover">
                           <Flex align="center" justify="center" className="h-9 w-9 shrink-0 rounded-[var(--radius-lg)] border border-hairline bg-canvas">
-                            <Icon name={item.icon} size="sm" color="accent" />
+                            <Icon name={item.icon} size="sm" color="brand" />
                           </Flex>
                           <Flex direction="column" gap="1" className="min-w-0">
                             <Text size="sm" weight="medium">{item.label}</Text>
@@ -88,8 +117,8 @@ export function NavHeaderMegaMenu({ links = defaultLinks, groups = defaultGroups
                 </Link>
               </Flex>
             </Flex>
-          </Card>
-        </Flex>
+          </PopoverContent>
+        </Popover>
       </Container>
     </Section>
   );

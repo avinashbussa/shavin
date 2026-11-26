@@ -2,7 +2,7 @@ import { Button, Container, Flex, Heading, Section, Text } from "@shavin/ui";
 
 export function CtaMeshBand() {
   return (
-    <Section size="hero" bgOverlays="mesh-accent">
+    <Section size="hero" bgOverlays="mesh-brand">
       <Container size="md">
         <Flex direction="column" align="center" gap="6" className="text-center">
           <Flex direction="column" align="center" gap="5">

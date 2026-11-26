@@ -10,7 +10,8 @@ const PRIVATE = /blocks-pro|block-renderer|@shavin\/cloud|apps\/(studio|docs|web
 describe("generated agent files", () => {
   it("are up to date with their sources", () => {
     for (const [rel, text] of Object.entries(outputs() as Record<string, string>)) {
-      expect(readFileSync(resolve(ROOT, rel), "utf8"), rel).toBe(text);
+      const onDisk = readFileSync(resolve(ROOT, rel), "utf8").replace(/\r\n/g, "\n");
+      expect(onDisk, `${rel} is out of date with its sources: run \`npm run regen\` and commit the result`).toBe(text);
     }
   });
 

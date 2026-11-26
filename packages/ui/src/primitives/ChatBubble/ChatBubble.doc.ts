@@ -7,6 +7,9 @@ export const docs: ComponentDoc = {
     "role: user, assistant, system. variant (incoming, outgoing, system) is the older spelling and still works",
     "layout: bubble (text on a surface) or flat (content flows as a document). role=assistant defaults to flat so Reasoning, ToolCall, CodeBlock and FileOutput are never squeezed into a bubble",
     "status: submitted (Murmur pending indicator), streaming (live caret, aria-live), ready, stopped, error with Retry. Names match the Vercel AI SDK chat status",
+    "sharpCorner (top by default, bottom or none) places the speech-bubble tail; hoverTimestamp shows the timestamp only on hover",
+    "interim shows unconfirmed live text (a speech transcript) italic and quiet",
+    "Bubble width is capped at 85% of the row and shrinks to the text, so short messages stay short and long ones wrap late",
     "actions slot for copy / regenerate / feedback, hidden while submitted or streaming",
     "Children are the message parts in order. Part primitives: Reasoning (reasoning part), ToolCall (tool part with approval), CodeBlock (code), FileOutput (file part)",
     "Uses panel radius --radius-panel with a tail corner in bubble layout; avatar, author and timestamp slots"

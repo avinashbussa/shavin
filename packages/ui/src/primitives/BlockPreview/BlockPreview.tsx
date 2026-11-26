@@ -2,12 +2,16 @@
 import React, { useState, useEffect, useRef, createContext, type ReactNode } from "react";
 import ReactDOM from "react-dom";
 import { Button } from "../Button";
+import { IconButton } from "../IconButton";
+import { Menu, MenuItem } from "../Menu";
+import { Popover, PopoverContent, PopoverTrigger } from "../Popover";
+import { PortalContainerProvider } from "../../lib/portal-container";
 import { Card } from "../Card";
 import { AspectRatio } from "../AspectRatio";
 import { SegmentedControl, SegmentedControlItem } from "../SegmentedControl";
 import { CodeBlock } from "../CodeBlock";
 import { cn } from "../../lib/cn";
-import { Monitor, Tablet, Smartphone, ArrowUpRight, Code2, X } from "lucide-react";
+import { Monitor, Tablet, Smartphone, ArrowUpRight, Code2, Terminal, X } from "lucide-react";
 
 export const DeviceContext = createContext<"desktop" | "tablet" | "mobile">("desktop");
 
@@ -20,9 +24,13 @@ export interface BlockPreviewProps extends React.HTMLAttributes<HTMLDivElement> 
   command: string;
   /** Layout mode for canvas composition */
   layout?: "fullscreen" | "sidebar" | "sidebar-right" | "header" | "centered" | "plain" | "app-shell";
-  /** Optional builder template key to link to Shavin Studio */
+  /** Optional template key to link to Shavin Studio */
+  studioKey?: string;
+  /** Optional direct URL override for the Open in Studio link */
+  studioUrl?: string;
+  /** @deprecated Renamed to `studioKey`; still accepted. */
   builderKey?: string;
-  /** Optional direct URL override for Studio/Builder */
+  /** @deprecated Renamed to `studioUrl`; still accepted. */
   builderUrl?: string;
   /** Live interactive component or BlockRenderer tree */
   children: ReactNode;
@@ -33,6 +41,8 @@ export function BlockPreview({
   code,
   command,
   layout = "fullscreen",
+  studioKey: studioKeyProp,
+  studioUrl: studioUrlProp,
   builderKey,
   builderUrl,
   children,
@@ -45,6 +55,8 @@ export function BlockPreview({
   const [copiedCommand, setCopiedCommand] = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
+  // The scaled, clipped frame the block renders in: floating panels (Popover, Menu, Select …) mount here, so they open inside the preview.
+  const [portalEl, setPortalEl] = useState<HTMLElement | null>(null);
   const [parentWidth, setParentWidth] = useState(800);
   // Natural height of the block at desktop width, so the desktop frame can fit it instead of cropping to 16:9.
   const measureRef = useRef<HTMLDivElement>(null);
@@ -120,15 +132,17 @@ export function BlockPreview({
   const Frame: any = device === "desktop" ? "div" : AspectRatio;
   const frameProps = device === "desktop" ? { className: "relative w-full", style: { height: frameH } } : { ratio: 16 / 9 };
 
-  const isFork = builderKey?.startsWith("@") || builderKey?.includes("/");
-  const builderQuery = isFork ? `fork=${builderKey}` : `load=${builderKey}`;
+  const studioKey = studioKeyProp ?? builderKey;
+  const studioUrl = studioUrlProp ?? builderUrl;
+  const isFork = studioKey?.startsWith("@") || studioKey?.includes("/");
+  const studioQuery = isFork ? `fork=${studioKey}` : `load=${studioKey}`;
 
   const resolvedBuilderUrl =
-    builderUrl ||
-    (builderKey
+    studioUrl ||
+    (studioKey
       ? typeof window !== "undefined" && window.location.hostname === "localhost"
-        ? `http://localhost:3200/?${builderQuery}`
-        : `https://studio.shavin.cc/?${builderQuery}`
+        ? `http://localhost:3200/?${studioQuery}`
+        : `https://studio.shavin.cc/?${studioQuery}`
       : undefined);
 
   return (
@@ -141,7 +155,51 @@ export function BlockPreview({
         {...props}
       >
         {/* Block Meta Action Bar — 3-Column Balanced Layout */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 w-full items-center gap-4 p-4 border-b border-hairline bg-surface-hover/30 shrink-0">
+        {/* Phone toolbar: icon buttons only. View code and Edit in Studio, a viewport menu, and the install command in a popover. */}
+        <div className="flex items-center justify-between gap-2 p-3 border-b border-hairline bg-surface-hover/30 shrink-0 sm:hidden">
+          <div className="flex items-center gap-1.5">
+            <IconButton variant="outline" size="sm" aria-label="View code" onClick={() => setShowCode(true)}>
+              <Code2 />
+            </IconButton>
+            {resolvedBuilderUrl && (
+              <IconButton variant="outline" size="sm" aria-label="Edit in Studio" onClick={() => window.open(resolvedBuilderUrl, "_blank", "noopener")}>
+                <ArrowUpRight />
+              </IconButton>
+            )}
+          </div>
+          <div className="flex items-center gap-1.5">
+            <Menu
+              align="end"
+              trigger={
+                <IconButton variant="outline" size="sm" aria-label={`Viewport: ${device}. Change viewport`}>
+                  {device === "desktop" ? <Monitor /> : device === "tablet" ? <Tablet /> : <Smartphone />}
+                </IconButton>
+              }
+            >
+              <MenuItem onSelect={() => setDevice("desktop")}>Desktop</MenuItem>
+              <MenuItem onSelect={() => setDevice("tablet")}>Tablet</MenuItem>
+              <MenuItem onSelect={() => setDevice("mobile")}>Mobile</MenuItem>
+            </Menu>
+            <Popover>
+              <PopoverTrigger asChild>
+                <IconButton variant="outline" size="sm" aria-label="Install command">
+                  <Terminal />
+                </IconButton>
+              </PopoverTrigger>
+              <PopoverContent align="end" className="w-[min(22rem,calc(100vw-2rem))]">
+                <div className="flex flex-col gap-3">
+                  <span className="text-xs text-fg-muted">Install with the CLI</span>
+                  <code className="block break-all rounded-[var(--radius-lg)] border border-hairline bg-surface-hover px-2.5 py-2 font-mono text-[11px] text-fg">{command}</code>
+                  <Button variant="outline" size="sm" onClick={handleCopyCommand} className="self-end text-xs cursor-pointer">
+                    {copiedCommand ? "Copied" : "Copy"}
+                  </Button>
+                </div>
+              </PopoverContent>
+            </Popover>
+          </div>
+        </div>
+
+        <div className="hidden sm:grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] w-full items-center gap-4 p-4 border-b border-hairline bg-surface-hover/30 shrink-0">
           {/* Left Column — Actions */}
           <div className="flex items-center justify-start gap-2 min-w-0">
             <Button
@@ -149,7 +207,7 @@ export function BlockPreview({
               size="sm"
               onClick={() => setShowCode(true)}
               iconLeft={<Code2 className="h-3.5 w-3.5" />}
-              className="text-xs cursor-pointer"
+              className="shrink-0 text-xs cursor-pointer"
             >
               View Code
             </Button>
@@ -161,10 +219,11 @@ export function BlockPreview({
                   window.open(resolvedBuilderUrl, "_blank", "noopener");
                 }}
                 iconRight={<ArrowUpRight className="h-3.5 w-3.5" />}
-                className="text-xs cursor-pointer"
+                className="min-w-0 text-xs cursor-pointer"
+                title="Edit in Studio"
               >
-                <span className="hidden sm:inline">Edit in Studio</span>
-                <span className="sm:hidden">Edit</span>
+                <span className="hidden min-w-0 truncate sm:inline-block">Edit in Studio</span>
+                <span className="min-w-0 truncate sm:hidden">Edit</span>
               </Button>
             )}
           </div>
@@ -185,13 +244,13 @@ export function BlockPreview({
 
           {/* Right Column — CLI Command Box */}
           <div className="flex items-center justify-end gap-1.5 min-w-0">
-            <div className="flex items-center gap-1 bg-surface-hover border border-hairline rounded-[var(--radius-lg)] pl-2.5 pr-1.5 py-1 text-[11px] font-mono text-fg-muted w-full sm:w-64 overflow-hidden truncate">
-              <span className="text-accent shrink-0">&gt;</span>
+            <div className="flex items-center gap-1 bg-surface-hover border border-hairline rounded-[var(--radius-lg)] pl-2.5 pr-1.5 py-1 text-[11px] font-mono text-fg-muted w-full min-w-0 sm:w-64 sm:max-w-full overflow-hidden truncate">
+              <span className="text-brand-text shrink-0">&gt;</span>
               <span className="truncate flex-1 text-left">{command}</span>
               <button
                 type="button"
                 onClick={handleCopyCommand}
-                className="h-5 px-1.5 rounded-[var(--radius-lg)] bg-surface hover:bg-surface-hover text-[10px] border border-hairline shrink-0 text-fg-muted hover:text-fg cursor-pointer"
+                className="hit-area h-5 px-1.5 rounded-[var(--radius-lg)] bg-surface hover:bg-surface-hover text-[10px] border border-hairline shrink-0 text-fg-muted hover:text-fg cursor-pointer"
               >
                 {copiedCommand ? "Copied" : "Copy"}
               </button>
@@ -204,6 +263,7 @@ export function BlockPreview({
           ref={containerRef}
           className="border-b border-hairline w-full relative overflow-hidden bg-surface-hover/20"
         >
+          <PortalContainerProvider value={portalEl}>
           <Frame {...frameProps}>
             {device === "desktop" ? (
               <div
@@ -213,6 +273,7 @@ export function BlockPreview({
                 tabIndex={0}
                 role="region"
                 aria-label="Block preview"
+                ref={setPortalEl}
                 className="absolute top-0 left-0 overflow-y-auto overflow-x-hidden bg-canvas overscroll-contain"
                 style={{
                   transform: `scale(${scale})`,
@@ -326,6 +387,7 @@ export function BlockPreview({
                     tabIndex={0}
                     role="region"
                     aria-label="Block preview"
+                    ref={setPortalEl}
                     className="flex-1 w-full overflow-y-auto overflow-x-hidden bg-canvas text-fg relative overscroll-contain"
                     style={{ touchAction: "pan-y" }}
                   >
@@ -347,6 +409,7 @@ export function BlockPreview({
               </div>
             )}
           </Frame>
+          </PortalContainerProvider>
         </div>
       </Card>
 
@@ -372,7 +435,7 @@ export function BlockPreview({
                     type="button"
                     onClick={() => setShowCode(false)}
                     aria-label="Close"
-                    className="flex h-7 w-7 items-center justify-center rounded-[var(--radius-lg)] text-fg-muted transition hover:bg-surface-hover hover:text-fg"
+                    className="hit-area flex h-7 w-7 items-center justify-center rounded-[var(--radius-lg)] text-fg-muted transition hover:bg-surface-hover hover:text-fg"
                   >
                     <X className="h-4 w-4" />
                   </button>

@@ -1,11 +1,11 @@
-import { Button, Card, Container, Flex, Heading, Link, Section, Text, TextField } from "@shavin/ui";
+import { Button, Card, Container, Flex, Heading, Link, Section, Text, TextField, WiseOwlLogo } from "@shavin/ui";
 
 export function AuthVerify() {
   return (
-    <Section size="hero" bgOverlays="mesh-accent" className="flex items-center justify-center">
+    <Section size="hero" bgOverlays="mesh-brand" className="flex items-center justify-center">
       <Container size="xs">
         <Flex direction="column" align="center" gap="6">
-          <Heading as="p" size="sm" tracking="tight">WiseOwl</Heading>
+          <WiseOwlLogo size="sm" />
           <Card padding="lg" className="w-full max-w-[420px]">
             <Flex direction="column" gap="5">
               <Flex direction="column" gap="2">
@@ -17,7 +17,7 @@ export function AuthVerify() {
                 <Button type="submit" size="lg" className="w-full">Verify email</Button>
               </form>
               <Flex direction="column" align="center" gap="2">
-                <Text size="sm" color="muted" className="tabular-nums">No code yet? <Link href="/verify/resend" color="accent">Resend code</Link> in 0:42</Text>
+                <Text size="sm" color="muted" className="tabular-nums">No code yet? <Link href="/verify/resend" color="brand">Resend code</Link> in 0:42</Text>
                 <Text size="xs" color="muted">Wrong address? <Link href="/signup">Change email</Link></Text>
               </Flex>
             </Flex>

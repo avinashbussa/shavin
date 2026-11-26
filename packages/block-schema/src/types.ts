@@ -97,7 +97,7 @@ export interface SpatialFrame {
   presetDevice?: "block" | "desktop" | "tablet" | "mobile";
   rootNodes: BlockNode[];
   themeScope?: {
-    accentColor?: string;
+    brandColor?: string;
     grayColor?: string;
     radius?: string;
     scaling?: number;

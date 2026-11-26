@@ -69,7 +69,7 @@
       "id": "prompt-10",
       "category": "responsive-challenge",
       "complexity": "moderate",
-      "prompt": "Build a responsive product pricing table with 3 plans (Starter $0, Pro $29/mo, Enterprise Custom), highlighting the Pro plan with an accent badge and CTA button.",
+      "prompt": "Build a responsive product pricing table with 3 plans (Starter $0, Pro $29/mo, Enterprise Custom), highlighting the Pro plan with a brand badge and CTA button.",
       "expectedComponents": ["Grid", "Card", "Badge", "Button"]
     },
     {
@@ -111,7 +111,7 @@
       "id": "prompt-16",
       "category": "theme-customization",
       "complexity": "moderate",
-      "prompt": "Mount a ThemeProvider with dark mode enabled, grass accent color, and large panel radius, rendering a sample dashboard preview card.",
+      "prompt": "Mount a ThemeProvider with dark mode enabled, grass brand color, and large panel radius, rendering a sample dashboard preview card.",
       "expectedComponents": ["ThemeProvider", "Card", "Button", "Badge"]
     },
     {

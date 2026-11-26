@@ -26,11 +26,11 @@ export const avatarVariants = cva("inline-flex shrink-0 items-center justify-cen
 });
 
 /** Fallback fill. `neutral` is the default grey; the rest are tinted (`soft`) or filled (`solid`). */
-export type AvatarColor = "neutral" | "accent" | "success" | "warning" | "danger";
+export type AvatarColor = "neutral" | "brand" | "success" | "warning" | "danger";
 
 const FALLBACK_TONE: Record<AvatarColor, { soft: string; solid: string }> = {
   neutral: { soft: "bg-surface-hover text-fg-muted", solid: "bg-fg text-canvas" },
-  accent: { soft: "bg-accent/15 text-accent-text", solid: "bg-accent text-accent-fg" },
+  brand: { soft: "bg-brand/15 text-brand-text", solid: "bg-brand-solid text-brand-fg" },
   success: { soft: "bg-success/15 text-success", solid: "bg-success text-success-fg" },
   warning: { soft: "bg-warning/15 text-warning", solid: "bg-warning text-warning-fg" },
   danger: { soft: "bg-danger/15 text-danger", solid: "bg-danger text-danger-fg" },

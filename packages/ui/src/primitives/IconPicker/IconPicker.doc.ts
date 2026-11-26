@@ -2,7 +2,7 @@ import type { ComponentDoc } from "../../authoring/types";
 
 export const docs: ComponentDoc = {
   name: "IconPicker",
-  description: "Searchable icon selection popover grid supporting Lucide icons for builder, form customizers, and toolbar triggers.",
+  description: "Choose an icon from a searchable grid in a popover, with tabs for the Lucide, Phosphor, Radix and Material icon sets.",
   features: [
     "Variants: 'default' (full input-like trigger) or 'icon' (compact square button)",
     "Sizes: sm, md, lg for seamless alignment with form controls and toolbars",

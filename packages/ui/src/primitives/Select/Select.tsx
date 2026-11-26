@@ -2,11 +2,15 @@
 import { useState } from "react";
 import * as RadixSelect from "@radix-ui/react-select";
 import { cn } from "../../lib/cn";
+import { hitAreaClass, type HitArea } from "../../lib/hit-area";
+import { usePortalContainer } from "../../lib/portal-container";
 
 export interface Option {
   value: string;
   label: string;
   prefix?: React.ReactNode;
+  /** Muted text after the label in the open list only (e.g. a size "1440×1024"). The closed trigger shows just the label. */
+  hint?: string;
 }
 
 export interface OptionGroup {
@@ -48,6 +52,11 @@ export interface SelectProps {
    * dense tool panels; the value and the chevron identify it. Both show the 2px focus ring.
    */
   variant?: "outline" | "soft";
+  /**
+   * Hit-area override (docs: "Target size"). "default": 24px floor, 44px on touch. "none": no hit area
+   * growth (dense toolbars; may go below 24px, yours to own). "touch": always 44px on a coarse pointer.
+   */
+  hitArea?: HitArea;
   /** Whether the control is disabled. */
   disabled?: boolean;
   /** id of the trigger, so a `<label htmlFor>` can name it. */
@@ -77,6 +86,7 @@ export function Select({
   contentStyle,
   size = "md",
   variant = "outline",
+  hitArea,
   disabled,
   id,
   name,
@@ -118,6 +128,7 @@ export function Select({
   }
   const selectedOption = flatOptions.find((o) => o.value === value);
 
+  const portalContainer = usePortalContainer();
   return (
     <RadixSelect.Root
       // Radix throws on an empty-string value; "" means unselected (placeholder).
@@ -140,7 +151,8 @@ export function Select({
         aria-invalid={ariaInvalid || undefined}
         aria-required={required || undefined}
         className={cn(
-          "flex w-full items-center justify-between gap-2 rounded-[var(--radius-lg)] border transition aria-[invalid=true]:border-danger data-[placeholder]:text-fg-muted disabled:cursor-not-allowed disabled:opacity-50",
+          "hit-area-touch flex w-full items-center justify-between gap-2 rounded-[var(--radius-lg)] border transition aria-[invalid=true]:border-danger data-[placeholder]:text-fg-muted disabled:cursor-not-allowed disabled:opacity-50",
+          hitAreaClass(hitArea, "touch", "Select"),
           variant === "soft" ? "border-transparent bg-surface-hover hover:bg-hairline/60" : "border-border-control bg-surface",
           size === "sm" ? "h-8 pl-2.5 pr-2 text-xs" : size === "lg" ? "h-12 pl-3.5 pr-3 text-base" : "h-10 pl-3 pr-2.5 text-base md:text-sm",
           className,
@@ -159,7 +171,7 @@ export function Select({
         </RadixSelect.Icon>
       </RadixSelect.Trigger>
 
-      <RadixSelect.Portal>
+      <RadixSelect.Portal container={portalContainer}>
         <RadixSelect.Content
           data-panel
           position="popper"
@@ -197,7 +209,7 @@ export function Select({
                         onPointerUp={(e) => pickWithPen(e, o.value)}
                         onFocus={() => onItemHighlight?.(o.value)}
                         className={cn(
-                          "flex w-full cursor-pointer items-center justify-between rounded-[var(--radius-lg)] px-3 outline-none hover:bg-surface-hover data-[highlighted]:bg-surface-hover data-[state=checked]:font-medium data-[state=checked]:text-accent",
+                          "flex w-full cursor-pointer items-center justify-between rounded-panel-p1 px-3 outline-none hover:bg-elevated-hover data-[highlighted]:bg-elevated-hover data-[state=checked]:font-medium data-[state=checked]:text-brand-text",
                           size === "sm" ? "py-1.5 text-xs" : size === "lg" ? "py-2.5 text-base" : "py-2 text-sm",
                         )}
                       >
@@ -205,6 +217,7 @@ export function Select({
                           {o.prefix}
                           <RadixSelect.ItemText>{o.label}</RadixSelect.ItemText>
                         </div>
+                        {o.hint && <span className="ml-3 shrink-0 text-[0.9em] text-fg-subtle">{o.hint}</span>}
                         <RadixSelect.ItemIndicator>
                           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className={size === "sm" ? "h-3 w-3" : "h-3.5 w-3.5"}>
                             <path d="M5 13l4 4L19 7" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
@@ -225,7 +238,7 @@ export function Select({
                   onPointerUp={(e) => pickWithPen(e, item.value)}
                   onFocus={() => onItemHighlight?.(item.value)}
                   className={cn(
-                    "flex w-full cursor-pointer items-center justify-between rounded-[var(--radius-lg)] px-3 outline-none hover:bg-surface-hover data-[highlighted]:bg-surface-hover data-[state=checked]:font-medium data-[state=checked]:text-accent",
+                    "flex w-full cursor-pointer items-center justify-between rounded-panel-p1 px-3 outline-none hover:bg-elevated-hover data-[highlighted]:bg-elevated-hover data-[state=checked]:font-medium data-[state=checked]:text-brand-text",
                     size === "sm" ? "py-1.5 text-xs" : size === "lg" ? "py-2.5 text-base" : "py-2 text-sm",
                   )}
                 >
@@ -233,6 +246,7 @@ export function Select({
                     {item.prefix}
                     <RadixSelect.ItemText>{item.label}</RadixSelect.ItemText>
                   </div>
+                  {item.hint && <span className="ml-3 shrink-0 text-[0.9em] text-fg-subtle">{item.hint}</span>}
                   <RadixSelect.ItemIndicator>
                     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className={size === "sm" ? "h-3 w-3" : "h-3.5 w-3.5"}>
                       <path d="M5 13l4 4L19 7" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />

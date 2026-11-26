@@ -3,12 +3,12 @@ import type { ComponentDoc } from "../../authoring/types";
 export const docs: ComponentDoc = {
   name: "Box",
   group: "layout",
-  description: "Generic div-based container primitive with translucent panel support and background media props. Useful for media-backed panels and callout boxes.",
+  description: "A plain container for anything that needs a wrapper. It can render as any HTML tag, become a translucent panel, carry a background image or video, and be resized by the user.",
   features: [
     "Translucent panel via translucent prop (backdrop-blur + data-panel)",
-    "Surface contrast scope via surface prop for media backgrounds",
+    "Surface contrast scope via surface prop for media backgrounds. With a photo, video or fx backdrop and no surface it defaults to dark-always plus a dark scrim (dark-30, fx dark-50); meshes and custom gradients need an explicit surface (dark-always or light-always)",
     "Background media: bgVideo, bgImage, bgOverlays (presets, hex, tokens, gradients via comma-separated shorthand), bgSize, bgVideoPaused",
-    "Fx backdrops (needs @shavin/fx registered): bgOverlays=\"fx:dither-waves, gradient-bottom\"; params only when changed: fx:fluid-silk(speed=1.2); quote text values: fx:type-tiles(text='Plan money')"
+    "Fx backdrops (needs `npm i @shavin/fx`, free to use under its own licence, and `registerFxBackdrops()`): bgOverlays=\"fx:dither-waves, gradient-bottom\"; params only when changed: fx:fluid-silk(speed=1.2); quote text values: fx:type-tiles(text='Plan money')"
   ],
   accessibility: [
     "Supports semantic HTML tags via polymorphic as prop"

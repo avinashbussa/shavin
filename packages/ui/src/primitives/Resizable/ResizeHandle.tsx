@@ -11,7 +11,7 @@ import {
   type UseResizableResult,
 } from "../../lib/useResizable";
 
-// Hit area is centred on the border: 8px for a mouse, 24px for touch. The visible
+// Hit area is centred on the border: 24px (WCAG 2.5.8) for every pointer. The visible
 // line or grip is drawn with ::after / ::before so the hit area can stay invisible.
 // Edge lines stop where the element's rounded corners begin (--resize-inset-start /
 // --resize-inset-end, set by ResizeHandles from the measured radii).
@@ -20,14 +20,14 @@ export const resizeHandleVariants = cva(
   {
     variants: {
       edge: {
-        right: "inset-y-0 -right-1 w-2 cursor-ew-resize [@media(pointer:coarse)]:-right-3 [@media(pointer:coarse)]:w-6 after:top-[var(--resize-inset-start,0px)] after:bottom-[var(--resize-inset-end,0px)] after:left-1/2 after:w-px after:-translate-x-1/2 focus-visible:after:w-0.5 data-[resizing]:after:w-0.5",
-        left: "inset-y-0 -left-1 w-2 cursor-ew-resize [@media(pointer:coarse)]:-left-3 [@media(pointer:coarse)]:w-6 after:top-[var(--resize-inset-start,0px)] after:bottom-[var(--resize-inset-end,0px)] after:left-1/2 after:w-px after:-translate-x-1/2 focus-visible:after:w-0.5 data-[resizing]:after:w-0.5",
-        bottom: "inset-x-0 -bottom-1 h-2 cursor-ns-resize [@media(pointer:coarse)]:-bottom-3 [@media(pointer:coarse)]:h-6 after:left-[var(--resize-inset-start,0px)] after:right-[var(--resize-inset-end,0px)] after:top-1/2 after:h-px after:-translate-y-1/2 focus-visible:after:h-0.5 data-[resizing]:after:h-0.5",
-        top: "inset-x-0 -top-1 h-2 cursor-ns-resize [@media(pointer:coarse)]:-top-3 [@media(pointer:coarse)]:h-6 after:left-[var(--resize-inset-start,0px)] after:right-[var(--resize-inset-end,0px)] after:top-1/2 after:h-px after:-translate-y-1/2 focus-visible:after:h-0.5 data-[resizing]:after:h-0.5",
-        "top-left": "z-[21] -left-1.5 -top-1.5 h-3 w-3 cursor-nwse-resize [@media(pointer:coarse)]:h-6 [@media(pointer:coarse)]:w-6 [@media(pointer:coarse)]:-left-3 [@media(pointer:coarse)]:-top-3",
-        "top-right": "z-[21] -right-1.5 -top-1.5 h-3 w-3 cursor-nesw-resize [@media(pointer:coarse)]:h-6 [@media(pointer:coarse)]:w-6 [@media(pointer:coarse)]:-right-3 [@media(pointer:coarse)]:-top-3",
-        "bottom-left": "z-[21] -bottom-1.5 -left-1.5 h-3 w-3 cursor-nesw-resize [@media(pointer:coarse)]:h-6 [@media(pointer:coarse)]:w-6 [@media(pointer:coarse)]:-bottom-3 [@media(pointer:coarse)]:-left-3",
-        "bottom-right": "z-[21] -bottom-1.5 -right-1.5 h-3 w-3 cursor-nwse-resize [@media(pointer:coarse)]:h-6 [@media(pointer:coarse)]:w-6 [@media(pointer:coarse)]:-bottom-3 [@media(pointer:coarse)]:-right-3",
+        right: "inset-y-0 -right-3 w-6 cursor-ew-resize after:top-[var(--resize-inset-start,0px)] after:bottom-[var(--resize-inset-end,0px)] after:left-1/2 after:w-px after:-translate-x-1/2 focus-visible:after:w-0.5 data-[resizing]:after:w-0.5",
+        left: "inset-y-0 -left-3 w-6 cursor-ew-resize after:top-[var(--resize-inset-start,0px)] after:bottom-[var(--resize-inset-end,0px)] after:left-1/2 after:w-px after:-translate-x-1/2 focus-visible:after:w-0.5 data-[resizing]:after:w-0.5",
+        bottom: "inset-x-0 -bottom-3 h-6 cursor-ns-resize after:left-[var(--resize-inset-start,0px)] after:right-[var(--resize-inset-end,0px)] after:top-1/2 after:h-px after:-translate-y-1/2 focus-visible:after:h-0.5 data-[resizing]:after:h-0.5",
+        top: "inset-x-0 -top-3 h-6 cursor-ns-resize after:left-[var(--resize-inset-start,0px)] after:right-[var(--resize-inset-end,0px)] after:top-1/2 after:h-px after:-translate-y-1/2 focus-visible:after:h-0.5 data-[resizing]:after:h-0.5",
+        "top-left": "z-[21] -left-3 -top-3 h-6 w-6 cursor-nwse-resize",
+        "top-right": "z-[21] -right-3 -top-3 h-6 w-6 cursor-nesw-resize",
+        "bottom-left": "z-[21] -bottom-3 -left-3 h-6 w-6 cursor-nesw-resize",
+        "bottom-right": "z-[21] -bottom-3 -right-3 h-6 w-6 cursor-nwse-resize",
       },
       variant: {
         line: "",
@@ -36,10 +36,10 @@ export const resizeHandleVariants = cva(
       },
       // Hover, focus and drag colours of the line and the grip.
       color: {
-        accent:
-          "hover:after:bg-accent focus-visible:after:bg-accent data-[resizing]:after:bg-accent hover:before:bg-accent focus-visible:before:bg-accent data-[resizing]:before:bg-accent",
-        "accent-subtle":
-          "hover:after:bg-accent/40 focus-visible:after:bg-accent/60 data-[resizing]:after:bg-accent/60 hover:before:bg-accent/40 focus-visible:before:bg-accent/60 data-[resizing]:before:bg-accent/60",
+        brand:
+          "hover:after:bg-brand focus-visible:after:bg-brand-text data-[resizing]:after:bg-brand hover:before:bg-brand focus-visible:before:bg-brand-text data-[resizing]:before:bg-brand",
+        "brand-subtle":
+          "hover:after:bg-brand/40 focus-visible:after:bg-brand-text data-[resizing]:after:bg-brand/60 hover:before:bg-brand/40 focus-visible:before:bg-brand-text data-[resizing]:before:bg-brand/60",
         neutral:
           "hover:after:bg-fg-subtle focus-visible:after:bg-fg-muted data-[resizing]:after:bg-fg-muted hover:before:bg-fg-subtle focus-visible:before:bg-fg-muted data-[resizing]:before:bg-fg-muted",
       },
@@ -66,12 +66,12 @@ export const resizeHandleVariants = cva(
       },
       { edge: ["top-left", "top-right", "bottom-left", "bottom-right"], variant: "grip", className: "before:h-1.5 before:w-1.5 before:left-1/2 before:top-1/2" },
     ],
-    defaultVariants: { variant: "line", color: "accent-subtle" },
+    defaultVariants: { variant: "line", color: "brand-subtle" },
   }
 );
 
 export type ResizeHandleVariant = "line" | "grip" | "invisible";
-export type ResizeHandleColor = "accent" | "accent-subtle" | "neutral";
+export type ResizeHandleColor = "brand" | "brand-subtle" | "neutral";
 
 export interface ResizeHandleProps
   extends Omit<HTMLAttributes<HTMLDivElement>, "onPointerDown" | "onKeyDown" | "onDoubleClick" | "color">,
@@ -180,9 +180,9 @@ export interface ResizableProps {
   onResize?: (size: ResizeSize) => void;
   /** Fires when a resize finishes. */
   onResizeEnd?: (size: ResizeSize) => void;
-  /** Handle look: "line" (accent line on hover), "grip" (always-visible pill) or "invisible". Default "line". */
+  /** Handle look: "line" (brand line on hover), "grip" (always-visible pill) or "invisible". Default "line". */
   resizeHandle?: ResizeHandleVariant;
-  /** Handle colour on hover, focus and drag: "accent", "accent-subtle" (softer accent) or "neutral" (monochrome). Default "accent-subtle". */
+  /** Handle colour on hover, focus and drag: "brand", "brand-subtle" (softer brand) or "neutral" (monochrome). Default "brand-subtle". */
   resizeColor?: ResizeHandleColor;
 }
 

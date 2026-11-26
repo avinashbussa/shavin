@@ -7,7 +7,7 @@ export function CardFeatureAction() {
         <Card padding="lg">
           <Flex direction="column" gap="5">
             <Flex direction="row" align="start" justify="between" gap="3">
-              <Flex align="center" justify="center" className="h-12 w-12 shrink-0 rounded-panel-inner bg-accent-subtle">
+              <Flex align="center" justify="center" className="h-12 w-12 shrink-0 rounded-panel-inner bg-brand-subtle">
                 <Icon name="sparkles" size="md" color="contrast" />
               </Flex>
               <Badge variant="soft" tone="neutral" size="sm" radius="full">New</Badge>

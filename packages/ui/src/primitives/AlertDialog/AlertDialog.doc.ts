@@ -2,7 +2,7 @@ import type { ComponentDoc } from "../../authoring/types";
 
 export const docs: ComponentDoc = {
   name: "AlertDialog",
-  description: "Explicit destructive confirmation dialog requiring intentional user action. Built on Radix AlertDialog primitive without outside-click dismissal.",
+  description: "Asks the user to confirm an important or destructive action before it happens. Clicking outside doesn't close it, and it comes in danger, warning, success and info tones.",
   features: [
     "Intents: info, warning, success, danger, default",
     "Layouts: default (left-aligned), centered (hero icon visual tile)",

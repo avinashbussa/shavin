@@ -17,7 +17,7 @@ export function CtaConversionBanner() {
               Unlimited budgets, receipt scanning and the WiseOwl assistant. We remind you three days before the trial ends.
             </Text>
           </Flex>
-          <Flex direction="row" wrap="wrap" gap="3" className="shrink-0">
+          <Flex direction="row" wrap="wrap" gap="3" className="max-w-full">
             <Button size="lg" asChild><a href="/signup">Start free trial</a></Button>
             <Button size="lg" variant="outline" asChild><a href="/pricing">Compare plans</a></Button>
           </Flex>

@@ -6,9 +6,9 @@ export const docs: ComponentDoc = {
   description: "Width-constrained content container with size presets (xs to full) and background media props. Useful for centered hero content with full-bleed media backdrops.",
   features: [
     "Size presets: xs (28rem), sm (42rem), md (56rem), lg (72rem), xl (88rem), full (no constraint)",
-    "Surface contrast scope via surface prop for media backgrounds",
+    "Surface contrast scope via surface prop for media backgrounds. With a photo, video or fx backdrop and no surface it defaults to dark-always plus a dark scrim (dark-30, fx dark-50); meshes and custom gradients need an explicit surface (dark-always or light-always)",
     "Background media: bgVideo, bgImage, bgOverlays (presets, hex, tokens, gradients via comma-separated shorthand), bgSize, bgVideoPaused",
-    "Fx backdrops (needs @shavin/fx registered): bgOverlays=\"fx:dither-waves, gradient-bottom\"; params only when changed: fx:fluid-silk(speed=1.2); quote text values: fx:type-tiles(text='Plan money')"
+    "Fx backdrops (needs `npm i @shavin/fx`, free to use under its own licence, and `registerFxBackdrops()`): bgOverlays=\"fx:dither-waves, gradient-bottom\"; params only when changed: fx:fluid-silk(speed=1.2); quote text values: fx:type-tiles(text='Plan money')"
   ],
   accessibility: [
     "Supports semantic HTML tags via polymorphic as prop"
@@ -16,6 +16,7 @@ export const docs: ComponentDoc = {
   usage: {
     bestPractices: [
       { guidance: true, description: "Use Container inside Section to constrain content width within full-bleed sections." },
+      { guidance: true, description: "Use size=\"lg\" for every body section of a page so all content shares one centred column with margins at 1280 and 1440; keep xl for the nav and footer and full for media." },
       { guidance: true, description: "Use bgImage with dark-50 overlay + surface=dark for centered hero content over media." },
       { guidance: false, description: "Do not wrap media in nested divs — pass bgVideo/bgImage directly to Container." }
     ]
@@ -37,8 +38,8 @@ export const docs: ComponentDoc = {
     },
     {
       title: "Custom Gradient + Token Overlay",
-      description: "Custom linear gradient with hex stops + semantic accent token — no JSON needed",
-      code: '<Container size="md" bgVideo="https://..." bgOverlays="linear(180deg, #000/0%, #000/100%)/70, (accent)/15" surface="dark-always"><Heading size="2xl">Gradient + Accent</Heading><Button>Get Started</Button></Container>'
+      description: "Custom linear gradient with hex stops + semantic brand token — no JSON needed",
+      code: '<Container size="md" bgVideo="https://..." bgOverlays="linear(180deg, #000/0%, #000/100%)/70, (brand)/15" surface="dark-always"><Heading size="2xl">Gradient + Brand</Heading><Button>Get Started</Button></Container>'
     }
   ]
 };

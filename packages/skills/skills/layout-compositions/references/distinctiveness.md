@@ -26,10 +26,10 @@ these (overline, controls, type voice, colour application) are component-level �
 | Media mode | product UI · photo · illustration · data · type only | Determines the hero and F-section choices |
 | Rhythm | repeat one pattern ↔ alternate strongly | Repetition suits docs; alternation suits stories |
 | Sequence | recipe order ↔ reordered (e.g. proof after features) | Changes the narrative |
-| Voice of type | one family ↔ two contrasting families ↔ mono accent | Type carries personality — see `component-language.md` §3 |
-| Overline form | chip/badge ↔ plain label ↔ rule+label ↔ numeral ↔ icon+label ↔ none | See `component-language.md` §1 — don't default to a pill badge |
+| Voice of type | one family ↔ two contrasting families ↔ mono brand | Type carries personality — see `component-language.md` §3 |
+| Overline form | chip/badge ↔ plain label ↔ rule+label ↔ numeral ↔ icon+label ↔ none | See `component-language.md` §1 — don't default to a pill badge; none is a first-class choice, and the usual one |
 | Interactive control | button ↔ tabs ↔ segmented control ↔ plain link | Match to content shape, not habit — see `component-language.md` §2 |
-| Colour application | single accent ↔ duotone ↔ per-section rotation ↔ monochrome+break ↔ gradient ground | See `component-language.md` §4 |
+| Colour application | single brand ↔ duotone ↔ per-section rotation ↔ monochrome+break ↔ gradient ground | See `component-language.md` §4 |
 
 ## 3. Spend boldness once
 
@@ -45,12 +45,12 @@ Avoid these unless the brief asks for them or the content truly needs them:
 - One word in each headline coloured, italicised or bolded for emphasis.
 - Fade-and-slide-up on every section and hover lifts on every card.
 - Gradient blobs or glows as generic decoration.
-- A logo strip directly under the hero on every page.
+- A logo strip as the only proof on every page.
 - A 3-column icon grid as the answer to every "features" section.
 - Middle-dot meta strings and arrow suffixes on every link.
 - The identical palette-and-typeface pairing you'd reach for on any project.
 - Buttons used for a set of parallel, exclusive options that should be tabs or a segmented control (and vice versa) — see `component-language.md` §2.
-- The same accent colour at the same weight in every section, regardless of what it's marking — see `component-language.md` §4.
+- The same brand colour at the same weight in every section, regardless of what it's marking — see `component-language.md` §4.
 
 If the brief pins down a look, follow the brief exactly, including when it asks for one of the above.
 

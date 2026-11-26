@@ -251,7 +251,7 @@ motion: tier1
 **Avoid when:** The audience needs to know exactly *which* integrations exist and click through to each (use T3 or G2 instead — this pattern is atmospheric, not a directory). Fewer than 6 icons (too sparse to read as an ecosystem).
 **Grid:** `base`: a simplified static ring or 2-3 row wrap of icons around/below a center mark (skip the scatter — it doesn't survive a narrow viewport). `lg`: center icon fixed in the middle of the section; surrounding icons absolutely positioned at varying radii and slight rotation/offset from center, connected optionally by thin low-contrast lines.
 ```
-┌────────────────────────────────────────────────┐
+┌─────────────────────────────────────────────────┐
 │ Headline                                        │
 │                                                 │
 │           .            │      Center icon       │

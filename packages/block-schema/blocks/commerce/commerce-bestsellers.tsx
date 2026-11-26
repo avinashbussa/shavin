@@ -33,7 +33,7 @@ export function CommerceBestsellers({ products = defaultProducts }) {
                       </Flex>
                       <Text size="sm" color="muted" className="text-pretty">{product.note}</Text>
                       <Rating readOnly size="sm" value={product.rating} count={product.reviews} />
-                      {product.badge && <Badge size="sm" color="accent" className="self-start">{product.badge}</Badge>}
+                      {product.badge && <Badge size="sm" color="brand" className="self-start">{product.badge}</Badge>}
                     </Flex>
                   </Flex>
                 </Card>

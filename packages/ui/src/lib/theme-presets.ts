@@ -3,7 +3,7 @@
 // copy, so the two can never drift). Mutates the same CSS custom properties
 // every primitive already reads from `styles.css` — no parallel token system.
 //
-// Color-space aware: all accent/gray functions branch on colorSpace.
+// Color-space aware: all brand/gray functions branch on colorSpace.
 // RGB mode: outputs bare triplets "R G B" (v3 + v4-rgb path, default).
 // OKLCH mode: outputs oklch() CSS strings (v4-oklch path).
 
@@ -16,12 +16,25 @@ import {
   oklchForegroundFor,
   oklchHoverFor,
   oklchTextFor,
-  oklchAchromaticInversion,
+  oklchBrandForMode,
+  oklchSolidFor,
+  oklchSolidHoverFor,
+  apcaContrast,
+  brandTextSurfaces,
+  BRAND_TEXT_CONTRAST,
   oklchMix,
   oklchToRgbTriplet,
   rgbTripletToOklch,
   getColorSpace,
 } from "./color-space";
+import {
+  type NeutralsAmount,
+  type NeutralsMode,
+  DEFAULT_NEUTRALS_AMOUNT,
+  isNeutralsAmount,
+  tintedNeutralVars,
+  NEUTRAL_STEPS,
+} from "./neutral-tint";
 
 export function hexToTriplet(hex: string): string {
   const m = hex.replace("#", "");
@@ -56,33 +69,125 @@ export function contrastRatio(a: string, b: string): number {
   return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05);
 }
 
-// Canvas, surface and hover/elevated fills (Zinc). Accent text, links and focus
-// rings must clear 4.5:1 on all of them; the margin covers the other gray presets.
-const LIGHT_SURFACES = ["255 255 255", "244 244 245"];
-const DARK_SURFACES = ["24 24 27", "10 10 12", "30 30 33"];
-const TEXT_CONTRAST = 4.6;
-
-/** Text on a solid accent fill: white while it clears 4.5:1, otherwise the higher-contrast ink. */
-export function accentForegroundFor(triplet: string): string {
+/** Text on a solid brand fill: white while it clears 4.5:1, otherwise the higher-contrast ink. */
+export function brandForegroundFor(triplet: string): string {
   const white = contrastRatio("255 255 255", triplet);
   if (white >= 4.5) return "255 255 255";
   return contrastRatio("10 10 12", triplet) > white ? "10 10 12" : "255 255 255";
 }
 
-export function accentHoverFor(triplet: string, isDark: boolean): string {
-  return mix(triplet, isDark ? 255 : 0, 0.12);
+/**
+ * Hover fill for a solid brand button. The button keeps the same text colour on hover
+ * (brandForegroundFor of the base fill), so the hover fill must not lose contrast with it.
+ * Usually it lightens in dark mode and darkens in light mode; when that would pull the fill
+ * toward its text colour (white text on a dark-mode hover, for example), it moves the other way.
+ */
+export function brandHoverFor(triplet: string, isDark: boolean): string {
+  return hoverWithForeground(triplet, brandForegroundFor(triplet), isDark);
+}
+
+/** brandHoverFor for an explicit text colour (the solid fill's own text colour in accessible and perceptual mode). */
+function hoverWithForeground(triplet: string, fg: string, isDark: boolean): string {
+  const usual = mix(triplet, isDark ? 255 : 0, 0.12);
+  if (contrastRatio(fg, usual) >= Math.min(4.5, contrastRatio(fg, triplet))) return usual;
+  return mix(triplet, fg === "255 255 255" ? 0 : 255, 0.12);
+}
+
+// ── Solid brand fill: --brand-solid / --brand-solid-hover / --brand-fg ─────────────────────────────
+/**
+ * How the fill under text on the brand (solid Button, Badge, selected states) is chosen.
+ * - "accessible" (default): the brand's hue and chroma with lightness lowered just far enough that
+ *   white text clears 4.6:1; a genuinely light brand (lime, mint, sky, amber) keeps its exact fill and
+ *   takes dark text. WCAG 2 AA holds for every brand colour.
+ * - "exact": the exact brand fill; text is white or ink by WCAG 2 contrast (the behaviour before
+ *   brandSolid existed; near-black text on most mid-tone brands).
+ * - "perceptual": the exact brand fill; text is whichever of white and ink APCA prefers (white on most
+ *   mid-tone brands). Does NOT meet the WCAG 2 AA claim for every brand: see perceptualAaFailures.
+ */
+export type BrandSolidMode = "accessible" | "exact" | "perceptual";
+export const BRAND_SOLID_MODES: readonly BrandSolidMode[] = ["accessible", "exact", "perceptual"];
+export const DEFAULT_BRAND_SOLID: BrandSolidMode = "accessible";
+
+export function isBrandSolidMode(v: unknown): v is BrandSolidMode {
+  return v === "accessible" || v === "exact" || v === "perceptual";
+}
+
+export interface BrandSolid {
+  /** Fill under text on the brand (--brand-solid). */
+  fill: string;
+  /** Hover fill (--brand-solid-hover), re-checked against fg. */
+  hover: string;
+  /** Text on the fill (--brand-fg). */
+  fg: string;
+}
+
+const WHITE_T = "255 255 255";
+const INK_T = "10 10 12";
+/** The text colour APCA prefers on a fill (ties go to ink). */
+function perceptualForegroundFor(fill: string): string {
+  return Math.abs(apcaContrast(WHITE_T, fill)) > Math.abs(apcaContrast(INK_T, fill)) ? WHITE_T : INK_T;
 }
 
 /**
- * WCAG-accessible accent for text, links and focus rings. Keeps the accent when it
- * already clears 4.5:1 on every page surface; otherwise darkens it (light mode) or
- * lightens it (dark mode) in small steps until it does, so the hue is kept.
+ * Solid fill, hover and text for a brand triplet already resolved for its page mode
+ * (resolveBrandTriplet). Pure; the OKLCH runtime (brandSolidForOklch) and the CLI use the same core.
  */
-export function accentTextFor(triplet: string, isDark: boolean): string {
-  const surfaces = isDark ? DARK_SURFACES : LIGHT_SURFACES;
+export function brandSolidFor(triplet: string, isDark: boolean, mode: BrandSolidMode = DEFAULT_BRAND_SOLID): BrandSolid {
+  if (mode === "exact") return { fill: triplet, hover: brandHoverFor(triplet, isDark), fg: brandForegroundFor(triplet) };
+  if (mode === "perceptual") {
+    const fg = perceptualForegroundFor(triplet);
+    return { fill: triplet, hover: hoverWithForeground(triplet, fg, isDark), fg };
+  }
+  const s = oklchSolidFor(rgbTripletToOklch(triplet));
+  const fill = s.changed ? oklchToRgbTriplet(s.fill) : triplet;
+  const fg = s.light ? brandForegroundFor(triplet) : WHITE_T;
+  const usual = mix(fill, isDark ? 255 : 0, 0.12);
+  const hover = contrastRatio(fg, usual) >= 4.5 ? usual : mix(fill, fg === WHITE_T ? 0 : 255, 0.12);
+  return { fill, hover, fg };
+}
+
+/** brandSolidFor for the OKLCH path: oklch() CSS strings. `o` is the brand resolved for its mode (oklchBrandForMode). */
+export function brandSolidForOklch(o: Oklch, isDark: boolean, mode: BrandSolidMode = DEFAULT_BRAND_SOLID): BrandSolid {
+  if (mode === "exact") return { fill: oklchToCss(o), hover: brandHoverForOklch(o, isDark), fg: brandForegroundForOklch(o) };
+  if (mode === "perceptual") {
+    const fgO: Oklch = perceptualForegroundFor(oklchToRgbTriplet(o)) === WHITE_T ? { L: 1, C: 0, H: 0 } : { L: 0.18, C: 0, H: 0 };
+    return { fill: oklchToCss(o), hover: oklchToCss(oklchSolidHoverFor(o, fgO, isDark)), fg: oklchToCss(fgO) };
+  }
+  const s = oklchSolidFor(o);
+  const fgO = s.light ? oklchForegroundFor(o) : { L: 1, C: 0, H: 0 };
+  return { fill: oklchToCss(s.fill), hover: oklchToCss(oklchSolidHoverFor(s.fill, fgO, isDark)), fg: oklchToCss(fgO) };
+}
+
+/**
+ * The shipped brand presets whose text on the exact fill misses WCAG 2 AA (4.5:1) under
+ * brandSolid="perceptual", for one page mode. perceptual keeps the exact fill and picks the text colour
+ * APCA prefers, which for a mid-tone brand is often white at 3-4.4:1.
+ */
+export function perceptualAaFailures(isDark: boolean): { name: string; ratio: number }[] {
+  const out: { name: string; ratio: number }[] = [];
+  for (const p of BRAND_PRESETS) {
+    const fill = resolveBrandTriplet(p.hex, isDark);
+    const ratio = contrastRatio(perceptualForegroundFor(fill), fill);
+    if (ratio < 4.5) out.push({ name: p.name, ratio });
+  }
+  return out;
+}
+
+/**
+ * WCAG-accessible brand for text, links and focus rings. Keeps the brand when it already
+ * clears 4.6:1 (4.5:1 AA plus headroom) on every page surface of every gray preset AND on the
+ * brand's own soft tints over them (Badge/Button/Avatar soft); otherwise darkens it (light mode)
+ * or lightens it (dark mode) in small steps until it does, so the hue is kept. Pure white/black
+ * is the last step and clears the target on every surface, so this holds for ANY input colour.
+ * Links, underlines and focus rings use the same colour, so they clear 3:1 (WCAG 1.4.11) too.
+ */
+export function brandTextFor(triplet: string, isDark: boolean): string {
+  const bgs = brandTextSurfaces(triplet, isDark).map(relativeLuminance);
   for (let step = 0; step <= 50; step++) {
     const candidate = mix(triplet, isDark ? 255 : 0, step / 50);
-    if (Math.min(...surfaces.map((s) => contrastRatio(candidate, s))) >= TEXT_CONTRAST) return candidate;
+    const x = relativeLuminance(candidate);
+    const min = Math.min(...bgs.map((y) => (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05)));
+    if (min >= BRAND_TEXT_CONTRAST) return candidate;
   }
   return isDark ? "255 255 255" : "0 0 0";
 }
@@ -91,24 +196,24 @@ export function accentTextFor(triplet: string, isDark: boolean): string {
 // These return oklch() CSS strings instead of RGB triplets.
 // Used when colorSpace === "oklch".
 
-export function accentForegroundForOklch(o: Oklch): string {
+export function brandForegroundForOklch(o: Oklch): string {
   const fg = oklchForegroundFor(o);
   return oklchToCss(fg);
 }
 
-export function accentHoverForOklch(o: Oklch, isDark: boolean): string {
+export function brandHoverForOklch(o: Oklch, isDark: boolean): string {
   const hover = oklchHoverFor(o, isDark, 0.12);
   return oklchToCss(hover);
 }
 
-export function accentTextForOklch(o: Oklch, isDark: boolean): string {
+export function brandTextForOklch(o: Oklch, isDark: boolean): string {
   const text = oklchTextFor(o, isDark);
   return oklchToCss(text);
 }
 
-// 24-swatch accent spectrum, Radix-Themes-playground style (a named hue per
+// 24-swatch brand spectrum, Radix-Themes-playground style (a named hue per
 // swatch rather than a raw color wheel — easier to reason about than "hue 210").
-export const ACCENT_PRESETS: { name: string; hex: string }[] = [
+export const BRAND_PRESETS: { name: string; hex: string }[] = [
   { name: "Monochrome", hex: "#000000" },
   { name: "Tomato", hex: "#e54d2e" },
   { name: "Red", hex: "#e5484d" },
@@ -193,23 +298,23 @@ export const RADIUS_PRESETS: { name: string; label: string; lg: string; xl: stri
 
 export const SCALING_PRESETS = [90, 95, 100, 105, 110] as const;
 
-export function resolveAccentTriplet(nameOrHex: string, isDark: boolean): string {
-  return resolveAccent(nameOrHex, isDark, "rgb");
+export function resolveBrandTriplet(nameOrHex: string, isDark: boolean): string {
+  return resolveBrand(nameOrHex, isDark, "rgb");
 }
 
 /**
- * Color-space-aware accent resolution.
+ * Color-space-aware brand resolution.
  * Returns RGB triplet ("R G B") in rgb mode, oklch() CSS string in oklch mode.
  */
-export function resolveAccent(nameOrHex: string, isDark: boolean, colorSpace: ColorSpace): string {
+export function resolveBrand(nameOrHex: string, isDark: boolean, colorSpace: ColorSpace): string {
   const target = nameOrHex || "Monochrome";
   const hex = target.startsWith("#")
     ? target
-    : ACCENT_PRESETS.find((p) => p.name.toLowerCase() === target.toLowerCase())?.hex ?? "#000000";
+    : BRAND_PRESETS.find((p) => p.name.toLowerCase() === target.toLowerCase())?.hex ?? "#000000";
 
   if (colorSpace === "oklch") {
     let o = hexToOklch(hex);
-    o = oklchAchromaticInversion(o, isDark);
+    o = oklchBrandForMode(o, isDark);
     return oklchToCss(o);
   }
 
@@ -217,96 +322,101 @@ export function resolveAccent(nameOrHex: string, isDark: boolean, colorSpace: Co
   let triplet = hexToTriplet(hex);
   const lum = relativeLuminance(triplet);
 
-  // Achromatic Inversion Rule (Radix / Apple / Vercel spec):
-  // - Dark achromatic colors (black / dark charcoal, lum < 0.12) invert to white in dark mode.
-  // - Light achromatic colors (white / pale tint, lum > 0.85) invert to black in light mode.
-  if (isDark && lum < 0.12) {
-    triplet = "228 228 231";
-  } else if (!isDark && lum > 0.85) {
-    triplet = "10 10 12";
+  // A fill that would vanish on the page (too dark in dark mode, too pale in light mode) is adjusted:
+  // grays flip to a light gray or near-black; chromatic brand colours keep their hue and lighten or darken
+  // to 3:1 against the canvas (oklchBrandForMode in color-space.ts).
+  if ((isDark && lum < 0.12) || (!isDark && lum > 0.85)) {
+    const o = rgbTripletToOklch(triplet);
+    triplet = o.C < 0.03 ? (isDark ? "228 228 231" : "10 10 12") : oklchToRgbTriplet(oklchBrandForMode(o, isDark));
   }
   return triplet;
 }
 
 /**
- * The five accent tokens for one context (page light/dark, or a dark/light
- * surface scope). Shared by applyAccentColor and scopedThemeVars.
+ * The brand tokens for one context (page light/dark, or a dark/light
+ * surface scope). Shared by applyBrandColor and scopedThemeVars.
  */
-function accentTokenSet(target: string, isDark: boolean, cs: ColorSpace): Record<string, string> {
+function brandTokenSet(target: string, isDark: boolean, cs: ColorSpace, solidMode: BrandSolidMode = DEFAULT_BRAND_SOLID): Record<string, string> {
   if (cs === "oklch") {
     const hex = target.startsWith("#")
       ? target
-      : ACCENT_PRESETS.find((p) => p.name.toLowerCase() === target.toLowerCase())?.hex ?? "#000000";
-    const o = oklchAchromaticInversion(hexToOklch(hex), isDark);
+      : BRAND_PRESETS.find((p) => p.name.toLowerCase() === target.toLowerCase())?.hex ?? "#000000";
+    const o = oklchBrandForMode(hexToOklch(hex), isDark);
+    const solid = brandSolidForOklch(o, isDark, solidMode);
     return {
       "": oklchToCss(o),
-      "-hover": accentHoverForOklch(o, isDark),
-      "-fg": accentForegroundForOklch(o),
-      "-contrast": accentTextForOklch(o, isDark),
-      "-text": accentTextForOklch(o, isDark),
+      "-hover": brandHoverForOklch(o, isDark),
+      "-solid": solid.fill,
+      "-solid-hover": solid.hover,
+      "-fg": solid.fg,
+      "-contrast": brandTextForOklch(o, isDark),
+      "-text": brandTextForOklch(o, isDark),
     };
   }
-  const t = resolveAccentTriplet(target, isDark);
+  const t = resolveBrandTriplet(target, isDark);
+  const solid = brandSolidFor(t, isDark, solidMode);
   return {
     "": t,
-    "-hover": accentHoverFor(t, isDark),
-    "-fg": accentForegroundFor(t),
-    "-contrast": accentTextFor(t, isDark),
-    "-text": accentTextFor(t, isDark),
+    "-hover": brandHoverFor(t, isDark),
+    "-solid": solid.fill,
+    "-solid-hover": solid.hover,
+    "-fg": solid.fg,
+    "-contrast": brandTextFor(t, isDark),
+    "-text": brandTextFor(t, isDark),
   };
 }
 
 /**
- * Accent variants for surface scopes. surface="dark"/"dark-always" (and the light
- * counterparts) read --accent-on-dark* / --accent-on-light* so an achromatic
- * accent flips with the surface (a black Monochrome button on dark media becomes
- * white) while chromatic brand accents keep their hue.
+ * Brand variants for surface scopes. surface="dark"/"dark-always" (and the light
+ * counterparts) read --brand-on-dark* / --brand-on-light* so an achromatic
+ * brand flips with the surface (a black Monochrome button on dark media becomes
+ * white) while chromatic brand colours keep their hue.
  */
-function surfaceAccentVars(target: string, cs: ColorSpace): Record<string, string> {
+function surfaceBrandVars(target: string, cs: ColorSpace, solidMode: BrandSolidMode = DEFAULT_BRAND_SOLID): Record<string, string> {
   const vars: Record<string, string> = {};
   for (const [mode, isDark] of [["dark", true], ["light", false]] as const) {
-    for (const [suffix, value] of Object.entries(accentTokenSet(target, isDark, cs))) {
-      vars[`--accent-on-${mode}${suffix}`] = value;
+    for (const [suffix, value] of Object.entries(brandTokenSet(target, isDark, cs, solidMode))) {
+      vars[`--brand-on-${mode}${suffix}`] = value;
     }
   }
   return vars;
 }
 
-let lastAppliedAccent: string | null = null;
+let lastAppliedBrand: string | null = null;
+let lastAppliedSolid: BrandSolidMode = DEFAULT_BRAND_SOLID;
 
-/** `nameOrHex` may be one of ACCENT_PRESETS' names (case-insensitive) or a literal "#rrggbb". */
-export function applyAccentColor(nameOrHex?: string) {
-  if (nameOrHex) lastAppliedAccent = nameOrHex;
-  const target = lastAppliedAccent || "Monochrome";
+/**
+ * Sets how solid brand fills are chosen (see BrandSolidMode) and re-applies the brand. Written to
+ * `data-brand-solid` on <html> so tooling and CSS can read the active mode.
+ */
+export function setBrandSolidMode(mode: BrandSolidMode) {
+  lastAppliedSolid = mode;
+  if (typeof document !== "undefined") {
+    document.documentElement.dataset.brandSolid = mode;
+    if (lastAppliedBrand) applyBrandColor();
+  }
+}
+
+/** `nameOrHex` may be one of BRAND_PRESETS' names (case-insensitive) or a literal "#rrggbb". */
+export function applyBrandColor(nameOrHex?: string) {
+  if (nameOrHex) lastAppliedBrand = nameOrHex;
+  const target = lastAppliedBrand || "Monochrome";
   const isDark = typeof document !== "undefined" && document.documentElement.classList.contains("dark");
   const cs = getColorSpace();
 
   if (typeof document !== "undefined") {
     const root = document.documentElement;
-    if (cs === "oklch") {
-      const o = oklchAchromaticInversion(hexToOklch(
-        target.startsWith("#") ? target
-        : ACCENT_PRESETS.find((p) => p.name.toLowerCase() === target.toLowerCase())?.hex ?? "#000000"
-      ), isDark);
-      root.style.setProperty("--accent", oklchToCss(o));
-      root.style.setProperty("--accent-hover", accentHoverForOklch(o, isDark));
-      root.style.setProperty("--accent-fg", accentForegroundForOklch(o));
-      root.style.setProperty("--accent-contrast", accentTextForOklch(o, isDark));
-      root.style.setProperty("--accent-text", accentTextForOklch(o, isDark));
-      root.style.setProperty("--link", accentTextForOklch(o, isDark));
-      root.style.setProperty("--focus", accentTextForOklch(o, isDark));
-    } else {
-      const triplet = resolveAccentTriplet(target, isDark);
-      root.style.setProperty("--accent", triplet);
-      root.style.setProperty("--accent-hover", accentHoverFor(triplet, isDark));
-      root.style.setProperty("--accent-fg", accentForegroundFor(triplet));
-      root.style.setProperty("--accent-contrast", accentTextFor(triplet, isDark));
-      root.style.setProperty("--accent-text", accentTextFor(triplet, isDark));
-      root.style.setProperty("--link", accentTextFor(triplet, isDark));
-      root.style.setProperty("--focus", accentTextFor(triplet, isDark));
-    }
-    for (const [k, v] of Object.entries(surfaceAccentVars(target, cs))) root.style.setProperty(k, v);
+    const set = brandTokenSet(target, isDark, cs, lastAppliedSolid);
+    for (const [suffix, value] of Object.entries(set)) root.style.setProperty(`--brand${suffix}`, value);
+    root.style.setProperty("--link", set["-text"]);
+    root.style.setProperty("--focus", set["-text"]);
+    for (const [k, v] of Object.entries(surfaceBrandVars(target, cs, lastAppliedSolid))) root.style.setProperty(k, v);
   }
+}
+
+/** Re-writes the brand tokens for the current appearance, but only when a brand was applied before (so a page that never set one is left alone). */
+export function reapplyBrandColor() {
+  if (lastAppliedBrand) applyBrandColor();
 }
 
 export function applyGrayColor(name: string) {
@@ -327,6 +437,26 @@ export function applyGrayColor(name: string) {
   root.style.setProperty("--n-450", cs === "oklch" ? oklchToCss(rgbTripletToOklch(n450)) : n450);
 }
 
+const TINTED_STEP_PROPS = NEUTRAL_STEPS.map((s) => `--n-${s}`);
+
+/**
+ * Runtime twin of the tinted greys in themeCss: writes the scale for `brand`, or clears what an earlier
+ * call wrote when the brand is grey or `brand` is undefined. Same values as the server-rendered CSS.
+ */
+export function applyNeutralsTint(brand: string | undefined, amount: NeutralsAmount = DEFAULT_NEUTRALS_AMOUNT) {
+  const root = document.documentElement;
+  const vars = brand ? tintedNeutralVars(brandHexOf(brand), amount, getColorSpace()) : {};
+  if (!Object.keys(vars).length) {
+    if (root.dataset.shavinNeutrals) {
+      for (const p of TINTED_STEP_PROPS) root.style.removeProperty(p);
+      delete root.dataset.shavinNeutrals;
+    }
+    return;
+  }
+  for (const [k, v] of Object.entries(vars)) root.style.setProperty(k, v);
+  root.dataset.shavinNeutrals = amount;
+}
+
 export function applyRadiusPreset(name: string) {
   const preset = RADIUS_PRESETS.find((r) => r.name.toLowerCase() === name.toLowerCase());
   if (!preset) return;
@@ -334,6 +464,9 @@ export function applyRadiusPreset(name: string) {
   root.style.setProperty("--radius-lg", preset.lg);
   root.style.setProperty("--radius-xl", preset.xl);
   root.style.setProperty("--radius-panel", preset.panel);
+  // Re-derive the fallback inner radius from the new panel radius (the :root default is
+  // var(--radius-panel), but an inline override keeps every surface in step with the preset).
+  root.style.setProperty("--radius-panel-inner", preset.panel);
 }
 
 export function applyScalingPreset(pct: number | string) {
@@ -347,7 +480,7 @@ export function applyScalingPreset(pct: number | string) {
 
 /** Computes scoped CSS variables for an isolated subtree without mutating document.documentElement. */
 export function scopedThemeVars(
-  accentNameOrHex?: string,
+  brandNameOrHex?: string,
   grayName?: string,
   radiusName?: string,
   isDark: boolean = false,
@@ -355,45 +488,29 @@ export function scopedThemeVars(
   bodyFont?: string,
   scaling?: number,
   colorSpace: ColorSpace = "rgb",
+  brandSolid: BrandSolidMode = DEFAULT_BRAND_SOLID,
 ): Record<string, string> {
   const vars: Record<string, string> = {};
-  if (accentNameOrHex) {
-    if (colorSpace === "oklch") {
-      const hex = accentNameOrHex.startsWith("#")
-        ? accentNameOrHex
-        : ACCENT_PRESETS.find((p) => p.name.toLowerCase() === accentNameOrHex.toLowerCase())?.hex ?? "#000000";
-      const o = oklchAchromaticInversion(hexToOklch(hex), isDark);
-      const ocss = oklchToCss(o);
-      vars["--accent"] = ocss;
-      vars["--accent-hover"] = accentHoverForOklch(o, isDark);
-      vars["--accent-fg"] = accentForegroundForOklch(o);
-      vars["--accent-contrast"] = accentTextForOklch(o, isDark);
-      vars["--accent-text"] = accentTextForOklch(o, isDark);
-      vars["--link"] = accentTextForOklch(o, isDark);
-      vars["--focus"] = accentTextForOklch(o, isDark);
-    } else {
-      const t = resolveAccentTriplet(accentNameOrHex, isDark);
-      vars["--accent"] = t;
-      vars["--accent-hover"] = accentHoverFor(t, isDark);
-      vars["--accent-fg"] = accentForegroundFor(t);
-      vars["--accent-contrast"] = accentTextFor(t, isDark);
-      vars["--accent-text"] = accentTextFor(t, isDark);
-      vars["--link"] = accentTextFor(t, isDark);
-      vars["--focus"] = accentTextFor(t, isDark);
-    }
-    Object.assign(vars, surfaceAccentVars(accentNameOrHex, colorSpace));
+  if (brandNameOrHex) {
+    const set = brandTokenSet(brandNameOrHex, isDark, colorSpace, brandSolid);
+    for (const [suffix, value] of Object.entries(set)) vars[`--brand${suffix}`] = value;
+    vars["--link"] = set["-text"];
+    vars["--focus"] = set["-text"];
+    Object.assign(vars, surfaceBrandVars(brandNameOrHex, colorSpace, brandSolid));
   } else {
-    // When accent is not explicitly overridden, map to the appearance-specific surface accent variables
-    // so achromatic accents (Monochrome) flip correctly between light and dark subtrees
+    // When brand is not explicitly overridden, map to the appearance-specific surface brand variables
+    // so achromatic brand colours (Monochrome) flip correctly between light and dark subtrees
     const mode = isDark ? "dark" : "light";
-    vars["--accent"] = `var(--accent-on-${mode}, var(--accent))`;
-    vars["--accent-hover"] = `var(--accent-on-${mode}-hover, var(--accent-hover))`;
-    vars["--accent-fg"] = `var(--accent-on-${mode}-fg, var(--accent-fg))`;
-    vars["--accent-contrast"] = `var(--accent-on-${mode}-contrast, var(--accent-contrast))`;
-    vars["--accent-text"] = `var(--accent-on-${mode}-text, var(--accent-text))`;
-    // Links and focus rings use the contrast-safe accent text, not the raw accent.
-    vars["--link"] = `var(--accent-on-${mode}-text, var(--link))`;
-    vars["--focus"] = `var(--accent-on-${mode}-text, var(--focus))`;
+    vars["--brand"] = `var(--brand-on-${mode}, var(--brand))`;
+    vars["--brand-hover"] = `var(--brand-on-${mode}-hover, var(--brand-hover))`;
+    vars["--brand-solid"] = `var(--brand-on-${mode}-solid, var(--brand-solid))`;
+    vars["--brand-solid-hover"] = `var(--brand-on-${mode}-solid-hover, var(--brand-solid-hover))`;
+    vars["--brand-fg"] = `var(--brand-on-${mode}-fg, var(--brand-fg))`;
+    vars["--brand-contrast"] = `var(--brand-on-${mode}-contrast, var(--brand-contrast))`;
+    vars["--brand-text"] = `var(--brand-on-${mode}-text, var(--brand-text))`;
+    // Links and focus rings use the contrast-safe brand text, not the raw brand.
+    vars["--link"] = `var(--brand-on-${mode}-text, var(--link))`;
+    vars["--focus"] = `var(--brand-on-${mode}-text, var(--focus))`;
   }
   if (grayName) {
     const g = GRAY_PRESETS.find((x) => x.name.toLowerCase() === grayName.toLowerCase());
@@ -415,6 +532,7 @@ export function scopedThemeVars(
     vars["--bg-surface"] = "var(--n-900)";
     vars["--bg-surface-hover"] = "var(--n-850)";
     vars["--bg-elevated"] = "var(--n-850)";
+    vars["--bg-elevated-hover"] = "var(--n-800)";
     vars["--hairline"] = "var(--n-800)";
     vars["--hairline-strong"] = "var(--n-700)";
     vars["--border-control"] = "var(--n-500)";
@@ -427,6 +545,7 @@ export function scopedThemeVars(
     vars["--bg-surface"] = "var(--n-0)";
     vars["--bg-surface-hover"] = "var(--n-100)";
     vars["--bg-elevated"] = "var(--n-0)";
+    vars["--bg-elevated-hover"] = "var(--n-100)";
     vars["--hairline"] = "var(--n-200)";
     vars["--hairline-strong"] = "var(--n-300)";
     vars["--border-control"] = "var(--n-450)";
@@ -472,7 +591,7 @@ export function applyPanelBackground(translucent: boolean) {
 /** Props that describe a theme. Shared by ThemeProvider and the server-rendered theme CSS. */
 export interface ThemeConfigInput {
   theme?: string;
-  accentColor?: string;
+  brandColor?: string;
   grayColor?: string;
   radius?: string;
   scaling?: number | string;
@@ -481,10 +600,20 @@ export interface ThemeConfigInput {
   bodyFont?: string;
   /** Font for h3-h6 headings: "body" (default), "display", or a font family name. */
   subheadingFont?: string;
+  /** How solid brand fills are chosen: "accessible" (default) | "exact" | "perceptual". See BrandSolidMode. */
+  brandSolid?: BrandSolidMode;
+  /**
+   * Grey scale hue. "brand" tints the greys toward the brand colour at very low chroma (same lightness
+   * as the default scale, so contrast is unchanged); "neutral" (the default) keeps the plain grey.
+   * Opt-in only. Wins over a gray preset when set. Grey and monochrome brands never tint.
+   */
+  neutrals?: NeutralsMode;
+  /** How much of the brand hue shows in the greys when they are tinted: "subtle" (default) | "medium". */
+  neutralsAmount?: NeutralsAmount;
 }
 
 export interface ResolvedThemeConfig {
-  accent?: string;
+  brand?: string;
   gray?: string;
   radius?: string;
   scaling?: number;
@@ -492,6 +621,16 @@ export interface ResolvedThemeConfig {
   displayFont?: string;
   bodyFont?: string;
   subheadingFont?: string;
+  brandSolid: BrandSolidMode;
+  /** Set when the greys follow the brand: the brand to tint toward and how much. */
+  neutralsTint?: { brand: string; amount: NeutralsAmount };
+}
+
+/** Hex for a brand preset name or literal hex; "#000000" (Monochrome) for anything unknown. */
+function brandHexOf(nameOrHex: string): string {
+  return nameOrHex.startsWith("#")
+    ? nameOrHex
+    : BRAND_PRESETS.find((p) => p.name.toLowerCase() === nameOrHex.toLowerCase())?.hex ?? "#000000";
 }
 
 /**
@@ -499,23 +638,29 @@ export interface ResolvedThemeConfig {
  * "Monochrome" preset when nothing is set), then each explicit prop overrides it.
  */
 export function resolveThemeConfig(input: ThemeConfigInput = {}): ResolvedThemeConfig {
-  const { theme, accentColor, grayColor, radius, scaling, panelBackground, displayFont, bodyFont, subheadingFont } = input;
-  const nothingSet = !theme && !accentColor && !grayColor && !radius && !displayFont && !bodyFont;
+  const { theme, brandColor, grayColor, radius, scaling, panelBackground, displayFont, bodyFont, subheadingFont, brandSolid, neutrals, neutralsAmount } = input;
+  const nothingSet = !theme && !brandColor && !grayColor && !radius && !displayFont && !bodyFont;
   const preset = theme
     ? THEME_PRESETS.find((t) => t.name.toLowerCase() === theme.toLowerCase())
     : nothingSet
       ? THEME_PRESETS.find((t) => t.name === "Monochrome")
       : undefined;
   const scale = scaling ?? preset?.scaling;
+  const brand = brandColor ?? preset?.brandColor;
+  const gray = grayColor ?? preset?.grayColor;
+  // Opt-in only: the greys stay plain unless neutrals is "brand" (which wins over a preset gray).
+  const tintGreys = neutrals === "brand";
   return {
-    accent: accentColor ?? preset?.accentColor,
-    gray: grayColor ?? preset?.grayColor,
+    brand,
+    gray: tintGreys && brand ? undefined : gray,
+    neutralsTint: tintGreys && brand ? { brand, amount: isNeutralsAmount(neutralsAmount) ? neutralsAmount : DEFAULT_NEUTRALS_AMOUNT } : undefined,
     radius: radius ?? preset?.radius,
     scaling: scale === undefined ? undefined : typeof scale === "string" ? parseInt(scale, 10) : scale,
     translucentPanels: (panelBackground ?? preset?.panelBackground) === "translucent",
     displayFont: displayFont ?? preset?.displayFont,
     bodyFont: bodyFont ?? preset?.bodyFont,
     subheadingFont,
+    brandSolid: isBrandSolidMode(brandSolid) ? brandSolid : DEFAULT_BRAND_SOLID,
   };
 }
 
@@ -530,9 +675,9 @@ function subheadingFontValue(name: string): string {
 const cssSafe = (v: string) => v.replace(/[<>{};]/g, "");
 
 /**
- * Pure, server-safe CSS for a theme: the accent, neutral scale, radius, fonts and scaling that
+ * Pure, server-safe CSS for a theme: the brand colour, neutral scale, radius, fonts and scaling that
  * ThemeProvider otherwise applies in effects after hydration. Rendered into the HTML, it makes the
- * first paint use the brand instead of the neutral CSS defaults. Accent tokens depend on appearance,
+ * first paint use the brand instead of the neutral CSS defaults. Brand tokens depend on appearance,
  * so light values go on :root and dark values on :root.dark.
  */
 export function themeCss(input: ThemeConfigInput & { colorSpace?: ColorSpace } = {}): string {
@@ -542,13 +687,14 @@ export function themeCss(input: ThemeConfigInput & { colorSpace?: ColorSpace } =
   const light: Record<string, string> = {};
   const dark: Record<string, string> = {};
 
-  if (c.accent) {
-    Object.assign(shared, surfaceAccentVars(c.accent, cs));
+  if (c.brand) {
+    Object.assign(shared, surfaceBrandVars(c.brand, cs, c.brandSolid));
     for (const [mode, target] of [[false, light], [true, dark]] as const) {
-      const set = accentTokenSet(c.accent, mode, cs);
-      for (const [suffix, value] of Object.entries(set)) target[`--accent${suffix}`] = value;
-      target["--link"] = set[""];
-      target["--focus"] = set[""];
+      const set = brandTokenSet(c.brand, mode, cs, c.brandSolid);
+      for (const [suffix, value] of Object.entries(set)) target[`--brand${suffix}`] = value;
+      // Same contrast-corrected value the runtime applies (applyBrand), so the first paint matches.
+      target["--link"] = set["-text"];
+      target["--focus"] = set["-text"];
     }
   }
   if (c.gray) {
@@ -559,12 +705,17 @@ export function themeCss(input: ThemeConfigInput & { colorSpace?: ColorSpace } =
       }
     }
   }
+  if (c.neutralsTint) Object.assign(shared, tintedNeutralVars(brandHexOf(c.neutralsTint.brand), c.neutralsTint.amount, cs));
   if (c.radius) {
     const r = RADIUS_PRESETS.find((x) => x.name.toLowerCase() === c.radius!.toLowerCase());
     if (r) {
       shared["--radius-lg"] = r.lg;
       shared["--radius-xl"] = r.xl;
       shared["--radius-panel"] = r.panel;
+      // A scoped theme must reset the inner radius too: the inherited value was computed from
+      // the ROOT --radius-panel, so without this, concentric children of a scope read the
+      // page's radius instead of the scope's.
+      shared["--radius-panel-inner"] = r.panel;
     }
   }
   if (c.displayFont) {
@@ -810,7 +961,7 @@ export function applyBodyFontPreset(name: string) {
 }
 
 /**
- * Curated theme presets — each bundles a full brand config (accent, neutrals,
+ * Curated theme presets — each bundles a full brand config (brand, neutrals,
  * radius, density, panel style, appearance, and a display/body font pairing).
  * Powers the Configurator/Builder's "Theme" dropdown and `<ThemeProvider theme="…">`.
  * Font pairings are drawn from common editorial/geometric/serif combinations
@@ -819,7 +970,7 @@ export function applyBodyFontPreset(name: string) {
  */
 export type ThemePreset = {
   name: string;
-  accentColor: string;
+  brandColor: string;
   grayColor: string;
   radius: "none" | "small" | "medium" | "large" | "full";
   scaling: number;
@@ -830,32 +981,25 @@ export type ThemePreset = {
 };
 
 export const THEME_PRESETS: ThemePreset[] = [
-  { name: "Monochrome", accentColor: "Monochrome", grayColor: "Zinc", radius: "medium", scaling: 95, panelBackground: "solid", appearance: "dark", displayFont: "Space Grotesk", bodyFont: "Inter" },
-  { name: "Linear", accentColor: "Violet", grayColor: "Zinc", radius: "medium", scaling: 100, panelBackground: "translucent", appearance: "dark", displayFont: "Inter", bodyFont: "Inter" },
-  { name: "Nordic", accentColor: "Teal", grayColor: "Gray", radius: "large", scaling: 100, panelBackground: "solid", appearance: "light", displayFont: "Outfit", bodyFont: "Inter" },
-  { name: "Vanguard", accentColor: "Red", grayColor: "Zinc", radius: "medium", scaling: 100, panelBackground: "solid", appearance: "dark", displayFont: "Space Grotesk", bodyFont: "Inter" },
-  { name: "Cyber", accentColor: "Lime", grayColor: "Zinc", radius: "large", scaling: 100, panelBackground: "translucent", appearance: "dark", displayFont: "JetBrains Mono", bodyFont: "Inter" },
-  { name: "Editorial", accentColor: "Bronze", grayColor: "Stone", radius: "medium", scaling: 100, panelBackground: "solid", appearance: "light", displayFont: "Fraunces", bodyFont: "Inter" },
-  { name: "Neo Tokyo", accentColor: "Ruby", grayColor: "Zinc", radius: "medium", scaling: 100, panelBackground: "translucent", appearance: "dark", displayFont: "Space Grotesk", bodyFont: "Inter" },
-  { name: "Oasis", accentColor: "Jade", grayColor: "Stone", radius: "large", scaling: 100, panelBackground: "solid", appearance: "light", displayFont: "Outfit", bodyFont: "Inter" },
-  { name: "Ocean", accentColor: "Mint", grayColor: "Zinc", radius: "medium", scaling: 100, panelBackground: "solid", appearance: "light", displayFont: "Space Grotesk", bodyFont: "Inter" },
-  { name: "Velvet", accentColor: "Plum", grayColor: "Slate", radius: "large", scaling: 100, panelBackground: "translucent", appearance: "dark", displayFont: "Playfair Display", bodyFont: "Inter" },
-  { name: "Minimal", accentColor: "Monochrome", grayColor: "Gray", radius: "small", scaling: 100, panelBackground: "solid", appearance: "light", displayFont: "Outfit", bodyFont: "Inter" },
-  { name: "Warm", accentColor: "Amber", grayColor: "Stone", radius: "large", scaling: 100, panelBackground: "solid", appearance: "light", displayFont: "Lora", bodyFont: "Inter" },
-  { name: "Playful", accentColor: "Iris", grayColor: "Slate", radius: "large", scaling: 100, panelBackground: "solid", appearance: "light", displayFont: "Space Grotesk", bodyFont: "Space Grotesk" },
-  { name: "Sunset", accentColor: "Crimson", grayColor: "Stone", radius: "large", scaling: 100, panelBackground: "translucent", appearance: "dark", displayFont: "Outfit", bodyFont: "Inter" },
-  { name: "Midnight", accentColor: "Cyan", grayColor: "Zinc", radius: "medium", scaling: 100, panelBackground: "translucent", appearance: "dark", displayFont: "Space Grotesk", bodyFont: "Inter" },
-  { name: "Terminal", accentColor: "Green", grayColor: "Zinc", radius: "none", scaling: 100, panelBackground: "solid", appearance: "dark", displayFont: "JetBrains Mono", bodyFont: "JetBrains Mono" },
+  { name: "Monochrome", brandColor: "Monochrome", grayColor: "Zinc", radius: "medium", scaling: 100, panelBackground: "solid", appearance: "dark", displayFont: "Rethink Sans", bodyFont: "Inter" },
+  { name: "Midnight", brandColor: "Cyan", grayColor: "Zinc", radius: "medium", scaling: 100, panelBackground: "translucent", appearance: "dark", displayFont: "Inter", bodyFont: "Inter" },
+  { name: "Neo Tokyo", brandColor: "Ruby", grayColor: "Zinc", radius: "medium", scaling: 100, panelBackground: "translucent", appearance: "dark", displayFont: "Host Grotesk", bodyFont: "Inter" },
+  { name: "Terminal", brandColor: "Green", grayColor: "Zinc", radius: "none", scaling: 100, panelBackground: "solid", appearance: "dark", displayFont: "JetBrains Mono", bodyFont: "JetBrains Mono" },
+  { name: "Velvet", brandColor: "Plum", grayColor: "Slate", radius: "large", scaling: 100, panelBackground: "translucent", appearance: "dark", displayFont: "Playfair Display", bodyFont: "Inter" },
+  { name: "Paper", brandColor: "Monochrome", grayColor: "Gray", radius: "small", scaling: 100, panelBackground: "solid", appearance: "light", displayFont: "Public Sans", bodyFont: "Inter" },
+  { name: "Editorial", brandColor: "Bronze", grayColor: "Stone", radius: "medium", scaling: 100, panelBackground: "solid", appearance: "light", displayFont: "Fraunces", bodyFont: "Inter" },
+  { name: "Hearth", brandColor: "Amber", grayColor: "Stone", radius: "large", scaling: 100, panelBackground: "solid", appearance: "light", displayFont: "Lora", bodyFont: "Inter" },
+  { name: "Opal", brandColor: "Teal", grayColor: "Gray", radius: "large", scaling: 100, panelBackground: "solid", appearance: "light", displayFont: "Figtree", bodyFont: "Inter" },
 ];
 
-/** Apply a whole theme preset by name (accent/gray/radius/scaling/panel/fonts/appearance). */
+/** Apply a whole theme preset by name (brand/gray/radius/scaling/panel/fonts/appearance). */
 export function applyThemePreset(name: string, overrideAppearance: boolean = false) {
   const p = THEME_PRESETS.find((t) => t.name.toLowerCase() === name.toLowerCase());
   if (!p) return;
   if (overrideAppearance && typeof document !== "undefined") {
     document.documentElement.classList.toggle("dark", p.appearance === "dark");
   }
-  applyAccentColor(p.accentColor);
+  applyBrandColor(p.brandColor);
   applyGrayColor(p.grayColor);
   applyRadiusPreset(p.radius);
   applyScalingPreset(p.scaling);

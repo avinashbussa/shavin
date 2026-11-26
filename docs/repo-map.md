@@ -3,7 +3,7 @@
 ```
 packages/
   ui/              @shavin/ui: primitives, tokens, styles, Tailwind preset
-  cli/             @shavin/cli: shavin init / add / list / check / context / bridge / brand / publish
+  cli/             @shavin/cli: shavin init / add / list / check / context / bridge / brand / findings / publish
   mcp-server/      @shavin/mcp: MCP server for coding agents, plus the :7036 browser bridge
   skills/          @shavin/skills: agent skills and slash commands (source of truth)
   block-schema/    @shavin/block-schema: block types, schemas and the open block catalogue
@@ -22,11 +22,11 @@ SHAVIN.md          project memory file that agents read
 ```
 packages/ui/src/
   primitives/<Name>/   one folder per primitive: <Name>.tsx, <Name>.doc.ts, index.ts
-  lib/                 shared helpers: cn, theme presets, chart kit, surfaces, URL helpers
+  lib/                 shared helpers: cn, theme presets, chart kit, surfaces
   styles/              global.css and global-oklch.css (tokens), theme-v4*.css (Tailwind v4), brand token files
   authoring/types.ts   the shape of a <Name>.doc.ts file
   index.ts             the public root export: everything consumers import comes from here
-  server.ts            server-safe helpers (cn, URL helpers) for React Server Components
+  server.ts            server-safe helpers (cn, concentric radius, surfaces, SHAVIN_META) for React Server Components
 packages/ui/tailwind-preset.ts   the Tailwind v3 preset
 ```
 
@@ -38,10 +38,9 @@ Consumers import from the package root (`import { Button } from "@shavin/ui"`), 
 |---|---|---|
 | `components.json` (root, `packages/ui`, `packages/mcp-server/assets`) | `scripts/gen-manifest.mjs` from the primitives and their `.doc.ts` files | `npm run manifest:gen` |
 | `packages/ui/src/lib/meta.ts` (`SHAVIN_META`: counts used in copy) | `scripts/gen-manifest.mjs` | `npm run manifest:gen` |
-| `packages/ui/src/lib/docs-routes.ts` (docs link per component) | `scripts/gen-manifest.mjs` | `npm run manifest:gen` |
 | `tokens.json` | `scripts/gen-tokens.mjs` from `global.css` | `npm run tokens:gen` |
 | OKLCH style files | `scripts/gen-oklch.mjs` | part of `npm run tokens:gen` |
-| `packages/block-schema/src/generated/*` | the block build | built upstream; see [Block schema](./block-schema.md) |
+| `packages/block-schema/src/generated/*` | the block build | built by the maintainers; see [Block schema](./block-schema.md) |
 | `AGENTS.md`, `CLAUDE.md`, `packages/skills/AGENTS.md`, `packages/cli/src/templates/AGENTS.md`, `SHAVIN.md`, `packages/cli/src/templates/SHAVIN.md` | `scripts/gen-agents.mjs` from `packages/skills/agents/`, the CLI's `CLAUDE.md` template and `shavin-core/SHAVIN.template.md` | `npm run agents:gen` |
 | `.agents/` in a consumer project | `@shavin/skills` installer | `npx @shavin/skills` |
 

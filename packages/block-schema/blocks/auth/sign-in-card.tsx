@@ -15,7 +15,7 @@ export function SignInCard() {
         </Flex>
         <Button type="submit" className="w-full">Sign in</Button>
         </form>
-        <Link href="/forgot" size="sm" color="accent" className="mx-auto">Forgot password?</Link>
+        <Link href="/forgot" size="sm" color="brand" className="mx-auto">Forgot password?</Link>
       </Flex>
     </Card>
   );

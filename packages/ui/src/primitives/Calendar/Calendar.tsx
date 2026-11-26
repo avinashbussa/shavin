@@ -437,7 +437,7 @@ export function CalendarView({
                       className={cn(
                         "group relative min-h-[4.5rem] sm:min-h-[5.5rem] rounded-[var(--radius-lg)] border border-hairline/40 p-1.5 transition hover:border-hairline hover:bg-surface-hover/50 flex flex-col justify-between overflow-hidden",
                         !isCurrentMonth && "bg-surface-hover/20",
-                        isSelected && "ring-2 ring-accent border-transparent"
+                        isSelected && "ring-2 ring-brand-text border-transparent"
                       )}
                     >
                       {/* The whole cell is the day button; event chips sit above it. */}
@@ -457,7 +457,7 @@ export function CalendarView({
                           onSelectDate?.(d);
                         }}
                         onFocus={() => setFocusKey(dateKey)}
-                        className="absolute inset-0 rounded-[var(--radius-lg)] cursor-pointer focus-visible:outline-offset-[-2px]"
+                        className="absolute inset-0 rounded-[var(--radius-lg)] cursor-pointer focus-visible:[outline-offset:calc(var(--focus-width)*-1)]"
                       />
                       <div className="pointer-events-none relative flex items-center justify-between">
                         <span
@@ -465,7 +465,7 @@ export function CalendarView({
                           className={cn(
                             "flex h-5 w-5 sm:h-6 sm:w-6 items-center justify-center rounded-full text-xs font-medium",
                             isCurrentMonth ? "text-fg" : "text-fg-subtle",
-                            isToday && "bg-accent text-accent-fg font-bold"
+                            isToday && "bg-brand-solid text-brand-fg font-bold"
                           )}
                         >
                           {d.getDate()}
@@ -529,7 +529,7 @@ export function CalendarView({
                     <span
                       className={cn(
                         "inline-flex items-center justify-center h-6 w-6 rounded-full text-xs font-semibold mt-0.5",
-                        isToday && "bg-accent text-accent-fg font-bold"
+                        isToday && "bg-brand-solid text-brand-fg font-bold"
                       )}
                     >
                       {d.getDate()}

@@ -25,8 +25,6 @@ export interface DialogProps extends VariantProps<typeof panelVariants> {
   title: ReactNode;
   /** Supporting line under the title (also its accessible description). */
   description?: ReactNode;
-  /** @deprecated Use `description`. */
-  subtitle?: ReactNode;
   /** Controlled open state. Pair with `onOpenChange`. */
   open?: boolean;
   /** Initial open state when uncontrolled. Default: closed when `trigger` is set, otherwise open. */
@@ -66,7 +64,6 @@ const footerAlignClass = {
 export function Dialog({
   title,
   description,
-  subtitle,
   open: openProp,
   defaultOpen,
   onOpenChange,
@@ -95,7 +92,7 @@ export function Dialog({
   );
   const close = useCallback(() => setOpen(false), [setOpen]);
   const returnFocus = useReturnFocus(open, Boolean(trigger));
-  const desc = description ?? subtitle;
+  const desc = description;
 
   return (
     <RadixDialog.Root open={open} onOpenChange={setOpen}>

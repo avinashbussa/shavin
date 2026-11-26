@@ -21,7 +21,7 @@ export function PricingTable() {
           <Button variant="outline" size="md" className="w-full">Get Started</Button>
         </Flex>
       </Card>
-      <Card padding="5" className="border-accent">
+      <Card padding="5" className="border-brand">
         <Flex direction="col" gap="4">
           <Flex direction="row" justify="between" align="center">
             <Heading as="h3" size="lg">Pro</Heading>

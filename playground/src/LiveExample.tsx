@@ -1,6 +1,7 @@
 import * as React from "react";
 import { transform } from "sucrase";
 import * as UI from "@shavin/ui";
+import * as Panels from "@shavin/ui/panels";
 import * as Lucide from "lucide-react";
 import { createPortal } from "react-dom";
 import { Button, Callout, Icon, Text } from "@shavin/ui";
@@ -14,9 +15,10 @@ import { Button, Callout, Icon, Text } from "@shavin/ui";
 const RESERVED = new Set(
   "await break case catch class const continue debugger default delete do else enum export extends false finally for function if import in instanceof let new null return super switch this throw true try typeof var void while with yield".split(" "),
 );
-// Lucide icons first, so a @shavin/ui export with the same name wins.
+// Lucide icons first, so a @shavin/ui export with the same name wins. The panels subpath (PanelGroup, Panel,
+// PanelHandle) is not in the root entry, but its examples need those names.
 const SCOPE: Record<string, unknown> = Object.create(null);
-for (const source of [Lucide, UI] as Record<string, unknown>[]) {
+for (const source of [Lucide, Panels, UI] as Record<string, unknown>[]) {
   for (const [k, v] of Object.entries(source)) {
     if (/^[A-Za-z_$][\w$]*$/.test(k) && !RESERVED.has(k)) SCOPE[k] = v;
   }

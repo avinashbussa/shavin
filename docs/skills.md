@@ -40,4 +40,4 @@ A command file describes a task end to end (inputs, steps, the checks to run). K
 
 ## Testing a change
 
-`npm run eval` scores recorded agent output against the rules. Run it for any change to skills, rules or the validator; it must stay at 80 or above.
+`npm run eval` scores recorded agent output against the rules. Run it for any change to skills, rules or the validator; it must stay at 80 or above for recorded output and 95 or above for the synthesis benchmark.

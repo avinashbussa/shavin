@@ -59,8 +59,8 @@ By making a contribution to this project, I certify that:
 ## Getting set up
 
 1. Fork the repository and clone your fork.
-2. Use Node 22 (`nvm use` reads `.nvmrc`), then `npm install` at the root. It installs every workspace.
-3. Get your bearings: [`docs/README.md`](docs/README.md) is the documentation index — its "Quick Links for New Contributors" points to where each package lives and which files to read first. [`AGENTS.md`](AGENTS.md) holds the design-system rules.
+2. Use Node 22 (`nvm use` reads `.nvmrc`), then `npm ci` at the root. It installs every workspace from the lockfile.
+3. Get your bearings: [`docs/README.md`](docs/README.md) is the documentation index: a table of guides (repository map, primitives, tokens, skills, MCP server, CLI, block schema, testing locally) with when to read each. [`AGENTS.md`](AGENTS.md) holds the design-system rules.
 4. Create a branch: `git checkout -b feat/my-change`.
 5. Make your change, then test it (below).
 6. Open a pull request against `main` and fill in the template.
@@ -80,14 +80,14 @@ Saving a component, its `.doc.ts` or `global.css` updates the page as soon as yo
 
 Run these from the repo root, in this order. CI runs the same checks, so a green run locally means a green PR.
 
-1. `npm run regen` regenerates every generated file (tokens, manifest, skills, `AGENTS.md`/`CLAUDE.md`) in the order they depend on each other. If it reports changed files, commit them with your change. `npm run regen -- --list` shows the steps.
+1. `npm run regen` regenerates every generated file (tokens, manifest, skills, `AGENTS.md`/`CLAUDE.md`) in the order they depend on each other. Generated files must be committed with your change: CI fails when one is stale. If `regen` reports changed files, commit them. `npm run regen -- --list` shows the steps.
 2. The four checks below.
 
 | Command | What it checks | When |
 |---|---|---|
 | `npm run verify` | Build, typecheck, token and class lint, generated files are up to date (manifest, tokens, agent files), skills within budget, no private names in docs, command docs match `package.json` | Every change |
 | `npm test` | Unit tests: primitives render and pass axe, component contracts, MCP tools, CLI, validator, autofix, synthesis | Every change |
-| `npm run eval` | Scores 20 recorded AI outputs and 10 layout syntheses against the design rules; fails if the average drops below 80 | Changes to rules, the validator, autofix, synthesis or skills |
+| `npm run eval` | Scores 20 recorded AI outputs (average must stay at 80 or above) and 10 layout syntheses (average must be 95 or above) against the design rules | Changes to rules, the validator, autofix, synthesis or skills |
 | `npm run smoke` | Packs every package, installs the tarballs into a fresh Next.js + Tailwind v4 app, runs `init`, `add`, the MCP server and a real Tailwind build | Changes to package exports, the CLI, styles or the MCP server |
 
 Useful while working:
@@ -97,7 +97,27 @@ Useful while working:
 - `npm run manifest:gen` regenerates `components.json` after you add or change a primitive's props, `npm run tokens:gen` does the same for `tokens.json`, and `npm run agents:gen` rebuilds `AGENTS.md` and `CLAUDE.md` from `packages/skills/agents/`. `npm run regen` runs all of them in order.
 - `node evals/src/runner.mjs --file=path/to/Component.tsx` scores a single file the way the evals do.
 - `npm run smoke -- --keep` leaves the throwaway app on disk so you can poke at it.
-- `npm run pack` writes the open packages' tarballs to `prod-dist/packages/`. `npm run test:e2e` runs `shavin init` end-to-end through a local Verdaccio registry — the way to test init's own installs against unpublished changes (see [testing locally](docs/README.md)).
+- `npm run pack` writes the open packages' tarballs to `prod-dist/packages/`. `npm run test:e2e` runs `shavin init` end-to-end through a local Verdaccio registry — the way to test init's own installs against unpublished changes (see [testing locally](docs/testing-locally.md)).
+
+## Windows
+
+The checks run on Windows as well as macOS and Linux, so scripts and tests have to work on all three.
+
+- Build file paths with `path`, and compare paths with forward slashes (`packages/skills/posix-path.mjs` has the helpers).
+- Start `npm` through `scripts/lib/spawn-cross.mjs`, which runs `npm.cmd` on Windows. Do not use POSIX-only commands such as `pkill` or `cp -c` in a script that CI runs.
+- The repository may be checked out with CRLF line endings. Generators and checks compare normalised text, so a file that only differs in line endings is not a change.
+- Vitest allows 5 seconds per test by default. A test that builds or spawns something passes its own timeout as the third argument.
+
+## Pull requests
+
+A good pull request:
+
+- covers one topic, with a description of what changed and why;
+- has tests for the change, and updated docs when a component's props or behaviour change;
+- includes screenshots for visual changes;
+- has every commit signed off (`git commit -s`) and a green CI run.
+
+Maintainers review and merge. A pull request is not accepted when it contains secrets or tokens, names of private packages or services, hand-edited generated files (change their source instead), or unrelated reformatting.
 
 ## Design-system rules
 
@@ -106,13 +126,13 @@ Read [`AGENTS.md`](./AGENTS.md) first. The rules that reviews enforce:
 - **Semantic tokens only:** `bg-surface`, `text-fg`, `border-hairline` and friends. No hex, `rgb()`, raw Tailwind colour scales or `--n-*` variables outside `global.css`.
 - **Radius roles:** controls use `--radius-lg`, containers use `--radius-panel`; nested surfaces follow the concentric formula (`rounded-panel-p3`, `rounded-panel-p5`).
 - **Variants with `cva()`**, `className` merged with `cn()`; floating surfaces carry `data-panel`; icons via `<Icon>`, never emoji or glyphs.
-- **New components** need the primitive and its export, a `<Name>.doc.ts` (description, examples, Do and Don't, accessibility and keyboard notes; copy `Button.doc.ts`), a clean page in `npm run playground`, a regenerated manifest (`npm run manifest:gen`), and tests (render, axe and contract cases in `tests/unit/`). Maintainers wire the docs page and the block registry, which live upstream (see `AGENTS.md` §8).
+- **New components** need the primitive and its export, a `<Name>.doc.ts` (description, examples, Do and Don't, accessibility and keyboard notes; copy `Button.doc.ts`), a clean page in `npm run playground`, a regenerated manifest (`npm run manifest:gen`), and tests (render, axe and contract cases in `tests/unit/`). Maintainers add the docs page and the block registry entry after the change is merged.
 - **Theme token changes** go into the Tailwind v3 preset and both v4 theme files together.
-- **Agent skills** are edited in `packages/skills/`, never in `.agents/` (compiled output).
+- **Agent skills** are edited in `packages/skills/`, never in `.agents/` or `packages/mcp-server/assets/` (both are generated). After a change run `npm run regen`, `npm run skills:check` (cross-references, frontmatter and token budgets) and `npm run agents:check`, and commit what `regen` changed. If a skill goes over its token budget, shorten the text; changing a budget is a maintainer decision.
 
 ## What's not open
 
-Some parts of the upstream monorepo are proprietary and not accepted as contributions here; each carries its own `LICENSE`. Block authoring is also private for now; block contributions will open up later.
+Some parts of Shavin, such as the hosted services, are proprietary and are not accepted as contributions here; each carries its own `LICENSE`. Maintainers review and merge every pull request. Block authoring is closed for now; block contributions will open up later.
 
 ## Trademark
 

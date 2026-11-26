@@ -2,7 +2,7 @@ import type { ComponentDoc } from "../../authoring/types";
 
 export const docs: ComponentDoc = {
   name: "Menu",
-  description: "Floating action dropdown menu built on Radix DropdownMenu primitive with full keyboard navigation and nested sub-menu support.",
+  description: "A list of actions that opens from a button, with keyboard navigation and nested submenus.",
   features: [
     "Components: Menu, MenuTrigger, MenuItem, MenuSub, MenuSubTrigger, MenuSubContent",
     "Supports CVA variant='default' and variant='danger' (destructive item)",

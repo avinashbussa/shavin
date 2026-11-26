@@ -2,12 +2,12 @@
 
 > **Load priority:** ON-DEMAND. Load whenever composing or reviewing blocks, screens, or sections — especially when the output "feels AI-generated" or looks like a wireframe draft.
 > **Token cost:** ~2K tokens.
-> **Referenced by:** `core-rules.md` §7 & §11, `layout-restraint.md`, `interface-polish.md`, `shavin-core/SKILL.md` §2, `audit-checklist.md`.
+> **Referenced by:** `core-rules.md` §7 & §11, `layout-restraint.md`, `interface-polish.md`, `audit-checklist.md`.
 
 This file is the **single consolidated catalog** of named anti-patterns that signal AI-generated UI degradation. Always-loaded files reference these by ID (e.g. "see AP-03") to stay token-lean; the full explanation, code examples, and remediation live here.
 
 - 💡 If `shavin-mcp` is connected: call `get_skill({ name: "visual-compositor", section: "anti-patterns" })`.
-- 💡 Otherwise (No-MCP): read this file directly — `view skills/visual-compositor/anti-patterns.md`.
+- 💡 Otherwise (No-MCP): read this file directly — `.agents/skills/visual-compositor/anti-patterns.md`.
 
 ---
 
@@ -26,26 +26,26 @@ This single principle covers badges, chips, pills, dividers, and any future deco
 **Why it's slop:** Confuses token compliance with aesthetic poverty. Real production UI uses layered depth.
 **Fix:** Add atmospheric layering — soft pastel mesh backdrops (`opacity 15–30% light, 10–20% dark`), frosted glass panels (`bg-surface/80 backdrop-blur-md border border-hairline/70`), directional gradient scrims.
 
-### AP-02: Ambient Accent Glow Balls
-**Symptom:** Garish `bg-accent/20 blur-3xl` glowing orbs placed in corners of sections.
+### AP-02: Ambient Brand Glow Balls
+**Symptom:** Garish `bg-brand/20 blur-3xl` glowing orbs placed in corners of sections.
 **Why it's slop:** A recognized AI design cliché. Saturated, distracting, and cheap-looking.
 **Fix:** Replace with diffuse **pastel meshes** (lavender, soft sage, mist, peach, slate) at low opacity with CSS mask gradient dissolves (`maskImage: linear-gradient(...)`).
 
 ### AP-03: Literal Stock Photos
 **Symptom:** Context-heavy cliché stock — people typing on laptops, handshakes, generic office desks — or dense, tiny, unreadable UI screenshots dropped into hero or feature sections.
 **Why it's slop:** Looks cheap, breaks visual cohesion, and signals "I couldn't think of what to put here."
-**Fix:** Choose: (1) Curated editorial photography from Lummi (`assets.lummi.ai`), Unsplash, or the user — usable anywhere, including as accents for visual balance, not only for people/testimonials; (2) Mesh gradients (`bgOverlays="mesh-lime"` etc.) or animated backgrounds (Pexels video via `bgVideo` + `bgPoster`) with copy on top behind a scrim; (3) Abstract atmospheric textures (procedural waves, blurred chromatic grain). 3D renders are **optional decorative graphics only** — never focal hero/feature media. Do NOT rebuild product mockups/UI screenshots from Shavin primitives as imagery unless you are highly confident of the result (rarely the right call).
+**Fix:** Choose: (1) Curated editorial photography from Lummi (`assets.lummi.ai`), Unsplash, or the user — usable anywhere, including as highlights for visual balance, not only for people/testimonials; (2) Mesh gradients (`bgOverlays="mesh-lime"` etc.) or animated backgrounds (Pexels video via `bgVideo` + `bgPoster`) with copy on top behind a scrim; (3) Abstract atmospheric textures (procedural waves, blurred chromatic grain). 3D renders are **optional decorative graphics only** — never focal hero/feature media. Do NOT rebuild product mockups/UI screenshots from Shavin primitives as imagery unless you are highly confident of the result (rarely the right call).
 
 ### AP-04: Badge Soup
 **Symptom:** Stacking 3–4 colored `<Badge>` pills above a single heading ("⚡ FAST", "🔒 SECURE", "✨ NEW", "v2.4"). Scattering `<Badge>` across every section, card, or feature row.
 **Why it's slop:** Adds visual noise without information value. Multiple decorative pills per viewport is the #1 hallmark of AI-generated UI.
-**Fix:** Maximum 1 `<Badge>` per section, only for genuine state changes (version tags, success/error, notification counts). For section labels, category markers, and eyebrow text, use **overline text** instead:
+**Fix:** Maximum 1 `<Badge>` per section, only for genuine state changes (version tags, success/error, notification counts). A section label is optional: most headings need none. Where a label carries real information (a category, a version, a sequence), set it as plain **overline text** rather than a pill:
 ```jsx
 <Text size="xs" className="uppercase tracking-wider text-fg-subtle font-medium">
   Section Label
 </Text>
 ```
-Overline is typographically lighter (no fill, no border, no pill), respects reading hierarchy via `text-fg-subtle`, and doesn't compete with the headline.
+Overline is typographically lighter (no fill, no border, no pill), respects reading hierarchy via `text-fg-subtle`, and doesn't compete with the headline. Use it on at most one section or region per page view, never as a header on every section.
 
 ### AP-05: Paragraph Walls
 **Symptom:** 3–4 lines of dense marketing prose under every heading.
@@ -82,10 +82,10 @@ Overline is typographically lighter (no fill, no border, no pill), respects read
 **Why it's slop:** Signals no editorial thought was applied to the content.
 **Fix:** Write authentic microcopy that reflects the actual product domain. Even placeholder content should sound like a real user wrote it.
 
-### AP-12: Harsh Border Glare (Over-Accenting Card Borders)
-**Symptom:** Using `border-accent` or `ring-accent` for active, selected, or featured cards in standard product apps, dashboards, consoles, and documentation.
-**Why it's slop:** In dark themes, `--accent` is mapped to high-contrast foreground (`#fafafa` / `--n-100`). Applying raw `border-accent` creates a harsh 100% white outline that causes distracting glare and disrupts reading flow.
-**Fix:** In functional product interfaces, apps, dashboards, and docs, always use `border-hairline` for resting cards and `border-hairline-strong` for active, hover, or featured cards. Reserve `border-accent` exclusively for expressive website/marketing moments where vibrant brand accent color is explicitly demanded for creative impact.
+### AP-12: Harsh Border Glare (Brand-Colour Overuse Card Borders)
+**Symptom:** Using `border-brand` or `ring-brand` for active, selected, or featured cards in standard product apps, dashboards, consoles, and documentation.
+**Why it's slop:** In dark themes, `--brand` is mapped to high-contrast foreground (`#fafafa` / `--n-100`). Applying raw `border-brand` creates a harsh 100% white outline that causes distracting glare and disrupts reading flow.
+**Fix:** In functional product interfaces, apps, dashboards, and docs, always use `border-hairline` for resting cards and `border-hairline-strong` for active, hover, or featured cards. Reserve `border-brand` exclusively for expressive website/marketing moments where vibrant brand colour is explicitly demanded for creative impact.
 
 ### AP-13: Sparkles Icon
 **Symptom:** `<Icon name="sparkles">`, Lucide `Sparkles`, ✨ for AI, "magic" or "thinking" cues.
@@ -98,12 +98,12 @@ Overline is typographically lighter (no fill, no border, no pill), respects read
 
 | You're about to... | Stop and ask... | Correct alternative |
 |---|---|---|
-| Add a `<Badge>` above a heading | "Does this convey a **state change** or **status**?" | No → use overline text (AP-04) |
+| Add a `<Badge>` above a heading | "Does this convey a **state change** or **status**?" | No → drop the label, or use plain overline text only if it adds information (AP-04) |
 | Add a 3rd+ badge in a section | "Am I filling space or adding information?" | Remove. Use hierarchy instead (AP-04, AP-08) |
 | Wrap content in another `<Card>` | "Would **proximity** group these just as well?" | Use `gap-*` spacing, not a border (AP-09) |
 | Add 4+ metric boxes to a hero | "Can the user scan this in 3 seconds?" | Move to dedicated section below fold (AP-06) |
 | Write 3+ lines of body text | "Can I say this in 1–2 sentences?" | Cut to 15–25 words, `text-fg-subtle` (AP-05) |
 | Use a stock photo of people | "Does this add **context** or just fill space?" | Use curated Lummi/Unsplash photography, a mesh, or an abstract texture (AP-03) |
-| Add `bg-accent/20 blur-3xl` glow | "Is this a soft mesh or a garish orb?" | Use pastel mesh with mask dissolve (AP-02) |
+| Add `bg-brand/20 blur-3xl` glow | "Is this a soft mesh or a garish orb?" | Use pastel mesh with mask dissolve (AP-02) |
 | Write "Empower your workflow" | "Would a real engineer say this?" | Write domain-specific telemetry (AP-10) |
-| Use `border-accent` on cards/panels | "Is this an expressive marketing showcase or a product/app/docs UI?" | Product/app/docs → use `border-hairline-strong` (AP-12) |
+| Use `border-brand` on cards/panels | "Is this an expressive marketing showcase or a product/app/docs UI?" | Product/app/docs → use `border-hairline-strong` (AP-12) |

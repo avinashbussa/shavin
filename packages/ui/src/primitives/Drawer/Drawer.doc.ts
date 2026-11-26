@@ -3,7 +3,7 @@ import type { ComponentDoc } from "../../authoring/types";
 export const docs: ComponentDoc = {
   name: "Drawer",
   description:
-    "Edge-mounted overlay panel that slides in from left or right. Built on Radix Dialog with focus trapping, scroll lock, backdrop dismiss, and directional slide-in/slide-out animations. Use for temporary contextual panels — unlike Sidebar (in-flow layout), Drawer overlays content and dismisses on outside click.",
+    "A panel that slides in over the page from the left or right edge, with a title, body and footer. Use it for temporary tasks; unlike Sidebar, it covers the content and closes on a click outside.",
   features: [
     "Sides: left, right — directional slide-in/slide-out from the mounted edge",
     "Variants: floating (inset card with margin, radius, shadow — default), fixed (flush against edge)",
@@ -12,6 +12,7 @@ export const docs: ComponentDoc = {
     "Configurable overlay opacity (0–1) via overlayOpacity prop — tune backdrop intensity per context",
     "Radix Dialog focus trap, scroll lock, Escape key dismiss, ARIA title/description wiring",
     "Footer action slot for primary/secondary buttons",
+    "Uncontrolled with a `trigger` element (closed until the trigger is activated, no state needed, so it works inside blocks), or controlled with `open` and `onClose`",
   ],
   accessibility: [
     "Focus trapped automatically inside drawer while open",
@@ -32,8 +33,12 @@ export const docs: ComponentDoc = {
       code: '<Drawer side="right" title="Filters" onClose={() => {}} dismissible>Filter controls here</Drawer>',
     },
     {
+      title: "Trigger-opened menu drawer (no state)",
+      code: '<Drawer side="left" size="sm" title="Menu" trigger={<IconButton aria-label="Open menu"><Icon name="menu" /></IconButton>}><Text>Links here</Text></Drawer>',
+    },
+    {
       title: "Fixed left drawer with footer",
-      code: '<Drawer side="left" variant="fixed" title="Inspector" onClose={() => {}} footer={<Button tone="accent">Apply</Button>}><Text>Panel content</Text></Drawer>',
+      code: '<Drawer side="left" variant="fixed" title="Inspector" onClose={() => {}} footer={<Button tone="brand">Apply</Button>}><Text>Panel content</Text></Drawer>',
     },
   ],
 };

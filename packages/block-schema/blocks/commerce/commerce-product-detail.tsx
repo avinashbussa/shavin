@@ -28,7 +28,7 @@ export function CommerceProductDetail({ colours = defaultColours, highlights = d
             <Flex direction="column" gap="4">
               <Flex direction="row" align="center" gap="3">
                 <Text size="overline" color="muted">Planners</Text>
-                <Badge size="sm" color="accent">New</Badge>
+                <Badge size="sm" color="brand">New</Badge>
               </Flex>
               <Heading as="h1" size="3xl">Household Money Planner</Heading>
               <Flex direction="row" align="center" gap="2">
